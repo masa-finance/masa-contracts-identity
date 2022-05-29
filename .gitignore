@@ -102,3 +102,13 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Smart contract deployment keys
+deployment_keys
+
+# API keys
+api_keys
+
+# Hot code 
+hot_code
+
