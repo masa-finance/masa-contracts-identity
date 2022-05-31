@@ -1,7 +1,7 @@
 {
 	"name": "Masa NFT Credit Report",
 	"description": "A self-soverign credit report for accesing loans",
-	"image": "https://api.masa.finance/v1/score/750.png",
+	"image": "https://api.masa.finance/v1/score/masa-score.png",
 	"properties": {
 		"uuid": "14e27c382a810a2ed89aec5548e02fb56934a0123e2c07d9de8a2aff91c12138",
         "name": "b30202772c7427839e0017eda9060185584f0bcd869eec76d42f6e9c833c4359",
