@@ -112,3 +112,6 @@ api_keys
 # Hot code 
 hot_code
 
+# System 
+
+.DS_Store
