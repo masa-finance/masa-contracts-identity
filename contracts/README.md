@@ -1,6 +1,5 @@
 # ERC-1155
 
-[.readme-notice]
 NOTE: This document is better viewed at https://docs.openzeppelin.com/contracts/api/token/erc1155
 
 This set of interfaces and contracts are all related to the https://eips.ethereum.org/EIPS/eip-1155[ERC1155 Multi Token Standard].
@@ -14,9 +13,9 @@ Additionally there are multiple custom extensions, including:
 * designation of addresses that can pause token transfers for all users ({ERC1155Pausable}).
 * destruction of own tokens ({ERC1155Burnable}).
 
-NOTE: This core set of contracts is designed to be unopinionated, allowing developers to access the internal functions in ERC1155 (such as <<ERC1155-_mint-address-uint256-uint256-bytes-,`_mint`>>) and expose them as external functions in the way they prefer. On the other hand, xref:ROOT:erc1155.adoc#Presets[ERC1155 Presets] (such as {ERC1155PresetMinterPauser}) are designed using opinionated patterns to provide developers with ready to use, deployable contracts.
+NOTE: This core set of contracts is designed to be unopinionated, allowing developers to access the internal functions in ERC1155 (such as `ERC1155-_mint-address-uint256-uint256-bytes-,_mint` and expose them as external functions in the way they prefer. On the other hand, xref:ROOT:erc1155.adoc#Presets[ERC1155 Presets] (such as {ERC1155PresetMinterPauser}) are designed using opinionated patterns to provide developers with ready to use, deployable contracts.
 
-== Core
+## Core
 
 {{IERC1155}}
 
@@ -32,12 +31,12 @@ NOTE: This core set of contracts is designed to be unopinionated, allowing devel
 
 {{ERC1155Burnable}}
 
-== Presets
+## Presets
 
 These contracts are preconfigured combinations of the above features. They can be used through inheritance or as models to copy and paste their source code.
 
 {{ERC1155PresetMinterPauser}}
 
-== Utilities
+## Utilities
 
 {{ERC1155Holder}}

@@ -1,12 +1,14 @@
 # Masa NFT Credit Report
 
-## Folder structure
-
 ## Contract Deployments 
 
-### Testnet
+### Ethereum: Rinkby
 
-### Mainnet
+`0xF51Ff2EEC7fA35462a4eff2eCE7d17d88586569a`
+
+### Celo: Alfrajores
+
+`0x905DD8AF286D0073b9956BeB058a1026cAAdD74E`
 
 ## Ethereum deployment
 
