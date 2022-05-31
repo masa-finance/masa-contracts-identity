@@ -34,6 +34,8 @@ curl -i -X POST \
 
   ### Mint multi token on Rinkby
 
+  ```
+
   curl -i -X POST \
   https://api.masa.finance/v1/erc-1155/mint \
   -H 'Content-Type: application/json' \
@@ -54,19 +56,29 @@ curl -i -X POST \
     }
   }'
 
+  ```
+
   ## Get tokens by address
+
+  ```
 
   curl -i -X GET \
   https://api.masa.finance/v1/erc-1155/address/balance/ETH/0x2365e84b546e185af46ec48fec9879090952cb57 \
   -H 'x-api-key: api-key' \
 
+  ```
+
   
   ## Get token metadata
+
+  ```
 
   curl -i -X GET \
   https://api.masa.finance/v1/erc-1155/metadata/ETH/0xF51Ff2EEC7fA35462a4eff2eCE7d17d88586569a/9101282661524639659902751014092.json \
   -H 'x-api-key: api-key' \
   -H 'x-testnet-type: ethereum-rinkeby'
+
+  ```
 
 
 ## Celo deployment
@@ -74,6 +86,8 @@ curl -i -X POST \
 ### Deploy contract to Alfrajores
 
 ## Deploy
+
+```
 
   curl -i -X POST \
   https://api.masa.finance/v1/erc-1155/multitoken/deploy \
@@ -91,7 +105,11 @@ curl -i -X POST \
     "feeCurrency": "CELO"
 }'
 
+```
+
 ## Mint
+
+```
 
 curl -i -X POST \
 https://api.masa.finance/v1/erc-1155/mint \
@@ -112,14 +130,25 @@ https://api.masa.finance/v1/erc-1155/mint \
   },
   "feeCurrency": "CELO"
 }'
+
+```
  
 ## Get tokens by address
+
+```
 
 curl -i -X GET \
   https://api.masa.finance/v1/erc-1155/address/balance/CELO/0x2365e84b546e185af46ec48fec9879090952cb57 \
   -H 'x-api-key: api-key' \
 
+```
+
 ## Get token metadata
+
+```
+
 curl -i -X GET \
   https://api.masa.finance/v1/erc-1155/metadata/CELO/0x905DD8AF286D0073b9956BeB058a1026cAAdD74E/91012826615246396599027510140925 \
   -H 'x-api-key: api-key' \
+
+```
