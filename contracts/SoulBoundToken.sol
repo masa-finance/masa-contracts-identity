@@ -3,16 +3,22 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/presets/ERC721PresetMinterPauserAutoId.sol";
+import "./interfaces/ISoulLinker.sol";
 
 abstract contract SoulBoundToken is ERC721PresetMinterPauserAutoId, Ownable {
+    ISoulLinker public soulLinker;
+
     constructor(
         address owner,
+        address _soulLinker,
         string memory name,
         string memory ticker,
         string memory uri
     ) ERC721PresetMinterPauserAutoId(name, ticker, uri) Ownable() {
         _setupRole(MINTER_ROLE, owner);
         Ownable.transferOwnership(owner);
+
+        soulLinker = ISoulLinker(_soulLinker);
     }
 
     function transferFrom(
@@ -38,5 +44,10 @@ abstract contract SoulBoundToken is ERC721PresetMinterPauserAutoId, Ownable {
         bytes memory /*data*/
     ) public pure override {
         revert("Transferring Soul Bound Tokens is not permitted!");
+    }
+
+    function burn(uint256 tokenId) public override {
+        require(!soulLinker.hasLinks(address(this), tokenId));
+        super.burn(tokenId);
     }
 }

@@ -467,6 +467,23 @@ function setApprovalForAll(address operator, bool approved) external nonpayable
 | operator | address | undefined |
 | approved | bool | undefined |
 
+### soulLinker
+
+```solidity
+function soulLinker() external view returns (contract ISoulLinker)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | contract ISoulLinker | undefined |
+
 ### supportsInterface
 
 ```solidity

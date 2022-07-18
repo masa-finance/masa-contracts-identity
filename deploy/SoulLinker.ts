@@ -16,20 +16,17 @@ const func: DeployFunction = async ({
   [, owner] = await ethers.getSigners();
   const env = getEnvParams(network.name);
 
-  const soulLinker = await deployments.get("SoulLinker");
-
-  const soulBoundTokenDeploymentResult = await deploy("SoulBoundIdentity", {
+  const soulBoundTokenDeploymentResult = await deploy("SoulLinker", {
     from: deployer,
-    args: [env.OWNER || owner.address, soulLinker.address],
+    args: [env.OWNER || owner.address],
     log: true,
   });
 
   await ethers.getContractAt(
-    "SoulBoundIdentity",
+    "SoulLinker",
     soulBoundTokenDeploymentResult.address
   );
 };
 
-func.tags = ["SoulBoundIdentity"];
-func.dependencies = ["SoulLinker"];
+func.tags = ["SoulLinker"];
 export default func;
