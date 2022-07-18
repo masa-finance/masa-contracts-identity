@@ -38,8 +38,17 @@ describe("SoulBoundIdentity", () => {
   });
 
   it("should mint from owner", async () => {
-    // console.log(soulBoundIdentity)
     await soulBoundIdentity.connect(owner).mint(someone.address);
+  });
+
+  it("should fail to transfer because its soul bound", async () => {
+    await soulBoundIdentity.connect(owner).mint(someone.address);
+
+    await expect(
+      soulBoundIdentity
+        .connect(someone)
+        .transferFrom(someone.address, someone.address, 1)
+    ).to.be.rejectedWith("Transferring Soul Bound Tokens is not permitted!");
   });
 
   it("should fail to mint from someone", async () => {

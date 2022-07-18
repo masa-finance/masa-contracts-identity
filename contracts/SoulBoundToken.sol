@@ -24,18 +24,24 @@ abstract contract SoulBoundToken is ERC721PresetMinterPauserAutoId, Ownable {
         address from,
         address to,
         uint256 tokenId
-    ) public override {}
+    ) public override {
+        revert("Transferring Soul Bound Tokens is not permitted!");
+    }
 
     function safeTransferFrom(
         address from,
         address to,
         uint256 tokenId
-    ) public override {}
+    ) public override {
+        revert("Transferring Soul Bound Tokens is not permitted!");
+    }
 
     function safeTransferFrom(
         address from,
         address to,
         uint256 tokenId,
         bytes memory data
-    ) public override {}
+    ) public override {
+        revert("Transferring Soul Bound Tokens is not permitted!");
+    }
 }
