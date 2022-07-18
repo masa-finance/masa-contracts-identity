@@ -8,15 +8,9 @@ abstract contract SoulBoundToken is ERC721PresetMinterPauserAutoId, Ownable {
     constructor(
         address owner,
         string memory name,
-        string memory ticker
-    )
-        ERC721PresetMinterPauserAutoId(
-            name,
-            ticker,
-            "https://masa.finance/v1.0/{id}"
-        )
-        Ownable()
-    {
+        string memory ticker,
+        string memory uri
+    ) ERC721PresetMinterPauserAutoId(name, ticker, uri) Ownable() {
         _setupRole(MINTER_ROLE, owner);
         Ownable.transferOwnership(owner);
     }

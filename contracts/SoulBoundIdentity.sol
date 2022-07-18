@@ -4,5 +4,12 @@ pragma solidity ^0.8.0;
 import "./SoulBoundToken.sol";
 
 contract SoulBoundIdentity is SoulBoundToken {
-    constructor(address owner) SoulBoundToken(owner, "Masa Identity", "MID") {}
+    constructor(address owner)
+        SoulBoundToken(
+            owner,
+            "Masa Identity",
+            "MID",
+            "https://api.masa.finance/v1.0/identity/{id}.json"
+        )
+    {}
 }

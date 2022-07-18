@@ -5,6 +5,11 @@ import "./SoulBoundToken.sol";
 
 contract SoulBoundCreditReport is SoulBoundToken {
     constructor(address owner)
-        SoulBoundToken(owner, "Masa Credit Report", "MCR")
+        SoulBoundToken(
+            owner,
+            "Masa Credit Report",
+            "MCR",
+            "https://api.masa.finance/v1.0/identity/{id}.json"
+        )
     {}
 }
