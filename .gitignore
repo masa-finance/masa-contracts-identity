@@ -117,3 +117,5 @@ hot_code
 
 cache
 artifacts
+
+.env.*.secret
