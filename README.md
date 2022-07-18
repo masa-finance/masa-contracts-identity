@@ -11,3 +11,10 @@
 
 - `deployer`: Deploys the contract, has no rights after everything has properlty handed over to other roles
 - `owner`: Delegated to the Masa Service account inside the Masa API. It has the rights to mint tokens to customers wallets.
+
+
+## Interface
+
+- [Abstract Soul Bound Token Definition](docs/SoulBoundToken.md)
+- [Soul Bound Identity Definition](docs/SoulBoundIdentity.md)
+- [Soul Bound Credit Report Definition](docs/SoulBoundCreditReport.md)

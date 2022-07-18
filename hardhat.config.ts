@@ -1,6 +1,6 @@
 import { getPrivateKey } from "./src/utils/EnvParams";
 import "hardhat-deploy";
-import "hardhat-docgen";
+import "@primitivefi/hardhat-dodoc";
 import "@nomiclabs/hardhat-ethers";
 import { NetworksUserConfig } from "hardhat/types";
 
@@ -39,9 +39,5 @@ export default {
       default: 0,
     },
   },
-  docgen: {
-    path: "./docs/docgen",
-    clear: true,
-    runOnCompile: true,
-  },
+  dodoc: {},
 };

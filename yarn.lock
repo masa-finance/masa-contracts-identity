@@ -424,6 +424,16 @@
     "@ethersproject/properties" "^5.6.0"
     "@ethersproject/strings" "^5.6.1"
 
+"@hardhat-docgen/core@^1.2.3":
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/@hardhat-docgen/core/-/core-1.2.3.tgz#96144007ae68940d1719b30e52f615dcdab18ff8"
+  integrity sha512-O/pW6oDEhWc+YdU4OlSdKzRM25ifbWfiJXDFaIIvvu5LqhSvk5o/1yfOwy3ujU7b9OqXlz9RdKhGPCd/qNaMTg==
+
+"@hardhat-docgen/markdown@^1.2.4":
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/@hardhat-docgen/markdown/-/markdown-1.2.4.tgz#f1b3f90e7ff9912060e5a3657138e3c808b9f3b0"
+  integrity sha512-fXbwgO2NZpgVlBqZzNrCvuFHqDUaLRXXr+Vl+ATXpzcgfBUhkOBg65iFv9Rncb5p8nqjo6Y00qqtw2FzXXPeaA==
+
 "@jridgewell/gen-mapping@^0.3.0":
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/@jridgewell/gen-mapping/-/gen-mapping-0.3.2.tgz#c1aedc61e853f2bb9f5dfe6d4442d3b565b253b9"
@@ -510,6 +520,13 @@
   version "4.7.0"
   resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.7.0.tgz#3092d70ea60e3d1835466266b1d68ad47035a2d5"
   integrity sha512-52Qb+A1DdOss8QvJrijYYPSf32GUg2pGaG/yCxtaA3cu4jduouTdg4XZSMLW9op54m1jH7J8hoajhHKOPsoJFw==
+
+"@primitivefi/hardhat-dodoc@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@primitivefi/hardhat-dodoc/-/hardhat-dodoc-0.2.3.tgz#76aebbfa70de2d6454af29e166b1430583b54c5c"
+  integrity sha512-ver9uHa79LTDTeebOKZ/eOVRL/FP1k0s0x/5Bo/8ZaDdLWFVClKqZyZYVjjW4CJqTPCt8uU9b9p71P2vzH4O9A==
+  dependencies:
+    squirrelly "^8.0.8"
 
 "@scure/base@~1.1.0":
   version "1.1.1"
@@ -3302,6 +3319,11 @@ source-map@^0.6.0, source-map@^0.6.1, source-map@~0.6.0, source-map@~0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.6.1.tgz#74722af32e9614e9c287a8d0bbde48b5e2f1a263"
   integrity sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==
+
+squirrelly@^8.0.8:
+  version "8.0.8"
+  resolved "https://registry.yarnpkg.com/squirrelly/-/squirrelly-8.0.8.tgz#d6704650b2170b8040d5de5bff9fa69cb62b5e0f"
+  integrity sha512-7dyZJ9Gw86MmH0dYLiESsjGOTj6KG8IWToTaqBuB6LwPI+hyNb6mbQaZwrfnAQ4cMDnSWMUvX/zAYDLTSWLk/w==
 
 stacktrace-parser@^0.1.10:
   version "0.1.10"
