@@ -1,10 +1,24 @@
-module.exports = async ({ getNamedAccounts, deployments, ethers }) => {
+import { getEnvParams } from "../src/utils/EnvParams";
+import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
+import { DeployFunction } from "hardhat-deploy/dist/types";
+
+let owner: SignerWithAddress;
+
+const func: DeployFunction = async ({
+  getNamedAccounts,
+  deployments,
+  ethers,
+  network,
+}) => {
   const { deploy } = deployments;
-  const { deployer, owner } = await getNamedAccounts();
+  const { deployer } = await getNamedAccounts();
+
+  [, owner] = await ethers.getSigners();
+  const env = getEnvParams(network.name);
 
   const soulBoundTokenDeploymentResult = await deploy("SoulBoundCreditReport", {
     from: deployer,
-    args: [owner],
+    args: [env.OWNER || owner.address],
     log: true,
   });
 
@@ -14,4 +28,5 @@ module.exports = async ({ getNamedAccounts, deployments, ethers }) => {
   );
 };
 
-module.exports.tags = ["SoulBoundCreditReport"];
+func.tags = ["SoulBoundCreditReport"];
+export default func;

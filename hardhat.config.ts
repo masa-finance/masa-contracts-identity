@@ -1,28 +1,8 @@
+import { getPrivateKey } from "./src/utils/EnvParams";
 import "hardhat-deploy";
 import "hardhat-docgen";
 import "@nomiclabs/hardhat-ethers";
 import { NetworksUserConfig } from "hardhat/types";
-import fs from "fs-extra";
-import fsx from "fs-extra";
-import { parse } from "envfile";
-
-export function getSecretParam(param: string, networkName: string | undefined) {
-  const path = `.env.${networkName}.secret`;
-
-  fsx.ensureFileSync(path);
-  return parse(fs.readFileSync(path))[param];
-}
-
-export function getPrivateKey(networkName: string | undefined) {
-  const path = `.env.${networkName}.secret`;
-
-  fsx.ensureFileSync(path);
-  const privateKey = getSecretParam("DEPLOYER_PRIVATE_KEY", networkName);
-
-  return privateKey
-    ? privateKey
-    : "0x0000000000000000000000000000000000000000000000000000000000000000";
-}
 
 const networks: NetworksUserConfig = {
   hardhat: {
@@ -34,7 +14,7 @@ const networks: NetworksUserConfig = {
 
   alfajores: {
     url: "https://alfajores-forno.celo-testnet.org", // Localhost (default: none)
-    accounts: [getPrivateKey("alfajores"), getPrivateKey("alfajores")],
+    accounts: [getPrivateKey("alfajores")],
     allowUnlimitedContractSize: true,
     gas: 20000000,
     gasPrice: "auto",
@@ -56,9 +36,6 @@ export default {
   },
   namedAccounts: {
     deployer: {
-      default: 0,
-    },
-    owner: {
       default: 0,
     },
   },
