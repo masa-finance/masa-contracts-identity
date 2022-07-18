@@ -9,7 +9,7 @@ contract SoulBoundCreditReport is SoulBoundToken {
             owner,
             "Masa Credit Report",
             "MCR",
-            "https://api.masa.finance/v1.0/identity/{id}.json"
+            "https://api.masa.finance/v1.0/credit-report/{id}.json"
         )
     {}
 }
