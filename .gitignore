@@ -113,5 +113,7 @@ api_keys
 hot_code
 
 # System 
-
 .DS_Store
+
+cache
+artifacts
