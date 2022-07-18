@@ -19,3 +19,5 @@
 - [Abstract Soul Bound Token Definition](docs/SoulBoundToken.md)
 - [Soul Bound Identity Definition](docs/SoulBoundIdentity.md)
 - [Soul Bound Credit Report Definition](docs/SoulBoundCreditReport.md)
+- [Soul Linker Definition](docs/SoulLinker.md)
+
