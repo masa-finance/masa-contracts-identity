@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -21,27 +22,27 @@ abstract contract SoulBoundToken is ERC721PresetMinterPauserAutoId, Ownable {
     }
 
     function transferFrom(
-        address from,
-        address to,
-        uint256 tokenId
-    ) public override {
+        address, /*from*/
+        address, /*to*/
+        uint256 /*tokenId*/
+    ) public pure override {
         revert("Transferring Soul Bound Tokens is not permitted!");
     }
 
     function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenId
-    ) public override {
+        address, /*from*/
+        address, /*to*/
+        uint256 /*tokenId*/
+    ) public pure override {
         revert("Transferring Soul Bound Tokens is not permitted!");
     }
 
     function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenId,
-        bytes memory data
-    ) public override {
+        address, /*from*/
+        address, /*to*/
+        uint256, /*tokenId*/
+        bytes memory /*data*/
+    ) public pure override {
         revert("Transferring Soul Bound Tokens is not permitted!");
     }
 }
