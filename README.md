@@ -1,156 +1,23 @@
-# Masa NFT Credit Report
+# Masa Soul Bound NFTs
 
-## Contract Deployments 
+## Contract Deployments
 
-### Ethereum: Rinkby
+### Celo: Alfajores
 
-`0xF51Ff2EEC7fA35462a4eff2eCE7d17d88586569a`
+- `SoulBoundCreditReport`: [`0x0ffF769274a4fDa68Bf6E99FE0982c4c26B1A4A0`](https://alfajores-blockscout.celo-testnet.org/address/0x0ffF769274a4fDa68Bf6E99FE0982c4c26B1A4A0/transactions)
+- `SoulBoundIdentity`: [`0x1471A7d3914a38e7488111001e50eCc29D627166`](https://alfajores-blockscout.celo-testnet.org/address/0x1471A7d3914a38e7488111001e50eCc29D627166/transactions)
+- `SoulLinker`: [`0x241333a729aE0a49Eb5d595a8866162EE5a5920c`](https://alfajores-blockscout.celo-testnet.org/address/0x241333a729aE0a49Eb5d595a8866162EE5a5920c/transactions)
 
-### Celo: Alfrajores
+## Roles
 
-`0x905DD8AF286D0073b9956BeB058a1026cAAdD74E`
+- `deployer`: Deploys the contract, has no rights after everything has properlty handed over to other roles
+- `owner`: Delegated to the Masa Service account inside the Masa API. It has the rights to mint tokens to customers
+  wallets.
 
-## Ethereum deployment
+## Interface
 
-### Deploy contract to Rinkby
+- [Abstract Soul Bound Token Definition](docs/SoulBoundToken.md)
+- [Soul Bound Identity Definition](docs/SoulBoundIdentity.md)
+- [Soul Bound Credit Report Definition](docs/SoulBoundCreditReport.md)
+- [Soul Linker Definition](docs/SoulLinker.md)
 
-```
-
-curl -i -X POST \
-  https://api.masa.finance/v1/erc-1155/deploy \
-  -H 'Content-Type: application/json' \
-  -H 'x-api-key: api-key' \
-  -H 'x-testnet-type: ethereum-rinkeby' \
-  -d '{
-    "chain": "ETH",
-    "uri": "https://identity.masa.finance.com/{id}.json",
-    "fromPrivateKey": "private-key",
-    "publicMint": false,
-    "fee": {
-      "gasLimit": "3000000",
-      "gasPrice": "2"
-    }
-  }'
-
-  ```
-
-  ### Mint multi token on Rinkby
-
-  ```
-
-  curl -i -X POST \
-  https://api.masa.finance/v1/erc-1155/mint \
-  -H 'Content-Type: application/json' \
-  -H 'x-api-key: api-key' \
-  -H 'x-testnet-type: ethereum-rinkeby' \
-  -d '{
-    "chain": "ETH",
-    "tokenId": "9101282661524639659902751014092",
-    "amount": "1",
-    "to": "eth-address",
-    "contractAddress": "0xF51Ff2EEC7fA35462a4eff2eCE7d17d88586569a",
-    "data": "0x1234",
-    "index": 0,
-    "fromPrivateKey": "private-key",
-    "fee": {
-      "gasLimit": "3000000",
-      "gasPrice": "20"
-    }
-  }'
-
-  ```
-
-  ## Get tokens by address
-
-  ```
-
-  curl -i -X GET \
-  https://api.masa.finance/v1/erc-1155/address/balance/ETH/0x2365e84b546e185af46ec48fec9879090952cb57 \
-  -H 'x-api-key: api-key' \
-
-  ```
-
-  
-  ## Get token metadata
-
-  ```
-
-  curl -i -X GET \
-  https://api.masa.finance/v1/erc-1155/metadata/ETH/0xF51Ff2EEC7fA35462a4eff2eCE7d17d88586569a/9101282661524639659902751014092.json \
-  -H 'x-api-key: api-key' \
-  -H 'x-testnet-type: ethereum-rinkeby'
-
-  ```
-
-
-## Celo deployment
-
-### Deploy contract to Alfrajores
-
-## Deploy
-
-```
-
-  curl -i -X POST \
-  https://api.masa.finance/v1/erc-1155/multitoken/deploy \
-  -H 'Content-Type: application/json' \
-  -H 'x-api-key: api-key' \
-  -d '{
-    "chain": "CELO",
-    "fromPrivateKey": "private-key",
-    "uri": "https://identity.masa.finance.com/{id}.json",
-    "publicMint": false,
-    "fee": {
-      "gasLimit": "400000",
-      "gasPrice": "2"
-    },
-    "feeCurrency": "CELO"
-}'
-
-```
-
-## Mint
-
-```
-
-curl -i -X POST \
-https://api.masa.finance/v1/erc-1155/mint \
--H 'Content-Type: application/json' \
--H 'x-api-key: api-key' \
--d '{
-  "chain": "CELO",
-  "tokenId": "87012826615246396599027510140925",
-  "amount": "1",
-  "to": "0x2365e84b546e185af46ec48fec9879090952cb57",
-  "contractAddress": "0x905DD8AF286D0073b9956BeB058a1026cAAdD74E",
-  "data": "0x1234",
-  "index": 0,
-  "fromPrivateKey": "private-key",
-  "fee": {
-    "gasLimit": "400000",
-    "gasPrice": "2"
-  },
-  "feeCurrency": "CELO"
-}'
-
-```
- 
-## Get tokens by address
-
-```
-
-curl -i -X GET \
-  https://api.masa.finance/v1/erc-1155/address/balance/CELO/0x2365e84b546e185af46ec48fec9879090952cb57 \
-  -H 'x-api-key: api-key' \
-
-```
-
-## Get token metadata
-
-```
-
-curl -i -X GET \
-  https://api.masa.finance/v1/erc-1155/metadata/CELO/0x905DD8AF286D0073b9956BeB058a1026cAAdD74E/91012826615246396599027510140925 \
-  -H 'x-api-key: api-key' \
-
-```
