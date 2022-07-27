@@ -47,7 +47,10 @@ abstract contract SoulBoundToken is ERC721PresetMinterPauserAutoId, Ownable {
     }
 
     function burn(uint256 tokenId) public override {
-        require(!soulLinker.hasLinks(address(this), tokenId));
+        require(
+            !soulLinker.hasLinks(address(this), tokenId),
+            "A Soulbound Token can't be burned as long as it has active links!"
+        );
         super.burn(tokenId);
     }
 }

@@ -13,4 +13,10 @@ contract SoulBoundIdentity is SoulBoundToken {
             "https://api.masa.finance/v1.0/identity/{id}.json"
         )
     {}
+
+    function mint(address to) public override {
+        require(balanceOf(to) < 1, "Soulbound identity already created!");
+
+        super.mint(to);
+    }
 }
