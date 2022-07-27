@@ -48,14 +48,14 @@ describe("Soulbound Credit Report", () => {
     await soulBoundCreditReport.connect(owner).mint(someone.address);
   });
 
-  it("should fail to transfer because its soul bound", async () => {
+  it("should fail to transfer because its soulbound", async () => {
     await soulBoundCreditReport.connect(owner).mint(someone.address);
 
     await expect(
       soulBoundCreditReport
         .connect(someone)
         .transferFrom(someone.address, someone.address, 1)
-    ).to.be.rejectedWith("Transferring Soul Bound Tokens is not permitted!");
+    ).to.be.rejectedWith("Transferring soulbound Tokens is not permitted!");
   });
 
   it("should fail to mint from someone", async () => {
