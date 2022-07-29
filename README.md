@@ -14,6 +14,10 @@
 
 Only the `owner` is allowed to mint SBTs.
 
+- `BASE_URI`: https://dev.api.masa.finance/v1.0
+
+The base url for the Metadata url that is beeing generated from the contract
+
 ## Roles
 
 - `deployer`: Deploys the contract, has no rights after everything has properlty handed over to other roles
