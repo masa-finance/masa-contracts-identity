@@ -11,7 +11,7 @@ contract SoulLinker is Ownable, ISoulLinker {
         Ownable.transferOwnership(owner);
     }
 
-    function hasLinks(address token, uint256 tokenId) external returns (bool){
+    function hasLinks(address token, uint256 tokenId) external returns (bool) {
         return false;
     }
 }

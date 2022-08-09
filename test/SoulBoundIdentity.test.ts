@@ -20,7 +20,7 @@ let soulBoundIdentity: ethersTypes.Contract;
 let owner: SignerWithAddress;
 let someone: SignerWithAddress;
 
-describe("SoulBoundIdentity", () => {
+describe("Soulbound Identity", () => {
   before(async () => {
     [, owner, someone] = await ethers.getSigners();
   });
@@ -41,14 +41,29 @@ describe("SoulBoundIdentity", () => {
     await soulBoundIdentity.connect(owner).mint(someone.address);
   });
 
-  it("should fail to transfer because its soul bound", async () => {
+  it("should burn", async () => {
+    const mintTx = await soulBoundIdentity.connect(owner).mint(someone.address);
+    const mintReceipt = await mintTx.wait();
+
+    const tokenId = mintReceipt.events[0].args[2].toNumber();
+    await soulBoundIdentity.connect(someone).burn(tokenId);
+  });
+
+  it("should fail to mint twice", async () => {
+    await soulBoundIdentity.connect(owner).mint(someone.address);
+    await expect(
+      soulBoundIdentity.connect(owner).mint(someone.address)
+    ).to.be.rejectedWith("Soulbound identity already created!");
+  });
+
+  it("should fail to transfer because its soulbound", async () => {
     await soulBoundIdentity.connect(owner).mint(someone.address);
 
     await expect(
       soulBoundIdentity
         .connect(someone)
         .transferFrom(someone.address, someone.address, 1)
-    ).to.be.rejectedWith("Transferring Soul Bound Tokens is not permitted!");
+    ).to.be.rejectedWith("Transferring soulbound Tokens is not permitted!");
   });
 
   it("should fail to mint from someone", async () => {

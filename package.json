@@ -12,7 +12,7 @@
     "deploy": "npx hardhat deploy",
     "run:node": "hardhat node",
     "test": "npx hardhat test",
-    "prettier": "prettier --write 'contracts/**/*.sol'"
+    "prettier": "prettier --write 'contracts/**/*.sol' 'test/**/*.ts'"
   },
   "dependencies": {
     "@nomiclabs/hardhat-ethers": "^2.1.0",

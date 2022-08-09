@@ -26,7 +26,7 @@ abstract contract SoulBoundToken is ERC721PresetMinterPauserAutoId, Ownable {
         address, /*to*/
         uint256 /*tokenId*/
     ) public pure override {
-        revert("Transferring Soul Bound Tokens is not permitted!");
+        revert("Transferring soulbound Tokens is not permitted!");
     }
 
     function safeTransferFrom(
@@ -34,7 +34,7 @@ abstract contract SoulBoundToken is ERC721PresetMinterPauserAutoId, Ownable {
         address, /*to*/
         uint256 /*tokenId*/
     ) public pure override {
-        revert("Transferring Soul Bound Tokens is not permitted!");
+        revert("Transferring soulbound Tokens is not permitted!");
     }
 
     function safeTransferFrom(
@@ -43,11 +43,14 @@ abstract contract SoulBoundToken is ERC721PresetMinterPauserAutoId, Ownable {
         uint256, /*tokenId*/
         bytes memory /*data*/
     ) public pure override {
-        revert("Transferring Soul Bound Tokens is not permitted!");
+        revert("Transferring soulbound Tokens is not permitted!");
     }
 
     function burn(uint256 tokenId) public override {
-        require(!soulLinker.hasLinks(address(this), tokenId));
+        require(
+            !soulLinker.hasLinks(address(this), tokenId),
+            "A Soulbound Token can't be burned as long as it has active links!"
+        );
         super.burn(tokenId);
     }
 }
