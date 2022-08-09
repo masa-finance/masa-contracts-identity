@@ -15,12 +15,13 @@ const func: DeployFunction = async ({
 
   [, owner] = await ethers.getSigners();
   const env = getEnvParams(network.name);
+  const baseUri = `${env.BASE_URI}/identity/`;
 
   const soulLinker = await deployments.get("SoulLinker");
 
   const soulBoundTokenDeploymentResult = await deploy("SoulBoundIdentity", {
     from: deployer,
-    args: [env.OWNER || owner.address, soulLinker.address],
+    args: [env.OWNER || owner.address, soulLinker.address, baseUri],
     log: true,
   });
 
