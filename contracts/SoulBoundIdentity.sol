@@ -7,8 +7,8 @@ contract SoulBoundIdentity is SoulBoundToken {
     constructor(
         address owner,
         address soulLinker,
-        string memory baseUri
-    ) SoulBoundToken(owner, soulLinker, "Masa Identity", "MID", baseUri) {}
+        string memory baseTokenURI
+    ) SoulBoundToken(owner, soulLinker, "Masa Identity", "MID", baseTokenURI) {}
 
     function mint(address to) public override {
         require(balanceOf(to) < 1, "Soulbound identity already created!");
