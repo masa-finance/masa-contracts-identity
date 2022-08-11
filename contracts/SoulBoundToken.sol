@@ -1,11 +1,14 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/presets/ERC721PresetMinterPauserAutoId.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 import "./interfaces/ISoulLinker.sol";
 
 abstract contract SoulBoundToken is ERC721PresetMinterPauserAutoId, Ownable {
+    using Strings for uint256;
+
     ISoulLinker public soulLinker;
 
     constructor(
@@ -52,5 +55,12 @@ abstract contract SoulBoundToken is ERC721PresetMinterPauserAutoId, Ownable {
             "A Soulbound Token can't be burned as long as it has active links!"
         );
         super.burn(tokenId);
+    }
+
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+        _requireMinted(tokenId);
+
+        string memory baseURI = _baseURI();
+        return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, tokenId.toString(), ".json")) : "";
     }
 }
