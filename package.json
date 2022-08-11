@@ -13,7 +13,7 @@
     "deploy": "hardhat deploy",
     "run:node": "hardhat node",
     "test": "hardhat test",
-    "prettier": "prettier --write 'contracts/**/*.sol' 'test/**/*.ts'"
+    "prettier": "prettier --write 'contracts/**/*.sol' 'test/**/*.ts' 'src/**/*.ts'"
   },
   "dependencies": {
     "@nomiclabs/hardhat-ethers": "^2.1.0",
