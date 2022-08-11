@@ -12,9 +12,9 @@ abstract contract SoulBoundToken is ERC721PresetMinterPauserAutoId, Ownable {
         address owner,
         address _soulLinker,
         string memory name,
-        string memory ticker,
-        string memory uri
-    ) ERC721PresetMinterPauserAutoId(name, ticker, uri) Ownable() {
+        string memory symbol,
+        string memory baseTokenURI
+    ) ERC721PresetMinterPauserAutoId(name, symbol, baseTokenURI) Ownable() {
         _setupRole(MINTER_ROLE, owner);
         Ownable.transferOwnership(owner);
 
