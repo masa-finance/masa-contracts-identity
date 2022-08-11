@@ -1,7 +1,6 @@
 import { getEnvParams } from "../src/utils/EnvParams";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
-import { deployments } from "hardhat";
 
 let owner: SignerWithAddress;
 
