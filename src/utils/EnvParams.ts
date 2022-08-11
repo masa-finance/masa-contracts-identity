@@ -25,12 +25,13 @@ export function getSecretParam(param: string, networkName: string | undefined) {
 }
 
 export function getPrivateKey(networkName: string | undefined) {
-  const path = `.env.${networkName}.secret`;
-
-  fsx.ensureFileSync(path);
   const privateKey = getSecretParam("DEPLOYER_PRIVATE_KEY", networkName);
 
   return privateKey
     ? privateKey
     : "0x0000000000000000000000000000000000000000000000000000000000000000";
+}
+
+export function getInfuraApiKey(networkName: string | undefined) {
+  return getSecretParam("INFURA_API_KEY", networkName);
 }
