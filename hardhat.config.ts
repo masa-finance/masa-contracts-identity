@@ -2,6 +2,7 @@ import { getPrivateKey, getInfuraApiKey } from "./src/utils/EnvParams";
 import "hardhat-deploy";
 import "@primitivefi/hardhat-dodoc";
 import "@nomiclabs/hardhat-ethers";
+import "hardhat-gas-reporter";
 import { NetworksUserConfig } from "hardhat/types";
 
 const getInfuraURL = (network: string) => {
