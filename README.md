@@ -4,8 +4,8 @@
 
 ### Celo: Alfajores
 
-- `SoulBoundCreditReport`: [`0x6F5a1CEfB1021cb188EBAe4c0118bfD5c71edBD7`](https://alfajores-blockscout.celo-testnet.org/address/0x6F5a1CEfB1021cb188EBAe4c0118bfD5c71edBD7/transactions)
-- `SoulBoundIdentity`: [`0x1be6c425d17380D0BCF62099a27BE4e9c5cF8719`](https://alfajores-blockscout.celo-testnet.org/address/0x1be6c425d17380D0BCF62099a27BE4e9c5cF8719/transactions)
+- `SoulBoundCreditReport`: [`0xa9df926C0216a966323bcCF9d52c3db4f9fc98e1`](https://alfajores-blockscout.celo-testnet.org/address/0xa9df926C0216a966323bcCF9d52c3db4f9fc98e1/transactions)
+- `SoulBoundIdentity`: [`0xa5fD76226f580FdE0b1273D87973e9F20F1eBeff`](https://alfajores-blockscout.celo-testnet.org/address/0xa5fD76226f580FdE0b1273D87973e9F20F1eBeff/transactions)
 - `SoulLinker`: [`0xa703e73025f8169cbf299ED727a80eD845315dF2`](https://alfajores-blockscout.celo-testnet.org/address/0xa703e73025f8169cbf299ED727a80eD845315dF2/transactions)
 
 ### Rinkeby test network
