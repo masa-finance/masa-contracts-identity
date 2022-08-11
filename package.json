@@ -16,12 +16,14 @@
     "run:node": "hardhat node",
     "test": "hardhat test",
     "prettier": "prettier --write 'contracts/**/*.sol' '**/*.ts' '**/*.js'",
+    "lint:sol": "hardhat check",
     "lint:ts": "eslint . --ext .ts,.js --ignore-path .eslintignore",
     "lint:ts:fix": "eslint . --fix --ext .ts,.js --ignore-path .eslintignore",
     "prepare": "yarn build"
   },
   "dependencies": {
     "@nomiclabs/hardhat-ethers": "^2.1.0",
+    "@nomiclabs/hardhat-solhint": "^2.0.1",
     "@nomiclabs/hardhat-waffle": "^2.0.2",
     "@openzeppelin/contracts": "^4.7.0",
     "@primitivefi/hardhat-dodoc": "^0.2.3",
