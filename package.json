@@ -8,11 +8,11 @@
   "scripts": {
     "build": "hardhat compile",
     "clean": "hardhat clean",
-    "docgen": "npx hardhat dodoc",
+    "docgen": "hardhat dodoc",
     "coverage": "hardhat coverage",
-    "deploy": "npx hardhat deploy",
+    "deploy": "hardhat deploy",
     "run:node": "hardhat node",
-    "test": "npx hardhat test",
+    "test": "hardhat test",
     "prettier": "prettier --write 'contracts/**/*.sol' 'test/**/*.ts'"
   },
   "dependencies": {
