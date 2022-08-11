@@ -119,3 +119,4 @@ cache
 artifacts
 
 .env.*.secret
+!.env.example.secret

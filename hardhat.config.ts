@@ -1,8 +1,12 @@
-import { getPrivateKey } from "./src/utils/EnvParams";
+import { getPrivateKey, getInfuraApiKey } from "./src/utils/EnvParams";
 import "hardhat-deploy";
 import "@primitivefi/hardhat-dodoc";
 import "@nomiclabs/hardhat-ethers";
 import { NetworksUserConfig } from "hardhat/types";
+
+const getInfuraURL = (network: string) => {
+  return `https://${network}.infura.io/v3/${getInfuraApiKey(network)}`;
+};
 
 const networks: NetworksUserConfig = {
   hardhat: {
@@ -11,7 +15,12 @@ const networks: NetworksUserConfig = {
     gasPrice: "auto",
     gas: 13000000,
   },
-
+  rinkeby: {
+    url: getInfuraURL("rinkeby"),
+    accounts: [getPrivateKey("rinkeby")],
+    gas: 20000000,
+    gasPrice: "auto"
+  },
   alfajores: {
     url: "https://alfajores-forno.celo-testnet.org", // Localhost (default: none)
     accounts: [getPrivateKey("alfajores")],
