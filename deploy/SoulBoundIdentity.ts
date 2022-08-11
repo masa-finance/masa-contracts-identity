@@ -1,6 +1,6 @@
-import { getEnvParams } from "../src/utils/EnvParams";
-import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { DeployFunction } from "hardhat-deploy/dist/types";
+import { getEnvParams } from '../src/utils/EnvParams';
+import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import { DeployFunction } from 'hardhat-deploy/dist/types';
 
 let owner: SignerWithAddress;
 
@@ -8,7 +8,7 @@ const func: DeployFunction = async ({
   getNamedAccounts,
   deployments,
   ethers,
-  network,
+  network
 }) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
@@ -17,20 +17,20 @@ const func: DeployFunction = async ({
   const env = getEnvParams(network.name);
   const baseUri = `${env.BASE_URI}/identity/`;
 
-  const soulLinker = await deployments.get("SoulLinker");
+  const soulLinker = await deployments.get('SoulLinker');
 
-  const soulBoundTokenDeploymentResult = await deploy("SoulBoundIdentity", {
+  const soulBoundTokenDeploymentResult = await deploy('SoulBoundIdentity', {
     from: deployer,
     args: [env.OWNER || owner.address, soulLinker.address, baseUri],
-    log: true,
+    log: true
   });
 
   await ethers.getContractAt(
-    "SoulBoundIdentity",
+    'SoulBoundIdentity',
     soulBoundTokenDeploymentResult.address
   );
 };
 
-func.tags = ["SoulBoundIdentity"];
-func.dependencies = ["SoulLinker"];
+func.tags = ['SoulBoundIdentity'];
+func.dependencies = ['SoulLinker'];
 export default func;

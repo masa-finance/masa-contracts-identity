@@ -1,10 +1,10 @@
-import { getPrivateKey, getInfuraApiKey } from "./src/utils/EnvParams";
-import "hardhat-deploy";
-import "@primitivefi/hardhat-dodoc";
-import "@nomiclabs/hardhat-ethers";
-import "hardhat-gas-reporter";
-import "solidity-coverage";
-import { NetworksUserConfig } from "hardhat/types";
+import { getPrivateKey, getInfuraApiKey } from './src/utils/EnvParams';
+import 'hardhat-deploy';
+import '@primitivefi/hardhat-dodoc';
+import '@nomiclabs/hardhat-ethers';
+import 'hardhat-gas-reporter';
+import 'solidity-coverage';
+import { NetworksUserConfig } from 'hardhat/types';
 
 const getInfuraURL = (network: string) => {
   return `https://${network}.infura.io/v3/${getInfuraApiKey(network)}`;
@@ -12,43 +12,43 @@ const getInfuraURL = (network: string) => {
 
 const networks: NetworksUserConfig = {
   hardhat: {
-    hardfork: "istanbul",
+    hardfork: 'istanbul',
     allowUnlimitedContractSize: true,
-    gasPrice: "auto",
-    gas: 13000000,
+    gasPrice: 'auto',
+    gas: 13000000
   },
   rinkeby: {
-    url: getInfuraURL("rinkeby"),
-    accounts: [getPrivateKey("rinkeby")],
+    url: getInfuraURL('rinkeby'),
+    accounts: [getPrivateKey('rinkeby')],
     gas: 20000000,
-    gasPrice: "auto"
+    gasPrice: 'auto'
   },
   alfajores: {
-    url: "https://alfajores-forno.celo-testnet.org", // Localhost (default: none)
-    accounts: [getPrivateKey("alfajores")],
+    url: 'https://alfajores-forno.celo-testnet.org', // Localhost (default: none)
+    accounts: [getPrivateKey('alfajores')],
     allowUnlimitedContractSize: true,
     gas: 20000000,
-    gasPrice: "auto",
-    blockGasLimit: 13000000,
-  },
+    gasPrice: 'auto',
+    blockGasLimit: 13000000
+  }
 };
 
 export default {
   networks,
 
   solidity: {
-    version: "0.8.7",
+    version: '0.8.7',
     settings: {
       optimizer: {
         enabled: true,
-        runs: 200,
-      },
-    },
+        runs: 200
+      }
+    }
   },
   namedAccounts: {
     deployer: {
-      default: 0,
-    },
+      default: 0
+    }
   },
-  dodoc: {},
+  dodoc: {}
 };
