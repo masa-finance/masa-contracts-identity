@@ -99,5 +99,16 @@
     /* Completeness */
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
-  }
+  },
+  "include": [
+    "./typechain",
+    "./src",
+    "./test"
+  ],
+  "exclude": [
+    "./node_modules/*"
+  ],
+  "files": [
+    "./hardhat.config.ts"
+  ]
 }

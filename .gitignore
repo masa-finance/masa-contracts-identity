@@ -122,3 +122,5 @@ artifacts
 !.env.example.secret
 
 coverage.json
+
+typechain/
