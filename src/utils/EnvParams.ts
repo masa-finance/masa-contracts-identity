@@ -1,10 +1,10 @@
-import fs from 'fs-extra';
-import fsx from 'fs-extra';
-import { parse } from 'envfile';
+import fs from "fs-extra";
+import fsx from "fs-extra";
+import { parse } from "envfile";
 
 export function getEnvParams(networkName: string | undefined) {
   if (!networkName) {
-    networkName = 'hardhat';
+    networkName = "hardhat";
   }
 
   const path = `.env.${networkName}`;
@@ -25,13 +25,13 @@ export function getSecretParam(param: string, networkName: string | undefined) {
 }
 
 export function getPrivateKey(networkName: string | undefined) {
-  const privateKey = getSecretParam('DEPLOYER_PRIVATE_KEY', networkName);
+  const privateKey = getSecretParam("DEPLOYER_PRIVATE_KEY", networkName);
 
   return privateKey
     ? privateKey
-    : '0x0000000000000000000000000000000000000000000000000000000000000000';
+    : "0x0000000000000000000000000000000000000000000000000000000000000000";
 }
 
 export function getInfuraApiKey(networkName: string | undefined) {
-  return getSecretParam('INFURA_API_KEY', networkName);
+  return getSecretParam("INFURA_API_KEY", networkName);
 }

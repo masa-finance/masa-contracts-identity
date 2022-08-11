@@ -4,7 +4,7 @@
       "files": ["*.js", "*.ts"],
       "options": {
         "semi": true,
-        "singleQuote": true,
+        "singleQuote": false,
         "trailingComma": "none"
       }
     }
