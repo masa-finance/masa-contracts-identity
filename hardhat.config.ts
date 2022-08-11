@@ -3,6 +3,7 @@ import "hardhat-deploy";
 import "@primitivefi/hardhat-dodoc";
 import "@nomiclabs/hardhat-ethers";
 import "hardhat-gas-reporter";
+import "solidity-coverage";
 import { NetworksUserConfig } from "hardhat/types";
 
 const getInfuraURL = (network: string) => {

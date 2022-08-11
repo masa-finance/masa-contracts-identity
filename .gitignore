@@ -120,3 +120,5 @@ artifacts
 
 .env.*.secret
 !.env.example.secret
+
+coverage.json

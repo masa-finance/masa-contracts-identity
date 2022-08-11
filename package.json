@@ -9,6 +9,7 @@
     "build": "hardhat compile",
     "clean": "hardhat clean",
     "docgen": "npx hardhat dodoc",
+    "coverage": "hardhat coverage",
     "deploy": "npx hardhat deploy",
     "run:node": "hardhat node",
     "test": "npx hardhat test",
@@ -36,6 +37,7 @@
     "hardhat-waffle": "^0.0.1-security",
     "prettier": "^2.7.1",
     "prettier-plugin-solidity": "^1.0.0-dev.23",
+    "solidity-coverage": "^0.7.21",
     "ts-node": "^10.9.1",
     "typescript": "^4.7.4"
   }
