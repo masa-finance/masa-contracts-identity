@@ -7,6 +7,6 @@ contract SoulBoundCreditReport is SoulBoundToken {
     constructor(
         address owner,
         address soulLinker,
-        string memory baseURI
-    ) SoulBoundToken(owner, soulLinker, "Masa Credit Report", "MCR", baseURI) {}
+        string memory baseTokenURI
+    ) SoulBoundToken(owner, soulLinker, "Masa Credit Report", "MCR", baseTokenURI) {}
 }
