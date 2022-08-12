@@ -4,7 +4,7 @@ import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-solhint";
 import "@primitivefi/hardhat-dodoc";
 import "@typechain/ethers-v5";
-import "hardhat-typechain";
+import "@typechain/hardhat";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
 import { NetworksUserConfig } from "hardhat/types";
@@ -53,5 +53,8 @@ export default {
       default: 0
     }
   },
-  dodoc: {}
+  dodoc: {},
+  typechain: {
+    outDir: "typechain"
+  }
 };
