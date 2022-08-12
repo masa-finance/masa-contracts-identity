@@ -24,7 +24,7 @@
     "test": "hardhat test",
     "prettier": "prettier --write 'contracts/**/*.sol' '**/*.ts' '**/*.js'",
     "solhint": "solhint contracts/**/*.sol",
-    "publish": "yarn build && yarn publish --access public"
+    "publish:npm": "yarn build && yarn publish --access public"
   },
   "dependencies": {
     "@nomiclabs/hardhat-ethers": "^2.1.0",
