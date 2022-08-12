@@ -1,6 +1,6 @@
 {
-  "name": "@miquel-cabot-masa-finance/masa-contracts-identity",
-  "version": "0.1.1",
+  "name": "@masa-finance/masa-contracts-identity",
+  "version": "0.1.0",
   "main": "dist/typechain/index.js",
   "types": "dist/typechain/index.d.ts",
   "files": [
