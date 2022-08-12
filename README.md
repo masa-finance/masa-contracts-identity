@@ -47,3 +47,10 @@ The base url for the Metadata url that is beeing generated from the contract
 ### Deploy
 
 Run: `yarn deploy --network {network}` to deploy.
+
+## Publish to NPM
+
+```bash
+npm login
+yarn publish:npm
+```
