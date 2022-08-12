@@ -1,6 +1,7 @@
 import { getPrivateKey, getInfuraApiKey } from "./src/utils/EnvParams";
 import "hardhat-deploy";
 import "@nomiclabs/hardhat-ethers";
+import "@nomiclabs/hardhat-solhint";
 import "@primitivefi/hardhat-dodoc";
 import "@typechain/ethers-v5";
 import "hardhat-typechain";
