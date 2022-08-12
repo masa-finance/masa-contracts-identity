@@ -1,7 +1,14 @@
 {
   "name": "@masa-finance/contracts-identity",
   "version": "0.1.0",
-  "main": "index.js",
+  "main": "dist/typechain/index.js",
+  "types": "dist/typechain/index.d.ts",
+  "files": [
+    "deployments/**/*",
+    "dist/**/*",
+    "hardhat.config.ts",
+    "tsconfig.json"
+  ],
   "repository": "git@github.com:masa-finance/masa-contracts-identity.git",
   "author": "Sebastian Gerske <13647606+H34D@users.noreply.github.com>",
   "license": "MIT",
