@@ -8,7 +8,6 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "./interfaces/ISoulBoundNameResolver.sol";
-import "./utils/Utils.sol";
 import "./SoulBoundIdentity.sol";
 
 contract SoulBoundName is
@@ -37,9 +36,11 @@ contract SoulBoundName is
         uint256 tokenId;
     }
 
-    constructor(address owner, SoulBoundIdentity _soulBoundIdentity, string memory _extension)
-        ERC721("Masa Identity Name", "MIN")
-    {
+    constructor(
+        address owner,
+        SoulBoundIdentity _soulBoundIdentity,
+        string memory _extension
+    ) ERC721("Masa Identity Name", "MIN") {
         _grantRole(DEFAULT_ADMIN_ROLE, owner);
         _grantRole(PAUSER_ROLE, owner);
         _grantRole(MINTER_ROLE, owner);
@@ -81,7 +82,7 @@ contract SoulBoundName is
         override
         returns (bool exists)
     {
-        string memory lowercaseName = Utils.toLowerCase(name);
+        string memory lowercaseName = _toLowerCase(name);
         return (soulBoundNames[lowercaseName].owner != address(0));
     }
 
@@ -118,7 +119,7 @@ contract SoulBoundName is
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
 
-        string memory lowercaseName = Utils.toLowerCase(name);
+        string memory lowercaseName = _toLowerCase(name);
         tokenIdToName[tokenId] = lowercaseName;
 
         soulBoundNames[lowercaseName].owner = to;
@@ -143,5 +144,25 @@ contract SoulBoundName is
         returns (bool)
     {
         return super.supportsInterface(interfaceId);
+    }
+
+    function _toLowerCase(string memory _str)
+        private
+        pure
+        returns (string memory)
+    {
+        bytes memory bStr = bytes(_str);
+        bytes memory bLower = new bytes(bStr.length);
+
+        for (uint256 i = 0; i < bStr.length; i++) {
+            // Uppercase character...
+            if ((bStr[i] >= 0x41) && (bStr[i] <= 0x5A)) {
+                // So we add 0x20 to make it lowercase
+                bLower[i] = bytes1(uint8(bStr[i]) + 0x20);
+            } else {
+                bLower[i] = bStr[i];
+            }
+        }
+        return string(bLower);
     }
 }

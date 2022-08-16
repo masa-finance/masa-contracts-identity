@@ -13,7 +13,7 @@
 ### toLowerCase
 
 ```solidity
-function toLowerCase(string _str) external pure returns (string)
+function toLowerCase(string _str) external view returns (string)
 ```
 
 
