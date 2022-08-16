@@ -97,7 +97,11 @@ contract SoulBoundName is
             uint256 tokenId
         )
     {
-        return (address(0), "", 0);
+        string memory lowercaseName = _toLowerCase(name);
+        SoulBoundNameData memory soulBoundNameData = soulBoundNames[lowercaseName];
+        require(soulBoundNameData.owner != address(0), "NAME_NOT_FOUND");
+
+        return (soulBoundNameData.owner, soulBoundNameData.name, soulBoundNameData.tokenId);
     }
 
     function tokenURI(uint256 tokenId)
