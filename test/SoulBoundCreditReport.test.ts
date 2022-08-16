@@ -1,5 +1,6 @@
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
+import { solidity } from "ethereum-waffle";
 import { ethers, deployments } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
@@ -8,6 +9,7 @@ import {
 } from "../typechain";
 
 chai.use(chaiAsPromised);
+chai.use(solidity);
 const expect = chai.expect;
 
 // contract instances
