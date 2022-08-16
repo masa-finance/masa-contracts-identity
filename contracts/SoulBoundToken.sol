@@ -2,11 +2,10 @@
 pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/token/ERC721/presets/ERC721PresetMinterPauserAutoId.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "./interfaces/ISoulLinker.sol";
 
-abstract contract SoulBoundToken is ERC721PresetMinterPauserAutoId, Ownable {
+abstract contract SoulBoundToken is ERC721PresetMinterPauserAutoId {
     using Strings for uint256;
 
     ISoulLinker public soulLinker;
@@ -17,9 +16,10 @@ abstract contract SoulBoundToken is ERC721PresetMinterPauserAutoId, Ownable {
         string memory name,
         string memory symbol,
         string memory baseTokenURI
-    ) ERC721PresetMinterPauserAutoId(name, symbol, baseTokenURI) Ownable() {
+    ) ERC721PresetMinterPauserAutoId(name, symbol, baseTokenURI) {
+        _setupRole(DEFAULT_ADMIN_ROLE, owner);
         _setupRole(MINTER_ROLE, owner);
-        Ownable.transferOwnership(owner);
+        _setupRole(PAUSER_ROLE, owner);
 
         soulLinker = ISoulLinker(_soulLinker);
     }
