@@ -4,6 +4,7 @@ pragma solidity ^0.8.7;
 import "@openzeppelin/contracts/token/ERC721/presets/ERC721PresetMinterPauserAutoId.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./interfaces/ISoulBoundNameResolver.sol";
+import "./utils/Utils.sol";
 import "./SoulBoundIdentity.sol";
 
 contract SoulBoundName is
@@ -60,6 +61,7 @@ contract SoulBoundName is
         override
         returns (bool exists)
     {
+        // name = Utils.toLowerCase(name);
         return false;
     }
 

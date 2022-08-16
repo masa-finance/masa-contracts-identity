@@ -321,7 +321,7 @@ function name() external view returns (string)
 ### nameExists
 
 ```solidity
-function nameExists(string name) external nonpayable returns (bool)
+function nameExists(string name) external nonpayable returns (bool exists)
 ```
 
 
@@ -338,7 +338,7 @@ function nameExists(string name) external nonpayable returns (bool)
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | bool | undefined |
+| exists | bool | undefined |
 
 ### owner
 
@@ -438,7 +438,7 @@ function renounceRole(bytes32 role, address account) external nonpayable
 ### resolveName
 
 ```solidity
-function resolveName(string name) external nonpayable returns (uint256)
+function resolveName(string name) external nonpayable returns (address owner, string sbtName, uint256 tokenId)
 ```
 
 
@@ -455,7 +455,9 @@ function resolveName(string name) external nonpayable returns (uint256)
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256 | undefined |
+| owner | address | undefined |
+| sbtName | string | undefined |
+| tokenId | uint256 | undefined |
 
 ### revokeRole
 
