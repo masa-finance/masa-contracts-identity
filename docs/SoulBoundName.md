@@ -243,7 +243,7 @@ function isApprovedForAll(address owner, address operator) external view returns
 ### mint
 
 ```solidity
-function mint(address to, string name) external nonpayable
+function mint(address to, string name, uint256 soulBoundIndentityId) external nonpayable
 ```
 
 
@@ -256,6 +256,7 @@ function mint(address to, string name) external nonpayable
 |---|---|---|
 | to | address | undefined |
 | name | string | undefined |
+| soulBoundIndentityId | uint256 | undefined |
 
 ### name
 

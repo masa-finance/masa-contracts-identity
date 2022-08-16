@@ -108,7 +108,7 @@ contract SoulBoundName is
         return "";
     }
 
-    function mint(address to, string memory name)
+    function mint(address to, string memory name, uint256 soulBoundIndentityId)
         public
         onlyRole(MINTER_ROLE)
     {
@@ -124,7 +124,7 @@ contract SoulBoundName is
 
         soulBoundNames[lowercaseName].owner = to;
         soulBoundNames[lowercaseName].name = name;
-        soulBoundNames[lowercaseName].tokenId = tokenId;
+        soulBoundNames[lowercaseName].tokenId = soulBoundIndentityId;
     }
 
     function _beforeTokenTransfer(
