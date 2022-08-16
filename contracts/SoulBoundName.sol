@@ -79,6 +79,7 @@ contract SoulBoundName is
 
     function nameExists(string memory name)
         public
+        view
         override
         returns (bool exists)
     {
@@ -88,6 +89,7 @@ contract SoulBoundName is
 
     function resolveName(string memory name)
         external
+        view
         override
         returns (
             address owner,

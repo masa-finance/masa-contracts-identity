@@ -13,6 +13,7 @@ contract SoulLinker is Ownable, ISoulLinker {
 
     function hasLinks(address token, uint256 tokenId)
         external
+        view
         override
         returns (bool)
     {

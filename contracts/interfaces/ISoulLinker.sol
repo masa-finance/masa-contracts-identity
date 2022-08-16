@@ -9,5 +9,5 @@ interface ISoulLinker {
         uint256 targetId;
     }
 
-    function hasLinks(address token, uint256 tokenId) external returns (bool);
+    function hasLinks(address token, uint256 tokenId) external view returns (bool);
 }
