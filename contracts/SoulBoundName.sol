@@ -140,6 +140,12 @@ contract SoulBoundName is
         // TODO: only owner of the token
     }
 
+    function burn(uint256 tokenId) public override {
+        // TODO: update info in soulboundnames and tokenIdToName
+
+        super.burn(tokenId);
+    }
+
     function _beforeTokenTransfer(
         address from,
         address to,
