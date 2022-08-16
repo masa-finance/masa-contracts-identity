@@ -243,7 +243,7 @@ function isApprovedForAll(address owner, address operator) external view returns
 ### mint
 
 ```solidity
-function mint(address to, string name, uint256 soulBoundIndentityId) external nonpayable
+function mint(address to, string name, uint256 identityId) external nonpayable
 ```
 
 
@@ -256,7 +256,7 @@ function mint(address to, string name, uint256 soulBoundIndentityId) external no
 |---|---|---|
 | to | address | undefined |
 | name | string | undefined |
-| soulBoundIndentityId | uint256 | undefined |
+| identityId | uint256 | undefined |
 
 ### name
 
@@ -367,7 +367,7 @@ function renounceRole(bytes32 role, address account) external nonpayable
 ### resolveName
 
 ```solidity
-function resolveName(string name) external view returns (address owner, string sbtName, uint256 tokenId)
+function resolveName(string name) external view returns (address owner, string sbtName, uint256 identityId)
 ```
 
 
@@ -386,7 +386,7 @@ function resolveName(string name) external view returns (address owner, string s
 |---|---|---|
 | owner | address | undefined |
 | sbtName | string | undefined |
-| tokenId | uint256 | undefined |
+| identityId | uint256 | undefined |
 
 ### revokeRole
 
@@ -659,6 +659,23 @@ function unpause() external nonpayable
 
 
 
+
+### updateIdentityId
+
+```solidity
+function updateIdentityId(uint256 tokenId, uint256 indentityId) external nonpayable
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId | uint256 | undefined |
+| indentityId | uint256 | undefined |
 
 
 

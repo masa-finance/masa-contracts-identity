@@ -33,7 +33,7 @@ contract SoulBoundName is
     struct SoulBoundNameData {
         address owner;
         string name; // Name with lowercase and uppercase
-        uint256 tokenId;
+        uint256 identityId;
     }
 
     constructor(
@@ -94,14 +94,14 @@ contract SoulBoundName is
         returns (
             address owner,
             string memory sbtName,
-            uint256 tokenId
+            uint256 identityId
         )
     {
         string memory lowercaseName = _toLowerCase(name);
         SoulBoundNameData memory soulBoundNameData = soulBoundNames[lowercaseName];
         require(soulBoundNameData.owner != address(0), "NAME_NOT_FOUND");
 
-        return (soulBoundNameData.owner, soulBoundNameData.name, soulBoundNameData.tokenId);
+        return (soulBoundNameData.owner, soulBoundNameData.name, soulBoundNameData.identityId);
     }
 
     function tokenURI(uint256 tokenId)
@@ -114,7 +114,7 @@ contract SoulBoundName is
         return "";
     }
 
-    function mint(address to, string memory name, uint256 soulBoundIndentityId)
+    function mint(address to, string memory name, uint256 identityId)
         public
         onlyRole(MINTER_ROLE)
     {
@@ -130,7 +130,14 @@ contract SoulBoundName is
 
         soulBoundNames[lowercaseName].owner = to;
         soulBoundNames[lowercaseName].name = name;
-        soulBoundNames[lowercaseName].tokenId = soulBoundIndentityId;
+        soulBoundNames[lowercaseName].identityId = identityId;
+    }
+
+    function updateIdentityId(uint256 tokenId, uint256 indentityId)
+        public
+        onlyRole(MINTER_ROLE)
+    {
+        // TODO: only owner of the token
     }
 
     function _beforeTokenTransfer(
@@ -138,6 +145,7 @@ contract SoulBoundName is
         address to,
         uint256 tokenId
     ) internal override(ERC721, ERC721Enumerable) whenNotPaused {
+        // TODO: update owner in soulBoundNames mapping
         super._beforeTokenTransfer(from, to, tokenId);
     }
 

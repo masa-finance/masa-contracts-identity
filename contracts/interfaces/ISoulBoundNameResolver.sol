@@ -9,6 +9,6 @@ interface ISoulBoundNameResolver {
         returns (
             address owner,
             string memory sbtName,
-            uint256 tokenId
+            uint256 identityId
         );
 }

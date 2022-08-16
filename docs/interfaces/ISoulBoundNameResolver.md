@@ -35,7 +35,7 @@ function nameExists(string name) external nonpayable returns (bool exists)
 ### resolveName
 
 ```solidity
-function resolveName(string name) external nonpayable returns (address owner, string sbtName, uint256 tokenId)
+function resolveName(string name) external nonpayable returns (address owner, string sbtName, uint256 identityId)
 ```
 
 
@@ -54,7 +54,7 @@ function resolveName(string name) external nonpayable returns (address owner, st
 |---|---|---|
 | owner | address | undefined |
 | sbtName | string | undefined |
-| tokenId | uint256 | undefined |
+| identityId | uint256 | undefined |
 
 
 
