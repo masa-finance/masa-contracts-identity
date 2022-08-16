@@ -108,7 +108,7 @@ contract SoulBoundName is
         return "";
     }
 
-    function safeMint(address to, string memory name)
+    function mint(address to, string memory name)
         public
         onlyRole(MINTER_ROLE)
     {
