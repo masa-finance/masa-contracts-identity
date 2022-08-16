@@ -27,11 +27,11 @@ contract SoulBoundName is
     constructor(
         address owner,
         SoulBoundIdentity _soulBoundIdentity,
-        string memory _extension,
-        string memory name,
-        string memory symbol,
-        string memory baseTokenURI
-    ) ERC721PresetMinterPauserAutoId(name, symbol, baseTokenURI) Ownable() {
+        string memory _extension
+    )
+        ERC721PresetMinterPauserAutoId("Masa Identity Name", "MIN", "")
+        Ownable()
+    {
         soulBoundIdentity = _soulBoundIdentity;
         extension = _extension;
 
