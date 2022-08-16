@@ -32,7 +32,7 @@ contract SoulBoundName is
     mapping(string => SoulBoundNameData) soulBoundNames; // register of all soulbound names (name in lowercase)
 
     struct SoulBoundNameData {
-        address payable owner;
+        address owner;
         string name; // Name with lowercase and uppercase
         uint256 tokenId;
     }
@@ -77,12 +77,12 @@ contract SoulBoundName is
     }
 
     function nameExists(string memory name)
-        external
+        public
         override
         returns (bool exists)
     {
-        // name = Utils.toLowerCase(name);
-        return false;
+        string memory lowercaseName = Utils.toLowerCase(name);
+        return (soulBoundNames[lowercaseName].owner != address(0));
     }
 
     function resolveName(string memory name)
@@ -111,9 +111,19 @@ contract SoulBoundName is
         public
         onlyRole(MINTER_ROLE)
     {
+        // TODO: require that the name is not already used
+        // TODO: require tokenId exist
+
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
+
+        string memory lowercaseName = Utils.toLowerCase(name);
+        tokenIdToName[tokenId] = lowercaseName;
+
+        soulBoundNames[lowercaseName].owner = to;
+        soulBoundNames[lowercaseName].name = name;
+        soulBoundNames[lowercaseName].tokenId = tokenId;
     }
 
     function _beforeTokenTransfer(
