@@ -1,10 +1,12 @@
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
+import { solidity } from "ethereum-waffle";
 import { ethers, deployments } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { SoulBoundIdentity, SoulBoundIdentity__factory } from "../typechain";
 
 chai.use(chaiAsPromised);
+chai.use(solidity);
 const expect = chai.expect;
 
 // contract instances
@@ -59,11 +61,19 @@ describe("Soulbound Identity", () => {
       const mintReceipt = await mintTx.wait();
 
       const tokenId = mintReceipt.events![0].args![2].toNumber();
+
+      expect(await soulBoundIdentity.balanceOf(someone.address)).to.be.equal(1);
+      expect(await soulBoundIdentity.ownerOf(tokenId)).to.be.equal(
+        someone.address
+      );
+
       await soulBoundIdentity.connect(someone).burn(tokenId);
+
+      expect(await soulBoundIdentity.balanceOf(someone.address)).to.be.equal(0);
     });
   });
 
-  describe("burn", () => {
+  describe("transfer", () => {
     it("should fail to transfer because its soulbound", async () => {
       await soulBoundIdentity.connect(owner).mint(someone.address);
 
@@ -75,8 +85,8 @@ describe("Soulbound Identity", () => {
     });
   });
 
-  describe("tokenUri", () => {
-    it("should fail to transfer because its soulbound", async () => {
+  describe("tokenURI", () => {
+    it("should get a valid token URI", async () => {
       const mintTx = await soulBoundIdentity
         .connect(owner)
         .mint(someone.address);
