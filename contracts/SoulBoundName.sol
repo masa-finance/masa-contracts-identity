@@ -1,17 +1,30 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/token/ERC721/presets/ERC721PresetMinterPauserAutoId.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 import "./interfaces/ISoulBoundNameResolver.sol";
 import "./utils/Utils.sol";
 import "./SoulBoundIdentity.sol";
 
 contract SoulBoundName is
-    ERC721PresetMinterPauserAutoId,
-    Ownable,
+    ERC721,
+    ERC721Enumerable,
+    Pausable,
+    AccessControl,
+    ERC721Burnable,
     ISoulBoundNameResolver
 {
+    using Counters for Counters.Counter;
+
+    bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
+    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+    Counters.Counter private _tokenIdCounter;
+
     SoulBoundIdentity public soulBoundIdentity;
     string public extension; // suffix of the names (.sol?)
 
@@ -24,30 +37,37 @@ contract SoulBoundName is
         uint256 tokenId;
     }
 
-    constructor(
-        address owner,
-        SoulBoundIdentity _soulBoundIdentity,
-        string memory _extension
-    )
-        ERC721PresetMinterPauserAutoId("Masa Identity Name", "MIN", "")
-        Ownable()
+    constructor(address owner, SoulBoundIdentity _soulBoundIdentity, string memory _extension)
+        ERC721("Masa Identity Name", "MIN")
     {
+        _grantRole(DEFAULT_ADMIN_ROLE, _msgSender());
+        _grantRole(PAUSER_ROLE, _msgSender());
+        _grantRole(MINTER_ROLE, _msgSender());
+
         soulBoundIdentity = _soulBoundIdentity;
         extension = _extension;
+    }
 
-        _setupRole(MINTER_ROLE, owner);
-        Ownable.transferOwnership(owner);
+    function pause() public onlyRole(PAUSER_ROLE) {
+        _pause();
+    }
+
+    function unpause() public onlyRole(PAUSER_ROLE) {
+        _unpause();
     }
 
     function setSoulBoundIdentity(SoulBoundIdentity _soulBoundIdentity)
         external
-        onlyOwner
+        onlyRole(DEFAULT_ADMIN_ROLE)
     {
         require(soulBoundIdentity != _soulBoundIdentity, "SAME_VALUE");
         soulBoundIdentity = _soulBoundIdentity;
     }
 
-    function setExtension(string memory _extension) external onlyOwner {
+    function setExtension(string memory _extension)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
         require(
             keccak256(abi.encodePacked((extension))) !=
                 keccak256(abi.encodePacked((_extension))),
@@ -85,5 +105,33 @@ contract SoulBoundName is
     {
         // TODO: return json with nft data
         return "";
+    }
+
+    function safeMint(address to, string memory name)
+        public
+        onlyRole(MINTER_ROLE)
+    {
+        uint256 tokenId = _tokenIdCounter.current();
+        _tokenIdCounter.increment();
+        _safeMint(to, tokenId);
+    }
+
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal override(ERC721, ERC721Enumerable) whenNotPaused {
+        super._beforeTokenTransfer(from, to, tokenId);
+    }
+
+    // The following functions are overrides required by Solidity.
+
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        override(ERC721, ERC721Enumerable, AccessControl)
+        returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
     }
 }
