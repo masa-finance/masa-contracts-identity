@@ -76,4 +76,14 @@ contract SoulBoundName is
     {
         return (address(0), "", 0);
     }
+
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        override
+        returns (string memory)
+    {
+        // TODO: return json with nft data
+        return "";
+    }
 }
