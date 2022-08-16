@@ -1,14 +1,14 @@
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 import { ethers, deployments } from "hardhat";
-import type * as ethersTypes from "ethers";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
+import { SoulBoundIdentity, SoulBoundIdentity__factory } from "../typechain";
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
 
 // contract instances
-let soulBoundIdentity: ethersTypes.Contract;
+let soulBoundIdentity: SoulBoundIdentity;
 
 let owner: SignerWithAddress;
 let someone: SignerWithAddress;
@@ -24,9 +24,9 @@ describe("Soulbound Identity", () => {
     const { address: soulBoundIdentityAddress } = await deployments.get(
       "SoulBoundIdentity"
     );
-    soulBoundIdentity = await ethers.getContractAt(
-      "SoulBoundIdentity",
-      soulBoundIdentityAddress
+    soulBoundIdentity = SoulBoundIdentity__factory.connect(
+      soulBoundIdentityAddress,
+      owner
     );
   });
 
@@ -58,7 +58,7 @@ describe("Soulbound Identity", () => {
         .mint(someone.address);
       const mintReceipt = await mintTx.wait();
 
-      const tokenId = mintReceipt.events[0].args[2].toNumber();
+      const tokenId = mintReceipt.events![0].args![2].toNumber();
       await soulBoundIdentity.connect(someone).burn(tokenId);
     });
   });
@@ -82,7 +82,7 @@ describe("Soulbound Identity", () => {
         .mint(someone.address);
 
       const mintReceipt = await mintTx.wait();
-      const tokenId = mintReceipt.events[0].args[2].toNumber();
+      const tokenId = mintReceipt.events![0].args![2].toNumber();
       const tokenUri = await soulBoundIdentity.tokenURI(tokenId);
 
       // check if it's a valid url
