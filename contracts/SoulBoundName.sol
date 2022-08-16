@@ -40,9 +40,9 @@ contract SoulBoundName is
     constructor(address owner, SoulBoundIdentity _soulBoundIdentity, string memory _extension)
         ERC721("Masa Identity Name", "MIN")
     {
-        _grantRole(DEFAULT_ADMIN_ROLE, _msgSender());
-        _grantRole(PAUSER_ROLE, _msgSender());
-        _grantRole(MINTER_ROLE, _msgSender());
+        _grantRole(DEFAULT_ADMIN_ROLE, owner);
+        _grantRole(PAUSER_ROLE, owner);
+        _grantRole(MINTER_ROLE, owner);
 
         soulBoundIdentity = _soulBoundIdentity;
         extension = _extension;
