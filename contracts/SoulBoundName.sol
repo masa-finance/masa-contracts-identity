@@ -32,6 +32,7 @@ contract SoulBoundName is
 
     mapping(uint256 => string) tokenIdToName; // used to sort through all names (name in lowercase)
     mapping(string => SoulBoundNameData) soulBoundNames; // register of all soulbound names (name in lowercase)
+    mapping(uint256 => string[]) identityIdToNames; // register of all names associated to an identityId
 
     struct SoulBoundNameData {
         address owner;
@@ -113,6 +114,27 @@ contract SoulBoundName is
         );
     }
 
+    function getIdentityName(uint256 identityId)
+        external
+        view
+        override
+        returns (string memory sbtName)
+    {
+        // TODO: return identity name if exists
+        return "";
+    }
+
+    function getIdentityNames(uint256 identityId)
+        external
+        view
+        override
+        returns (string[] memory sbtNames)
+    {
+        // TODO: return identity names if exists
+        sbtNames = new string[](0);
+        return sbtNames;
+    }
+
     function tokenURI(uint256 tokenId)
         public
         view
@@ -130,8 +152,8 @@ contract SoulBoundName is
 
         bytes memory dataURI = abi.encodePacked(
             "{",
-            '"name": "SoulBoundName #',
-            tokenId.toString(),
+            '"name": "',
+            soulBoundNameData.name,
             '", ',
             '"description": "This is a SoulBoundName',
             '", ',
