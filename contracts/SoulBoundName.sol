@@ -109,7 +109,7 @@ contract SoulBoundName is
 
         return (
             soulBoundNameData.owner,
-            soulBoundNameData.name,
+            string.concat(soulBoundNameData.name, extension),
             soulBoundNameData.identityId
         );
     }
@@ -153,7 +153,7 @@ contract SoulBoundName is
         bytes memory dataURI = abi.encodePacked(
             "{",
             '"name": "',
-            soulBoundNameData.name,
+            string.concat(soulBoundNameData.name, extension),
             '", ',
             '"description": "This is a SoulBoundName',
             '", ',
