@@ -13,7 +13,7 @@
 ### getData
 
 ```solidity
-function getData(string name) external nonpayable returns (address owner, string sbtName, uint256 identityId)
+function getData(string name) external nonpayable returns (string sbtName, uint256 identityId)
 ```
 
 
@@ -30,7 +30,6 @@ function getData(string name) external nonpayable returns (address owner, string
 
 | Name | Type | Description |
 |---|---|---|
-| owner | address | undefined |
 | sbtName | string | undefined |
 | identityId | uint256 | undefined |
 

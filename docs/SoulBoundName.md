@@ -158,7 +158,7 @@ function getApproved(uint256 tokenId) external view returns (address)
 ### getData
 
 ```solidity
-function getData(string name) external view returns (address owner, string sbtName, uint256 identityId)
+function getData(string name) external view returns (string sbtName, uint256 identityId)
 ```
 
 
@@ -175,7 +175,6 @@ function getData(string name) external view returns (address owner, string sbtNa
 
 | Name | Type | Description |
 |---|---|---|
-| owner | address | undefined |
 | sbtName | string | undefined |
 | identityId | uint256 | undefined |
 

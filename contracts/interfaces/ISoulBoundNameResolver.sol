@@ -7,7 +7,6 @@ interface ISoulBoundNameResolver {
     function getData(string memory name)
         external
         returns (
-            address owner,
             string memory sbtName,
             uint256 identityId
         );

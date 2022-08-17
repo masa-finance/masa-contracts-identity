@@ -35,7 +35,6 @@ contract SoulBoundName is
     mapping(uint256 => string[]) identityIdToNames; // register of all names associated to an identityId
 
     struct SoulBoundNameData {
-        address owner;
         string name; // Name with lowercase and uppercase
         uint256 identityId;
     }
@@ -82,7 +81,7 @@ contract SoulBoundName is
         returns (bool exists)
     {
         string memory lowercaseName = _toLowerCase(name);
-        return (soulBoundNames[lowercaseName].owner != address(0));
+        return (bytes(soulBoundNames[lowercaseName].name).length > 0);
     }
 
     function getData(string memory name)
@@ -90,7 +89,6 @@ contract SoulBoundName is
         view
         override
         returns (
-            address owner,
             string memory sbtName,
             uint256 identityId
         )
@@ -99,10 +97,9 @@ contract SoulBoundName is
         SoulBoundNameData memory soulBoundNameData = soulBoundNames[
             lowercaseName
         ];
-        require(soulBoundNameData.owner != address(0), "NAME_NOT_FOUND");
+        require(bytes(soulBoundNameData.name).length > 0, "NAME_NOT_FOUND");
 
         return (
-            soulBoundNameData.owner,
             string(
                 bytes.concat(bytes(soulBoundNameData.name), bytes(extension))
             ),
@@ -133,7 +130,7 @@ contract SoulBoundName is
         SoulBoundNameData memory soulBoundNameData = soulBoundNames[
             lowercaseName
         ];
-        require(soulBoundNameData.owner != address(0), "NAME_NOT_FOUND");
+        require(bytes(soulBoundNameData.name).length > 0, "NAME_NOT_FOUND");
 
         bytes memory dataURI = abi.encodePacked(
             "{",
@@ -166,6 +163,7 @@ contract SoulBoundName is
     ) public onlyRole(MINTER_ROLE) {
         require(to != address(0), "ZERO_ADDRESS");
         require(!nameExists(name), "NAME_ALREADY_EXISTS");
+        require(bytes(name).length > 0, "ZERO_LENGTH_NAME");
         require(
             soulBoundIdentity.ownerOf(identityId) != address(0),
             "IDENTITY_NOT_FOUND"
@@ -178,7 +176,6 @@ contract SoulBoundName is
         string memory lowercaseName = _toLowerCase(name);
         tokenIdToName[tokenId] = lowercaseName;
 
-        soulBoundNames[lowercaseName].owner = to;
         soulBoundNames[lowercaseName].name = name;
         soulBoundNames[lowercaseName].identityId = identityId;
 
@@ -224,7 +221,6 @@ contract SoulBoundName is
         address to,
         uint256 tokenId
     ) internal override(ERC721, ERC721Enumerable) whenNotPaused {
-        // TODO: update owner in soulBoundNames mapping
         super._beforeTokenTransfer(from, to, tokenId);
     }
 
