@@ -101,10 +101,16 @@ contract SoulBoundName is
         )
     {
         string memory lowercaseName = _toLowerCase(name);
-        SoulBoundNameData memory soulBoundNameData = soulBoundNames[lowercaseName];
+        SoulBoundNameData memory soulBoundNameData = soulBoundNames[
+            lowercaseName
+        ];
         require(soulBoundNameData.owner != address(0), "NAME_NOT_FOUND");
 
-        return (soulBoundNameData.owner, soulBoundNameData.name, soulBoundNameData.identityId);
+        return (
+            soulBoundNameData.owner,
+            soulBoundNameData.name,
+            soulBoundNameData.identityId
+        );
     }
 
     function tokenURI(uint256 tokenId)
@@ -113,29 +119,48 @@ contract SoulBoundName is
         override
         returns (string memory)
     {
+        string memory name = tokenIdToName[tokenId];
+        require(bytes(name).length != 0, "TOKEN_NOT_FOUND");
+
+        string memory lowercaseName = _toLowerCase(name);
+        SoulBoundNameData memory soulBoundNameData = soulBoundNames[
+            lowercaseName
+        ];
+        require(soulBoundNameData.owner != address(0), "NAME_NOT_FOUND");
+
         bytes memory dataURI = abi.encodePacked(
-            '{',
-                '"name": "SoulBoundName #', tokenId.toString(), '", ',
-                '"description": "This is a SoulBoundName', '", ',
-                '"external_url": "https://soulboundname.com/', tokenId.toString(), '"',
-            '}'
+            "{",
+            '"name": "SoulBoundName #',
+            tokenId.toString(),
+            '", ',
+            '"description": "This is a SoulBoundName',
+            '", ',
+            '"external_url": "https://soulboundname.com/',
+            tokenId.toString(),
+            '"',
+            "}"
         );
 
-        return string(
-            abi.encodePacked(
-                "data:application/json;base64,",
-                Base64.encode(dataURI)
-            )
-        );
+        return
+            string(
+                abi.encodePacked(
+                    "data:application/json;base64,",
+                    Base64.encode(dataURI)
+                )
+            );
     }
 
-    function mint(address to, string memory name, uint256 identityId)
-        public
-        onlyRole(MINTER_ROLE)
-    {
+    function mint(
+        address to,
+        string memory name,
+        uint256 identityId
+    ) public onlyRole(MINTER_ROLE) {
         require(to != address(0), "ZERO_ADDRESS");
         require(!nameExists(name), "NAME_ALREADY_EXISTS");
-        require(soulBoundIdentity.ownerOf(identityId) != address(0), "IDENTITY_NOT_FOUND");
+        require(
+            soulBoundIdentity.ownerOf(identityId) != address(0),
+            "IDENTITY_NOT_FOUND"
+        );
 
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
