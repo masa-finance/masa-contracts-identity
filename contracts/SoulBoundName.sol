@@ -179,10 +179,7 @@ contract SoulBoundName is
         identityIdToNames[identityId].push(lowercaseName);
     }
 
-    function updateIdentityId(uint256 tokenId, uint256 identityId)
-        public
-        onlyRole(MINTER_ROLE)
-    {
+    function updateIdentityId(uint256 tokenId, uint256 identityId) public {
         require(
             _isApprovedOrOwner(_msgSender(), tokenId),
             "ERC721: caller is not token owner nor approved"
