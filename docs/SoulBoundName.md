@@ -179,28 +179,6 @@ function getData(string name) external view returns (address owner, string sbtNa
 | sbtName | string | undefined |
 | identityId | uint256 | undefined |
 
-### getIdentityName
-
-```solidity
-function getIdentityName(uint256 identityId) external view returns (string sbtName)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| identityId | uint256 | undefined |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| sbtName | string | undefined |
-
 ### getIdentityNames
 
 ```solidity
@@ -518,22 +496,6 @@ function setExtension(string _extension) external nonpayable
 | Name | Type | Description |
 |---|---|---|
 | _extension | string | undefined |
-
-### setSoulBoundIdentity
-
-```solidity
-function setSoulBoundIdentity(contract SoulBoundIdentity _soulBoundIdentity) external nonpayable
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _soulBoundIdentity | contract SoulBoundIdentity | undefined |
 
 ### soulBoundIdentity
 

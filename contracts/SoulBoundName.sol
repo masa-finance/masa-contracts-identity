@@ -103,19 +103,9 @@ contract SoulBoundName is
 
         return (
             soulBoundNameData.owner,
-            string.concat(soulBoundNameData.name, extension),
+            string(bytes.concat(bytes(soulBoundNameData.name), bytes(extension))),
             soulBoundNameData.identityId
         );
-    }
-
-    function getIdentityName(uint256 identityId)
-        external
-        view
-        override
-        returns (string memory sbtName)
-    {
-        // TODO: return identity name if exists
-        return "";
     }
 
     function getIdentityNames(uint256 identityId)
@@ -124,9 +114,8 @@ contract SoulBoundName is
         override
         returns (string[] memory sbtNames)
     {
-        // TODO: return identity names if exists
-        sbtNames = new string[](0);
-        return sbtNames;
+        // return identity names if exists
+        return identityIdToNames[identityId];
     }
 
     function tokenURI(uint256 tokenId)
@@ -147,7 +136,7 @@ contract SoulBoundName is
         bytes memory dataURI = abi.encodePacked(
             "{",
             '"name": "',
-            string.concat(soulBoundNameData.name, extension),
+            string(bytes.concat(bytes(soulBoundNameData.name), bytes(extension))),
             '", ',
             '"description": "This is a SoulBoundName',
             '", ',

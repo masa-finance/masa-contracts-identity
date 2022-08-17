@@ -12,11 +12,6 @@ interface ISoulBoundNameResolver {
             uint256 identityId
         );
 
-    function getIdentityName(uint256 identityId)
-        external
-        view
-        returns (string memory sbtName);
-
     function getIdentityNames(uint256 identityId)
         external
         view

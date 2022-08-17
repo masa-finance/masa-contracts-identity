@@ -34,28 +34,6 @@ function getData(string name) external nonpayable returns (address owner, string
 | sbtName | string | undefined |
 | identityId | uint256 | undefined |
 
-### getIdentityName
-
-```solidity
-function getIdentityName(uint256 identityId) external view returns (string sbtName)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| identityId | uint256 | undefined |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| sbtName | string | undefined |
-
 ### getIdentityNames
 
 ```solidity
