@@ -668,7 +668,7 @@ function unpause() external nonpayable
 ### updateIdentityId
 
 ```solidity
-function updateIdentityId(uint256 tokenId, uint256 indentityId) external nonpayable
+function updateIdentityId(uint256 tokenId, uint256 identityId) external nonpayable
 ```
 
 
@@ -680,7 +680,7 @@ function updateIdentityId(uint256 tokenId, uint256 indentityId) external nonpaya
 | Name | Type | Description |
 |---|---|---|
 | tokenId | uint256 | undefined |
-| indentityId | uint256 | undefined |
+| identityId | uint256 | undefined |
 
 
 

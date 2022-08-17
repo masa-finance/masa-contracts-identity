@@ -6,10 +6,7 @@ interface ISoulBoundNameResolver {
 
     function getData(string memory name)
         external
-        returns (
-            string memory sbtName,
-            uint256 identityId
-        );
+        returns (string memory sbtName, uint256 identityId);
 
     function getIdentityNames(uint256 identityId)
         external

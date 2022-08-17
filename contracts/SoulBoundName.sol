@@ -88,10 +88,7 @@ contract SoulBoundName is
         external
         view
         override
-        returns (
-            string memory sbtName,
-            uint256 identityId
-        )
+        returns (string memory sbtName, uint256 identityId)
     {
         string memory lowercaseName = _toLowerCase(name);
         SoulBoundNameData memory soulBoundNameData = soulBoundNames[
@@ -182,11 +179,30 @@ contract SoulBoundName is
         identityIdToNames[identityId].push(lowercaseName);
     }
 
-    function updateIdentityId(uint256 tokenId, uint256 indentityId)
+    function updateIdentityId(uint256 tokenId, uint256 identityId)
         public
         onlyRole(MINTER_ROLE)
     {
-        // TODO: only owner of the token
+        require(
+            _isApprovedOrOwner(_msgSender(), tokenId),
+            "ERC721: caller is not token owner nor approved"
+        );
+        require(
+            soulBoundIdentity.ownerOf(identityId) != address(0),
+            "IDENTITY_NOT_FOUND"
+        );
+
+        string memory name = tokenIdToName[tokenId];
+        uint256 oldIdentityId = soulBoundNames[name].identityId;
+
+        // change value from soulBoundNames
+        soulBoundNames[name].identityId = identityId;
+
+        // remove name from identityIdToNames[oldIdentityId]
+        _removeFromIdentityIdToNames(oldIdentityId, name);
+
+        // add name to identityIdToNames[identityId]
+        identityIdToNames[identityId].push(name);
     }
 
     function burn(uint256 tokenId) public override {
@@ -198,20 +214,7 @@ contract SoulBoundName is
         // remove info from tokenIdToName, soulboundnames and identityIdToNames
         delete tokenIdToName[tokenId];
         delete soulBoundNames[name];
-
-        for (uint256 i = 0; i < identityIdToNames[identityId].length; i++) {
-            if (
-                keccak256(
-                    abi.encodePacked((identityIdToNames[identityId][i]))
-                ) == keccak256(abi.encodePacked((name)))
-            ) {
-                identityIdToNames[identityId][i] = identityIdToNames[
-                    identityId
-                ][identityIdToNames[identityId].length - 1];
-                identityIdToNames[identityId].pop();
-                break;
-            }
-        }
+        _removeFromIdentityIdToNames(identityId, name);
 
         super.burn(tokenId);
     }
@@ -253,5 +256,24 @@ contract SoulBoundName is
             }
         }
         return string(bLower);
+    }
+
+    function _removeFromIdentityIdToNames(
+        uint256 identityId,
+        string memory name
+    ) private {
+        for (uint256 i = 0; i < identityIdToNames[identityId].length; i++) {
+            if (
+                keccak256(
+                    abi.encodePacked((identityIdToNames[identityId][i]))
+                ) == keccak256(abi.encodePacked((name)))
+            ) {
+                identityIdToNames[identityId][i] = identityIdToNames[
+                    identityId
+                ][identityIdToNames[identityId].length - 1];
+                identityIdToNames[identityId].pop();
+                break;
+            }
+        }
     }
 }
