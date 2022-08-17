@@ -21,7 +21,7 @@ abstract contract SBT is NFT {
         address, /*from*/
         address, /*to*/
         uint256 /*tokenId*/
-    ) public pure override(ERC721, IERC721) {
+    ) public pure override {
         revert("Transferring soulbound Tokens is not permitted!");
     }
 
@@ -29,7 +29,7 @@ abstract contract SBT is NFT {
         address, /*from*/
         address, /*to*/
         uint256 /*tokenId*/
-    ) public pure override(ERC721, IERC721) {
+    ) public pure override {
         revert("Transferring soulbound Tokens is not permitted!");
     }
 
@@ -38,7 +38,7 @@ abstract contract SBT is NFT {
         address, /*to*/
         uint256, /*tokenId*/
         bytes memory /*data*/
-    ) public pure override(ERC721, IERC721) {
+    ) public pure override {
         revert("Transferring soulbound Tokens is not permitted!");
     }
 
