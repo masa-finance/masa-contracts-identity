@@ -194,6 +194,8 @@ contract SoulBoundName is
         soulBoundNames[lowercaseName].owner = to;
         soulBoundNames[lowercaseName].name = name;
         soulBoundNames[lowercaseName].identityId = identityId;
+
+        identityIdToNames[identityId].push(lowercaseName);
     }
 
     function updateIdentityId(uint256 tokenId, uint256 indentityId)
