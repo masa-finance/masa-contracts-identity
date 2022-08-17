@@ -103,7 +103,9 @@ contract SoulBoundName is
 
         return (
             soulBoundNameData.owner,
-            string(bytes.concat(bytes(soulBoundNameData.name), bytes(extension))),
+            string(
+                bytes.concat(bytes(soulBoundNameData.name), bytes(extension))
+            ),
             soulBoundNameData.identityId
         );
     }
@@ -136,7 +138,9 @@ contract SoulBoundName is
         bytes memory dataURI = abi.encodePacked(
             "{",
             '"name": "',
-            string(bytes.concat(bytes(soulBoundNameData.name), bytes(extension))),
+            string(
+                bytes.concat(bytes(soulBoundNameData.name), bytes(extension))
+            ),
             '", ',
             '"description": "This is a SoulBoundName',
             '", ',
@@ -189,7 +193,28 @@ contract SoulBoundName is
     }
 
     function burn(uint256 tokenId) public override {
-        // TODO: update info in soulboundnames and tokenIdToName
+        require(_exists(tokenId), "TOKEN_NOT_FOUND");
+
+        string memory name = tokenIdToName[tokenId];
+        uint256 identityId = soulBoundNames[name].identityId;
+
+        // remove info from tokenIdToName, soulboundnames and identityIdToNames
+        delete tokenIdToName[tokenId];
+        delete soulBoundNames[name];
+
+        for (uint256 i = 0; i < identityIdToNames[identityId].length; i++) {
+            if (
+                keccak256(
+                    abi.encodePacked((identityIdToNames[identityId][i]))
+                ) == keccak256(abi.encodePacked((name)))
+            ) {
+                identityIdToNames[identityId][i] = identityIdToNames[
+                    identityId
+                ][identityIdToNames[identityId].length - 1];
+                identityIdToNames[identityId].pop();
+                break;
+            }
+        }
 
         super.burn(tokenId);
     }
