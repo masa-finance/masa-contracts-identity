@@ -118,8 +118,9 @@ contract SoulBoundName is
         public
         onlyRole(MINTER_ROLE)
     {
-        // TODO: require that the name is not already used
-        // TODO: require tokenId exist
+        require(to != address(0), "ZERO_ADDRESS");
+        require(!nameExists(name), "NAME_ALREADY_EXISTS");
+        require(soulBoundIdentity.ownerOf(identityId) != address(0), "IDENTITY_NOT_FOUND");
 
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
