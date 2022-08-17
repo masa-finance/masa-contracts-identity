@@ -45,6 +45,8 @@ contract SoulBoundName is
         SoulBoundIdentity _soulBoundIdentity,
         string memory _extension
     ) ERC721("Masa Identity Name", "MIN") {
+        require(address(_soulBoundIdentity) != address(0), "ZERO_ADDRESS");
+
         _grantRole(DEFAULT_ADMIN_ROLE, owner);
         _grantRole(PAUSER_ROLE, owner);
         _grantRole(MINTER_ROLE, owner);
@@ -59,14 +61,6 @@ contract SoulBoundName is
 
     function unpause() public onlyRole(PAUSER_ROLE) {
         _unpause();
-    }
-
-    function setSoulBoundIdentity(SoulBoundIdentity _soulBoundIdentity)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
-        require(soulBoundIdentity != _soulBoundIdentity, "SAME_VALUE");
-        soulBoundIdentity = _soulBoundIdentity;
     }
 
     function setExtension(string memory _extension)
