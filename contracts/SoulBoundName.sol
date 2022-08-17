@@ -7,6 +7,8 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/utils/Base64.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 import "./interfaces/ISoulBoundNameResolver.sol";
 import "./SoulBoundIdentity.sol";
 
@@ -18,6 +20,7 @@ contract SoulBoundName is
     ERC721Burnable,
     ISoulBoundNameResolver
 {
+    using Strings for uint256;
     using Counters for Counters.Counter;
 
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
@@ -110,8 +113,20 @@ contract SoulBoundName is
         override
         returns (string memory)
     {
-        // TODO: return json with nft data
-        return "";
+        bytes memory dataURI = abi.encodePacked(
+            '{',
+                '"name": "SoulBoundName #', tokenId.toString(), '", ',
+                '"description": "This is a SoulBoundName', '", ',
+                '"external_url": "https://soulboundname.com/', tokenId.toString(), '"',
+            '}'
+        );
+
+        return string(
+            abi.encodePacked(
+                "data:application/json;base64,",
+                Base64.encode(dataURI)
+            )
+        );
     }
 
     function mint(address to, string memory name, uint256 identityId)
