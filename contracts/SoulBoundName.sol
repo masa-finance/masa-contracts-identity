@@ -90,7 +90,7 @@ contract SoulBoundName is
         return (soulBoundNames[lowercaseName].owner != address(0));
     }
 
-    function resolveName(string memory name)
+    function getData(string memory name)
         external
         view
         override

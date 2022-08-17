@@ -155,6 +155,30 @@ function getApproved(uint256 tokenId) external view returns (address)
 |---|---|---|
 | _0 | address | undefined |
 
+### getData
+
+```solidity
+function getData(string name) external view returns (address owner, string sbtName, uint256 identityId)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| owner | address | undefined |
+| sbtName | string | undefined |
+| identityId | uint256 | undefined |
+
 ### getRoleAdmin
 
 ```solidity
@@ -363,30 +387,6 @@ function renounceRole(bytes32 role, address account) external nonpayable
 |---|---|---|
 | role | bytes32 | undefined |
 | account | address | undefined |
-
-### resolveName
-
-```solidity
-function resolveName(string name) external view returns (address owner, string sbtName, uint256 identityId)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| name | string | undefined |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| owner | address | undefined |
-| sbtName | string | undefined |
-| identityId | uint256 | undefined |
 
 ### revokeRole
 
