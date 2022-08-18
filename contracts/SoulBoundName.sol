@@ -138,7 +138,6 @@ contract SoulBoundName is NFT, ISoulBoundNameResolver {
         );
 
         uint256 tokenId = _mintWithCounter(to);
-        (to);
 
         string memory lowercaseName = _toLowerCase(name);
         tokenIdToName[tokenId] = lowercaseName;
