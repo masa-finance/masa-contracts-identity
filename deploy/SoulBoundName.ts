@@ -20,7 +20,7 @@ const func: DeployFunction = async ({
 
   const soulBoundNameDeploymentResult = await deploy("SoulBoundName", {
     from: deployer,
-    args: [env.OWNER || owner.address, soulBoundIdentity.address, ".sol"],
+    args: [env.OWNER || owner.address, soulBoundIdentity.address, ".sol", ""],
     log: true
   });
 
