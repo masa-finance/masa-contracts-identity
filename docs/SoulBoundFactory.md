@@ -10,6 +10,17 @@
 
 ## Methods
 
+### mintSoulBoundIdentity
+
+```solidity
+function mintSoulBoundIdentity() external nonpayable
+```
+
+
+
+
+
+
 ### owner
 
 ```solidity
@@ -37,6 +48,72 @@ function renounceOwnership() external nonpayable
 
 *Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.*
 
+
+### setSoulBoundIdentity
+
+```solidity
+function setSoulBoundIdentity(contract SoulBoundIdentity _soulBoundIdentity) external nonpayable
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _soulBoundIdentity | contract SoulBoundIdentity | undefined |
+
+### setSoulBoundName
+
+```solidity
+function setSoulBoundName(contract SoulBoundName _soulBoundName) external nonpayable
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _soulBoundName | contract SoulBoundName | undefined |
+
+### soulBoundIdentity
+
+```solidity
+function soulBoundIdentity() external view returns (contract SoulBoundIdentity)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | contract SoulBoundIdentity | undefined |
+
+### soulBoundName
+
+```solidity
+function soulBoundName() external view returns (contract SoulBoundName)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | contract SoulBoundName | undefined |
 
 ### transferOwnership
 
