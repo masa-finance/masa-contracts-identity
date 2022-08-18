@@ -50,9 +50,8 @@ abstract contract NFT is
         _unpause();
     }
 
-    function mint(address to)
-        public
-        virtual
+    function _mintWithCounter(address to)
+        internal
         onlyRole(MINTER_ROLE)
         returns (uint256)
     {

@@ -288,28 +288,6 @@ function isApprovedForAll(address owner, address operator) external view returns
 ### mint
 
 ```solidity
-function mint(address to) external nonpayable returns (uint256)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| to | address | undefined |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | undefined |
-
-### mint
-
-```solidity
 function mint(address to, string name, uint256 identityId) external nonpayable returns (uint256)
 ```
 

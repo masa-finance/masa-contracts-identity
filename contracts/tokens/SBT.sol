@@ -49,4 +49,8 @@ abstract contract SBT is NFT {
         );
         super.burn(tokenId);
     }
+
+    function mint(address to) public virtual returns (uint256) {
+        return _mintWithCounter(to);
+    }
 }

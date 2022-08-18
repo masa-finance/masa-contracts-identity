@@ -125,22 +125,11 @@ contract SoulBoundName is NFT, ISoulBoundNameResolver {
             );
     }
 
-    function mint(address to)
-        public
-        override
-        onlyRole(MINTER_ROLE)
-        returns (uint256)
-    {
-        revert(
-            "Function disabled. Use mint(address, name, identityId) instead"
-        );
-    }
-
     function mint(
         address to,
         string memory name,
         uint256 identityId
-    ) public onlyRole(MINTER_ROLE) returns (uint256) {
+    ) public returns (uint256) {
         require(!nameExists(name), "NAME_ALREADY_EXISTS");
         require(bytes(name).length > 0, "ZERO_LENGTH_NAME");
         require(
@@ -148,7 +137,8 @@ contract SoulBoundName is NFT, ISoulBoundNameResolver {
             "IDENTITY_NOT_FOUND"
         );
 
-        uint256 tokenId = super.mint(to);
+        uint256 tokenId = _mintWithCounter(to);
+        (to);
 
         string memory lowercaseName = _toLowerCase(name);
         tokenIdToName[tokenId] = lowercaseName;
@@ -157,6 +147,8 @@ contract SoulBoundName is NFT, ISoulBoundNameResolver {
         soulBoundNames[lowercaseName].identityId = identityId;
 
         identityIdToNames[identityId].push(lowercaseName);
+
+        return tokenId;
     }
 
     function updateIdentityId(uint256 tokenId, uint256 identityId) public {
