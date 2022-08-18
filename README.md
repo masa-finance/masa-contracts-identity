@@ -4,15 +4,17 @@
 
 ### Celo: Alfajores
 
-- `SoulBoundCreditReport`: [`0x6F5a1CEfB1021cb188EBAe4c0118bfD5c71edBD7`](https://alfajores-blockscout.celo-testnet.org/address/0x6F5a1CEfB1021cb188EBAe4c0118bfD5c71edBD7/transactions)
-- `SoulBoundIdentity`: [`0x1be6c425d17380D0BCF62099a27BE4e9c5cF8719`](https://alfajores-blockscout.celo-testnet.org/address/0x1be6c425d17380D0BCF62099a27BE4e9c5cF8719/transactions)
-- `SoulLinker`: [`0xa703e73025f8169cbf299ED727a80eD845315dF2`](https://alfajores-blockscout.celo-testnet.org/address/0xa703e73025f8169cbf299ED727a80eD845315dF2/transactions)
+- `SoulBoundCreditReport`: [`0x16C2f2c5F3aea4b70595Ea45693784247f951aD1`](https://alfajores-blockscout.celo-testnet.org/address/0x16C2f2c5F3aea4b70595Ea45693784247f951aD1/transactions)
+- `SoulBoundIdentity`: [`0xD0f3C1361d8Fba40CbC85cC546c38511b510dedd`](https://alfajores-blockscout.celo-testnet.org/address/0xD0f3C1361d8Fba40CbC85cC546c38511b510dedd/transactions)
+- `SoulBoundName`: [`0xef0E52AF65B56f38355AcfF2D2aA047D4FF0a5a9`](https://alfajores-blockscout.celo-testnet.org/address/0xef0E52AF65B56f38355AcfF2D2aA047D4FF0a5a9/transactions)
+- `SoulLinker`: [`0x5D3e2fd5eB8685f964d0fAb2B0F34436bFcB3A42`](https://alfajores-blockscout.celo-testnet.org/address/0x5D3e2fd5eB8685f964d0fAb2B0F34436bFcB3A42/transactions)
 
 ### Rinkeby test network
 
-- `SoulBoundCreditReport`: [`0xadAC98BB4f783Fea5478D496c777677521Ce305a`](https://rinkeby.etherscan.io/address/0xadAC98BB4f783Fea5478D496c777677521Ce305a)
-- `SoulBoundIdentity`: [`0x241333a729aE0a49Eb5d595a8866162EE5a5920c`](https://rinkeby.etherscan.io/address/0x241333a729aE0a49Eb5d595a8866162EE5a5920c)
-- `SoulLinker`: [`0x0c142eCec9B4f8fD2C967b4698D3927ce1532eCF`](https://rinkeby.etherscan.io/address/0x0c142eCec9B4f8fD2C967b4698D3927ce1532eCF)
+- `SoulBoundCreditReport`: [`0x1471A7d3914a38e7488111001e50eCc29D627166`](https://rinkeby.etherscan.io/address/0x1471A7d3914a38e7488111001e50eCc29D627166)
+- `SoulBoundIdentity`: [`0xd9B0185D3865727fEaB5760bF13dde39b00263e5`](https://rinkeby.etherscan.io/address/0xd9B0185D3865727fEaB5760bF13dde39b00263e5)
+- `SoulBoundName`: [`0x8CA9C2564e24E042B8D5F0e53F881Ec61C4856d3`](https://rinkeby.etherscan.io/address/0x8CA9C2564e24E042B8D5F0e53F881Ec61C4856d3)
+- `SoulLinker`: [`0x0ffF769274a4fDa68Bf6E99FE0982c4c26B1A4A0`](https://rinkeby.etherscan.io/address/0x0ffF769274a4fDa68Bf6E99FE0982c4c26B1A4A0)
 
 #### Configuration
 
