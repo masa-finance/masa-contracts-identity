@@ -38,7 +38,10 @@ contract SoulBoundIdentityRouter is Ownable {
         soulBoundName = _soulBoundName;
     }
 
-    function mintIdentityWithName(address to, string memory name) public returns (uint256) {
+    function mintIdentityWithName(address to, string memory name)
+        public
+        returns (uint256)
+    {
         uint256 identityId = soulBoundIdentity.mint(to);
         uint256 nameId = soulBoundName.mint(to, name, identityId);
 

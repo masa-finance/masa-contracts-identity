@@ -45,9 +45,8 @@ describe("Soulbound Identity", () => {
     });
 
     it("should fail to mint from someone", async () => {
-      await expect(
-        soulBoundIdentity.connect(someone).mint(someone.address)
-      ).to.be.rejected;
+      await expect(soulBoundIdentity.connect(someone).mint(someone.address)).to
+        .be.rejected;
     });
   });
 

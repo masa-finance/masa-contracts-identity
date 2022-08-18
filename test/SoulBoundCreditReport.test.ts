@@ -48,9 +48,8 @@ describe("Soulbound Credit Report", () => {
     });
 
     it("should fail to mint from someone", async () => {
-      await expect(
-        soulBoundCreditReport.connect(someone).mint(someone.address)
-      ).to.be.rejected;
+      await expect(soulBoundCreditReport.connect(someone).mint(someone.address))
+        .to.be.rejected;
     });
   });
 
