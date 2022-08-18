@@ -1,4 +1,4 @@
-# SoulBoundFactory
+# SoulBoundIdentityRouter
 
 
 
@@ -10,16 +10,28 @@
 
 ## Methods
 
-### mintSoulBoundIdentity
+### mintIdentityWithName
 
 ```solidity
-function mintSoulBoundIdentity() external nonpayable
+function mintIdentityWithName(address to, string name) external nonpayable returns (uint256)
 ```
 
 
 
 
 
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| to | address | undefined |
+| name | string | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
 
 ### owner
 
