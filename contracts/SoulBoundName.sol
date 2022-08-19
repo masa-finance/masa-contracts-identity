@@ -10,6 +10,8 @@ import "./SoulBoundIdentity.sol";
 contract SoulBoundName is NFT, ISoulBoundNameResolver {
     using Strings for uint256;
 
+    /* ========== STATE VARIABLES ========== */
+
     SoulBoundIdentity public soulBoundIdentity;
     string public extension; // suffix of the names (.sol?)
 
@@ -21,6 +23,8 @@ contract SoulBoundName is NFT, ISoulBoundNameResolver {
         string name; // Name with lowercase and uppercase
         uint256 identityId;
     }
+
+    /* ========== INITIALIZE ========== */
 
     constructor(
         address owner,
@@ -34,6 +38,8 @@ contract SoulBoundName is NFT, ISoulBoundNameResolver {
         extension = _extension;
     }
 
+    /* ========== RESTRICTED FUNCTIONS ========== */
+
     function setExtension(string memory _extension)
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
@@ -45,6 +51,72 @@ contract SoulBoundName is NFT, ISoulBoundNameResolver {
         );
         extension = _extension;
     }
+
+    /* ========== MUTATIVE FUNCTIONS ========== */
+
+    function mint(
+        address to,
+        string memory name,
+        uint256 identityId
+    ) public returns (uint256) {
+        require(!nameExists(name), "NAME_ALREADY_EXISTS");
+        require(bytes(name).length > 0, "ZERO_LENGTH_NAME");
+        require(
+            soulBoundIdentity.ownerOf(identityId) != address(0),
+            "IDENTITY_NOT_FOUND"
+        );
+
+        uint256 tokenId = _mintWithCounter(to);
+
+        string memory lowercaseName = _toLowerCase(name);
+        tokenIdToName[tokenId] = lowercaseName;
+
+        soulBoundNames[lowercaseName].name = name;
+        soulBoundNames[lowercaseName].identityId = identityId;
+
+        identityIdToNames[identityId].push(lowercaseName);
+
+        return tokenId;
+    }
+
+    function updateIdentityId(uint256 tokenId, uint256 identityId) public {
+        require(
+            _isApprovedOrOwner(_msgSender(), tokenId),
+            "ERC721: caller is not token owner nor approved"
+        );
+        require(
+            soulBoundIdentity.ownerOf(identityId) != address(0),
+            "IDENTITY_NOT_FOUND"
+        );
+
+        string memory name = tokenIdToName[tokenId];
+        uint256 oldIdentityId = soulBoundNames[name].identityId;
+
+        // change value from soulBoundNames
+        soulBoundNames[name].identityId = identityId;
+
+        // remove name from identityIdToNames[oldIdentityId]
+        _removeFromIdentityIdToNames(oldIdentityId, name);
+
+        // add name to identityIdToNames[identityId]
+        identityIdToNames[identityId].push(name);
+    }
+
+    function burn(uint256 tokenId) public override {
+        require(_exists(tokenId), "TOKEN_NOT_FOUND");
+
+        string memory name = tokenIdToName[tokenId];
+        uint256 identityId = soulBoundNames[name].identityId;
+
+        // remove info from tokenIdToName, soulboundnames and identityIdToNames
+        delete tokenIdToName[tokenId];
+        delete soulBoundNames[name];
+        _removeFromIdentityIdToNames(identityId, name);
+
+        super.burn(tokenId);
+    }
+
+    /* ========== VIEWS ========== */
 
     function nameExists(string memory name)
         public
@@ -125,67 +197,7 @@ contract SoulBoundName is NFT, ISoulBoundNameResolver {
             );
     }
 
-    function mint(
-        address to,
-        string memory name,
-        uint256 identityId
-    ) public returns (uint256) {
-        require(!nameExists(name), "NAME_ALREADY_EXISTS");
-        require(bytes(name).length > 0, "ZERO_LENGTH_NAME");
-        require(
-            soulBoundIdentity.ownerOf(identityId) != address(0),
-            "IDENTITY_NOT_FOUND"
-        );
-
-        uint256 tokenId = _mintWithCounter(to);
-
-        string memory lowercaseName = _toLowerCase(name);
-        tokenIdToName[tokenId] = lowercaseName;
-
-        soulBoundNames[lowercaseName].name = name;
-        soulBoundNames[lowercaseName].identityId = identityId;
-
-        identityIdToNames[identityId].push(lowercaseName);
-
-        return tokenId;
-    }
-
-    function updateIdentityId(uint256 tokenId, uint256 identityId) public {
-        require(
-            _isApprovedOrOwner(_msgSender(), tokenId),
-            "ERC721: caller is not token owner nor approved"
-        );
-        require(
-            soulBoundIdentity.ownerOf(identityId) != address(0),
-            "IDENTITY_NOT_FOUND"
-        );
-
-        string memory name = tokenIdToName[tokenId];
-        uint256 oldIdentityId = soulBoundNames[name].identityId;
-
-        // change value from soulBoundNames
-        soulBoundNames[name].identityId = identityId;
-
-        // remove name from identityIdToNames[oldIdentityId]
-        _removeFromIdentityIdToNames(oldIdentityId, name);
-
-        // add name to identityIdToNames[identityId]
-        identityIdToNames[identityId].push(name);
-    }
-
-    function burn(uint256 tokenId) public override {
-        require(_exists(tokenId), "TOKEN_NOT_FOUND");
-
-        string memory name = tokenIdToName[tokenId];
-        uint256 identityId = soulBoundNames[name].identityId;
-
-        // remove info from tokenIdToName, soulboundnames and identityIdToNames
-        delete tokenIdToName[tokenId];
-        delete soulBoundNames[name];
-        _removeFromIdentityIdToNames(identityId, name);
-
-        super.burn(tokenId);
-    }
+    /* ========== PRIVATE FUNCTIONS ========== */
 
     function _toLowerCase(string memory _str)
         private
@@ -225,4 +237,8 @@ contract SoulBoundName is NFT, ISoulBoundNameResolver {
             }
         }
     }
+
+    /* ========== MODIFIERS ========== */
+
+    /* ========== EVENTS ========== */
 }
