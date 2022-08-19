@@ -6,17 +6,17 @@
 
 - `SoulBoundCreditReport`: [`0x16C2f2c5F3aea4b70595Ea45693784247f951aD1`](https://alfajores-blockscout.celo-testnet.org/address/0x16C2f2c5F3aea4b70595Ea45693784247f951aD1/transactions)
 - `SoulBoundIdentity`: [`0xD0f3C1361d8Fba40CbC85cC546c38511b510dedd`](https://alfajores-blockscout.celo-testnet.org/address/0xD0f3C1361d8Fba40CbC85cC546c38511b510dedd/transactions)
-- `SoulBoundName`: [`0xef0E52AF65B56f38355AcfF2D2aA047D4FF0a5a9`](https://alfajores-blockscout.celo-testnet.org/address/0xef0E52AF65B56f38355AcfF2D2aA047D4FF0a5a9/transactions)
+- `SoulBoundName`: [`0x47fF7Cab4AF63ac2C0c62122866c979c40217Ffe`](https://alfajores-blockscout.celo-testnet.org/address/0x47fF7Cab4AF63ac2C0c62122866c979c40217Ffe/transactions)
 - `SoulLinker`: [`0x5D3e2fd5eB8685f964d0fAb2B0F34436bFcB3A42`](https://alfajores-blockscout.celo-testnet.org/address/0x5D3e2fd5eB8685f964d0fAb2B0F34436bFcB3A42/transactions)
-- `SoulBoundIdentityRouter`: [`0x3F6ba8dD3a2A749a552f7dd79e8Ac633C9856e53`](https://alfajores-blockscout.celo-testnet.org/address/0x3F6ba8dD3a2A749a552f7dd79e8Ac633C9856e53/transactions)
+- `SoulBoundIdentityRouter`: [`0x7241c6F15aE018f4a5C05242d7cC00519FCF03f1`](https://alfajores-blockscout.celo-testnet.org/address/0x7241c6F15aE018f4a5C05242d7cC00519FCF03f1/transactions)
 
 ### Rinkeby test network
 
 - `SoulBoundCreditReport`: [`0x1471A7d3914a38e7488111001e50eCc29D627166`](https://rinkeby.etherscan.io/address/0x1471A7d3914a38e7488111001e50eCc29D627166)
 - `SoulBoundIdentity`: [`0xd9B0185D3865727fEaB5760bF13dde39b00263e5`](https://rinkeby.etherscan.io/address/0xd9B0185D3865727fEaB5760bF13dde39b00263e5)
-- `SoulBoundName`: [`0x8CA9C2564e24E042B8D5F0e53F881Ec61C4856d3`](https://rinkeby.etherscan.io/address/0x8CA9C2564e24E042B8D5F0e53F881Ec61C4856d3)
+- `SoulBoundName`: [`0x736bda94F926E23a2318d7eb09dF36A09D9a59fA`](https://rinkeby.etherscan.io/address/0x736bda94F926E23a2318d7eb09dF36A09D9a59fA)
 - `SoulLinker`: [`0x0ffF769274a4fDa68Bf6E99FE0982c4c26B1A4A0`](https://rinkeby.etherscan.io/address/0x0ffF769274a4fDa68Bf6E99FE0982c4c26B1A4A0)
-- `SoulBoundIdentityRouter`: [`0x60fd8920F73Dc751fD49B6a4ed8cc97d670cd741`](https://rinkeby.etherscan.io/address/0x60fd8920F73Dc751fD49B6a4ed8cc97d670cd741)
+- `SoulBoundIdentityRouter`: [`0xfFbDb1C2e8AA500D9Eb5ACA9f044B1C6B22865Db`](https://rinkeby.etherscan.io/address/0xfFbDb1C2e8AA500D9Eb5ACA9f044B1C6B22865Db)
 
 #### Configuration
 
