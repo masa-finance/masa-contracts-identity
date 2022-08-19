@@ -82,7 +82,7 @@ contract SoulBoundIdentityRouter is Ownable {
     }
 
     function tokenURI(address owner) public view returns (string memory) {
-        uint256 tokenId = soulBoundIdentity.tokenOfOwnerByIndex(owner, 0);
+        uint256 tokenId = tokenOfOwner(owner);
         return soulBoundIdentity.tokenURI(tokenId);
     }
 
@@ -104,6 +104,15 @@ contract SoulBoundIdentityRouter is Ownable {
         returns (string memory sbtName, uint256 identityId)
     {
         return soulBoundName.getIdentityData(name);
+    }
+
+    function getIdentityNames(address owner)
+        external
+        view
+        returns (string[] memory sbtNames)
+    {
+        uint256 tokenId = tokenOfOwner(owner);
+        return soulBoundName.getIdentityNames(tokenId);
     }
 
     function getIdentityNames(uint256 tokenId)
