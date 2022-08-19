@@ -77,6 +77,28 @@ function getIdentityNames(uint256 tokenId) external view returns (string[] sbtNa
 |---|---|---|
 | sbtNames | string[] | undefined |
 
+### getIdentityNames
+
+```solidity
+function getIdentityNames(address owner) external view returns (string[] sbtNames)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| owner | address | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| sbtNames | string[] | undefined |
+
 ### mintIdentityWithName
 
 ```solidity
