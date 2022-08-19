@@ -10,10 +10,10 @@
 
 ## Methods
 
-### getData
+### getIdentityData
 
 ```solidity
-function getData(string name) external nonpayable returns (string sbtName, uint256 identityId)
+function getIdentityData(string name) external nonpayable returns (string sbtName, uint256 identityId)
 ```
 
 

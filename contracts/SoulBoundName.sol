@@ -128,7 +128,7 @@ contract SoulBoundName is NFT, ISoulBoundNameResolver {
         return (bytes(soulBoundNames[lowercaseName].name).length > 0);
     }
 
-    function getData(string memory name)
+    function getIdentityData(string memory name)
         external
         view
         override

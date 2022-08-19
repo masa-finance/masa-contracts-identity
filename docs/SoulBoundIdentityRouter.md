@@ -10,10 +10,77 @@
 
 ## Methods
 
+### balanceOf
+
+```solidity
+function balanceOf(address owner) external view returns (uint256)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| owner | address | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+### getIdentityData
+
+```solidity
+function getIdentityData(string name) external view returns (string sbtName, uint256 identityId)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| sbtName | string | undefined |
+| identityId | uint256 | undefined |
+
+### getIdentityNames
+
+```solidity
+function getIdentityNames(uint256 tokenId) external view returns (string[] sbtNames)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| sbtNames | string[] | undefined |
+
 ### mintIdentityWithName
 
 ```solidity
-function mintIdentityWithName(address to, string name) external nonpayable returns (uint256)
+function mintIdentityWithName(address to, string name) external payable returns (uint256)
 ```
 
 
@@ -33,6 +100,28 @@ function mintIdentityWithName(address to, string name) external nonpayable retur
 |---|---|---|
 | _0 | uint256 | undefined |
 
+### nameExists
+
+```solidity
+function nameExists(string name) external view returns (bool exists)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| exists | bool | undefined |
+
 ### owner
 
 ```solidity
@@ -43,6 +132,50 @@ function owner() external view returns (address)
 
 *Returns the address of the current owner.*
 
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
+### ownerOf
+
+```solidity
+function ownerOf(uint256 tokenId) external view returns (address)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
+### ownerOf
+
+```solidity
+function ownerOf(string name) external view returns (address)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | undefined |
 
 #### Returns
 
@@ -126,6 +259,111 @@ function soulBoundName() external view returns (contract SoulBoundName)
 | Name | Type | Description |
 |---|---|---|
 | _0 | contract SoulBoundName | undefined |
+
+### tokenOfOwner
+
+```solidity
+function tokenOfOwner(address owner) external view returns (uint256)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| owner | address | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+### tokenURI
+
+```solidity
+function tokenURI(string name) external view returns (string)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string | undefined |
+
+### tokenURI
+
+```solidity
+function tokenURI(address owner) external view returns (string)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| owner | address | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string | undefined |
+
+### tokenURI
+
+```solidity
+function tokenURI(uint256 tokenId) external view returns (string)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string | undefined |
+
+### totalSupply
+
+```solidity
+function totalSupply() external view returns (uint256)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
 
 ### transferOwnership
 

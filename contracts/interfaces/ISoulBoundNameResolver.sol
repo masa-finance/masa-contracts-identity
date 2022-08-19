@@ -4,7 +4,7 @@ pragma solidity ^0.8.7;
 interface ISoulBoundNameResolver {
     function nameExists(string memory name) external returns (bool exists);
 
-    function getData(string memory name)
+    function getIdentityData(string memory name)
         external
         returns (string memory sbtName, uint256 identityId);
 
