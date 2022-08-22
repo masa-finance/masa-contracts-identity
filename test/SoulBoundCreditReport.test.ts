@@ -1,21 +1,17 @@
-// @ts-ignore
 import chai from "chai";
-// @ts-ignore
 import chaiAsPromised from "chai-as-promised";
-import {
-  // @ts-ignore
-  ethers,
-  // @ts-ignore
-  deployments,
-} from "hardhat";
-import type * as ethersTypes from "ethers";
+import { ethers, deployments } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
+import {
+  SoulBoundCreditReport,
+  SoulBoundCreditReport__factory
+} from "../typechain";
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
 
 // contract instances
-let soulBoundCreditReport: ethersTypes.Contract;
+let soulBoundCreditReport: SoulBoundCreditReport;
 
 let owner: SignerWithAddress;
 let someone: SignerWithAddress;
@@ -27,15 +23,15 @@ describe("Soulbound Credit Report", () => {
 
   beforeEach(async () => {
     await deployments.fixture("SoulBoundCreditReport", {
-      fallbackToGlobal: false,
+      fallbackToGlobal: false
     });
 
     const { address: soulBoundCreditReportAddress } = await deployments.get(
       "SoulBoundCreditReport"
     );
-    soulBoundCreditReport = await ethers.getContractAt(
-      "SoulBoundCreditReport",
-      soulBoundCreditReportAddress
+    soulBoundCreditReport = SoulBoundCreditReport__factory.connect(
+      soulBoundCreditReportAddress,
+      owner
     );
   });
 
@@ -77,7 +73,7 @@ describe("Soulbound Credit Report", () => {
         .mint(someone.address);
 
       const mintReceipt = await mintTx.wait();
-      const tokenId = mintReceipt.events[0].args[2].toNumber();
+      const tokenId = mintReceipt.events![0].args![2].toNumber();
       const tokenUri = await soulBoundCreditReport.tokenURI(tokenId);
 
       // check if it's a valid url

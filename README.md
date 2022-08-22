@@ -47,3 +47,23 @@ The base url for the Metadata url that is beeing generated from the contract
 ### Deploy
 
 Run: `yarn deploy --network {network}` to deploy.
+
+## Installation and usage
+
+Installing via `npm` package:
+
+```bash
+npm i @masa-finance/masa-contracts-identity
+```
+
+Import in your project:
+
+```typescript
+import { SoulBoundIdentity, SoulBoundIdentity__factory } from "@masa-finance/masa-contracts-identity";
+
+const soulBoundIdentity: SoulBoundIdentity = SoulBoundIdentity__factory.connect(
+      <address> // address of the deployed contract,
+      <provider> // web3 provider
+    );
+console.log(await soulBoundIdentity.symbol());
+```

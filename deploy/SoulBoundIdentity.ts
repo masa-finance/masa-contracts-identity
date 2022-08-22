@@ -8,7 +8,7 @@ const func: DeployFunction = async ({
   getNamedAccounts,
   deployments,
   ethers,
-  network,
+  network
 }) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
@@ -22,7 +22,7 @@ const func: DeployFunction = async ({
   const soulBoundTokenDeploymentResult = await deploy("SoulBoundIdentity", {
     from: deployer,
     args: [env.OWNER || owner.address, soulLinker.address, baseUri],
-    log: true,
+    log: true
   });
 
   await ethers.getContractAt(

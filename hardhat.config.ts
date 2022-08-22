@@ -1,7 +1,12 @@
 import { getPrivateKey, getInfuraApiKey } from "./src/utils/EnvParams";
 import "hardhat-deploy";
-import "@primitivefi/hardhat-dodoc";
 import "@nomiclabs/hardhat-ethers";
+import "@nomiclabs/hardhat-solhint";
+import "@primitivefi/hardhat-dodoc";
+import "@typechain/ethers-v5";
+import "@typechain/hardhat";
+import "hardhat-gas-reporter";
+import "solidity-coverage";
 import { NetworksUserConfig } from "hardhat/types";
 
 const getInfuraURL = (network: string) => {
@@ -13,7 +18,7 @@ const networks: NetworksUserConfig = {
     hardfork: "istanbul",
     allowUnlimitedContractSize: true,
     gasPrice: "auto",
-    gas: 13000000,
+    gas: 13000000
   },
   rinkeby: {
     url: getInfuraURL("rinkeby"),
@@ -27,8 +32,8 @@ const networks: NetworksUserConfig = {
     allowUnlimitedContractSize: true,
     gas: 20000000,
     gasPrice: "auto",
-    blockGasLimit: 13000000,
-  },
+    blockGasLimit: 13000000
+  }
 };
 
 export default {
@@ -39,14 +44,17 @@ export default {
     settings: {
       optimizer: {
         enabled: true,
-        runs: 200,
-      },
-    },
+        runs: 200
+      }
+    }
   },
   namedAccounts: {
     deployer: {
-      default: 0,
-    },
+      default: 0
+    }
   },
   dodoc: {},
+  typechain: {
+    outDir: "typechain"
+  }
 };

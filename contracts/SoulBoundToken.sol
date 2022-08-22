@@ -57,10 +57,18 @@ abstract contract SoulBoundToken is ERC721PresetMinterPauserAutoId, Ownable {
         super.burn(tokenId);
     }
 
-    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        override
+        returns (string memory)
+    {
         _requireMinted(tokenId);
 
         string memory baseURI = _baseURI();
-        return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, tokenId.toString(), ".json")) : "";
+        return
+            bytes(baseURI).length > 0
+                ? string(abi.encodePacked(baseURI, tokenId.toString(), ".json"))
+                : "";
     }
 }
