@@ -65,9 +65,15 @@ describe("Soulbound Name", () => {
 
   describe("mint", () => {
     it("should mint from owner", async () => {
-      await soulBoundName
+      const mintTx = await soulBoundName
         .connect(owner)
         .mint(address1.address, "soulBoundNameTest", identityId1);
+      const mintReceipt = await mintTx.wait();
+
+      const nameId = mintReceipt.events![0].args![2].toNumber();
+
+      expect(await soulBoundName.balanceOf(address1.address)).to.be.equal(1);
+      expect(await soulBoundName.ownerOf(nameId)).to.be.equal(address1.address);
     });
 
     it("should success to mint twice", async () => {
