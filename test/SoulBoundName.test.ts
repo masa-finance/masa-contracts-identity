@@ -51,16 +51,12 @@ describe("Soulbound Name", () => {
     soulBoundName = SoulBoundName__factory.connect(soulBoundNameAddress, owner);
 
     // we mint identity SBT for address1
-    let mintTx = await soulBoundIdentity
-      .connect(owner)
-      .mint(address1.address);
+    let mintTx = await soulBoundIdentity.connect(owner).mint(address1.address);
     let mintReceipt = await mintTx.wait();
 
     identityId1 = mintReceipt.events![0].args![2].toNumber();
 
-    mintTx = await soulBoundIdentity
-      .connect(owner)
-      .mint(address2.address);
+    mintTx = await soulBoundIdentity.connect(owner).mint(address2.address);
     mintReceipt = await mintTx.wait();
 
     identityId2 = mintReceipt.events![0].args![2].toNumber();
@@ -108,6 +104,7 @@ describe("Soulbound Name", () => {
           .mint(address1.address, SOULBOUND_NAME_ADDRESS1, identityId1)
       ).to.be.rejected;
     });
+  });
 
   describe("burn", () => {
     let nameId: number;
@@ -124,11 +121,14 @@ describe("Soulbound Name", () => {
     it("should burn", async () => {
       await soulBoundName.connect(address1).burn(nameId);
 
-      await expect(await soulBoundName.nameExists(SOULBOUND_NAME_ADDRESS1)).to.be.equals(false);
+      await expect(
+        await soulBoundName.nameExists(SOULBOUND_NAME_ADDRESS1)
+      ).to.be.equals(false);
       await expect(
         soulBoundName.getIdentityData("soulbOundNameTest1")
       ).to.be.rejectedWith("NAME_NOT_FOUND");
-      await expect(await soulBoundName.getIdentityNames(identityId1)).to.be.empty;
+      await expect(await soulBoundName.getIdentityNames(identityId1)).to.be
+        .empty;
     });
   });
 });
