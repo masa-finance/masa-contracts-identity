@@ -106,6 +106,31 @@ describe("Soulbound Name", () => {
     });
   });
 
+  describe("read data from the SoulBoundName smart contract", () => {
+    let nameId: number;
+
+    beforeEach(async () => {
+      const mintTx = await soulBoundName
+        .connect(owner)
+        .mint(address1.address, SOULBOUND_NAME_ADDRESS1, identityId1);
+      const mintReceipt = await mintTx.wait();
+
+      nameId = mintReceipt.events![0].args![2].toNumber();
+    });
+
+    it("nameExists true with an existing name", async () => {
+      await expect(
+        await soulBoundName.nameExists(SOULBOUND_NAME_ADDRESS1)
+      ).to.be.equals(true);
+    });
+
+    it("nameExists false with a non existing name", async () => {
+      await expect(await soulBoundName.nameExists("fakeName")).to.be.equals(
+        false
+      );
+    });
+  });
+
   describe("burn", () => {
     let nameId: number;
 
