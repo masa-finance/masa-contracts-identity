@@ -189,6 +189,53 @@ describe("Soulbound Name", () => {
     });
   });
 
+  describe("transfer", () => {
+    let nameId: number;
+
+    beforeEach(async () => {
+      const mintTx = await soulBoundName
+        .connect(owner)
+        .mint(address1.address, SOULBOUND_NAME1, identityId1);
+      const mintReceipt = await mintTx.wait();
+
+      nameId = mintReceipt.events![0].args![2].toNumber();
+    });
+
+    it("should transfer", async () => {
+      await soulBoundName.connect(address1).transferFrom(address1.address, address2.address, nameId);
+
+      expect (await soulBoundIdentity.balanceOf(address1.address)).to.be.equal(1);
+      expect (await soulBoundIdentity.balanceOf(address2.address)).to.be.equal(1);
+      expect (await soulBoundName.balanceOf(address1.address)).to.be.equal(0);
+      expect (await soulBoundName.balanceOf(address2.address)).to.be.equal(1);
+
+      const [, identityId] = await soulBoundName.getIdentityData(
+        SOULBOUND_NAME1
+      );
+
+      await expect(identityId).to.be.equals(identityId1);
+    });
+
+    it("should update identity Id", async () => {
+      await soulBoundName.connect(address1).transferFrom(address1.address, address2.address, nameId);
+
+      await soulBoundName
+        .connect(address2)
+        .updateIdentityId(nameId, identityId2);
+
+      expect (await soulBoundIdentity.balanceOf(address1.address)).to.be.equal(1);
+      expect (await soulBoundIdentity.balanceOf(address2.address)).to.be.equal(1);
+      expect (await soulBoundName.balanceOf(address1.address)).to.be.equal(0);
+      expect (await soulBoundName.balanceOf(address2.address)).to.be.equal(1);
+
+      const [, identityId] = await soulBoundName.getIdentityData(
+        SOULBOUND_NAME1
+      );
+
+      await expect(identityId).to.be.equals(identityId2);
+    });
+  });
+
   describe("burn", () => {
     let nameId: number;
 
