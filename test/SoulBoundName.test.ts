@@ -14,6 +14,9 @@ chai.use(chaiAsPromised);
 chai.use(solidity);
 const expect = chai.expect;
 
+const SOULBOUND_NAME_ADDRESS1 = "soulBoundNameTest1";
+const SOULBOUND_NAME_ADDRESS2 = "soulBoundNameTest2";
+
 // contract instances
 let soulBoundIdentity: SoulBoundIdentity;
 let soulBoundName: SoulBoundName;
@@ -67,7 +70,7 @@ describe("Soulbound Name", () => {
     it("should mint from owner", async () => {
       const mintTx = await soulBoundName
         .connect(owner)
-        .mint(address1.address, "soulBoundNameTest", identityId1);
+        .mint(address1.address, SOULBOUND_NAME_ADDRESS1, identityId1);
       const mintReceipt = await mintTx.wait();
 
       const nameId = mintReceipt.events![0].args![2].toNumber();
@@ -76,25 +79,25 @@ describe("Soulbound Name", () => {
       expect(await soulBoundName.ownerOf(nameId)).to.be.equal(address1.address);
     });
 
-    it("should success to mint twice", async () => {
+    it("should success to mint a name twice to the same idenity", async () => {
       await soulBoundName
         .connect(owner)
-        .mint(address1.address, "soulBoundNameTest1", identityId1);
+        .mint(address1.address, SOULBOUND_NAME_ADDRESS1, identityId1);
 
       await soulBoundName
         .connect(owner)
-        .mint(address1.address, "soulBoundNameTest2", identityId1);
+        .mint(address1.address, SOULBOUND_NAME_ADDRESS2, identityId1);
     });
 
     it("should fail to mint duplicated name", async () => {
       await soulBoundName
         .connect(owner)
-        .mint(address1.address, "soulBoundNameTest", identityId1);
+        .mint(address1.address, SOULBOUND_NAME_ADDRESS1, identityId1);
 
       await expect(
         soulBoundName
           .connect(owner)
-          .mint(address1.address, "soulBoundNameTest", identityId1)
+          .mint(address1.address, SOULBOUND_NAME_ADDRESS1, identityId1)
       ).to.be.rejected;
     });
 
@@ -102,8 +105,30 @@ describe("Soulbound Name", () => {
       await expect(
         soulBoundName
           .connect(address1)
-          .mint(address1.address, "soulBoundNameTest", identityId1)
+          .mint(address1.address, SOULBOUND_NAME_ADDRESS1, identityId1)
       ).to.be.rejected;
+    });
+
+  describe("burn", () => {
+    let nameId: number;
+
+    beforeEach(async () => {
+      const mintTx = await soulBoundName
+        .connect(owner)
+        .mint(address1.address, SOULBOUND_NAME_ADDRESS1, identityId1);
+      const mintReceipt = await mintTx.wait();
+
+      nameId = mintReceipt.events![0].args![2].toNumber();
+    });
+
+    it("should burn", async () => {
+      await soulBoundName.connect(address1).burn(nameId);
+
+      await expect(await soulBoundName.nameExists(SOULBOUND_NAME_ADDRESS1)).to.be.equals(false);
+      await expect(
+        soulBoundName.getIdentityData("soulbOundNameTest1")
+      ).to.be.rejectedWith("NAME_NOT_FOUND");
+      await expect(await soulBoundName.getIdentityNames(identityId1)).to.be.empty;
     });
   });
 });
