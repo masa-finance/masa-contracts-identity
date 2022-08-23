@@ -41,10 +41,9 @@ const func: DeployFunction = async ({
   await soulboundIdentityContract
     .connect(owner)
     .setSoulNameContract(soulNameDeploymentResult.address);
-  await soulNameContract.connect(owner).grantRole(
-    MINTER_ROLE,
-    soulboundIdentityContract.address
-  );
+  await soulNameContract
+    .connect(owner)
+    .grantRole(MINTER_ROLE, soulboundIdentityContract.address);
 
   await ethers.getContractAt("SoulName", soulNameDeploymentResult.address);
 };
