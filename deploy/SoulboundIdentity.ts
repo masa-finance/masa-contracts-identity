@@ -27,7 +27,6 @@ const func: DeployFunction = async ({
     args: [
       env.OWNER || owner.address,
       soulLinker.address,
-      ethers.constants.AddressZero,
       baseUri
     ],
     log: true
