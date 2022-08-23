@@ -31,10 +31,20 @@ const func: DeployFunction = async ({
     "SoulboundIdentity",
     soulboundIdentity.address
   );
+  const soulNameContract = await ethers.getContractAt(
+    "SoulName",
+    soulNameDeploymentResult.address
+  );
+
+  const MINTER_ROLE = await soulNameContract.MINTER_ROLE();
 
   await soulboundIdentityContract
     .connect(owner)
     .setSoulNameContract(soulNameDeploymentResult.address);
+  await soulNameContract.connect(owner).grantRole(
+    MINTER_ROLE,
+    soulboundIdentityContract.address
+  );
 
   await ethers.getContractAt("SoulName", soulNameDeploymentResult.address);
 };
