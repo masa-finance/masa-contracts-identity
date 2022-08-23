@@ -14,8 +14,8 @@ chai.use(chaiAsPromised);
 chai.use(solidity);
 const expect = chai.expect;
 
-const SOULBOUND_NAME1 = "soulNameTest1";
-const SOULBOUND_NAME2 = "soulNameTest2";
+const SOUL_NAME1 = "soulNameTest1";
+const SOUL_NAME2 = "soulNameTest2";
 
 // contract instances
 let soulboundIdentity: SoulboundIdentity;
@@ -89,9 +89,7 @@ describe("Soul Name", () => {
         .mint(address1.address, SOUL_NAME1, identityId1);
 
       await expect(
-        soulName
-          .connect(owner)
-          .mint(address1.address, SOULBOUND_NAME1, identityId1)
+        soulName.connect(owner).mint(address1.address, SOUL_NAME1, identityId1)
       ).to.be.rejected;
     });
 
@@ -117,17 +115,15 @@ describe("Soul Name", () => {
     });
 
     it("nameExists true with an existing name", async () => {
-      await expect(await soulName.nameExists(SOULBOUND_NAME1)).to.be.equals(
-        true
-      );
+      await expect(await soulName.nameExists(SOUL_NAME1)).to.be.equals(true);
     });
 
     it("nameExists true with an existing name - case insensitive", async () => {
       await expect(
-        await soulName.nameExists(SOULBOUND_NAME1.toLowerCase())
+        await soulName.nameExists(SOUL_NAME1.toLowerCase())
       ).to.be.equals(true);
       await expect(
-        await soulName.nameExists(SOULBOUND_NAME1.toUpperCase())
+        await soulName.nameExists(SOUL_NAME1.toUpperCase())
       ).to.be.equals(true);
     });
 
@@ -136,9 +132,7 @@ describe("Soul Name", () => {
     });
 
     it("getIdentityData with an existing name", async () => {
-      const [sbtName, identityId] = await soulName.getIdentityData(
-        SOULBOUND_NAME1
-      );
+      const [sbtName, identityId] = await soulName.getIdentityData(SOUL_NAME1);
       const extension = await soulName.extension();
 
       await expect(sbtName).to.be.equals(SOUL_NAME1 + extension);
@@ -147,7 +141,7 @@ describe("Soul Name", () => {
 
     it("getIdentityData with an existing name - case insensitive", async () => {
       let [sbtName, identityId] = await soulName.getIdentityData(
-        SOULBOUND_NAME1.toLowerCase()
+        SOUL_NAME1.toLowerCase()
       );
       const extension = await soulName.extension();
 
@@ -155,7 +149,7 @@ describe("Soul Name", () => {
       await expect(identityId).to.be.equals(identityId1);
 
       [sbtName, identityId] = await soulName.getIdentityData(
-        SOULBOUND_NAME1.toUpperCase()
+        SOUL_NAME1.toUpperCase()
       );
 
       await expect(sbtName).to.be.equals(SOUL_NAME1 + extension);
@@ -170,7 +164,7 @@ describe("Soul Name", () => {
 
     it("getIdentityNames returns array of SBT names in lower case", async () => {
       expect(await soulName.getIdentityNames(identityId1)).to.deep.equal([
-        SOULBOUND_NAME1.toLowerCase()
+        SOUL_NAME1.toLowerCase()
       ]);
     });
 
@@ -211,7 +205,7 @@ describe("Soul Name", () => {
       expect(await soulName.balanceOf(address1.address)).to.be.equal(0);
       expect(await soulName.balanceOf(address2.address)).to.be.equal(1);
 
-      const [, identityId] = await soulName.getIdentityData(SOULBOUND_NAME1);
+      const [, identityId] = await soulName.getIdentityData(SOUL_NAME1);
 
       await expect(identityId).to.be.equals(identityId1);
     });
@@ -232,7 +226,7 @@ describe("Soul Name", () => {
       expect(await soulName.balanceOf(address1.address)).to.be.equal(0);
       expect(await soulName.balanceOf(address2.address)).to.be.equal(1);
 
-      const [, identityId] = await soulName.getIdentityData(SOULBOUND_NAME1);
+      const [, identityId] = await soulName.getIdentityData(SOUL_NAME1);
 
       await expect(identityId).to.be.equals(identityId2);
     });
@@ -253,9 +247,7 @@ describe("Soul Name", () => {
     it("should burn", async () => {
       await soulName.connect(address1).burn(nameId);
 
-      await expect(await soulName.nameExists(SOULBOUND_NAME1)).to.be.equals(
-        false
-      );
+      await expect(await soulName.nameExists(SOUL_NAME1)).to.be.equals(false);
       await expect(
         soulName.getIdentityData("soulNameTest1")
       ).to.be.rejectedWith("NAME_NOT_FOUND");
