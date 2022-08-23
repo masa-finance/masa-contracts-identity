@@ -19,6 +19,17 @@ const func: DeployFunction = async ({
   const soulBoundIdentity = await deployments.get("SoulBoundIdentity");
   const soulBoundName = await deployments.get("SoulBoundName");
 
+  const soulBoundIdentityContract = await ethers.getContractAt(
+    "SoulBoundIdentity",
+    soulBoundIdentity.address,
+    owner
+  );
+  const soulBoundNameContract = await ethers.getContractAt(
+    "SoulBoundName",
+    soulBoundName.address,
+    owner
+  );
+
   const soulBoundIdentityRouterDeploymentResult = await deploy(
     "SoulBoundIdentityRouter",
     {
@@ -31,6 +42,22 @@ const func: DeployFunction = async ({
       log: true
     }
   );
+
+  // we grant the MINTER_ROLE to the SoulBoundIdentityRouter
+  const MINTER_ROLE_IDENTITY = await soulBoundIdentityContract.MINTER_ROLE();
+  const MINTER_ROLE_NAME = await soulBoundNameContract.MINTER_ROLE();
+  await soulBoundIdentityContract
+    .connect(owner)
+    .grantRole(
+      MINTER_ROLE_IDENTITY,
+      soulBoundIdentityRouterDeploymentResult.address
+    );
+  await soulBoundNameContract
+    .connect(owner)
+    .grantRole(
+      MINTER_ROLE_NAME,
+      soulBoundIdentityRouterDeploymentResult.address
+    );
 
   await ethers.getContractAt(
     "SoulBoundIdentityRouter",
