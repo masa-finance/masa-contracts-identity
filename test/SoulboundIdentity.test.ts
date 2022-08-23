@@ -12,11 +12,13 @@ const expect = chai.expect;
 // contract instances
 let soulboundIdentity: SoulboundIdentity;
 
+let soulNameContractAddress: string;
+
 let owner: SignerWithAddress;
 let someone: SignerWithAddress;
 
-const SOULBOUND_NAME1 = "soulboundNameTest1";
-const SOULBOUND_NAME2 = "soulboundNameTest2";
+const SOULBOUND_NAME1 = "soulName1";
+const SOULBOUND_NAME2 = "soulName2";
 
 let address1: SignerWithAddress;
 let address2: SignerWithAddress;
@@ -28,10 +30,14 @@ describe("Soulbound Identity", () => {
 
   beforeEach(async () => {
     await deployments.fixture("SoulboundIdentity", { fallbackToGlobal: false });
+    await deployments.fixture("SoulName", { fallbackToGlobal: false });
 
     const { address: soulboundIdentityAddress } = await deployments.get(
       "SoulboundIdentity"
     );
+    const { address: soulNameAddress } = await deployments.get("SoulName");
+    soulNameContractAddress = soulNameAddress;
+
     soulboundIdentity = SoulboundIdentity__factory.connect(
       soulboundIdentityAddress,
       owner
@@ -63,10 +69,12 @@ describe("Soulbound Identity", () => {
         .mintIdentityWithName(address1.address, SOULBOUND_NAME1);
     });
 
-    it("should mint from non-owner address", async () => {
-      await soulboundIdentity
-        .connect(address1)
-        .mintIdentityWithName(address1.address, SOULBOUND_NAME1);
+    it("should fail to mint from someone", async () => {
+      await expect(
+        soulboundIdentity
+          .connect(address1)
+          .mintIdentityWithName(address1.address, SOULBOUND_NAME1)
+      ).to.be.rejected;
     });
 
     it("should fail to mint twice", async () => {
