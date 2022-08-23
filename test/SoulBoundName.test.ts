@@ -97,7 +97,7 @@ describe("Soulbound Name", () => {
       ).to.be.rejected;
     });
 
-    it("should fail to mint from address1", async () => {
+    it("should fail to mint from non-owner address", async () => {
       await expect(
         soulBoundName
           .connect(address1)

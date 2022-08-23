@@ -52,6 +52,12 @@ describe("Soulbound Identity Router", () => {
         .mintIdentityWithName(address1.address, SOULBOUND_NAME1);
     });
 
+    it("should mint from non-owner address", async () => {
+      await soulBoundIdentityRouter
+        .connect(address1)
+        .mintIdentityWithName(address1.address, SOULBOUND_NAME1);
+    });
+
     it("should fail to mint twice", async () => {
       await soulBoundIdentityRouter
         .connect(owner)
