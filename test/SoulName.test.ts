@@ -4,8 +4,8 @@ import { solidity } from "ethereum-waffle";
 import { ethers, deployments } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
-  SoulBoundIdentity,
-  SoulBoundIdentity__factory,
+  SoulboundIdentity,
+  SoulboundIdentity__factory,
   SoulName,
   SoulName__factory
 } from "../typechain";
@@ -14,11 +14,11 @@ chai.use(chaiAsPromised);
 chai.use(solidity);
 const expect = chai.expect;
 
-const SOUL_NAME1 = "soulName1";
-const SOUL_NAME2 = "soulName2";
+const SOUL_NAME1 = "soulNameTest1";
+const SOUL_NAME2 = "soulNameTest2";
 
 // contract instances
-let soulBoundIdentity: SoulBoundIdentity;
+let soulboundIdentity: SoulboundIdentity;
 let soulName: SoulName;
 
 let owner: SignerWithAddress;
@@ -28,33 +28,33 @@ let address2: SignerWithAddress;
 let identityId1: number;
 let identityId2: number;
 
-describe("Soulbound Name", () => {
+describe("Soul Name", () => {
   before(async () => {
     [, owner, address1, address2] = await ethers.getSigners();
   });
 
   beforeEach(async () => {
-    await deployments.fixture("SoulBoundIdentity", { fallbackToGlobal: false });
+    await deployments.fixture("SoulboundIdentity", { fallbackToGlobal: false });
     await deployments.fixture("SoulName", { fallbackToGlobal: false });
 
-    const { address: soulBoundIdentityAddress } = await deployments.get(
-      "SoulBoundIdentity"
+    const { address: soulboundIdentityAddress } = await deployments.get(
+      "SoulboundIdentity"
     );
     const { address: soulNameAddress } = await deployments.get("SoulName");
 
-    soulBoundIdentity = SoulBoundIdentity__factory.connect(
-      soulBoundIdentityAddress,
+    soulboundIdentity = SoulboundIdentity__factory.connect(
+      soulboundIdentityAddress,
       owner
     );
     soulName = SoulName__factory.connect(soulNameAddress, owner);
 
     // we mint identity SBT for address1
-    let mintTx = await soulBoundIdentity.connect(owner).mint(address1.address);
+    let mintTx = await soulboundIdentity.connect(owner).mint(address1.address);
     let mintReceipt = await mintTx.wait();
 
     identityId1 = mintReceipt.events![0].args![2].toNumber();
 
-    mintTx = await soulBoundIdentity.connect(owner).mint(address2.address);
+    mintTx = await soulboundIdentity.connect(owner).mint(address2.address);
     mintReceipt = await mintTx.wait();
 
     identityId2 = mintReceipt.events![0].args![2].toNumber();
@@ -196,10 +196,10 @@ describe("Soulbound Name", () => {
         .connect(address1)
         .transferFrom(address1.address, address2.address, nameId);
 
-      expect(await soulBoundIdentity.balanceOf(address1.address)).to.be.equal(
+      expect(await soulboundIdentity.balanceOf(address1.address)).to.be.equal(
         1
       );
-      expect(await soulBoundIdentity.balanceOf(address2.address)).to.be.equal(
+      expect(await soulboundIdentity.balanceOf(address2.address)).to.be.equal(
         1
       );
       expect(await soulName.balanceOf(address1.address)).to.be.equal(0);
@@ -217,10 +217,10 @@ describe("Soulbound Name", () => {
 
       await soulName.connect(address2).updateIdentityId(nameId, identityId2);
 
-      expect(await soulBoundIdentity.balanceOf(address1.address)).to.be.equal(
+      expect(await soulboundIdentity.balanceOf(address1.address)).to.be.equal(
         1
       );
-      expect(await soulBoundIdentity.balanceOf(address2.address)).to.be.equal(
+      expect(await soulboundIdentity.balanceOf(address2.address)).to.be.equal(
         1
       );
       expect(await soulName.balanceOf(address1.address)).to.be.equal(0);
@@ -248,9 +248,9 @@ describe("Soulbound Name", () => {
       await soulName.connect(address1).burn(nameId);
 
       await expect(await soulName.nameExists(SOUL_NAME1)).to.be.equals(false);
-      await expect(soulName.getIdentityData(SOUL_NAME1)).to.be.rejectedWith(
-        "NAME_NOT_FOUND"
-      );
+      await expect(
+        soulName.getIdentityData("soulNameTest1")
+      ).to.be.rejectedWith("NAME_NOT_FOUND");
       await expect(await soulName.getIdentityNames(identityId1)).to.be.empty;
     });
   });

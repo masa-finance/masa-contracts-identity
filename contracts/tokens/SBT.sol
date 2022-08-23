@@ -3,18 +3,19 @@ pragma solidity ^0.8.7;
 
 import "./NFT.sol";
 import "../interfaces/ISoulLinker.sol";
+import "../SoulLinker.sol";
 
 abstract contract SBT is NFT {
-    ISoulLinker public soulLinker;
+    SoulLinker public soulLinker;
 
     constructor(
         address owner,
-        address _soulLinker,
+        SoulLinker _soulLinker,
         string memory name,
         string memory symbol,
         string memory baseTokenURI
     ) NFT(owner, name, symbol, baseTokenURI) {
-        soulLinker = ISoulLinker(_soulLinker);
+        soulLinker = _soulLinker;
     }
 
     function transferFrom(

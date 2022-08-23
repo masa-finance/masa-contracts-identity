@@ -4,8 +4,8 @@ import { solidity } from "ethereum-waffle";
 import { ethers, deployments } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
-  SoulBoundCreditReport,
-  SoulBoundCreditReport__factory
+  SoulboundCreditReport,
+  SoulboundCreditReport__factory
 } from "../typechain";
 
 chai.use(chaiAsPromised);
@@ -13,7 +13,7 @@ chai.use(solidity);
 const expect = chai.expect;
 
 // contract instances
-let soulBoundCreditReport: SoulBoundCreditReport;
+let soulboundCreditReport: SoulboundCreditReport;
 
 let owner: SignerWithAddress;
 let someone: SignerWithAddress;
@@ -24,41 +24,41 @@ describe("Soulbound Credit Report", () => {
   });
 
   beforeEach(async () => {
-    await deployments.fixture("SoulBoundCreditReport", {
+    await deployments.fixture("SoulboundCreditReport", {
       fallbackToGlobal: false
     });
 
-    const { address: soulBoundCreditReportAddress } = await deployments.get(
-      "SoulBoundCreditReport"
+    const { address: soulboundCreditReportAddress } = await deployments.get(
+      "SoulboundCreditReport"
     );
-    soulBoundCreditReport = SoulBoundCreditReport__factory.connect(
-      soulBoundCreditReportAddress,
+    soulboundCreditReport = SoulboundCreditReport__factory.connect(
+      soulboundCreditReportAddress,
       owner
     );
   });
 
   describe("mint", () => {
     it("should mint from owner", async () => {
-      await soulBoundCreditReport.connect(owner).mint(someone.address);
+      await soulboundCreditReport.connect(owner).mint(someone.address);
     });
 
     it("should mint twice", async () => {
-      await soulBoundCreditReport.connect(owner).mint(someone.address);
-      await soulBoundCreditReport.connect(owner).mint(someone.address);
+      await soulboundCreditReport.connect(owner).mint(someone.address);
+      await soulboundCreditReport.connect(owner).mint(someone.address);
     });
 
     it("should fail to mint from someone", async () => {
-      await expect(soulBoundCreditReport.connect(someone).mint(someone.address))
+      await expect(soulboundCreditReport.connect(someone).mint(someone.address))
         .to.be.rejected;
     });
   });
 
   describe("transfer", () => {
     it("should fail to transfer because its soulbound", async () => {
-      await soulBoundCreditReport.connect(owner).mint(someone.address);
+      await soulboundCreditReport.connect(owner).mint(someone.address);
 
       await expect(
-        soulBoundCreditReport
+        soulboundCreditReport
           .connect(someone)
           .transferFrom(someone.address, someone.address, 1)
       ).to.be.rejectedWith("Transferring soulbound Tokens is not permitted!");
@@ -67,13 +67,13 @@ describe("Soulbound Credit Report", () => {
 
   describe("tokenUri", () => {
     it("should fail to transfer because its soulbound", async () => {
-      const mintTx = await soulBoundCreditReport
+      const mintTx = await soulboundCreditReport
         .connect(owner)
         .mint(someone.address);
 
       const mintReceipt = await mintTx.wait();
       const tokenId = mintReceipt.events![0].args![2].toNumber();
-      const tokenUri = await soulBoundCreditReport.tokenURI(tokenId);
+      const tokenUri = await soulboundCreditReport.tokenURI(tokenId);
 
       // check if it's a valid url
       expect(() => new URL(tokenUri)).to.not.throw();

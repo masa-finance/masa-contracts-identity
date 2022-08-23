@@ -502,10 +502,10 @@ function setExtension(string _extension) external nonpayable
 |---|---|---|
 | _extension | string | undefined |
 
-### soulBoundIdentity
+### soulboundIdentity
 
 ```solidity
-function soulBoundIdentity() external view returns (contract SoulBoundIdentity)
+function soulboundIdentity() external view returns (contract SoulboundIdentity)
 ```
 
 
@@ -517,7 +517,7 @@ function soulBoundIdentity() external view returns (contract SoulBoundIdentity)
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | contract SoulBoundIdentity | undefined |
+| _0 | contract SoulboundIdentity | undefined |
 
 ### supportsInterface
 
