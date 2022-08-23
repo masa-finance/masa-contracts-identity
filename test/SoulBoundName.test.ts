@@ -145,7 +145,7 @@ describe("Soulbound Name", () => {
       );
       const extension = await soulBoundName.extension();
 
-      await expect(sbtName).to.be.equals(SOULBOUND_NAME1+extension);
+      await expect(sbtName).to.be.equals(SOULBOUND_NAME1 + extension);
       await expect(identityId).to.be.equals(identityId1);
     });
 
@@ -155,14 +155,14 @@ describe("Soulbound Name", () => {
       );
       const extension = await soulBoundName.extension();
 
-      await expect(sbtName).to.be.equals(SOULBOUND_NAME1+extension);
+      await expect(sbtName).to.be.equals(SOULBOUND_NAME1 + extension);
       await expect(identityId).to.be.equals(identityId1);
 
       [sbtName, identityId] = await soulBoundName.getIdentityData(
         SOULBOUND_NAME1.toUpperCase()
       );
 
-      await expect(sbtName).to.be.equals(SOULBOUND_NAME1+extension);
+      await expect(sbtName).to.be.equals(SOULBOUND_NAME1 + extension);
       await expect(identityId).to.be.equals(identityId1);
     });
 
@@ -173,9 +173,9 @@ describe("Soulbound Name", () => {
     });
 
     it("getIdentityNames returns array of SBT names in lower case", async () => {
-      expect(
-        await soulBoundName.getIdentityNames(identityId1)
-      ).to.deep.equal([SOULBOUND_NAME1.toLowerCase()]);
+      expect(await soulBoundName.getIdentityNames(identityId1)).to.deep.equal([
+        SOULBOUND_NAME1.toLowerCase()
+      ]);
     });
 
     it("should get a valid token URI", async () => {
@@ -202,12 +202,18 @@ describe("Soulbound Name", () => {
     });
 
     it("should transfer", async () => {
-      await soulBoundName.connect(address1).transferFrom(address1.address, address2.address, nameId);
+      await soulBoundName
+        .connect(address1)
+        .transferFrom(address1.address, address2.address, nameId);
 
-      expect (await soulBoundIdentity.balanceOf(address1.address)).to.be.equal(1);
-      expect (await soulBoundIdentity.balanceOf(address2.address)).to.be.equal(1);
-      expect (await soulBoundName.balanceOf(address1.address)).to.be.equal(0);
-      expect (await soulBoundName.balanceOf(address2.address)).to.be.equal(1);
+      expect(await soulBoundIdentity.balanceOf(address1.address)).to.be.equal(
+        1
+      );
+      expect(await soulBoundIdentity.balanceOf(address2.address)).to.be.equal(
+        1
+      );
+      expect(await soulBoundName.balanceOf(address1.address)).to.be.equal(0);
+      expect(await soulBoundName.balanceOf(address2.address)).to.be.equal(1);
 
       const [, identityId] = await soulBoundName.getIdentityData(
         SOULBOUND_NAME1
@@ -217,16 +223,22 @@ describe("Soulbound Name", () => {
     });
 
     it("should update identity Id", async () => {
-      await soulBoundName.connect(address1).transferFrom(address1.address, address2.address, nameId);
+      await soulBoundName
+        .connect(address1)
+        .transferFrom(address1.address, address2.address, nameId);
 
       await soulBoundName
         .connect(address2)
         .updateIdentityId(nameId, identityId2);
 
-      expect (await soulBoundIdentity.balanceOf(address1.address)).to.be.equal(1);
-      expect (await soulBoundIdentity.balanceOf(address2.address)).to.be.equal(1);
-      expect (await soulBoundName.balanceOf(address1.address)).to.be.equal(0);
-      expect (await soulBoundName.balanceOf(address2.address)).to.be.equal(1);
+      expect(await soulBoundIdentity.balanceOf(address1.address)).to.be.equal(
+        1
+      );
+      expect(await soulBoundIdentity.balanceOf(address2.address)).to.be.equal(
+        1
+      );
+      expect(await soulBoundName.balanceOf(address1.address)).to.be.equal(0);
+      expect(await soulBoundName.balanceOf(address2.address)).to.be.equal(1);
 
       const [, identityId] = await soulBoundName.getIdentityData(
         SOULBOUND_NAME1
