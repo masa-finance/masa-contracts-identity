@@ -21,16 +21,11 @@ const func: DeployFunction = async ({
 
   const soulboundIdentity = await deployments.get("SoulboundIdentity");
 
-  const soulboundNameDeploymentResult = await deploy("SoulName", {
+  const soulNameDeploymentResult = await deploy("SoulName", {
     from: deployer,
     args: [env.OWNER || owner.address, soulboundIdentity.address, ".sol", ""],
     log: true
   });
-
-  await ethers.getContractAt(
-    "SoulboundIdentity",
-    soulboundNameDeploymentResult.address
-  );
 
   const soulboundIdentityContract = await ethers.getContractAt(
     "SoulboundIdentity",
@@ -39,7 +34,9 @@ const func: DeployFunction = async ({
 
   await soulboundIdentityContract
     .connect(owner)
-    .setSoulNameContract(soulboundNameDeploymentResult.address);
+    .setSoulNameContract(soulNameDeploymentResult.address);
+
+  await ethers.getContractAt("SoulName", soulNameDeploymentResult.address);
 };
 
 func.tags = ["SoulName"];
