@@ -5,8 +5,11 @@ import { DeployFunction } from "hardhat-deploy/dist/types";
 let owner: SignerWithAddress;
 
 const func: DeployFunction = async ({
+  // @ts-ignore
   getNamedAccounts,
+  // @ts-ignore
   deployments,
+  // @ts-ignore
   ethers,
   network
 }) => {
@@ -19,18 +22,21 @@ const func: DeployFunction = async ({
 
   const soulLinker = await deployments.get("SoulLinker");
 
-  const soulBoundTokenDeploymentResult = await deploy("SoulBoundCreditReport", {
-    from: deployer,
-    args: [env.OWNER || owner.address, soulLinker.address, baseUri],
-    log: true
-  });
+  const SoulboundCreditReportDeploymentResult = await deploy(
+    "SoulboundCreditReport",
+    {
+      from: deployer,
+      args: [env.OWNER || owner.address, soulLinker.address, baseUri],
+      log: true
+    }
+  );
 
   await ethers.getContractAt(
-    "SoulBoundCreditReport",
-    soulBoundTokenDeploymentResult.address
+    "SoulboundCreditReport",
+    SoulboundCreditReportDeploymentResult.address
   );
 };
 
-func.tags = ["SoulBoundCreditReport"];
+func.tags = ["SoulboundCreditReport"];
 func.dependencies = ["SoulLinker"];
 export default func;

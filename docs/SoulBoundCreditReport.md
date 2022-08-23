@@ -1,4 +1,4 @@
-# SoulBoundCreditReport
+# SoulboundCreditReport
 
 
 
@@ -403,7 +403,7 @@ function setApprovalForAll(address operator, bool approved) external nonpayable
 ### soulLinker
 
 ```solidity
-function soulLinker() external view returns (contract ISoulLinker)
+function soulLinker() external view returns (contract SoulLinker)
 ```
 
 
@@ -415,7 +415,7 @@ function soulLinker() external view returns (contract ISoulLinker)
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | contract ISoulLinker | undefined |
+| _0 | contract SoulLinker | undefined |
 
 ### supportsInterface
 

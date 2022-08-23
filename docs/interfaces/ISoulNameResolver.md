@@ -1,4 +1,4 @@
-# ISoulBoundNameResolver
+# ISoulNameResolver
 
 
 

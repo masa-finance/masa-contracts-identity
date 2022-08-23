@@ -3,10 +3,10 @@ pragma solidity ^0.8.7;
 
 import "./tokens/SBT.sol";
 
-contract SoulBoundCreditReport is SBT {
+contract SoulboundCreditReport is SBT {
     constructor(
         address owner,
-        address soulLinker,
+        SoulLinker _soulLinker,
         string memory baseTokenURI
-    ) SBT(owner, soulLinker, "Masa Credit Report", "MCR", baseTokenURI) {}
+    ) SBT(owner, _soulLinker, "Masa Credit Report", "MCR", baseTokenURI) {}
 }

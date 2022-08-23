@@ -5,8 +5,11 @@ import { DeployFunction } from "hardhat-deploy/dist/types";
 let owner: SignerWithAddress;
 
 const func: DeployFunction = async ({
+  // @ts-ignore
   getNamedAccounts,
+  // @ts-ignore
   deployments,
+  // @ts-ignore
   ethers,
   network
 }) => {
@@ -15,21 +18,27 @@ const func: DeployFunction = async ({
 
   [, owner] = await ethers.getSigners();
   const env = getEnvParams(network.name);
+  const baseUri = `${env.BASE_URI}/identity/`;
 
-  const soulBoundIdentity = await deployments.get("SoulBoundIdentity");
+  const soulLinker = await deployments.get("SoulLinker");
 
-  const soulBoundNameDeploymentResult = await deploy("SoulBoundName", {
+  const SoulboundIdentityDeploymentResult = await deploy("SoulboundIdentity", {
     from: deployer,
-    args: [env.OWNER || owner.address, soulBoundIdentity.address, ".sol", ""],
+    args: [
+      env.OWNER || owner.address,
+      soulLinker.address,
+      ethers.constants.AddressZero,
+      baseUri
+    ],
     log: true
   });
 
   await ethers.getContractAt(
-    "SoulBoundName",
-    soulBoundNameDeploymentResult.address
+    "SoulboundIdentity",
+    SoulboundIdentityDeploymentResult.address
   );
 };
 
-func.tags = ["SoulBoundName"];
-func.dependencies = ["SoulBoundIdentity"];
+func.tags = ["SoulboundIdentity"];
+func.dependencies = ["SoulLinker"];
 export default func;

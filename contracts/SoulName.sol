@@ -3,23 +3,24 @@ pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
-import "./tokens/NFT.sol";
-import "./interfaces/ISoulBoundNameResolver.sol";
-import "./SoulBoundIdentity.sol";
 
-contract SoulBoundName is NFT, ISoulBoundNameResolver {
+import "./tokens/NFT.sol";
+import "./interfaces/ISoulNameResolver.sol";
+import "./SoulboundIdentity.sol";
+
+contract SoulName is NFT, ISoulNameResolver {
     using Strings for uint256;
 
     /* ========== STATE VARIABLES ========== */
 
-    SoulBoundIdentity public soulBoundIdentity;
+    SoulboundIdentity public soulboundIdentity;
     string public extension; // suffix of the names (.sol?)
 
     mapping(uint256 => string) tokenIdToName; // used to sort through all names (name in lowercase)
-    mapping(string => SoulBoundNameData) soulBoundNames; // register of all soulbound names (name in lowercase)
+    mapping(string => SoulNameData) soulNames; // register of all soulbound names (name in lowercase)
     mapping(uint256 => string[]) identityIdToNames; // register of all names associated to an identityId
 
-    struct SoulBoundNameData {
+    struct SoulNameData {
         string name; // Name with lowercase and uppercase
         uint256 identityId;
     }
@@ -28,13 +29,13 @@ contract SoulBoundName is NFT, ISoulBoundNameResolver {
 
     constructor(
         address owner,
-        SoulBoundIdentity _soulBoundIdentity,
+        SoulboundIdentity _soulboundIdentity,
         string memory _extension,
         string memory baseTokenURI
     ) NFT(owner, "Masa Identity Name", "MIN", baseTokenURI) {
-        require(address(_soulBoundIdentity) != address(0), "ZERO_ADDRESS");
+        require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
 
-        soulBoundIdentity = _soulBoundIdentity;
+        soulboundIdentity = _soulboundIdentity;
         extension = _extension;
     }
 
@@ -62,7 +63,7 @@ contract SoulBoundName is NFT, ISoulBoundNameResolver {
         require(!nameExists(name), "NAME_ALREADY_EXISTS");
         require(bytes(name).length > 0, "ZERO_LENGTH_NAME");
         require(
-            soulBoundIdentity.ownerOf(identityId) != address(0),
+            soulboundIdentity.ownerOf(identityId) != address(0),
             "IDENTITY_NOT_FOUND"
         );
 
@@ -71,8 +72,8 @@ contract SoulBoundName is NFT, ISoulBoundNameResolver {
         string memory lowercaseName = _toLowerCase(name);
         tokenIdToName[tokenId] = lowercaseName;
 
-        soulBoundNames[lowercaseName].name = name;
-        soulBoundNames[lowercaseName].identityId = identityId;
+        soulNames[lowercaseName].name = name;
+        soulNames[lowercaseName].identityId = identityId;
 
         identityIdToNames[identityId].push(lowercaseName);
 
@@ -85,15 +86,15 @@ contract SoulBoundName is NFT, ISoulBoundNameResolver {
             "ERC721: caller is not token owner nor approved"
         );
         require(
-            soulBoundIdentity.ownerOf(identityId) != address(0),
+            soulboundIdentity.ownerOf(identityId) != address(0),
             "IDENTITY_NOT_FOUND"
         );
 
         string memory name = tokenIdToName[tokenId];
-        uint256 oldIdentityId = soulBoundNames[name].identityId;
+        uint256 oldIdentityId = soulNames[name].identityId;
 
-        // change value from soulBoundNames
-        soulBoundNames[name].identityId = identityId;
+        // change value from soulNames
+        soulNames[name].identityId = identityId;
 
         // remove name from identityIdToNames[oldIdentityId]
         _removeFromIdentityIdToNames(oldIdentityId, name);
@@ -106,11 +107,11 @@ contract SoulBoundName is NFT, ISoulBoundNameResolver {
         require(_exists(tokenId), "TOKEN_NOT_FOUND");
 
         string memory name = tokenIdToName[tokenId];
-        uint256 identityId = soulBoundNames[name].identityId;
+        uint256 identityId = soulNames[name].identityId;
 
-        // remove info from tokenIdToName, soulboundnames and identityIdToNames
+        // remove info from tokenIdToName, soulNames and identityIdToNames
         delete tokenIdToName[tokenId];
-        delete soulBoundNames[name];
+        delete soulNames[name];
         _removeFromIdentityIdToNames(identityId, name);
 
         super.burn(tokenId);
@@ -125,7 +126,7 @@ contract SoulBoundName is NFT, ISoulBoundNameResolver {
         returns (bool exists)
     {
         string memory lowercaseName = _toLowerCase(name);
-        return (bytes(soulBoundNames[lowercaseName].name).length > 0);
+        return (bytes(soulNames[lowercaseName].name).length > 0);
     }
 
     function getIdentityData(string memory name)
@@ -135,16 +136,12 @@ contract SoulBoundName is NFT, ISoulBoundNameResolver {
         returns (string memory sbtName, uint256 identityId)
     {
         string memory lowercaseName = _toLowerCase(name);
-        SoulBoundNameData memory soulBoundNameData = soulBoundNames[
-            lowercaseName
-        ];
-        require(bytes(soulBoundNameData.name).length > 0, "NAME_NOT_FOUND");
+        SoulNameData memory soulNameData = soulNames[lowercaseName];
+        require(bytes(soulNameData.name).length > 0, "NAME_NOT_FOUND");
 
         return (
-            string(
-                bytes.concat(bytes(soulBoundNameData.name), bytes(extension))
-            ),
-            soulBoundNameData.identityId
+            string(bytes.concat(bytes(soulNameData.name), bytes(extension))),
+            soulNameData.identityId
         );
     }
 
@@ -168,21 +165,17 @@ contract SoulBoundName is NFT, ISoulBoundNameResolver {
         require(bytes(name).length != 0, "TOKEN_NOT_FOUND");
 
         string memory lowercaseName = _toLowerCase(name);
-        SoulBoundNameData memory soulBoundNameData = soulBoundNames[
-            lowercaseName
-        ];
-        require(bytes(soulBoundNameData.name).length > 0, "NAME_NOT_FOUND");
+        SoulNameData memory soulNameData = soulNames[lowercaseName];
+        require(bytes(soulNameData.name).length > 0, "NAME_NOT_FOUND");
 
         bytes memory dataURI = abi.encodePacked(
             "{",
             '"name": "',
-            string(
-                bytes.concat(bytes(soulBoundNameData.name), bytes(extension))
-            ),
+            string(bytes.concat(bytes(soulNameData.name), bytes(extension))),
             '", ',
-            '"description": "This is a SoulBoundName',
+            '"description": "This is a SoulName',
             '", ',
-            '"external_url": "https://soulboundname.com/',
+            '"external_url": "https://soulname.com/',
             tokenId.toString(),
             '"',
             "}"
