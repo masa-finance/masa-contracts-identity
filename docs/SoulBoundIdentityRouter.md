@@ -232,10 +232,10 @@ function setSoulBoundIdentity(contract SoulBoundIdentity _soulBoundIdentity) ext
 |---|---|---|
 | _soulBoundIdentity | contract SoulBoundIdentity | undefined |
 
-### setSoulBoundName
+### setSoulName
 
 ```solidity
-function setSoulBoundName(contract SoulBoundName _soulBoundName) external nonpayable
+function setSoulName(contract SoulName _soulName) external nonpayable
 ```
 
 
@@ -246,7 +246,7 @@ function setSoulBoundName(contract SoulBoundName _soulBoundName) external nonpay
 
 | Name | Type | Description |
 |---|---|---|
-| _soulBoundName | contract SoulBoundName | undefined |
+| _soulName | contract SoulName | undefined |
 
 ### soulBoundIdentity
 
@@ -265,10 +265,10 @@ function soulBoundIdentity() external view returns (contract SoulBoundIdentity)
 |---|---|---|
 | _0 | contract SoulBoundIdentity | undefined |
 
-### soulBoundName
+### soulName
 
 ```solidity
-function soulBoundName() external view returns (contract SoulBoundName)
+function soulName() external view returns (contract SoulName)
 ```
 
 
@@ -280,7 +280,7 @@ function soulBoundName() external view returns (contract SoulBoundName)
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | contract SoulBoundName | undefined |
+| _0 | contract SoulName | undefined |
 
 ### tokenOfOwner
 

@@ -18,18 +18,15 @@ const func: DeployFunction = async ({
 
   const soulBoundIdentity = await deployments.get("SoulBoundIdentity");
 
-  const soulBoundNameDeploymentResult = await deploy("SoulBoundName", {
+  const soulNameDeploymentResult = await deploy("SoulName", {
     from: deployer,
     args: [env.OWNER || owner.address, soulBoundIdentity.address, ".sol", ""],
     log: true
   });
 
-  await ethers.getContractAt(
-    "SoulBoundName",
-    soulBoundNameDeploymentResult.address
-  );
+  await ethers.getContractAt("SoulName", soulNameDeploymentResult.address);
 };
 
-func.tags = ["SoulBoundName"];
+func.tags = ["SoulName"];
 func.dependencies = ["SoulBoundIdentity"];
 export default func;

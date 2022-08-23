@@ -12,8 +12,8 @@ chai.use(chaiAsPromised);
 chai.use(solidity);
 const expect = chai.expect;
 
-const SOULBOUND_NAME1 = "soulBoundNameTest1";
-const SOULBOUND_NAME2 = "soulBoundNameTest2";
+const SOUL_NAME1 = "soulName1";
+const SOUL_NAME2 = "soulName2";
 
 // contract instances
 let soulBoundIdentityRouter: SoulBoundIdentityRouter;
@@ -49,34 +49,34 @@ describe("Soulbound Identity Router", () => {
     it("should mint from owner", async () => {
       await soulBoundIdentityRouter
         .connect(owner)
-        .mintIdentityWithName(address1.address, SOULBOUND_NAME1);
+        .mintIdentityWithName(address1.address, SOUL_NAME1);
     });
 
     it("should mint from non-owner address", async () => {
       await soulBoundIdentityRouter
         .connect(address1)
-        .mintIdentityWithName(address1.address, SOULBOUND_NAME1);
+        .mintIdentityWithName(address1.address, SOUL_NAME1);
     });
 
     it("should fail to mint twice", async () => {
       await soulBoundIdentityRouter
         .connect(owner)
-        .mintIdentityWithName(address1.address, SOULBOUND_NAME1);
+        .mintIdentityWithName(address1.address, SOUL_NAME1);
       await expect(
         soulBoundIdentityRouter
           .connect(owner)
-          .mintIdentityWithName(address1.address, SOULBOUND_NAME2)
+          .mintIdentityWithName(address1.address, SOUL_NAME2)
       ).to.be.rejectedWith("Soulbound identity already created!");
     });
 
     it("should fail to mint duplicated name", async () => {
       await soulBoundIdentityRouter
         .connect(owner)
-        .mintIdentityWithName(address1.address, SOULBOUND_NAME1);
+        .mintIdentityWithName(address1.address, SOUL_NAME1);
       await expect(
         soulBoundIdentityRouter
           .connect(owner)
-          .mintIdentityWithName(address2.address, SOULBOUND_NAME1)
+          .mintIdentityWithName(address2.address, SOUL_NAME1)
       ).to.be.rejectedWith("NAME_ALREADY_EXISTS");
     });
   });

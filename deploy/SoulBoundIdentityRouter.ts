@@ -17,16 +17,16 @@ const func: DeployFunction = async ({
   const env = getEnvParams(network.name);
 
   const soulBoundIdentity = await deployments.get("SoulBoundIdentity");
-  const soulBoundName = await deployments.get("SoulBoundName");
+  const soulName = await deployments.get("SoulName");
 
   const soulBoundIdentityContract = await ethers.getContractAt(
     "SoulBoundIdentity",
     soulBoundIdentity.address,
     owner
   );
-  const soulBoundNameContract = await ethers.getContractAt(
-    "SoulBoundName",
-    soulBoundName.address,
+  const soulNameContract = await ethers.getContractAt(
+    "SoulName",
+    soulName.address,
     owner
   );
 
@@ -37,7 +37,7 @@ const func: DeployFunction = async ({
       args: [
         env.OWNER || owner.address,
         soulBoundIdentity.address,
-        soulBoundName.address
+        soulName.address
       ],
       log: true
     }
@@ -45,14 +45,14 @@ const func: DeployFunction = async ({
 
   // we grant the MINTER_ROLE to the SoulBoundIdentityRouter
   const MINTER_ROLE_IDENTITY = await soulBoundIdentityContract.MINTER_ROLE();
-  const MINTER_ROLE_NAME = await soulBoundNameContract.MINTER_ROLE();
+  const MINTER_ROLE_NAME = await soulNameContract.MINTER_ROLE();
   await soulBoundIdentityContract
     .connect(owner)
     .grantRole(
       MINTER_ROLE_IDENTITY,
       soulBoundIdentityRouterDeploymentResult.address
     );
-  await soulBoundNameContract
+  await soulNameContract
     .connect(owner)
     .grantRole(
       MINTER_ROLE_NAME,
@@ -66,5 +66,5 @@ const func: DeployFunction = async ({
 };
 
 func.tags = ["SoulBoundIdentityRouter"];
-func.dependencies = ["SoulBoundIdentity", "SoulBoundName"];
+func.dependencies = ["SoulBoundIdentity", "SoulName"];
 export default func;

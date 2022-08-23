@@ -3,28 +3,28 @@ pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./SoulBoundIdentity.sol";
-import "./SoulBoundName.sol";
+import "./SoulName.sol";
 
 contract SoulBoundIdentityRouter is Ownable {
     /* ========== STATE VARIABLES ========== */
 
     SoulBoundIdentity public soulBoundIdentity;
-    SoulBoundName public soulBoundName;
+    SoulName public soulName;
 
     /* ========== INITIALIZE ========== */
 
     constructor(
         address owner,
         SoulBoundIdentity _soulBoundIdentity,
-        SoulBoundName _soulBoundName
+        SoulName _soulName
     ) Ownable() {
         require(address(_soulBoundIdentity) != address(0), "ZERO_ADDRESS");
-        require(address(_soulBoundName) != address(0), "ZERO_ADDRESS");
+        require(address(_soulName) != address(0), "ZERO_ADDRESS");
 
         Ownable.transferOwnership(owner);
 
         soulBoundIdentity = _soulBoundIdentity;
-        soulBoundName = _soulBoundName;
+        soulName = _soulName;
     }
 
     /* ========== RESTRICTED FUNCTIONS ========== */
@@ -38,10 +38,10 @@ contract SoulBoundIdentityRouter is Ownable {
         soulBoundIdentity = _soulBoundIdentity;
     }
 
-    function setSoulBoundName(SoulBoundName _soulBoundName) external onlyOwner {
-        require(address(_soulBoundName) != address(0), "ZERO_ADDRESS");
-        require(soulBoundName != _soulBoundName, "SAME_VALUE");
-        soulBoundName = _soulBoundName;
+    function setSoulName(SoulName _soulName) external onlyOwner {
+        require(address(_soulName) != address(0), "ZERO_ADDRESS");
+        require(soulName != _soulName, "SAME_VALUE");
+        soulName = _soulName;
     }
 
     /* ========== MUTATIVE FUNCTIONS ========== */
@@ -52,7 +52,7 @@ contract SoulBoundIdentityRouter is Ownable {
         returns (uint256)
     {
         uint256 identityId = soulBoundIdentity.mint(to);
-        uint256 nameId = soulBoundName.mint(to, name, identityId);
+        uint256 nameId = soulName.mint(to, name, identityId);
 
         return identityId;
     }
@@ -68,7 +68,7 @@ contract SoulBoundIdentityRouter is Ownable {
     }
 
     function ownerOf(string memory name) public view returns (address) {
-        (, uint256 tokenId) = soulBoundName.getIdentityData(name);
+        (, uint256 tokenId) = soulName.getIdentityData(name);
         return soulBoundIdentity.ownerOf(tokenId);
     }
 
@@ -77,7 +77,7 @@ contract SoulBoundIdentityRouter is Ownable {
     }
 
     function tokenURI(string memory name) public view returns (string memory) {
-        (, uint256 tokenId) = soulBoundName.getIdentityData(name);
+        (, uint256 tokenId) = soulName.getIdentityData(name);
         return soulBoundIdentity.tokenURI(tokenId);
     }
 
@@ -95,7 +95,7 @@ contract SoulBoundIdentityRouter is Ownable {
     }
 
     function nameExists(string memory name) public view returns (bool exists) {
-        return soulBoundName.nameExists(name);
+        return soulName.nameExists(name);
     }
 
     function getIdentityData(string memory name)
@@ -103,7 +103,7 @@ contract SoulBoundIdentityRouter is Ownable {
         view
         returns (string memory sbtName, uint256 identityId)
     {
-        return soulBoundName.getIdentityData(name);
+        return soulName.getIdentityData(name);
     }
 
     function getIdentityNames(address owner)
@@ -112,7 +112,7 @@ contract SoulBoundIdentityRouter is Ownable {
         returns (string[] memory sbtNames)
     {
         uint256 tokenId = tokenOfOwner(owner);
-        return soulBoundName.getIdentityNames(tokenId);
+        return soulName.getIdentityNames(tokenId);
     }
 
     function getIdentityNames(uint256 tokenId)
@@ -120,7 +120,7 @@ contract SoulBoundIdentityRouter is Ownable {
         view
         returns (string[] memory sbtNames)
     {
-        return soulBoundName.getIdentityNames(tokenId);
+        return soulName.getIdentityNames(tokenId);
     }
 
     /* ========== PRIVATE FUNCTIONS ========== */
