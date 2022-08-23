@@ -109,7 +109,7 @@ contract SoulName is NFT, ISoulNameResolver {
         string memory name = tokenIdToName[tokenId];
         uint256 identityId = soulNames[name].identityId;
 
-        // remove info from tokenIdToName, soulNames and identityIdToNames
+        // remove info from tokenIdToName, soulnames and identityIdToNames
         delete tokenIdToName[tokenId];
         delete soulNames[name];
         _removeFromIdentityIdToNames(identityId, name);
