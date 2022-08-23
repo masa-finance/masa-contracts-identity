@@ -15,7 +15,6 @@ contract SoulboundIdentity is SBT {
     constructor(
         address owner,
         SoulLinker _soulLinker,
-        SoulName _soulName,
         string memory baseTokenURI
     ) SBT(owner, _soulLinker, "Masa Identity", "MID", baseTokenURI) {}
 
@@ -41,6 +40,7 @@ contract SoulboundIdentity is SBT {
     function mintIdentityWithName(address to, string memory name)
         public
         payable
+        soulNameAlreadySet
         returns (uint256)
     {
         uint256 identityId = mint(to);
@@ -54,12 +54,22 @@ contract SoulboundIdentity is SBT {
         return super.ownerOf(tokenId);
     }
 
-    function ownerOf(string memory name) public view returns (address) {
+    function ownerOf(string memory name)
+        public
+        view
+        soulNameAlreadySet
+        returns (address)
+    {
         (, uint256 tokenId) = soulNameContract.getIdentityData(name);
         return super.ownerOf(tokenId);
     }
 
-    function tokenURI(string memory name) public view returns (string memory) {
+    function tokenURI(string memory name)
+        public
+        view
+        soulNameAlreadySet
+        returns (string memory)
+    {
         (, uint256 tokenId) = soulNameContract.getIdentityData(name);
         return super.tokenURI(tokenId);
     }
@@ -73,13 +83,19 @@ contract SoulboundIdentity is SBT {
         return super.tokenOfOwnerByIndex(owner, 0);
     }
 
-    function nameExists(string memory name) public view returns (bool exists) {
+    function nameExists(string memory name)
+        public
+        view
+        soulNameAlreadySet
+        returns (bool exists)
+    {
         return soulNameContract.nameExists(name);
     }
 
     function getIdentityData(string memory name)
         external
         view
+        soulNameAlreadySet
         returns (string memory sbtName, uint256 identityId)
     {
         return soulNameContract.getIdentityData(name);
@@ -88,6 +104,7 @@ contract SoulboundIdentity is SBT {
     function getIdentityNames(address owner)
         external
         view
+        soulNameAlreadySet
         returns (string[] memory sbtNames)
     {
         uint256 tokenId = tokenOfOwner(owner);
@@ -97,6 +114,7 @@ contract SoulboundIdentity is SBT {
     function getIdentityNames(uint256 tokenId)
         external
         view
+        soulNameAlreadySet
         returns (string[] memory sbtNames)
     {
         return soulNameContract.getIdentityNames(tokenId);
@@ -105,6 +123,14 @@ contract SoulboundIdentity is SBT {
     /* ========== PRIVATE FUNCTIONS ========== */
 
     /* ========== MODIFIERS ========== */
+
+    modifier soulNameAlreadySet() {
+        require(
+            address(soulNameContract) != address(0),
+            "SOULNAME_CONTRACT_NOT_SET"
+        );
+        _;
+    }
 
     /* ========== EVENTS ========== */
 }
