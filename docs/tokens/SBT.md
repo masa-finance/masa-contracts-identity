@@ -1,4 +1,4 @@
-# SoulboundIdentity
+# SBT
 
 
 
@@ -138,73 +138,6 @@ function getApproved(uint256 tokenId) external view returns (address)
 |---|---|---|
 | _0 | address | undefined |
 
-### getIdentityData
-
-```solidity
-function getIdentityData(string name) external view returns (string sbtName, uint256 identityId)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| name | string | undefined |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| sbtName | string | undefined |
-| identityId | uint256 | undefined |
-
-### getIdentityNames
-
-```solidity
-function getIdentityNames(uint256 tokenId) external view returns (string[] sbtNames)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| tokenId | uint256 | undefined |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| sbtNames | string[] | undefined |
-
-### getIdentityNames
-
-```solidity
-function getIdentityNames(address owner) external view returns (string[] sbtNames)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| owner | address | undefined |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| sbtNames | string[] | undefined |
-
 ### getRoleAdmin
 
 ```solidity
@@ -312,29 +245,6 @@ function mint(address to) external nonpayable returns (uint256)
 |---|---|---|
 | _0 | uint256 | undefined |
 
-### mintIdentityWithName
-
-```solidity
-function mintIdentityWithName(address to, string name) external payable returns (uint256)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| to | address | undefined |
-| name | string | undefined |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | undefined |
-
 ### name
 
 ```solidity
@@ -352,28 +262,6 @@ function name() external view returns (string)
 |---|---|---|
 | _0 | string | undefined |
 
-### nameExists
-
-```solidity
-function nameExists(string name) external view returns (bool exists)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| name | string | undefined |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| exists | bool | undefined |
-
 ### ownerOf
 
 ```solidity
@@ -389,28 +277,6 @@ function ownerOf(uint256 tokenId) external view returns (address)
 | Name | Type | Description |
 |---|---|---|
 | tokenId | uint256 | undefined |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | address | undefined |
-
-### ownerOf
-
-```solidity
-function ownerOf(string name) external view returns (address)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| name | string | undefined |
 
 #### Returns
 
@@ -534,22 +400,6 @@ function setApprovalForAll(address operator, bool approved) external nonpayable
 | operator | address | undefined |
 | approved | bool | undefined |
 
-### setSoulNameContract
-
-```solidity
-function setSoulNameContract(contract SoulName _soulName) external nonpayable
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _soulName | contract SoulName | undefined |
-
 ### soulLinker
 
 ```solidity
@@ -566,23 +416,6 @@ function soulLinker() external view returns (contract SoulLinker)
 | Name | Type | Description |
 |---|---|---|
 | _0 | contract SoulLinker | undefined |
-
-### soulNameContract
-
-```solidity
-function soulNameContract() external view returns (contract SoulName)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | contract SoulName | undefined |
 
 ### supportsInterface
 
@@ -645,28 +478,6 @@ function tokenByIndex(uint256 index) external view returns (uint256)
 |---|---|---|
 | _0 | uint256 | undefined |
 
-### tokenOfOwner
-
-```solidity
-function tokenOfOwner(address owner) external view returns (uint256)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| owner | address | undefined |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | undefined |
-
 ### tokenOfOwnerByIndex
 
 ```solidity
@@ -689,50 +500,6 @@ function tokenOfOwnerByIndex(address owner, uint256 index) external view returns
 | Name | Type | Description |
 |---|---|---|
 | _0 | uint256 | undefined |
-
-### tokenURI
-
-```solidity
-function tokenURI(string name) external view returns (string)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| name | string | undefined |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | string | undefined |
-
-### tokenURI
-
-```solidity
-function tokenURI(address owner) external view returns (string)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| owner | address | undefined |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | string | undefined |
 
 ### tokenURI
 

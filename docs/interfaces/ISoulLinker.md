@@ -13,7 +13,7 @@
 ### hasLinks
 
 ```solidity
-function hasLinks(address token, uint256 tokenId) external nonpayable returns (bool)
+function hasLinks(address token, uint256 tokenId) external view returns (bool)
 ```
 
 

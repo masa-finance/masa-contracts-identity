@@ -118,8 +118,10 @@ hot_code
 cache
 artifacts
 
+.env.secret
 .env.*.secret
 !.env.example.secret
+!.env.examplenetwork.secret
 
 coverage.json
 

@@ -1,6 +1,6 @@
 {
   "name": "@masa-finance/masa-contracts-identity",
-  "version": "0.1.0",
+  "version": "0.1.5",
   "main": "dist/typechain/index.js",
   "types": "dist/typechain/index.d.ts",
   "files": [
@@ -47,6 +47,7 @@
     "chai-as-promised": "^7.1.1",
     "chai-ethers": "^0.0.1",
     "envfile": "^6.17.0",
+    "ethereum-waffle": "^3.4.4",
     "hardhat": "^2.10.1",
     "hardhat-deploy": "^0.11.12",
     "hardhat-deploy-ethers": "^0.3.0-beta.13",

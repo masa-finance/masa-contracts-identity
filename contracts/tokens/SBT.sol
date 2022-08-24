@@ -1,27 +1,21 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/token/ERC721/presets/ERC721PresetMinterPauserAutoId.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
-import "./interfaces/ISoulLinker.sol";
+import "./NFT.sol";
+import "../interfaces/ISoulLinker.sol";
+import "../SoulLinker.sol";
 
-abstract contract SoulBoundToken is ERC721PresetMinterPauserAutoId, Ownable {
-    using Strings for uint256;
-
-    ISoulLinker public soulLinker;
+abstract contract SBT is NFT {
+    SoulLinker public soulLinker;
 
     constructor(
         address owner,
-        address _soulLinker,
+        SoulLinker _soulLinker,
         string memory name,
         string memory symbol,
         string memory baseTokenURI
-    ) ERC721PresetMinterPauserAutoId(name, symbol, baseTokenURI) Ownable() {
-        _setupRole(MINTER_ROLE, owner);
-        Ownable.transferOwnership(owner);
-
-        soulLinker = ISoulLinker(_soulLinker);
+    ) NFT(owner, name, symbol, baseTokenURI) {
+        soulLinker = _soulLinker;
     }
 
     function transferFrom(
@@ -57,18 +51,7 @@ abstract contract SoulBoundToken is ERC721PresetMinterPauserAutoId, Ownable {
         super.burn(tokenId);
     }
 
-    function tokenURI(uint256 tokenId)
-        public
-        view
-        override
-        returns (string memory)
-    {
-        _requireMinted(tokenId);
-
-        string memory baseURI = _baseURI();
-        return
-            bytes(baseURI).length > 0
-                ? string(abi.encodePacked(baseURI, tokenId.toString(), ".json"))
-                : "";
+    function mint(address to) public virtual returns (uint256) {
+        return _mintWithCounter(to);
     }
 }
