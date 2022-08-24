@@ -36,14 +36,14 @@ const func: DeployFunction = async ({
     soulNameDeploymentResult.address
   );
 
-  // we set the soulName contract in soulBoundIdentity and we add soulBoundIdentity as soulName minter
+  // we set the soulName contract in soulboundIdentity and we add soulboundIdentity as soulName minter
   const signer = env.OWNER
     ? new ethers.Wallet(
         getPrivateKey(network.name),
         ethers.getDefaultProvider(network.name)
       )
     : owner;
-  
+
   const MINTER_ROLE = await soulNameContract.MINTER_ROLE();
   await soulboundIdentityContract
     .connect(signer)
