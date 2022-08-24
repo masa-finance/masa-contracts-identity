@@ -4,19 +4,17 @@
 
 ### Celo: Alfajores
 
-- `SoulBoundCreditReport`: [`0x16C2f2c5F3aea4b70595Ea45693784247f951aD1`](https://alfajores-blockscout.celo-testnet.org/address/0x16C2f2c5F3aea4b70595Ea45693784247f951aD1/transactions)
-- `SoulBoundIdentity`: [`0xD0f3C1361d8Fba40CbC85cC546c38511b510dedd`](https://alfajores-blockscout.celo-testnet.org/address/0xD0f3C1361d8Fba40CbC85cC546c38511b510dedd/transactions)
-- `SoulName`: [`0x47fF7Cab4AF63ac2C0c62122866c979c40217Ffe`](https://alfajores-blockscout.celo-testnet.org/address/0x47fF7Cab4AF63ac2C0c62122866c979c40217Ffe/transactions)
-- `SoulLinker`: [`0x5D3e2fd5eB8685f964d0fAb2B0F34436bFcB3A42`](https://alfajores-blockscout.celo-testnet.org/address/0x5D3e2fd5eB8685f964d0fAb2B0F34436bFcB3A42/transactions)
-- `SoulBoundIdentityRouter`: [`0x7241c6F15aE018f4a5C05242d7cC00519FCF03f1`](https://alfajores-blockscout.celo-testnet.org/address/0x7241c6F15aE018f4a5C05242d7cC00519FCF03f1/transactions)
+- `SoulBoundCreditReport`: [`0xa8c050e7ba408165df4721fa32976a6146427dbB`](https://alfajores-blockscout.celo-testnet.org/address/0xa8c050e7ba408165df4721fa32976a6146427dbB/transactions)
+- `SoulBoundIdentity`: [`0x41a3cE7EA192D4b746CD7F2b7F8701aD4964C3c5`](https://alfajores-blockscout.celo-testnet.org/address/0x41a3cE7EA192D4b746CD7F2b7F8701aD4964C3c5/transactions)
+- `SoulName`: [`0x39A600828FdA30C77B0222167e161F5933Ccd2BE`](https://alfajores-blockscout.celo-testnet.org/address/0x39A600828FdA30C77B0222167e161F5933Ccd2BE/transactions)
+- `SoulLinker`: [`0xc67aB8e6612f794aFc532078dAff2deF35738968`](https://alfajores-blockscout.celo-testnet.org/address/0xc67aB8e6612f794aFc532078dAff2deF35738968/transactions)
 
 ### Rinkeby test network
 
-- `SoulBoundCreditReport`: [`0x1471A7d3914a38e7488111001e50eCc29D627166`](https://rinkeby.etherscan.io/address/0x1471A7d3914a38e7488111001e50eCc29D627166)
-- `SoulBoundIdentity`: [`0xd9B0185D3865727fEaB5760bF13dde39b00263e5`](https://rinkeby.etherscan.io/address/0xd9B0185D3865727fEaB5760bF13dde39b00263e5)
-- `SoulName`: [`0x736bda94F926E23a2318d7eb09dF36A09D9a59fA`](https://rinkeby.etherscan.io/address/0x736bda94F926E23a2318d7eb09dF36A09D9a59fA)
-- `SoulLinker`: [`0x0ffF769274a4fDa68Bf6E99FE0982c4c26B1A4A0`](https://rinkeby.etherscan.io/address/0x0ffF769274a4fDa68Bf6E99FE0982c4c26B1A4A0)
-- `SoulBoundIdentityRouter`: [`0xfFbDb1C2e8AA500D9Eb5ACA9f044B1C6B22865Db`](https://rinkeby.etherscan.io/address/0xfFbDb1C2e8AA500D9Eb5ACA9f044B1C6B22865Db)
+- `SoulBoundCreditReport`: [`0xc1758aa89F67D0d78b928796d5d425D5649770CA`](https://rinkeby.etherscan.io/address/0xc1758aa89F67D0d78b928796d5d425D5649770CA)
+- `SoulBoundIdentity`: [`0x42ff589E5B6cf65D846ccFa22C7bAeB9C6dA0548`](https://rinkeby.etherscan.io/address/0x42ff589E5B6cf65D846ccFa22C7bAeB9C6dA0548)
+- `SoulName`: [`0x06Ff60a3dBcfB907dbF670090807AE93b0169435`](https://rinkeby.etherscan.io/address/0x06Ff60a3dBcfB907dbF670090807AE93b0169435)
+- `SoulLinker`: [`0x3d039EA3d6Bd1e7369f55e0460d1AF507A9235C6`](https://rinkeby.etherscan.io/address/0x3d039EA3d6Bd1e7369f55e0460d1AF507A9235C6)
 
 #### Configuration
 
