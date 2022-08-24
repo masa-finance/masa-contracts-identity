@@ -1,4 +1,8 @@
-import { getPrivateKey, getInfuraApiKey } from "./src/utils/EnvParams";
+import {
+  getPrivateKey,
+  getInfuraApiKey,
+  getCoinMarketCapApiKey
+} from "./src/utils/EnvParams";
 import "hardhat-deploy";
 import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-solhint";
@@ -52,6 +56,10 @@ export default {
     deployer: {
       default: 0
     }
+  },
+  gasReporter: {
+    currency: "USD",
+    coinmarketcap: getCoinMarketCapApiKey()
   },
   dodoc: {},
   typechain: {
