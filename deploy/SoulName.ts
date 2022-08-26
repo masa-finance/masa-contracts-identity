@@ -1,4 +1,4 @@
-import { getEnvParams } from "../src/utils/EnvParams";
+import { getEnvParams, getPrivateKey } from "../src/utils/EnvParams";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
 
@@ -36,13 +36,20 @@ const func: DeployFunction = async ({
     soulNameDeploymentResult.address
   );
 
-  const MINTER_ROLE = await soulNameContract.MINTER_ROLE();
+  // we set the soulName contract in soulboundIdentity and we add soulboundIdentity as soulName minter
+  const signer = env.OWNER
+    ? new ethers.Wallet(
+        getPrivateKey(network.name),
+        ethers.getDefaultProvider(network.name)
+      )
+    : owner;
 
+  const MINTER_ROLE = await soulNameContract.MINTER_ROLE();
   await soulboundIdentityContract
-    .connect(owner)
+    .connect(signer)
     .setSoulNameContract(soulNameDeploymentResult.address);
   await soulNameContract
-    .connect(owner)
+    .connect(signer)
     .grantRole(MINTER_ROLE, soulboundIdentityContract.address);
 
   await ethers.getContractAt("SoulName", soulNameDeploymentResult.address);
