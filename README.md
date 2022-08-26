@@ -1,4 +1,4 @@
-# Masa Soul Bound NFTs
+# Masa Soulbound NFTs
 
 ## Contract Deployments
 
@@ -34,9 +34,11 @@ The base url for the Metadata url that is beeing generated from the contract
 
 ## Interface
 
-- [Abstract Soul Bound Token Definition](docs/SoulBoundToken.md)
-- [Soul Bound Identity Definition](docs/SoulboundIdentity.md)
-- [Soul Bound Credit Report Definition](docs/SoulboundCreditReport.md)
+- [Abstract Soulbound Token Definition](docs/tokens/SBT.md)
+- [Abstract Non-Fungible Token Definition](docs/tokens/NFT.md)
+- [Soulbound Identity Definition](docs/SoulboundIdentity.md)
+- [Soulbound Credit Report Definition](docs/SoulboundCreditReport.md)
+- [Soul Name Definition](docs/SoulName.md)
 - [Soul Linker Definition](docs/SoulLinker.md)
 
 ## Deployment
@@ -64,8 +66,8 @@ Import in your project:
 import { SoulboundIdentity, SoulboundIdentity__factory } from "@masa-finance/masa-contracts-identity";
 
 const soulboundIdentity: SoulboundIdentity = SoulboundIdentity__factory.connect(
-      <address> // address of the deployed contract,
-      <provider> // web3 provider
-    );
+  <address>, // address of the deployed contract
+  <provider> // web3 provider
+);
 console.log(await soulboundIdentity.symbol());
 ```
