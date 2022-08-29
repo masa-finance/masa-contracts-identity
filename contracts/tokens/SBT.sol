@@ -6,9 +6,9 @@ import "../interfaces/ISoulLinker.sol";
 import "../SoulLinker.sol";
 
 /// @title SBT
-///  @author Masa Finance
-///  @notice Soulbound token. Non-fungible token that is not transferable.
-///  @dev Implementation of https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763 Soulbound token.
+/// @author Masa Finance
+/// @notice Soulbound token. Non-fungible token that is not transferable.
+/// @dev Implementation of https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763 Soulbound token.
 abstract contract SBT is NFT {
     SoulLinker public soulLinker;
 
