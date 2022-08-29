@@ -20,7 +20,7 @@ let someone: SignerWithAddress;
 
 describe("Soulbound Credit Report", () => {
   before(async () => {
-    [, owner, someone] = await ethers.getSigners();
+    [owner, someone] = await ethers.getSigners();
   });
 
   beforeEach(async () => {

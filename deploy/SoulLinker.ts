@@ -16,12 +16,12 @@ const func: DeployFunction = async ({
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  [, owner] = await ethers.getSigners();
+  [owner] = await ethers.getSigners();
   const env = getEnvParams(network.name);
 
   const soulLinkerDeploymentResult = await deploy("SoulLinker", {
     from: deployer,
-    args: [env.OWNER || owner.address],
+    args: [owner.address],
     log: true
   });
 

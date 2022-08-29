@@ -16,7 +16,7 @@ const func: DeployFunction = async ({
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  [, owner] = await ethers.getSigners();
+  [owner] = await ethers.getSigners();
   const env = getEnvParams(network.name);
   const baseUri = `${env.BASE_URI}/identity/`;
 
@@ -24,7 +24,7 @@ const func: DeployFunction = async ({
 
   const SoulboundIdentityDeploymentResult = await deploy("SoulboundIdentity", {
     from: deployer,
-    args: [env.OWNER || owner.address, soulLinker.address, baseUri],
+    args: [owner.address, soulLinker.address, baseUri],
     log: true
   });
 

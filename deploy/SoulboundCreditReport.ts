@@ -16,7 +16,7 @@ const func: DeployFunction = async ({
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  [, owner] = await ethers.getSigners();
+  [owner] = await ethers.getSigners();
   const env = getEnvParams(network.name);
   const baseUri = `${env.BASE_URI}/credit-report/`;
 
@@ -26,7 +26,7 @@ const func: DeployFunction = async ({
     "SoulboundCreditReport",
     {
       from: deployer,
-      args: [env.OWNER || owner.address, soulLinker.address, baseUri],
+      args: [owner.address, soulLinker.address, baseUri],
       log: true
     }
   );
