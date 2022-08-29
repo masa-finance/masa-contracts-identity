@@ -106,15 +106,15 @@ function balanceOf(address owner) external view returns (uint256)
 function burn(uint256 tokenId) external nonpayable
 ```
 
+Burns the token
 
-
-*Burns `tokenId`. See {ERC721-_burn}. Requirements: - The caller must own `tokenId` or be an approved operator.*
+*The caller must own `tokenId` or be an approved operator*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| tokenId | uint256 | undefined |
+| tokenId | uint256 | The NFT ID to burn |
 
 ### getApproved
 
@@ -229,21 +229,21 @@ function isApprovedForAll(address owner, address operator) external view returns
 function mint(address to) external nonpayable returns (uint256)
 ```
 
+Mints a new NFT
 
-
-
+*The caller must have the MINTER role*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| to | address | undefined |
+| to | address | The address to mint the NFT to |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256 | undefined |
+| _0 | uint256 | The NFT ID of the newly minted NFT |
 
 ### name
 
@@ -349,39 +349,39 @@ function revokeRole(bytes32 role, address account) external nonpayable
 ### safeTransferFrom
 
 ```solidity
-function safeTransferFrom(address, address, uint256) external pure
+function safeTransferFrom(address from, address to, uint256 tokenId) external pure
 ```
 
+Transfers the ownership of an NFT from one address to another address
 
-
-
+*This will raise an exception because the token is not transferable.*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | address | undefined |
-| _1 | address | undefined |
-| _2 | uint256 | undefined |
+| from | address | The current owner of the NFT |
+| to | address | The new owner |
+| tokenId | uint256 | The NFT ID to transfer |
 
 ### safeTransferFrom
 
 ```solidity
-function safeTransferFrom(address, address, uint256, bytes) external pure
+function safeTransferFrom(address from, address to, uint256 tokenId, bytes data) external pure
 ```
 
+Transfer ownership of the token to another address safely
 
-
-
+*This will raise an exception because the token is not transferable.*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | address | undefined |
-| _1 | address | undefined |
-| _2 | uint256 | undefined |
-| _3 | bytes | undefined |
+| from | address | The current owner of the NFT |
+| to | address | The new owner |
+| tokenId | uint256 | The NFT ID to transfer |
+| data | bytes | Additional data with no specified format, sent in call to `_to` |
 
 ### setApprovalForAll
 
@@ -543,20 +543,20 @@ function totalSupply() external view returns (uint256)
 ### transferFrom
 
 ```solidity
-function transferFrom(address, address, uint256) external pure
+function transferFrom(address from, address to, uint256 tokenId) external pure
 ```
 
+Transfer ownership of an NFT -- THE CALLER IS RESPONSIBLE  TO CONFIRM THAT `_to` IS CAPABLE OF RECEIVING NFTS OR ELSE  THEY MAY BE PERMANENTLY LOST
 
-
-
+*This will raise an exception because the token is not transferable.*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | address | undefined |
-| _1 | address | undefined |
-| _2 | uint256 | undefined |
+| from | address | The current owner of the NFT |
+| to | address | The new owner |
+| tokenId | uint256 | The NFT ID to transfer |
 
 ### unpause
 
