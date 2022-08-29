@@ -16,14 +16,14 @@ const func: DeployFunction = async ({
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  [, owner] = await ethers.getSigners();
+  [owner] = await ethers.getSigners();
   const env = getEnvParams(network.name);
 
   const soulboundIdentity = await deployments.get("SoulboundIdentity");
 
   const soulNameDeploymentResult = await deploy("SoulName", {
     from: deployer,
-    args: [env.OWNER || owner.address, soulboundIdentity.address, ".sol", ""],
+    args: [owner.address, soulboundIdentity.address, ".sol", ""],
     log: true
   });
 
@@ -37,19 +37,12 @@ const func: DeployFunction = async ({
   );
 
   // we set the soulName contract in soulboundIdentity and we add soulboundIdentity as soulName minter
-  const signer = env.OWNER
-    ? new ethers.Wallet(
-        getPrivateKey(network.name),
-        ethers.getDefaultProvider(network.name)
-      )
-    : owner;
-
   const MINTER_ROLE = await soulNameContract.MINTER_ROLE();
   await soulboundIdentityContract
-    .connect(signer)
+    .connect(owner)
     .setSoulNameContract(soulNameDeploymentResult.address);
   await soulNameContract
-    .connect(signer)
+    .connect(owner)
     .grantRole(MINTER_ROLE, soulboundIdentityContract.address);
 
   await ethers.getContractAt("SoulName", soulNameDeploymentResult.address);
