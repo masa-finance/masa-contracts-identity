@@ -1,6 +1,6 @@
 # NFT
 
-*Non-fungible token*
+*Masa Finance*
 
 > NFT
 

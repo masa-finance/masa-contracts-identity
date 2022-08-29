@@ -1,10 +1,10 @@
 # SBT
 
-*Soulbound token*
+*Masa Finance*
 
 > SBT
 
-Non-fungible token that is not transferable.
+Soulbound token. Non-fungible token that is not transferable.
 
 *Implementation of https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763 Soulbound token.*
 
