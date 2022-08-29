@@ -24,8 +24,6 @@ const func: DeployFunction = async ({
     args: [owner.address],
     log: true
   });
-
-  await ethers.getContractAt("SoulLinker", soulLinkerDeploymentResult.address);
 };
 
 func.tags = ["SoulLinker"];

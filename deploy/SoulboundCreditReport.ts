@@ -30,11 +30,6 @@ const func: DeployFunction = async ({
       log: true
     }
   );
-
-  await ethers.getContractAt(
-    "SoulboundCreditReport",
-    SoulboundCreditReportDeploymentResult.address
-  );
 };
 
 func.tags = ["SoulboundCreditReport"];
