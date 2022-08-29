@@ -9,13 +9,11 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-/**
- * @title NFT
- * @author Masa Finance
- * @notice Non-fungible token is a token that is not fungible.
- * @dev Implementation of https://eips.ethereum.org/EIPS/eip-721[ERC721] Non-Fungible Token Standard,
- * that inherits from {ERC721Enumerable}, {Pausable}, {AccessControl} and {ERC721Burnable}.
- */
+/// @title NFT
+/// @author Masa Finance
+/// @notice Non-fungible token is a token that is not fungible.
+/// @dev Implementation of https://eips.ethereum.org/EIPS/eip-721[ERC721] Non-Fungible Token Standard,
+/// that inherits from {ERC721Enumerable}, {Pausable}, {AccessControl} and {ERC721Burnable}.
 abstract contract NFT is
     ERC721,
     ERC721Enumerable,
