@@ -6,6 +6,7 @@ import "./tokens/SBT.sol";
 /// @title Soulbound Credit Report
 /// @author Masa Finance
 /// @notice Soulbound token that represents a credit report.
+/// @dev Soulbound credit report, that inherits from the SBT contract.
 contract SoulboundCreditReport is SBT {
     /* ========== STATE VARIABLES =========================================== */
 
