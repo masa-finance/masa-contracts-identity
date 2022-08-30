@@ -36,6 +36,10 @@ export function getInfuraApiKey(networkName: string | undefined) {
   return getSecretParam("INFURA_API_KEY", networkName);
 }
 
+export function getEtherscanApiKey(networkName: string | undefined) {
+  return getSecretParam("ETHERSCAN_API_KEY", networkName);
+}
+
 export function getCoinMarketCapApiKey() {
   return getSecretParam("COINMARKETCAP_API_KEY", undefined);
 }
