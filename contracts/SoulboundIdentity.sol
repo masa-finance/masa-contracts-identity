@@ -6,11 +6,11 @@ import "./SoulLinker.sol";
 import "./SoulName.sol";
 
 contract SoulboundIdentity is SBT {
-    /* ========== STATE VARIABLES ========== */
+    /* ========== STATE VARIABLES =========================================== */
 
     SoulName public soulNameContract;
 
-    /* ========== INITIALIZE ========== */
+    /* ========== INITIALIZE ================================================ */
 
     constructor(
         address owner,
@@ -18,7 +18,7 @@ contract SoulboundIdentity is SBT {
         string memory baseTokenURI
     ) SBT(owner, _soulLinker, "Masa Identity", "MID", baseTokenURI) {}
 
-    /* ========== RESTRICTED FUNCTIONS ========== */
+    /* ========== RESTRICTED FUNCTIONS ====================================== */
 
     function setSoulNameContract(SoulName _soulName)
         external
@@ -29,7 +29,7 @@ contract SoulboundIdentity is SBT {
         soulNameContract = _soulName;
     }
 
-    /* ========== MUTATIVE FUNCTIONS ========== */
+    /* ========== MUTATIVE FUNCTIONS ======================================== */
 
     function mint(address to) public override returns (uint256) {
         require(balanceOf(to) < 1, "Soulbound identity already created!");
@@ -49,7 +49,8 @@ contract SoulboundIdentity is SBT {
         return identityId;
     }
 
-    /* ========== VIEWS ========== */
+    /* ========== VIEWS ===================================================== */
+
     function ownerOf(uint256 tokenId) public view override returns (address) {
         return super.ownerOf(tokenId);
     }
@@ -120,9 +121,9 @@ contract SoulboundIdentity is SBT {
         return soulNameContract.getIdentityNames(tokenId);
     }
 
-    /* ========== PRIVATE FUNCTIONS ========== */
+    /* ========== PRIVATE FUNCTIONS ========================================= */
 
-    /* ========== MODIFIERS ========== */
+    /* ========== MODIFIERS ================================================= */
 
     modifier soulNameAlreadySet() {
         require(
@@ -132,5 +133,5 @@ contract SoulboundIdentity is SBT {
         _;
     }
 
-    /* ========== EVENTS ========== */
+    /* ========== EVENTS ==================================================== */
 }
