@@ -8,10 +8,14 @@ import "./tokens/NFT.sol";
 import "./interfaces/ISoulNameResolver.sol";
 import "./SoulboundIdentity.sol";
 
+/// @title SoulName NFT
+/// @author Masa Finance
+/// @notice SoulName NFT that points to a Soulbound identity token
+/// @dev SoulName NFT, that inherits from the NFT contract, and points to a Soulbound identity token.
+/// It has an extension, and stores all the information about the identity names.
 contract SoulName is NFT, ISoulNameResolver {
-    using Strings for uint256;
-
     /* ========== STATE VARIABLES ========== */
+    using Strings for uint256;
 
     SoulboundIdentity public soulboundIdentityContract;
     string public extension; // suffix of the names (.sol?)
@@ -27,6 +31,12 @@ contract SoulName is NFT, ISoulNameResolver {
 
     /* ========== INITIALIZE ========== */
 
+    /// @notice Creates a new SoulName NFT
+    /// @dev Creates a new SoulName NFT, that points to a Soulbound identity, inheriting from the NFT contract.
+    /// @param owner Owner of the smart contract
+    /// @param _soulboundIdentity Address of the Soulbound identity contract
+    /// @param _extension Extension of the soul name
+    /// @param baseTokenURI Base URI of the token
     constructor(
         address owner,
         SoulboundIdentity _soulboundIdentity,
@@ -41,6 +51,9 @@ contract SoulName is NFT, ISoulNameResolver {
 
     /* ========== RESTRICTED FUNCTIONS ========== */
 
+    /// @notice Sets the extension of the soul name
+    /// @dev The caller must have the admin role to call this function
+    /// @param _extension Extension of the soul name
     function setExtension(string memory _extension)
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
@@ -55,6 +68,11 @@ contract SoulName is NFT, ISoulNameResolver {
 
     /* ========== MUTATIVE FUNCTIONS ========== */
 
+    /// @notice Mints a new soul name
+    /// @dev The caller can mint more than one name. The soul name must be unique.
+    /// @param to Address of the owner of the new soul name
+    /// @param name Name of the new soul name
+    /// @param identityId TokenId of the soulbound identity that will be pointed from this soul name
     function mint(
         address to,
         string memory name,
@@ -80,6 +98,10 @@ contract SoulName is NFT, ISoulNameResolver {
         return tokenId;
     }
 
+    /// @notice Update the identity id pointed from a soul name
+    /// @dev The caller must be the owner or an approved address of the soul name.
+    /// @param tokenId TokenId of the soul name
+    /// @param identityId New TokenId of the soulbound identity that will be pointed from this soul name
     function updateIdentityId(uint256 tokenId, uint256 identityId) public {
         require(
             _isApprovedOrOwner(_msgSender(), tokenId),
@@ -103,6 +125,9 @@ contract SoulName is NFT, ISoulNameResolver {
         identityIdToNames[identityId].push(name);
     }
 
+    /// @notice Burn a soul name
+    /// @dev The caller must be the owner or an approved address of the soul name.
+    /// @param tokenId TokenId of the soul name to burn
     function burn(uint256 tokenId) public override {
         require(_exists(tokenId), "TOKEN_NOT_FOUND");
 
@@ -119,6 +144,10 @@ contract SoulName is NFT, ISoulNameResolver {
 
     /* ========== VIEWS ========== */
 
+    /// @notice Checks if a soul name already exists
+    /// @dev This function queries if a soul name already exists
+    /// @param name Name of the soul name
+    /// @return exists `true` if the soul name exists, `false` otherwise
     function nameExists(string memory name)
         public
         view
@@ -129,6 +158,11 @@ contract SoulName is NFT, ISoulNameResolver {
         return (bytes(soulNames[lowercaseName].name).length > 0);
     }
 
+    /// @notice Returns the information of a soul name
+    /// @dev This function queries the information of a soul name
+    /// @param name Name of the soul name
+    /// @return sbtName Soul name, in upper/lower case and extension
+    /// @return identityId Identity id of the soul name
     function getIdentityData(string memory name)
         external
         view
@@ -145,6 +179,10 @@ contract SoulName is NFT, ISoulNameResolver {
         );
     }
 
+    /// @notice Returns all the identity names of an identity
+    /// @dev This function queries all the identity names of the specified identity Id
+    /// @param identityId TokenId of the identity
+    /// @return sbtNames Array of soul names associated to the identity Id
     function getIdentityNames(uint256 identityId)
         external
         view
@@ -155,6 +193,10 @@ contract SoulName is NFT, ISoulNameResolver {
         return identityIdToNames[identityId];
     }
 
+    /// @notice Returns the URI of a soul name
+    /// @dev This function returns the token URI of the soul name identity specified by the tokenId
+    /// @param tokenId TokenId of the soul name
+    /// @return URI of the soul name
     function tokenURI(uint256 tokenId)
         public
         view
