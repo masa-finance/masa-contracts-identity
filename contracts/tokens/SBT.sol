@@ -10,7 +10,11 @@ import "../SoulLinker.sol";
 /// @notice Soulbound token. Non-fungible token that is not transferable.
 /// @dev Implementation of https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763 Soulbound token.
 abstract contract SBT is NFT {
+    /* ========== STATE VARIABLES =========================================== */
+
     SoulLinker public soulLinker;
+
+    /* ========== INITIALIZE ================================================ */
 
     /// @notice Creates a new soulbound token
     /// @dev Creates a new soulbound token
@@ -28,6 +32,10 @@ abstract contract SBT is NFT {
     ) NFT(owner, name, symbol, baseTokenURI) {
         soulLinker = _soulLinker;
     }
+
+    /* ========== RESTRICTED FUNCTIONS ====================================== */
+
+    /* ========== MUTATIVE FUNCTIONS ======================================== */
 
     /// @notice Transfer ownership of an NFT -- THE CALLER IS RESPONSIBLE
     ///  TO CONFIRM THAT `_to` IS CAPABLE OF RECEIVING NFTS OR ELSE
@@ -90,4 +98,12 @@ abstract contract SBT is NFT {
     function mint(address to) public virtual returns (uint256) {
         return _mintWithCounter(to);
     }
+
+    /* ========== VIEWS ===================================================== */
+
+    /* ========== PRIVATE FUNCTIONS ========================================= */
+
+    /* ========== MODIFIERS ================================================= */
+
+    /* ========== EVENTS ==================================================== */
 }
