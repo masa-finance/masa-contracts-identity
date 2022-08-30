@@ -1,10 +1,10 @@
 # SoulLinker
 
+*Masa Finance*
 
+> Soul linker
 
-
-
-
+Soul linker smart contract that let add links to a Soulbound token.
 
 
 
@@ -16,7 +16,7 @@
 function hasLinks(address token, uint256 tokenId) external view returns (bool)
 ```
 
-
+Query if the contract has links for the given token id
 
 
 
@@ -24,14 +24,14 @@ function hasLinks(address token, uint256 tokenId) external view returns (bool)
 
 | Name | Type | Description |
 |---|---|---|
-| token | address | undefined |
-| tokenId | uint256 | undefined |
+| token | address | Address of the token |
+| tokenId | uint256 | Id of the token |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | bool | undefined |
+| _0 | bool | `true` if the contract has links, `false` otherwise |
 
 ### owner
 

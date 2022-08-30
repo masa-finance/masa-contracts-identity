@@ -6,7 +6,7 @@
 
 Soulbound token that represents a credit report.
 
-
+*Soulbound credit report, that inherits from the SBT contract.*
 
 ## Methods
 

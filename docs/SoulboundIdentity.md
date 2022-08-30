@@ -1,12 +1,12 @@
 # SoulboundIdentity
 
+*Masa Finance*
 
+> Soulbound Identity
 
+Soulbound token that represents an identity.
 
-
-
-
-
+*Soulbound identity, that inherits from the SBT contract.*
 
 ## Methods
 
@@ -144,22 +144,22 @@ function getApproved(uint256 tokenId) external view returns (address)
 function getIdentityData(string name) external view returns (string sbtName, uint256 identityId)
 ```
 
+Returns the information of a soul name
 
-
-
+*This function queries the information of a soul name*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| name | string | undefined |
+| name | string | Name of the soul name |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| sbtName | string | undefined |
-| identityId | uint256 | undefined |
+| sbtName | string | Soul name, in upper/lower case and extension |
+| identityId | uint256 | Identity id of the soul name |
 
 ### getIdentityNames
 
@@ -167,21 +167,21 @@ function getIdentityData(string name) external view returns (string sbtName, uin
 function getIdentityNames(uint256 tokenId) external view returns (string[] sbtNames)
 ```
 
+Returns all the identity names of an identity
 
-
-
+*This function queries all the identity names of the specified identity Id*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| tokenId | uint256 | undefined |
+| tokenId | uint256 | TokenId of the identity |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| sbtNames | string[] | undefined |
+| sbtNames | string[] | Array of soul names associated to the identity Id |
 
 ### getIdentityNames
 
@@ -189,21 +189,21 @@ function getIdentityNames(uint256 tokenId) external view returns (string[] sbtNa
 function getIdentityNames(address owner) external view returns (string[] sbtNames)
 ```
 
+Returns all the identity names of an account
 
-
-
+*This function queries all the identity names of the specified account*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| owner | address | undefined |
+| owner | address | Address of the owner of the identities |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| sbtNames | string[] | undefined |
+| sbtNames | string[] | Array of soul names associated to the account |
 
 ### getRoleAdmin
 
@@ -296,21 +296,21 @@ function isApprovedForAll(address owner, address operator) external view returns
 function mint(address to) external nonpayable returns (uint256)
 ```
 
-Mints a new NFT
+Mints a new soulbound identity
 
-*The caller must have the MINTER role*
+*The caller can only mint one identity per address*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| to | address | The address to mint the NFT to |
+| to | address | Address of the owner of the new identity |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256 | The NFT ID of the newly minted NFT |
+| _0 | uint256 | undefined |
 
 ### mintIdentityWithName
 
@@ -318,16 +318,16 @@ Mints a new NFT
 function mintIdentityWithName(address to, string name) external payable returns (uint256)
 ```
 
+Mints a new soulbound identity with a SoulName associated to it
 
-
-
+*The caller can only mint one identity per address, and the name must be unique*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| to | address | undefined |
-| name | string | undefined |
+| to | address | Address of the owner of the new identity |
+| name | string | Name of the new identity |
 
 #### Returns
 
@@ -358,21 +358,21 @@ function name() external view returns (string)
 function nameExists(string name) external view returns (bool exists)
 ```
 
+Checks if a soul name already exists
 
-
-
+*This function queries if a soul name already exists*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| name | string | undefined |
+| name | string | Name of the soul name |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| exists | bool | undefined |
+| exists | bool | `true` if the soul name exists, `false` otherwise |
 
 ### ownerOf
 
@@ -380,21 +380,21 @@ function nameExists(string name) external view returns (bool exists)
 function ownerOf(uint256 tokenId) external view returns (address)
 ```
 
+Returns the owner address of an identity
 
-
-*See {IERC721-ownerOf}.*
+*This function returns the owner address of the identity specified by the tokenId*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| tokenId | uint256 | undefined |
+| tokenId | uint256 | TokenId of the identity |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | address | undefined |
+| _0 | address | Address of the owner of the identity |
 
 ### ownerOf
 
@@ -402,21 +402,21 @@ function ownerOf(uint256 tokenId) external view returns (address)
 function ownerOf(string name) external view returns (address)
 ```
 
+Returns the owner address of a soul name
 
-
-
+*This function returns the owner address of the soul name identity specified by the name*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| name | string | undefined |
+| name | string | Name of the soul name |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | address | undefined |
+| _0 | address | Address of the owner of the identity |
 
 ### pause
 
@@ -540,15 +540,15 @@ function setApprovalForAll(address operator, bool approved) external nonpayable
 function setSoulNameContract(contract SoulName _soulName) external nonpayable
 ```
 
+Sets the SoulName contract address linked to this identity
 
-
-
+*The caller must have the admin role to call this function*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| _soulName | contract SoulName | undefined |
+| _soulName | contract SoulName | Address of the SoulName contract |
 
 ### soulLinker
 
@@ -651,21 +651,21 @@ function tokenByIndex(uint256 index) external view returns (uint256)
 function tokenOfOwner(address owner) external view returns (uint256)
 ```
 
+Returns the identity id of an account
 
-
-
+*This function returns the tokenId of the identity owned by an account*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| owner | address | undefined |
+| owner | address | Address of the owner of the identity |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256 | undefined |
+| _0 | uint256 | TokenId of the identity owned by the account |
 
 ### tokenOfOwnerByIndex
 
@@ -696,21 +696,21 @@ function tokenOfOwnerByIndex(address owner, uint256 index) external view returns
 function tokenURI(string name) external view returns (string)
 ```
 
+Returns the URI of a soul name
 
-
-
+*This function returns the token URI of the soul name identity specified by the name*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| name | string | undefined |
+| name | string | Name of the soul name |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | string | undefined |
+| _0 | string | URI of the identity associated to a soul name |
 
 ### tokenURI
 
@@ -718,21 +718,21 @@ function tokenURI(string name) external view returns (string)
 function tokenURI(address owner) external view returns (string)
 ```
 
+Returns the URI of the owner of an identity
 
-
-
+*This function returns the token URI of the identity owned by an account*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| owner | address | undefined |
+| owner | address | Address of the owner of the identity |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | string | undefined |
+| _0 | string | URI of the identity owned by the account |
 
 ### tokenURI
 
