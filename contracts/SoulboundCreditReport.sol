@@ -7,6 +7,9 @@ import "./tokens/SBT.sol";
 /// @author Masa Finance
 /// @notice Soulbound token that represents a credit report.
 contract SoulboundCreditReport is SBT {
+    /* ========== STATE VARIABLES =========================================== */
+
+    /* ========== INITIALIZE ================================================ */
 
     /// @notice Creates a new soulbound credit report
     /// @dev Creates a new soulbound credit report, inheriting from the SBT contract.
@@ -18,4 +21,16 @@ contract SoulboundCreditReport is SBT {
         SoulLinker _soulLinker,
         string memory baseTokenURI
     ) SBT(owner, _soulLinker, "Masa Credit Report", "MCR", baseTokenURI) {}
+
+    /* ========== RESTRICTED FUNCTIONS ====================================== */
+
+    /* ========== MUTATIVE FUNCTIONS ======================================== */
+
+    /* ========== VIEWS ===================================================== */
+
+    /* ========== PRIVATE FUNCTIONS ========================================= */
+
+    /* ========== MODIFIERS ================================================= */
+
+    /* ========== EVENTS ==================================================== */
 }
