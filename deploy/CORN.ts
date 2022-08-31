@@ -30,7 +30,6 @@ const func: DeployFunction = async ({
     env.OWNER || owner.address,
     ethers.utils.parseEther("1000")
   );
-  console.log(await corn.balanceOf(env.OWNER || owner.address));
 };
 
 func.tags = ["CORN"];
