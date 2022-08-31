@@ -14,12 +14,14 @@ contract SoulFactory {
     /* ========== STATE VARIABLES ========== */
 
     SoulboundIdentity public soulboundIdentity;
- 
+
     uint256 public mintingPrice; // price in stable coin
 
     address public defaultStableCoin; // USDC
     address public utilityToken; // $CORN
     mapping(address => bool) public paymentMethod;
+
+    address public reserveWallet;
 
     /* ========== INITIALIZE ========== */
 
@@ -27,22 +29,32 @@ contract SoulFactory {
     /// @dev Creates a new Soul Factory, that has the role to minting new Soulbound Identities
     /// and Soul Name NFTs, paying a fee
     /// @param owner Owner of the smart contract
+    /// @param _soulBoundIdentity Address of the Soulbound identity contract
+    /// @param _mintingPrice Price of the minting in stable coin
+    /// @param _defaultStableCoin Default stable coin to pay the fee in (USDC)
+    /// @param _utilityToken Utility token to pay the fee in ($CORN)
+    /// @param _reserveWallet Wallet that will receive the fee
     constructor(
         address owner,
         SoulboundIdentity _soulBoundIdentity,
         uint256 _mintingPrice,
         address _defaultStableCoin,
-        address _utilityToken
+        address _utilityToken,
+        address _reserveWallet
     ) {
-      soulboundIdentity = _soulBoundIdentity;
+        require(_reserveWallet != address(0), "ZERO_ADDRESS");
 
-      mintingPrice = _mintingPrice;
-      defaultStableCoin = _defaultStableCoin;
-      utilityToken = _utilityToken;
+        soulboundIdentity = _soulBoundIdentity;
 
-      paymentMethod[address(0)] = true; // address(0) will represent the native token (ETH)
-      paymentMethod[_defaultStableCoin] = true;
-      paymentMethod[_utilityToken] = true;
+        mintingPrice = _mintingPrice;
+        defaultStableCoin = _defaultStableCoin;
+        utilityToken = _utilityToken;
+
+        reserveWallet = _reserveWallet;
+
+        paymentMethod[address(0)] = true; // address(0) will represent the native token (ETH)
+        paymentMethod[_defaultStableCoin] = true;
+        paymentMethod[_utilityToken] = true;
     }
 
     /* ========== RESTRICTED FUNCTIONS ========== */
