@@ -168,6 +168,29 @@ function paused() external view returns (bool)
 |---|---|---|
 | _0 | bool | undefined |
 
+### purchase
+
+```solidity
+function purchase(address paymentMethod, string name) external payable returns (uint256)
+```
+
+Mints a new Soulbound Identity purchasing it
+
+*This function allows the purchase of a soulbount identity usign stable coin (USDC), native token (ETH) or utility token ($CORN)*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| paymentMethod | address | Address of token that user want to pay |
+| name | string | Name of the new soul name |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | TokenId of the new soulbound identity |
+
 ### purchaseInfo
 
 ```solidity
