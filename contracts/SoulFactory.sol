@@ -139,7 +139,19 @@ contract SoulFactory is Pausable, AccessControl {
 
     /* ========== PRIVATE FUNCTIONS ========== */
 
+    /// @notice Mints a new Soulbound Identity
+    /// @dev The final step of all purchase options. Will mint a
+    /// new Soulbound Identity and a Soul Name NFT and emit the purchase event
+    function _mintSoulboundIdentity() internal {
+        // mint Soulbound token
+        soulboundIdentity.mint(_msgSender());
+
+        emit SoulboundIdentityPurchased(_msgSender(), mintingPrice);
+    }
+
     /* ========== MODIFIERS ========== */
 
     /* ========== EVENTS ========== */
+
+    event SoulboundIdentityPurchased(address indexed user, uint256 price);
 }

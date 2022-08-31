@@ -440,6 +440,23 @@ event RoleRevoked(bytes32 indexed role, address indexed account, address indexed
 | account `indexed` | address | undefined |
 | sender `indexed` | address | undefined |
 
+### SoulboundIdentityPurchased
+
+```solidity
+event SoulboundIdentityPurchased(address indexed user, uint256 price)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| user `indexed` | address | undefined |
+| price  | uint256 | undefined |
+
 ### Unpaused
 
 ```solidity
