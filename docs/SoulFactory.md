@@ -235,6 +235,22 @@ Set the reserve wallet
 |---|---|---|
 | _reserveWallet | address | New reserve wallet |
 
+### setSoulboundIdentity
+
+```solidity
+function setSoulboundIdentity(contract SoulboundIdentity _soulboundIdentity) external nonpayable
+```
+
+Sets the SoulboundIdentity contract address linked to this factory
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _soulboundIdentity | contract SoulboundIdentity | New SoulboundIdentity contract address |
+
 ### soulboundIdentity
 
 ```solidity

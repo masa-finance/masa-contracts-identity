@@ -86,6 +86,13 @@ contract SoulFactory is Pausable, AccessControl {
         soulboundIdentity = _soulboundIdentity;
     }
 
+    /// @notice Sets the price of the minting in stable coin
+    /// @dev The caller must have the admin role to call this function
+    /// @param _mintingPrice New price of the minting in stable coin
+    function setMintingPrice(uint256 _mintingPrice) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        mintingPrice = _mintingPrice;
+    }
+
     /// @notice Set the reserve wallet
     /// @dev Let change the reserve walled. It can be triggered by an authorized account.
     /// @param _reserveWallet New reserve wallet
