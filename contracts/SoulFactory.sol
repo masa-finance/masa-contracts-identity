@@ -89,8 +89,35 @@ contract SoulFactory is Pausable, AccessControl {
     /// @notice Sets the price of the minting in stable coin
     /// @dev The caller must have the admin role to call this function
     /// @param _mintingPrice New price of the minting in stable coin
-    function setMintingPrice(uint256 _mintingPrice) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setMintingPrice(uint256 _mintingPrice)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
         mintingPrice = _mintingPrice;
+    }
+
+    /// @notice Sets the default stable coin to pay the fee in (USDC)
+    /// @dev The caller must have the admin role to call this function
+    /// @param _defaultStableCoin New default stable coin to pay the fee in
+    function setDefaultStableCoin(address _defaultStableCoin)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        require(_defaultStableCoin != address(0), "ZERO_ADDRESS");
+        require(defaultStableCoin != _defaultStableCoin, "SAME_VALUE");
+        defaultStableCoin = _defaultStableCoin;
+    }
+
+    /// @notice Sets the utility token to pay the fee in ($CORN)
+    /// @dev The caller must have the admin role to call this function
+    /// @param _utilityToken New utility token to pay the fee in
+    function setUtilityToken(address _utilityToken)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        require(_utilityToken != address(0), "ZERO_ADDRESS");
+        require(utilityToken != _utilityToken, "SAME_VALUE");
+        utilityToken = _utilityToken;
     }
 
     /// @notice Set the reserve wallet

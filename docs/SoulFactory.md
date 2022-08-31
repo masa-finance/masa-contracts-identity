@@ -219,6 +219,38 @@ function revokeRole(bytes32 role, address account) external nonpayable
 | role | bytes32 | undefined |
 | account | address | undefined |
 
+### setDefaultStableCoin
+
+```solidity
+function setDefaultStableCoin(address _defaultStableCoin) external nonpayable
+```
+
+Sets the default stable coin to pay the fee in (USDC)
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _defaultStableCoin | address | New default stable coin to pay the fee in |
+
+### setMintingPrice
+
+```solidity
+function setMintingPrice(uint256 _mintingPrice) external nonpayable
+```
+
+Sets the price of the minting in stable coin
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _mintingPrice | uint256 | New price of the minting in stable coin |
+
 ### setReserveWallet
 
 ```solidity
@@ -250,6 +282,22 @@ Sets the SoulboundIdentity contract address linked to this factory
 | Name | Type | Description |
 |---|---|---|
 | _soulboundIdentity | contract SoulboundIdentity | New SoulboundIdentity contract address |
+
+### setUtilityToken
+
+```solidity
+function setUtilityToken(address _utilityToken) external nonpayable
+```
+
+Sets the utility token to pay the fee in ($CORN)
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _utilityToken | address | New utility token to pay the fee in |
 
 ### soulboundIdentity
 
