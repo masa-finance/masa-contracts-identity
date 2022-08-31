@@ -1,12 +1,12 @@
 # SoulboundIdentity
 
+*Masa Finance*
 
+> Soulbound Identity
 
+Soulbound token that represents an identity.
 
-
-
-
-
+*Soulbound identity, that inherits from the SBT contract.*
 
 ## Methods
 
@@ -106,15 +106,15 @@ function balanceOf(address owner) external view returns (uint256)
 function burn(uint256 tokenId) external nonpayable
 ```
 
+Burns the token
 
-
-*Burns `tokenId`. See {ERC721-_burn}. Requirements: - The caller must own `tokenId` or be an approved operator.*
+*The caller must own `tokenId` or be an approved operator*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| tokenId | uint256 | undefined |
+| tokenId | uint256 | The NFT ID to burn |
 
 ### getApproved
 
@@ -144,22 +144,22 @@ function getApproved(uint256 tokenId) external view returns (address)
 function getIdentityData(string name) external view returns (string sbtName, uint256 identityId)
 ```
 
+Returns the information of a soul name
 
-
-
+*This function queries the information of a soul name*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| name | string | undefined |
+| name | string | Name of the soul name |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| sbtName | string | undefined |
-| identityId | uint256 | undefined |
+| sbtName | string | Soul name, in upper/lower case and extension |
+| identityId | uint256 | Identity id of the soul name |
 
 ### getIdentityNames
 
@@ -167,21 +167,21 @@ function getIdentityData(string name) external view returns (string sbtName, uin
 function getIdentityNames(uint256 tokenId) external view returns (string[] sbtNames)
 ```
 
+Returns all the identity names of an identity
 
-
-
+*This function queries all the identity names of the specified identity Id*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| tokenId | uint256 | undefined |
+| tokenId | uint256 | TokenId of the identity |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| sbtNames | string[] | undefined |
+| sbtNames | string[] | Array of soul names associated to the identity Id |
 
 ### getIdentityNames
 
@@ -189,21 +189,21 @@ function getIdentityNames(uint256 tokenId) external view returns (string[] sbtNa
 function getIdentityNames(address owner) external view returns (string[] sbtNames)
 ```
 
+Returns all the identity names of an account
 
-
-
+*This function queries all the identity names of the specified account*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| owner | address | undefined |
+| owner | address | Address of the owner of the identities |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| sbtNames | string[] | undefined |
+| sbtNames | string[] | Array of soul names associated to the account |
 
 ### getRoleAdmin
 
@@ -296,15 +296,15 @@ function isApprovedForAll(address owner, address operator) external view returns
 function mint(address to) external nonpayable returns (uint256)
 ```
 
+Mints a new soulbound identity
 
-
-
+*The caller can only mint one identity per address*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| to | address | undefined |
+| to | address | Address of the owner of the new identity |
 
 #### Returns
 
@@ -318,16 +318,16 @@ function mint(address to) external nonpayable returns (uint256)
 function mintIdentityWithName(address to, string name) external payable returns (uint256)
 ```
 
+Mints a new soulbound identity with a SoulName associated to it
 
-
-
+*The caller can only mint one identity per address, and the name must be unique*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| to | address | undefined |
-| name | string | undefined |
+| to | address | Address of the owner of the new identity |
+| name | string | Name of the new identity |
 
 #### Returns
 
@@ -358,21 +358,21 @@ function name() external view returns (string)
 function nameExists(string name) external view returns (bool exists)
 ```
 
+Checks if a soul name already exists
 
-
-
+*This function queries if a soul name already exists*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| name | string | undefined |
+| name | string | Name of the soul name |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| exists | bool | undefined |
+| exists | bool | `true` if the soul name exists, `false` otherwise |
 
 ### ownerOf
 
@@ -380,21 +380,21 @@ function nameExists(string name) external view returns (bool exists)
 function ownerOf(uint256 tokenId) external view returns (address)
 ```
 
+Returns the owner address of an identity
 
-
-*See {IERC721-ownerOf}.*
+*This function returns the owner address of the identity specified by the tokenId*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| tokenId | uint256 | undefined |
+| tokenId | uint256 | TokenId of the identity |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | address | undefined |
+| _0 | address | Address of the owner of the identity |
 
 ### ownerOf
 
@@ -402,21 +402,21 @@ function ownerOf(uint256 tokenId) external view returns (address)
 function ownerOf(string name) external view returns (address)
 ```
 
+Returns the owner address of a soul name
 
-
-
+*This function returns the owner address of the soul name identity specified by the name*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| name | string | undefined |
+| name | string | Name of the soul name |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | address | undefined |
+| _0 | address | Address of the owner of the identity |
 
 ### pause
 
@@ -424,9 +424,9 @@ function ownerOf(string name) external view returns (address)
 function pause() external nonpayable
 ```
 
+Pauses the operations in the smart contract
 
-
-
+*Sets an emergency stop mechanism that can be triggered by an authorized account.*
 
 
 ### paused
@@ -483,39 +483,39 @@ function revokeRole(bytes32 role, address account) external nonpayable
 ### safeTransferFrom
 
 ```solidity
-function safeTransferFrom(address, address, uint256) external pure
+function safeTransferFrom(address from, address to, uint256 tokenId) external pure
 ```
 
+Transfers the ownership of an NFT from one address to another address
 
-
-
+*This will raise an exception because the token is not transferable.*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | address | undefined |
-| _1 | address | undefined |
-| _2 | uint256 | undefined |
+| from | address | The current owner of the NFT |
+| to | address | The new owner |
+| tokenId | uint256 | The NFT ID to transfer |
 
 ### safeTransferFrom
 
 ```solidity
-function safeTransferFrom(address, address, uint256, bytes) external pure
+function safeTransferFrom(address from, address to, uint256 tokenId, bytes data) external pure
 ```
 
+Transfer ownership of the token to another address safely
 
-
-
+*This will raise an exception because the token is not transferable.*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | address | undefined |
-| _1 | address | undefined |
-| _2 | uint256 | undefined |
-| _3 | bytes | undefined |
+| from | address | The current owner of the NFT |
+| to | address | The new owner |
+| tokenId | uint256 | The NFT ID to transfer |
+| data | bytes | Additional data with no specified format, sent in call to `_to` |
 
 ### setApprovalForAll
 
@@ -540,15 +540,15 @@ function setApprovalForAll(address operator, bool approved) external nonpayable
 function setSoulNameContract(contract SoulName _soulName) external nonpayable
 ```
 
+Sets the SoulName contract address linked to this identity
 
-
-
+*The caller must have the admin role to call this function*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| _soulName | contract SoulName | undefined |
+| _soulName | contract SoulName | Address of the SoulName contract |
 
 ### soulLinker
 
@@ -590,21 +590,21 @@ function soulNameContract() external view returns (contract SoulName)
 function supportsInterface(bytes4 interfaceId) external view returns (bool)
 ```
 
+Query if a contract implements an interface
 
-
-
+*Interface identification is specified in ERC-165.*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| interfaceId | bytes4 | undefined |
+| interfaceId | bytes4 | The interface identifier, as specified in ERC-165 |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | bool | undefined |
+| _0 | bool | `true` if the contract implements `interfaceId` and  `interfaceId` is not 0xffffffff, `false` otherwise |
 
 ### symbol
 
@@ -651,21 +651,21 @@ function tokenByIndex(uint256 index) external view returns (uint256)
 function tokenOfOwner(address owner) external view returns (uint256)
 ```
 
+Returns the identity id of an account
 
-
-
+*This function returns the tokenId of the identity owned by an account*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| owner | address | undefined |
+| owner | address | Address of the owner of the identity |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256 | undefined |
+| _0 | uint256 | TokenId of the identity owned by the account |
 
 ### tokenOfOwnerByIndex
 
@@ -696,21 +696,21 @@ function tokenOfOwnerByIndex(address owner, uint256 index) external view returns
 function tokenURI(string name) external view returns (string)
 ```
 
+Returns the URI of a soul name
 
-
-
+*This function returns the token URI of the soul name identity specified by the name*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| name | string | undefined |
+| name | string | Name of the soul name |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | string | undefined |
+| _0 | string | URI of the identity associated to a soul name |
 
 ### tokenURI
 
@@ -718,21 +718,21 @@ function tokenURI(string name) external view returns (string)
 function tokenURI(address owner) external view returns (string)
 ```
 
+Returns the URI of the owner of an identity
 
-
-
+*This function returns the token URI of the identity owned by an account*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| owner | address | undefined |
+| owner | address | Address of the owner of the identity |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | string | undefined |
+| _0 | string | URI of the identity owned by the account |
 
 ### tokenURI
 
@@ -740,21 +740,21 @@ function tokenURI(address owner) external view returns (string)
 function tokenURI(uint256 tokenId) external view returns (string)
 ```
 
+A distinct Uniform Resource Identifier (URI) for a given asset.
 
-
-*See {IERC721Metadata-tokenURI}.*
+*Throws if `_tokenId` is not a valid NFT. URIs are defined in RFC  3986. The URI may point to a JSON file that conforms to the &quot;ERC721  Metadata JSON Schema&quot;.*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| tokenId | uint256 | undefined |
+| tokenId | uint256 | NFT to get the URI of |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | string | undefined |
+| _0 | string | URI of the NFT |
 
 ### totalSupply
 
@@ -776,20 +776,20 @@ function totalSupply() external view returns (uint256)
 ### transferFrom
 
 ```solidity
-function transferFrom(address, address, uint256) external pure
+function transferFrom(address from, address to, uint256 tokenId) external pure
 ```
 
+Transfer ownership of an NFT -- THE CALLER IS RESPONSIBLE  TO CONFIRM THAT `_to` IS CAPABLE OF RECEIVING NFTS OR ELSE  THEY MAY BE PERMANENTLY LOST
 
-
-
+*This will raise an exception because the token is not transferable.*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | address | undefined |
-| _1 | address | undefined |
-| _2 | uint256 | undefined |
+| from | address | The current owner of the NFT |
+| to | address | The new owner |
+| tokenId | uint256 | The NFT ID to transfer |
 
 ### unpause
 
@@ -797,9 +797,9 @@ function transferFrom(address, address, uint256) external pure
 function unpause() external nonpayable
 ```
 
+Unpauses the operations in the smart contract
 
-
-
+*Unsets an emergency stop mechanism. It can be triggered by an authorized account.*
 
 
 

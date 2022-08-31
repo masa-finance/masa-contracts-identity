@@ -9,6 +9,11 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
+/// @title NFT
+/// @author Masa Finance
+/// @notice Non-fungible token is a token that is not fungible.
+/// @dev Implementation of https://eips.ethereum.org/EIPS/eip-721[ERC721] Non-Fungible Token Standard,
+/// that inherits from {ERC721Enumerable}, {Pausable}, {AccessControl} and {ERC721Burnable}.
 abstract contract NFT is
     ERC721,
     ERC721Enumerable,
@@ -16,6 +21,8 @@ abstract contract NFT is
     AccessControl,
     ERC721Burnable
 {
+    /* ========== STATE VARIABLES =========================================== */
+
     using Strings for uint256;
     using Counters for Counters.Counter;
 
@@ -25,6 +32,14 @@ abstract contract NFT is
 
     string private _baseTokenURI;
 
+    /* ========== INITIALIZE ================================================ */
+
+    /// @notice Creates a new NFT
+    /// @dev Creates a new Non-fungible token
+    /// @param owner Owner of the smart contract
+    /// @param name Name of the token
+    /// @param symbol Symbol of the token
+    /// @param baseTokenURI Base URI of the token
     constructor(
         address owner,
         string memory name,
@@ -38,14 +53,16 @@ abstract contract NFT is
         _baseTokenURI = baseTokenURI;
     }
 
-    function _baseURI() internal view virtual override returns (string memory) {
-        return _baseTokenURI;
-    }
+    /* ========== RESTRICTED FUNCTIONS ====================================== */
 
+    /// @notice Pauses the operations in the smart contract
+    /// @dev Sets an emergency stop mechanism that can be triggered by an authorized account.
     function pause() public onlyRole(PAUSER_ROLE) {
         _pause();
     }
 
+    /// @notice Unpauses the operations in the smart contract
+    /// @dev Unsets an emergency stop mechanism. It can be triggered by an authorized account.
     function unpause() public onlyRole(PAUSER_ROLE) {
         _unpause();
     }
@@ -62,6 +79,16 @@ abstract contract NFT is
         return tokenId;
     }
 
+    /* ========== MUTATIVE FUNCTIONS ======================================== */
+
+    /* ========== VIEWS ===================================================== */
+
+    /// @notice A distinct Uniform Resource Identifier (URI) for a given asset.
+    /// @dev Throws if `_tokenId` is not a valid NFT. URIs are defined in RFC
+    ///  3986. The URI may point to a JSON file that conforms to the "ERC721
+    ///  Metadata JSON Schema".
+    /// @param tokenId NFT to get the URI of
+    /// @return URI of the NFT
     function tokenURI(uint256 tokenId)
         public
         view
@@ -78,16 +105,11 @@ abstract contract NFT is
                 : "";
     }
 
-    function _beforeTokenTransfer(
-        address from,
-        address to,
-        uint256 tokenId
-    ) internal override(ERC721, ERC721Enumerable) whenNotPaused {
-        super._beforeTokenTransfer(from, to, tokenId);
-    }
-
-    // The following functions are overrides required by Solidity.
-
+    /// @notice Query if a contract implements an interface
+    /// @dev Interface identification is specified in ERC-165.
+    /// @param interfaceId The interface identifier, as specified in ERC-165
+    /// @return `true` if the contract implements `interfaceId` and
+    ///  `interfaceId` is not 0xffffffff, `false` otherwise
     function supportsInterface(bytes4 interfaceId)
         public
         view
@@ -96,4 +118,22 @@ abstract contract NFT is
     {
         return super.supportsInterface(interfaceId);
     }
+
+    /* ========== PRIVATE FUNCTIONS ========================================= */
+
+    function _baseURI() internal view virtual override returns (string memory) {
+        return _baseTokenURI;
+    }
+
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal override(ERC721, ERC721Enumerable) whenNotPaused {
+        super._beforeTokenTransfer(from, to, tokenId);
+    }
+
+    /* ========== MODIFIERS ================================================= */
+
+    /* ========== EVENTS ==================================================== */
 }
