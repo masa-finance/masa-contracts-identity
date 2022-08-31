@@ -25,7 +25,7 @@ let address2: SignerWithAddress;
 
 describe("Soulbound Identity", () => {
   before(async () => {
-    [owner, someone, address1, address2] = await ethers.getSigners();
+    [, owner, someone, address1, address2] = await ethers.getSigners();
   });
 
   beforeEach(async () => {

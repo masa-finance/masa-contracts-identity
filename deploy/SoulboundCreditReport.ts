@@ -16,7 +16,7 @@ const func: DeployFunction = async ({
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  [owner] = await ethers.getSigners();
+  [, owner] = await ethers.getSigners();
   const env = getEnvParams(network.name);
   const baseUri = `${env.BASE_URI}/credit-report/`;
 

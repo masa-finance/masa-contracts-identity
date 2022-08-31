@@ -30,7 +30,7 @@ let identityId2: number;
 
 describe("Soul Name", () => {
   before(async () => {
-    [owner, address1, address2] = await ethers.getSigners();
+    [, owner, address1, address2] = await ethers.getSigners();
   });
 
   beforeEach(async () => {
