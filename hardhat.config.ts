@@ -1,11 +1,13 @@
 import {
   getPrivateKey,
   getInfuraApiKey,
-  getCoinMarketCapApiKey
+  getCoinMarketCapApiKey,
+  getEtherscanApiKey
 } from "./src/utils/EnvParams";
 import "hardhat-deploy";
 import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-solhint";
+import "@nomiclabs/hardhat-etherscan";
 import "@primitivefi/hardhat-dodoc";
 import "@typechain/ethers-v5";
 import "@typechain/hardhat";
@@ -55,6 +57,11 @@ export default {
   namedAccounts: {
     deployer: {
       default: 0
+    }
+  },
+  etherscan: {
+    apiKey: {
+      rinkeby: getEtherscanApiKey("rinkeby")
     }
   },
   gasReporter: {
