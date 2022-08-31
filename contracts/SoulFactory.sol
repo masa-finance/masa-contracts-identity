@@ -46,7 +46,7 @@ contract SoulFactory is Pausable, AccessControl {
         address _reserveWallet
     ) {
         require(_reserveWallet != address(0), "ZERO_ADDRESS");
-        require(_soulBoundIdentity != address(0), "ZERO_ADDRESS");
+        require(address(_soulBoundIdentity) != address(0), "ZERO_ADDRESS");
 
         _grantRole(DEFAULT_ADMIN_ROLE, owner);
         _grantRole(PAUSER_ROLE, owner);
