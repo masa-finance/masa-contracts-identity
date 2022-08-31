@@ -46,6 +46,7 @@ contract SoulFactory is Pausable, AccessControl {
         address _reserveWallet
     ) {
         require(_reserveWallet != address(0), "ZERO_ADDRESS");
+        require(_soulBoundIdentity != address(0), "ZERO_ADDRESS");
 
         _grantRole(DEFAULT_ADMIN_ROLE, owner);
         _grantRole(PAUSER_ROLE, owner);
@@ -71,6 +72,18 @@ contract SoulFactory is Pausable, AccessControl {
     /// @dev Unsets an emergency stop mechanism. It can be triggered by an authorized account.
     function unpause() public onlyRole(PAUSER_ROLE) {
         _unpause();
+    }
+
+    /// @notice Sets the SoulboundIdentity contract address linked to this factory
+    /// @dev The caller must have the admin role to call this function
+    /// @param _soulboundIdentity New SoulboundIdentity contract address
+    function setSoulboundIdentity(SoulboundIdentity _soulboundIdentity)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
+        require(soulboundIdentity != _soulboundIdentity, "SAME_VALUE");
+        soulboundIdentity = _soulboundIdentity;
     }
 
     /// @notice Set the reserve wallet
