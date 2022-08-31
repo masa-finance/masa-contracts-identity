@@ -21,7 +21,7 @@ const func: DeployFunction = async ({
 
   const soulLinkerDeploymentResult = await deploy("SoulLinker", {
     from: deployer,
-    args: [owner.address],
+    args: [env.OWNER || owner.address],
     log: true
   });
 };

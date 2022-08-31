@@ -24,7 +24,7 @@ const func: DeployFunction = async ({
 
   const SoulboundIdentityDeploymentResult = await deploy("SoulboundIdentity", {
     from: deployer,
-    args: [owner.address, soulLinker.address, baseUri],
+    args: [env.OWNER || owner.address, soulLinker.address, baseUri],
     log: true
   });
 };

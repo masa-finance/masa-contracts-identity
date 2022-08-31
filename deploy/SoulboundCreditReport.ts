@@ -26,7 +26,7 @@ const func: DeployFunction = async ({
     "SoulboundCreditReport",
     {
       from: deployer,
-      args: [owner.address, soulLinker.address, baseUri],
+      args: [env.OWNER || owner.address, soulLinker.address, baseUri],
       log: true
     }
   );
