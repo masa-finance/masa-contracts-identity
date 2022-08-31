@@ -33,6 +33,8 @@ const func: DeployFunction = async ({
     log: true
   });
 
+  // TODO: Add to SoulFactory the MINTER_ROLE role to SoulboundIdentity
+
   await ethers.getContractAt(
     "SoulFactory",
     SoulFactoryDeploymentResult.address
