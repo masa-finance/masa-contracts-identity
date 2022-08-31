@@ -137,6 +137,26 @@ contract SoulFactory is Pausable, AccessControl {
 
     /* ========== VIEWS ========== */
 
+    /// @notice Returns the price of the minting
+    /// @dev Returns all current pricing and amount informations for a purchase
+    /// @return priceInStableCoin Current price of the minting in stable coin
+    /// @return priceInETH Current price of the minting in native token (ETH)
+    /// @return priceInUtilityToken Current price of the minting in utility token ($CORN)
+    function purchaseInfo()
+        public
+        view
+        returns (
+            uint256 priceInStableCoin,
+            uint256 priceInETH,
+            uint256 priceInUtilityToken
+        )
+    {
+        priceInStableCoin = mintingPrice;
+        // TODO: get swapped price in ETH and $CORN
+        priceInETH = 0;
+        priceInUtilityToken = 0;
+    }
+
     /* ========== PRIVATE FUNCTIONS ========== */
 
     /// @notice Mints a new Soulbound Identity

@@ -168,6 +168,25 @@ function paused() external view returns (bool)
 |---|---|---|
 | _0 | bool | undefined |
 
+### purchaseInfo
+
+```solidity
+function purchaseInfo() external view returns (uint256 priceInStableCoin, uint256 priceInETH, uint256 priceInUtilityToken)
+```
+
+Returns the price of the minting
+
+*Returns all current pricing and amount informations for a purchase*
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| priceInStableCoin | uint256 | Current price of the minting in stable coin |
+| priceInETH | uint256 | Current price of the minting in native token (ETH) |
+| priceInUtilityToken | uint256 | Current price of the minting in utility token ($CORN) |
+
 ### renounceRole
 
 ```solidity
