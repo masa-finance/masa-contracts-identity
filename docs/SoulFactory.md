@@ -443,7 +443,7 @@ event RoleRevoked(bytes32 indexed role, address indexed account, address indexed
 ### SoulboundIdentityPurchased
 
 ```solidity
-event SoulboundIdentityPurchased(address indexed user, uint256 price)
+event SoulboundIdentityPurchased(address indexed account, string indexed name, uint256 price)
 ```
 
 
@@ -454,7 +454,8 @@ event SoulboundIdentityPurchased(address indexed user, uint256 price)
 
 | Name | Type | Description |
 |---|---|---|
-| user `indexed` | address | undefined |
+| account `indexed` | address | undefined |
+| name `indexed` | string | undefined |
 | price  | uint256 | undefined |
 
 ### Unpaused
