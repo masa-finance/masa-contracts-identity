@@ -23,7 +23,6 @@ contract SoulFactory is Pausable, AccessControl {
 
     address public defaultStableCoin; // USDC
     address public utilityToken; // $CORN
-    mapping(address => bool) public paymentMethod;
 
     address public reserveWallet;
 
@@ -58,10 +57,6 @@ contract SoulFactory is Pausable, AccessControl {
         utilityToken = _utilityToken;
 
         reserveWallet = _reserveWallet;
-
-        paymentMethod[address(0)] = true; // address(0) will represent the native token (ETH)
-        paymentMethod[_defaultStableCoin] = true;
-        paymentMethod[_utilityToken] = true;
     }
 
     /* ========== RESTRICTED FUNCTIONS ========== */

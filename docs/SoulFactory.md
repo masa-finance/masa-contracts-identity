@@ -168,28 +168,6 @@ function paused() external view returns (bool)
 |---|---|---|
 | _0 | bool | undefined |
 
-### paymentMethod
-
-```solidity
-function paymentMethod(address) external view returns (bool)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | address | undefined |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | bool | undefined |
-
 ### renounceRole
 
 ```solidity
@@ -240,6 +218,22 @@ function revokeRole(bytes32 role, address account) external nonpayable
 |---|---|---|
 | role | bytes32 | undefined |
 | account | address | undefined |
+
+### setReserveWallet
+
+```solidity
+function setReserveWallet(address _reserveWallet) external nonpayable
+```
+
+Set the reserve wallet
+
+*Let change the reserve walled. It can be triggered by an authorized account.*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _reserveWallet | address | New reserve wallet |
 
 ### soulboundIdentity
 
