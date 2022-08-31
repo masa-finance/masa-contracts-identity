@@ -15,7 +15,12 @@ contract SoulFactory {
     /// @dev Creates a new Soul Factory, that has the role to minting new Soulbound Identities
     /// and Soul Name NFTs, paying a fee
     /// @param owner Owner of the smart contract
-    constructor(address owner) {}
+    constructor(
+        address owner,
+        address soulBoundIdentity,
+        address stableToken,
+        address erc20Token
+    ) {}
 
     /* ========== RESTRICTED FUNCTIONS ========== */
 
