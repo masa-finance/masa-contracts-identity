@@ -2,6 +2,8 @@
 pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 
 import "./SoulboundIdentity.sol";
 
@@ -10,8 +12,10 @@ import "./SoulboundIdentity.sol";
 /// @notice Soul Factory, that can mint new Soulbound Identities and Soul Name NFTs, paying a fee
 /// @dev From this smart contract we can mint new Soulbound Identities and Soul Name NFTs.
 /// This minting can be done paying a fee in ETH, USDC or CORN
-contract SoulFactory {
+contract SoulFactory is Pausable, AccessControl {
     /* ========== STATE VARIABLES ========== */
+
+    bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
 
     SoulboundIdentity public soulboundIdentity;
 
@@ -44,6 +48,9 @@ contract SoulFactory {
     ) {
         require(_reserveWallet != address(0), "ZERO_ADDRESS");
 
+        _grantRole(DEFAULT_ADMIN_ROLE, owner);
+        _grantRole(PAUSER_ROLE, owner);
+
         soulboundIdentity = _soulBoundIdentity;
 
         mintingPrice = _mintingPrice;
@@ -58,6 +65,18 @@ contract SoulFactory {
     }
 
     /* ========== RESTRICTED FUNCTIONS ========== */
+
+    /// @notice Pauses the operations in the smart contract
+    /// @dev Sets an emergency stop mechanism that can be triggered by an authorized account.
+    function pause() public onlyRole(PAUSER_ROLE) {
+        _pause();
+    }
+
+    /// @notice Unpauses the operations in the smart contract
+    /// @dev Unsets an emergency stop mechanism. It can be triggered by an authorized account.
+    function unpause() public onlyRole(PAUSER_ROLE) {
+        _unpause();
+    }
 
     /* ========== MUTATIVE FUNCTIONS ========== */
 
