@@ -78,6 +78,18 @@ contract SoulFactory is Pausable, AccessControl {
         _unpause();
     }
 
+    /// @notice Set the reserve wallet
+    /// @dev Let change the reserve walled. It can be triggered by an authorized account.
+    /// @param _reserveWallet New reserve wallet
+    function setReserveWallet(address _reserveWallet)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        require(_reserveWallet != address(0), "ZERO_ADDRESS");
+        require(_reserveWallet != reserveWallet, "SAME_VALUE");
+        reserveWallet = _reserveWallet;
+    }
+
     /* ========== MUTATIVE FUNCTIONS ========== */
 
     /* ========== VIEWS ========== */
