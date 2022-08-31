@@ -93,6 +93,7 @@ contract SoulFactory is Pausable, AccessControl {
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
+        require(mintingPrice != _mintingPrice, "SAME_VALUE");
         mintingPrice = _mintingPrice;
     }
 
