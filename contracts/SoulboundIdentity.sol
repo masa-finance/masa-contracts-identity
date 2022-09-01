@@ -12,7 +12,7 @@ import "./SoulName.sol";
 contract SoulboundIdentity is SBT {
     /* ========== STATE VARIABLES =========================================== */
 
-    SoulName public soulNameContract;
+    SoulName public soulName;
 
     /* ========== INITIALIZE ================================================ */
 
@@ -32,13 +32,13 @@ contract SoulboundIdentity is SBT {
     /// @notice Sets the SoulName contract address linked to this identity
     /// @dev The caller must have the admin role to call this function
     /// @param _soulName Address of the SoulName contract
-    function setSoulNameContract(SoulName _soulName)
+    function setSoulName(SoulName _soulName)
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
         require(address(_soulName) != address(0), "ZERO_ADDRESS");
-        require(soulNameContract != _soulName, "SAME_VALUE");
-        soulNameContract = _soulName;
+        require(soulName != _soulName, "SAME_VALUE");
+        soulName = _soulName;
     }
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
@@ -63,7 +63,7 @@ contract SoulboundIdentity is SBT {
         returns (uint256)
     {
         uint256 identityId = mint(to);
-        uint256 nameId = soulNameContract.mint(to, name, identityId);
+        uint256 nameId = soulName.mint(to, name, identityId);
 
         return identityId;
     }
@@ -88,7 +88,7 @@ contract SoulboundIdentity is SBT {
         soulNameAlreadySet
         returns (address)
     {
-        (, uint256 tokenId) = soulNameContract.getIdentityData(name);
+        (, uint256 tokenId) = soulName.getIdentityData(name);
         return super.ownerOf(tokenId);
     }
 
@@ -102,7 +102,7 @@ contract SoulboundIdentity is SBT {
         soulNameAlreadySet
         returns (string memory)
     {
-        (, uint256 tokenId) = soulNameContract.getIdentityData(name);
+        (, uint256 tokenId) = soulName.getIdentityData(name);
         return super.tokenURI(tokenId);
     }
 
@@ -133,7 +133,7 @@ contract SoulboundIdentity is SBT {
         soulNameAlreadySet
         returns (bool exists)
     {
-        return soulNameContract.nameExists(name);
+        return soulName.nameExists(name);
     }
 
     /// @notice Returns the information of a soul name
@@ -147,7 +147,7 @@ contract SoulboundIdentity is SBT {
         soulNameAlreadySet
         returns (string memory sbtName, uint256 identityId)
     {
-        return soulNameContract.getIdentityData(name);
+        return soulName.getIdentityData(name);
     }
 
     /// @notice Returns all the identity names of an account
@@ -161,7 +161,7 @@ contract SoulboundIdentity is SBT {
         returns (string[] memory sbtNames)
     {
         uint256 tokenId = tokenOfOwner(owner);
-        return soulNameContract.getIdentityNames(tokenId);
+        return soulName.getIdentityNames(tokenId);
     }
 
     /// @notice Returns all the identity names of an identity
@@ -174,7 +174,7 @@ contract SoulboundIdentity is SBT {
         soulNameAlreadySet
         returns (string[] memory sbtNames)
     {
-        return soulNameContract.getIdentityNames(tokenId);
+        return soulName.getIdentityNames(tokenId);
     }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
@@ -182,10 +182,7 @@ contract SoulboundIdentity is SBT {
     /* ========== MODIFIERS ================================================= */
 
     modifier soulNameAlreadySet() {
-        require(
-            address(soulNameContract) != address(0),
-            "SOULNAME_CONTRACT_NOT_SET"
-        );
+        require(address(soulName) != address(0), "SOULNAME_CONTRACT_NOT_SET");
         _;
     }
 

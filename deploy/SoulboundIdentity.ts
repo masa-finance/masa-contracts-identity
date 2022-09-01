@@ -22,16 +22,11 @@ const func: DeployFunction = async ({
 
   const soulLinker = await deployments.get("SoulLinker");
 
-  const SoulboundIdentityDeploymentResult = await deploy("SoulboundIdentity", {
+  await deploy("SoulboundIdentity", {
     from: deployer,
     args: [env.OWNER || owner.address, soulLinker.address, baseUri],
     log: true
   });
-
-  await ethers.getContractAt(
-    "SoulboundIdentity",
-    SoulboundIdentityDeploymentResult.address
-  );
 };
 
 func.tags = ["SoulboundIdentity"];
