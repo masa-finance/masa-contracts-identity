@@ -19,7 +19,7 @@ const func: DeployFunction = async ({
   [, owner] = await ethers.getSigners();
   const env = getEnvParams(network.name);
 
-  const soulLinkerDeploymentResult = await deploy("SoulLinker", {
+  await deploy("SoulLinker", {
     from: deployer,
     args: [env.OWNER || owner.address],
     log: true
