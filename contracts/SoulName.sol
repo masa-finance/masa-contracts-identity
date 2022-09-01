@@ -103,9 +103,10 @@ contract SoulName is NFT, ISoulNameResolver {
     /// @param tokenId TokenId of the soul name
     /// @param identityId New TokenId of the soulbound identity that will be pointed from this soul name
     function updateIdentityId(uint256 tokenId, uint256 identityId) public {
+        // ERC721: caller is not token owner nor approved
         require(
             _isApprovedOrOwner(_msgSender(), tokenId),
-            "ERC721: caller is not token owner nor approved"
+            "ERC721_CALLER_NOT_OWNER"
         );
         require(
             soulboundIdentityContract.ownerOf(identityId) != address(0),
