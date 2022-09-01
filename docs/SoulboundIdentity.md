@@ -534,10 +534,10 @@ function setApprovalForAll(address operator, bool approved) external nonpayable
 | operator | address | undefined |
 | approved | bool | undefined |
 
-### setSoulNameContract
+### setSoulName
 
 ```solidity
-function setSoulNameContract(contract SoulName _soulName) external nonpayable
+function setSoulName(contract SoulName _soulName) external nonpayable
 ```
 
 Sets the SoulName contract address linked to this identity
@@ -567,10 +567,10 @@ function soulLinker() external view returns (contract SoulLinker)
 |---|---|---|
 | _0 | contract SoulLinker | undefined |
 
-### soulNameContract
+### soulName
 
 ```solidity
-function soulNameContract() external view returns (contract SoulName)
+function soulName() external view returns (contract SoulName)
 ```
 
 

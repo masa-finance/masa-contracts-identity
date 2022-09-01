@@ -502,10 +502,10 @@ Sets the extension of the soul name
 |---|---|---|
 | _extension | string | Extension of the soul name |
 
-### soulboundIdentityContract
+### soulboundIdentity
 
 ```solidity
-function soulboundIdentityContract() external view returns (contract SoulboundIdentity)
+function soulboundIdentity() external view returns (contract SoulboundIdentity)
 ```
 
 

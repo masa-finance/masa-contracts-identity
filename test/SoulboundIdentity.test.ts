@@ -12,7 +12,7 @@ const expect = chai.expect;
 // contract instances
 let soulboundIdentity: SoulboundIdentity;
 
-let soulNameContractAddress: string;
+let soulNameAddress: string;
 
 let owner: SignerWithAddress;
 let someone: SignerWithAddress;
@@ -35,8 +35,8 @@ describe("Soulbound Identity", () => {
     const { address: soulboundIdentityAddress } = await deployments.get(
       "SoulboundIdentity"
     );
-    const { address: soulNameAddress } = await deployments.get("SoulName");
-    soulNameContractAddress = soulNameAddress;
+    const { address: soulNameAddr } = await deployments.get("SoulName");
+    soulNameAddress = soulNameAddr;
 
     soulboundIdentity = SoulboundIdentity__factory.connect(
       soulboundIdentityAddress,
@@ -128,7 +128,7 @@ describe("Soulbound Identity", () => {
         soulboundIdentity
           .connect(someone)
           .transferFrom(someone.address, someone.address, 1)
-      ).to.be.rejectedWith("Transferring soulbound Tokens is not permitted!");
+      ).to.be.rejectedWith("SBT_TRANSFER_NOT_PERMITTED");
     });
   });
 

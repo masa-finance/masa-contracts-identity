@@ -49,7 +49,8 @@ abstract contract SBT is NFT {
         address to,
         uint256 tokenId
     ) public pure override {
-        revert("Transferring soulbound Tokens is not permitted!");
+        // Transferring soulbound Tokens is not permitted!
+        revert("SBT_TRANSFER_NOT_PERMITTED");
     }
 
     /// @notice Transfers the ownership of an NFT from one address to another address
@@ -62,7 +63,8 @@ abstract contract SBT is NFT {
         address to,
         uint256 tokenId
     ) public pure override {
-        revert("Transferring soulbound Tokens is not permitted!");
+        // Transferring soulbound Tokens is not permitted!
+        revert("SBT_TRANSFER_NOT_PERMITTED");
     }
 
     /// @notice Transfer ownership of the token to another address safely
@@ -77,16 +79,18 @@ abstract contract SBT is NFT {
         uint256 tokenId,
         bytes memory data
     ) public pure override {
-        revert("Transferring soulbound Tokens is not permitted!");
+        // Transferring soulbound Tokens is not permitted!
+        revert("SBT_TRANSFER_NOT_PERMITTED");
     }
 
     /// @notice Burns the token
     /// @dev The caller must own `tokenId` or be an approved operator
     /// @param tokenId The NFT ID to burn
     function burn(uint256 tokenId) public override {
+        // A Soulbound Token can't be burned as long as it has active links!
         require(
             !soulLinker.hasLinks(address(this), tokenId),
-            "A Soulbound Token can't be burned as long as it has active links!"
+            "SBT_WITH_LINKS_NOT_BURNABLE"
         );
         super.burn(tokenId);
     }
