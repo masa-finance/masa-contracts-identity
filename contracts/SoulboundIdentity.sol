@@ -47,7 +47,8 @@ contract SoulboundIdentity is SBT {
     /// @dev The caller can only mint one identity per address
     /// @param to Address of the owner of the new identity
     function mint(address to) public override returns (uint256) {
-        require(balanceOf(to) < 1, "Soulbound identity already created!");
+        // Soulbound identity already created!
+        require(balanceOf(to) < 1, "SB_IDENTITY_ALREADY_CREATED");
 
         return super.mint(to);
     }
