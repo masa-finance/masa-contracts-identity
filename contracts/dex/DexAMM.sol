@@ -3,5 +3,5 @@ pragma solidity ^0.8.7;
 
 import "../interfaces/dex/IUniswapRouter.sol";
 
-contract UniswapRouter is IUniswapRouter {
+contract DexAMM {
 }
