@@ -61,7 +61,7 @@ describe("Soulbound Credit Report", () => {
         soulboundCreditReport
           .connect(someone)
           .transferFrom(someone.address, someone.address, 1)
-      ).to.be.rejectedWith("Transferring soulbound Tokens is not permitted!");
+      ).to.be.rejectedWith("SBT_TRANSFER_NOT_PERMITTED");
     });
   });
 
