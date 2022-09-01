@@ -17,7 +17,7 @@ contract SoulName is NFT, ISoulNameResolver {
     /* ========== STATE VARIABLES ========== */
     using Strings for uint256;
 
-    SoulboundIdentity public soulboundIdentityContract;
+    SoulboundIdentity public soulboundIdentity;
     string public extension; // suffix of the names (.sol?)
 
     mapping(uint256 => string) tokenIdToName; // used to sort through all names (name in lowercase)
@@ -45,7 +45,7 @@ contract SoulName is NFT, ISoulNameResolver {
     ) NFT(owner, "Masa Identity Name", "MIN", baseTokenURI) {
         require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
 
-        soulboundIdentityContract = _soulboundIdentity;
+        soulboundIdentity = _soulboundIdentity;
         extension = _extension;
     }
 
@@ -81,7 +81,7 @@ contract SoulName is NFT, ISoulNameResolver {
         require(!nameExists(name), "NAME_ALREADY_EXISTS");
         require(bytes(name).length > 0, "ZERO_LENGTH_NAME");
         require(
-            soulboundIdentityContract.ownerOf(identityId) != address(0),
+            soulboundIdentity.ownerOf(identityId) != address(0),
             "IDENTITY_NOT_FOUND"
         );
 
@@ -108,7 +108,7 @@ contract SoulName is NFT, ISoulNameResolver {
             "ERC721: caller is not token owner nor approved"
         );
         require(
-            soulboundIdentityContract.ownerOf(identityId) != address(0),
+            soulboundIdentity.ownerOf(identityId) != address(0),
             "IDENTITY_NOT_FOUND"
         );
 
