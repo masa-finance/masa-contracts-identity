@@ -56,8 +56,6 @@ const func: DeployFunction = async ({
   await soulName
     .connect(signer)
     .grantRole(MINTER_ROLE, soulboundIdentityDeployed.address);
-
-  await ethers.getContractAt("SoulName", soulNameDeploymentResult.address);
 };
 
 func.tags = ["SoulName"];
