@@ -22,11 +22,9 @@ describe("Soul Factory", () => {
   });
 
   beforeEach(async () => {
-    await deployments.fixture("SoulFactory", { fallbackToGlobal: false });
-
     const { address: soulFactoryAddress } = await deployments.get(
       "SoulFactory"
-      );
+    );
 
     soulFactory = SoulFactory__factory.connect(soulFactoryAddress, owner);
   });
