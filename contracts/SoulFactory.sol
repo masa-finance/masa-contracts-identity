@@ -152,12 +152,12 @@ contract SoulFactory is Pausable, AccessControl {
     /* ========== MUTATIVE FUNCTIONS ========== */
 
     /// @notice Mints a new Soulbound Identity purchasing it
-    /// @dev This function allows the purchase of a soulbount identity usign
+    /// @dev This function allows the purchase of a soulbound identity using
     /// stable coin (USDC), native token (ETH) or utility token ($CORN)
     /// @param paymentMethod Address of token that user want to pay
     /// @param name Name of the new soul name
     /// @return TokenId of the new soulbound identity
-    function purchase(address paymentMethod, string memory name)
+    function purchaseIdentity(address paymentMethod, string memory name)
         external
         payable
         whenNotPaused
@@ -167,6 +167,24 @@ contract SoulFactory is Pausable, AccessControl {
 
         // finalize purchase
         return _mintSoulboundIdentity(_msgSender(), name);
+    }
+
+    /// @notice Mints a new Soul Name purchasing it
+    /// @dev This function allows the purchase of a soul name using
+    /// stable coin (USDC), native token (ETH) or utility token ($CORN)
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param name Name of the new soul name
+    /// @return TokenId of the new sou name
+    function purchaseName(address paymentMethod, string memory name)
+        external
+        payable
+        whenNotPaused
+        returns (uint256)
+    {
+        // TODO: perform the purchase
+
+        // finalize purchase
+        return _mintSoulName(_msgSender(), name);
     }
 
     /* ========== VIEWS ========== */
