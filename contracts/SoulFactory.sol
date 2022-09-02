@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
 import "./SoulboundIdentity.sol";
+import "./SoulName.sol";
 
 /// @title Soul Factory
 /// @author Masa Finance
@@ -222,10 +223,15 @@ contract SoulFactory is Pausable, AccessControl {
         internal
         returns (uint256)
     {
-        // mint Soulbound token
+        // mint Soulbound identity token
         uint256 tokenId = soulboundIdentity.mintIdentityWithName(to, name);
 
-        emit SoulboundIdentityPurchased(to, name, mintingIdentityPrice);
+        emit SoulboundIdentityPurchased(
+            to,
+            tokenId,
+            name,
+            mintingIdentityPrice
+        );
 
         return tokenId;
     }
@@ -236,17 +242,19 @@ contract SoulFactory is Pausable, AccessControl {
     /// @param to Address of the owner of the new soul name
     /// @param name Name of the new soul name
     /// @return TokenId of the new soul name
-    function _mintSoulName(
-        address to,
-        string memory name,
-        uint256 identityId
-    ) internal returns (uint256) {
-        // mint Soulbound token
-        /* uint256 tokenId = soulName.mint(to, name, identityId);
+    function _mintSoulName(address to, string memory name)
+        internal
+        returns (uint256)
+    {
+        // mint Soul Name token
+        SoulName soulName = soulboundIdentity.soulName();
+        uint256 identityId = soulboundIdentity.tokenOfOwner(to);
 
-        emit SoulNamePurchased(to, name, mintingNamePrice);
+        uint256 tokenId = soulName.mint(to, name, identityId);
 
-        return tokenId; */
+        emit SoulNamePurchased(to, tokenId, name, mintingNamePrice);
+
+        return tokenId;
     }
 
     /* ========== MODIFIERS ========== */
@@ -255,12 +263,14 @@ contract SoulFactory is Pausable, AccessControl {
 
     event SoulboundIdentityPurchased(
         address indexed account,
+        uint256 tokenId,
         string indexed name,
         uint256 price
     );
 
     event SoulNamePurchased(
         address indexed account,
+        uint256 tokenId,
         string indexed name,
         uint256 price
     );
