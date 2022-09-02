@@ -185,15 +185,15 @@ function paused() external view returns (bool)
 |---|---|---|
 | _0 | bool | undefined |
 
-### purchase
+### purchaseIdentity
 
 ```solidity
-function purchase(address paymentMethod, string name) external payable returns (uint256)
+function purchaseIdentity(address paymentMethod, string name) external payable returns (uint256)
 ```
 
 Mints a new Soulbound Identity purchasing it
 
-*This function allows the purchase of a soulbount identity usign stable coin (USDC), native token (ETH) or utility token ($CORN)*
+*This function allows the purchase of a soulbound identity using stable coin (USDC), native token (ETH) or utility token ($CORN)*
 
 #### Parameters
 
@@ -226,6 +226,29 @@ Returns the price of the identity minting
 | priceInStableCoin | uint256 | Current price of the identity minting in stable coin |
 | priceInETH | uint256 | Current price of the identity minting in native token (ETH) |
 | priceInUtilityToken | uint256 | Current price of the identity minting in utility token ($CORN) |
+
+### purchaseName
+
+```solidity
+function purchaseName(address paymentMethod, string name) external payable returns (uint256)
+```
+
+Mints a new Soul Name purchasing it
+
+*This function allows the purchase of a soul name using stable coin (USDC), native token (ETH) or utility token ($CORN)*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| paymentMethod | address | Address of token that user want to pay |
+| name | string | Name of the new soul name |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | TokenId of the new sou name |
 
 ### purchaseNameInfo
 
@@ -537,7 +560,7 @@ event RoleRevoked(bytes32 indexed role, address indexed account, address indexed
 ### SoulNamePurchased
 
 ```solidity
-event SoulNamePurchased(address indexed account, string indexed name, uint256 price)
+event SoulNamePurchased(address indexed account, uint256 tokenId, string indexed name, uint256 price)
 ```
 
 
@@ -549,13 +572,14 @@ event SoulNamePurchased(address indexed account, string indexed name, uint256 pr
 | Name | Type | Description |
 |---|---|---|
 | account `indexed` | address | undefined |
+| tokenId  | uint256 | undefined |
 | name `indexed` | string | undefined |
 | price  | uint256 | undefined |
 
 ### SoulboundIdentityPurchased
 
 ```solidity
-event SoulboundIdentityPurchased(address indexed account, string indexed name, uint256 price)
+event SoulboundIdentityPurchased(address indexed account, uint256 tokenId, string indexed name, uint256 price)
 ```
 
 
@@ -567,6 +591,7 @@ event SoulboundIdentityPurchased(address indexed account, string indexed name, u
 | Name | Type | Description |
 |---|---|---|
 | account `indexed` | address | undefined |
+| tokenId  | uint256 | undefined |
 | name `indexed` | string | undefined |
 | price  | uint256 | undefined |
 
