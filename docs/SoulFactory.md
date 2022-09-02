@@ -123,10 +123,27 @@ function hasRole(bytes32 role, address account) external view returns (bool)
 |---|---|---|
 | _0 | bool | undefined |
 
-### mintingPrice
+### mintingIdentityPrice
 
 ```solidity
-function mintingPrice() external view returns (uint256)
+function mintingIdentityPrice() external view returns (uint256)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+### mintingNamePrice
+
+```solidity
+function mintingNamePrice() external view returns (uint256)
 ```
 
 
@@ -191,13 +208,13 @@ Mints a new Soulbound Identity purchasing it
 |---|---|---|
 | _0 | uint256 | TokenId of the new soulbound identity |
 
-### purchaseInfo
+### purchaseIdentityInfo
 
 ```solidity
-function purchaseInfo() external view returns (uint256 priceInStableCoin, uint256 priceInETH, uint256 priceInUtilityToken)
+function purchaseIdentityInfo() external view returns (uint256 priceInStableCoin, uint256 priceInETH, uint256 priceInUtilityToken)
 ```
 
-Returns the price of the minting
+Returns the price of the identity minting
 
 *Returns all current pricing and amount informations for a purchase*
 
@@ -206,9 +223,28 @@ Returns the price of the minting
 
 | Name | Type | Description |
 |---|---|---|
-| priceInStableCoin | uint256 | Current price of the minting in stable coin |
-| priceInETH | uint256 | Current price of the minting in native token (ETH) |
-| priceInUtilityToken | uint256 | Current price of the minting in utility token ($CORN) |
+| priceInStableCoin | uint256 | Current price of the identity minting in stable coin |
+| priceInETH | uint256 | Current price of the identity minting in native token (ETH) |
+| priceInUtilityToken | uint256 | Current price of the identity minting in utility token ($CORN) |
+
+### purchaseNameInfo
+
+```solidity
+function purchaseNameInfo() external view returns (uint256 priceInStableCoin, uint256 priceInETH, uint256 priceInUtilityToken)
+```
+
+Returns the price of the name minting
+
+*Returns all current pricing and amount informations for a purchase*
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| priceInStableCoin | uint256 | Current price of the name minting in stable coin |
+| priceInETH | uint256 | Current price of the name minting in native token (ETH) |
+| priceInUtilityToken | uint256 | Current price of the name minting in utility token ($CORN) |
 
 ### renounceRole
 
@@ -277,13 +313,13 @@ Sets the default stable coin to pay the fee in (USDC)
 |---|---|---|
 | _defaultStableCoin | address | New default stable coin to pay the fee in |
 
-### setMintingPrice
+### setMintingIdentityPrice
 
 ```solidity
-function setMintingPrice(uint256 _mintingPrice) external nonpayable
+function setMintingIdentityPrice(uint256 _mintingIdentityPrice) external nonpayable
 ```
 
-Sets the price of the minting in stable coin
+Sets the price of the identity minting in stable coin
 
 *The caller must have the admin role to call this function*
 
@@ -291,7 +327,23 @@ Sets the price of the minting in stable coin
 
 | Name | Type | Description |
 |---|---|---|
-| _mintingPrice | uint256 | New price of the minting in stable coin |
+| _mintingIdentityPrice | uint256 | New price of the identity minting in stable coin |
+
+### setMintingNamePrice
+
+```solidity
+function setMintingNamePrice(uint256 _mintingNamePrice) external nonpayable
+```
+
+Sets the price of the name minting in stable coin
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _mintingNamePrice | uint256 | New price of the name minting in stable coin |
 
 ### setReserveWallet
 
@@ -481,6 +533,24 @@ event RoleRevoked(bytes32 indexed role, address indexed account, address indexed
 | role `indexed` | bytes32 | undefined |
 | account `indexed` | address | undefined |
 | sender `indexed` | address | undefined |
+
+### SoulNamePurchased
+
+```solidity
+event SoulNamePurchased(address indexed account, string indexed name, uint256 price)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| account `indexed` | address | undefined |
+| name `indexed` | string | undefined |
+| price  | uint256 | undefined |
 
 ### SoulboundIdentityPurchased
 

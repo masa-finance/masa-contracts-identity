@@ -19,7 +19,8 @@ contract SoulFactory is Pausable, AccessControl {
 
     SoulboundIdentity public soulboundIdentity;
 
-    uint256 public mintingPrice; // price in stable coin
+    uint256 public mintingIdentityPrice; // price in stable coin
+    uint256 public mintingNamePrice; // price in stable coin
 
     address public defaultStableCoin; // USDC
     address public utilityToken; // $CORN
@@ -33,14 +34,16 @@ contract SoulFactory is Pausable, AccessControl {
     /// and Soul Name NFTs, paying a fee
     /// @param owner Owner of the smart contract
     /// @param _soulBoundIdentity Address of the Soulbound identity contract
-    /// @param _mintingPrice Price of the minting in stable coin
+    /// @param _mintingIdentityPrice Price of the identity minting in stable coin
+    /// @param _mintingNamePrice Price of the name minting in stable coin
     /// @param _defaultStableCoin Default stable coin to pay the fee in (USDC)
     /// @param _utilityToken Utility token to pay the fee in ($CORN)
     /// @param _reserveWallet Wallet that will receive the fee
     constructor(
         address owner,
         SoulboundIdentity _soulBoundIdentity,
-        uint256 _mintingPrice,
+        uint256 _mintingIdentityPrice,
+        uint256 _mintingNamePrice,
         address _defaultStableCoin,
         address _utilityToken,
         address _reserveWallet
@@ -53,7 +56,8 @@ contract SoulFactory is Pausable, AccessControl {
 
         soulboundIdentity = _soulBoundIdentity;
 
-        mintingPrice = _mintingPrice;
+        mintingIdentityPrice = _mintingIdentityPrice;
+        mintingNamePrice = _mintingNamePrice;
         defaultStableCoin = _defaultStableCoin;
         utilityToken = _utilityToken;
 
@@ -86,15 +90,26 @@ contract SoulFactory is Pausable, AccessControl {
         soulboundIdentity = _soulboundIdentity;
     }
 
-    /// @notice Sets the price of the minting in stable coin
+    /// @notice Sets the price of the identity minting in stable coin
     /// @dev The caller must have the admin role to call this function
-    /// @param _mintingPrice New price of the minting in stable coin
-    function setMintingPrice(uint256 _mintingPrice)
+    /// @param _mintingIdentityPrice New price of the identity minting in stable coin
+    function setMintingIdentityPrice(uint256 _mintingIdentityPrice)
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
-        require(mintingPrice != _mintingPrice, "SAME_VALUE");
-        mintingPrice = _mintingPrice;
+        require(mintingIdentityPrice != _mintingIdentityPrice, "SAME_VALUE");
+        mintingIdentityPrice = _mintingIdentityPrice;
+    }
+
+    /// @notice Sets the price of the name minting in stable coin
+    /// @dev The caller must have the admin role to call this function
+    /// @param _mintingNamePrice New price of the name minting in stable coin
+    function setMintingNamePrice(uint256 _mintingNamePrice)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        require(mintingNamePrice != _mintingNamePrice, "SAME_VALUE");
+        mintingNamePrice = _mintingNamePrice;
     }
 
     /// @notice Sets the default stable coin to pay the fee in (USDC)
@@ -155,12 +170,12 @@ contract SoulFactory is Pausable, AccessControl {
 
     /* ========== VIEWS ========== */
 
-    /// @notice Returns the price of the minting
+    /// @notice Returns the price of the identity minting
     /// @dev Returns all current pricing and amount informations for a purchase
-    /// @return priceInStableCoin Current price of the minting in stable coin
-    /// @return priceInETH Current price of the minting in native token (ETH)
-    /// @return priceInUtilityToken Current price of the minting in utility token ($CORN)
-    function purchaseInfo()
+    /// @return priceInStableCoin Current price of the identity minting in stable coin
+    /// @return priceInETH Current price of the identity minting in native token (ETH)
+    /// @return priceInUtilityToken Current price of the identity minting in utility token ($CORN)
+    function purchaseIdentityInfo()
         public
         view
         returns (
@@ -169,7 +184,27 @@ contract SoulFactory is Pausable, AccessControl {
             uint256 priceInUtilityToken
         )
     {
-        priceInStableCoin = mintingPrice;
+        priceInStableCoin = mintingIdentityPrice;
+        // TODO: get swapped price in ETH and $CORN
+        priceInETH = 0;
+        priceInUtilityToken = 0;
+    }
+
+    /// @notice Returns the price of the name minting
+    /// @dev Returns all current pricing and amount informations for a purchase
+    /// @return priceInStableCoin Current price of the name minting in stable coin
+    /// @return priceInETH Current price of the name minting in native token (ETH)
+    /// @return priceInUtilityToken Current price of the name minting in utility token ($CORN)
+    function purchaseNameInfo()
+        public
+        view
+        returns (
+            uint256 priceInStableCoin,
+            uint256 priceInETH,
+            uint256 priceInUtilityToken
+        )
+    {
+        priceInStableCoin = mintingNamePrice;
         // TODO: get swapped price in ETH and $CORN
         priceInETH = 0;
         priceInUtilityToken = 0;
@@ -190,9 +225,28 @@ contract SoulFactory is Pausable, AccessControl {
         // mint Soulbound token
         uint256 tokenId = soulboundIdentity.mintIdentityWithName(to, name);
 
-        emit SoulboundIdentityPurchased(to, name, mintingPrice);
+        emit SoulboundIdentityPurchased(to, name, mintingIdentityPrice);
 
         return tokenId;
+    }
+
+    /// @notice Mints a new Soul Name
+    /// @dev The final step of all purchase options. Will mint a
+    /// new Soul Name NFT and emit the purchase event
+    /// @param to Address of the owner of the new soul name
+    /// @param name Name of the new soul name
+    /// @return TokenId of the new soul name
+    function _mintSoulName(
+        address to,
+        string memory name,
+        uint256 identityId
+    ) internal returns (uint256) {
+        // mint Soulbound token
+        /* uint256 tokenId = soulName.mint(to, name, identityId);
+
+        emit SoulNamePurchased(to, name, mintingNamePrice);
+
+        return tokenId; */
     }
 
     /* ========== MODIFIERS ========== */
@@ -200,6 +254,12 @@ contract SoulFactory is Pausable, AccessControl {
     /* ========== EVENTS ========== */
 
     event SoulboundIdentityPurchased(
+        address indexed account,
+        string indexed name,
+        uint256 price
+    );
+
+    event SoulNamePurchased(
         address indexed account,
         string indexed name,
         uint256 price

@@ -28,6 +28,7 @@ const func: DeployFunction = async ({
       env.OWNER || owner.address,
       soulboundIdentity.address,
       "5000000", // 5 USDC, with 6 decimals
+      "3000000", // 3 USDC, with 6 decimals
       ethers.constants.AddressZero,
       corn.address,
       env.OWNER || owner.address
