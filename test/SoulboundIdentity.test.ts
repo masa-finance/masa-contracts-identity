@@ -181,4 +181,80 @@ describe("Soulbound Identity", () => {
       expect(tokenUri).to.contain("/identity/");
     });
   });
+
+  describe("read data from the smart contracts", () => {
+    let identityId: number;
+
+    beforeEach(async () => {
+      const mintTx = await soulboundIdentity
+        .connect(owner)
+        .mintIdentityWithName(address1.address, SOUL_NAME1);
+      const mintReceipt = await mintTx.wait();
+
+      identityId = mintReceipt.events![0].args![2].toNumber();
+    });
+
+    it("nameExists true with an existing name", async () => {
+      await expect(await soulboundIdentity.nameExists(SOUL_NAME1)).to.be.equals(
+        true
+      );
+    });
+
+    it("nameExists true with an existing name - case insensitive", async () => {
+      await expect(
+        await soulboundIdentity.nameExists(SOUL_NAME1.toLowerCase())
+      ).to.be.equals(true);
+      await expect(
+        await soulboundIdentity.nameExists(SOUL_NAME1.toUpperCase())
+      ).to.be.equals(true);
+    });
+
+    it("nameExists false with a non existing name", async () => {
+      await expect(await soulboundIdentity.nameExists("fakeName")).to.be.equals(
+        false
+      );
+    });
+
+    it("getIdentityData with an existing name", async () => {
+      const [sbtName, identityId] = await soulboundIdentity.getIdentityData(
+        SOUL_NAME1
+      );
+      const extension = await soulboundIdentity.extension();
+
+      await expect(sbtName).to.be.equals(SOUL_NAME1 + extension);
+    });
+
+    it("getIdentityData with an existing name - case insensitive", async () => {
+      let [sbtName, identityId] = await soulboundIdentity.getIdentityData(
+        SOUL_NAME1.toLowerCase()
+      );
+      const extension = await soulboundIdentity.extension();
+
+      await expect(sbtName).to.be.equals(SOUL_NAME1 + extension);
+
+      [sbtName, identityId] = await soulboundIdentity.getIdentityData(
+        SOUL_NAME1.toUpperCase()
+      );
+
+      await expect(sbtName).to.be.equals(SOUL_NAME1 + extension);
+    });
+
+    it("getIdentityData with a non existing name", async () => {
+      await expect(
+        soulboundIdentity.getIdentityData("fakeName")
+      ).to.be.rejectedWith("NAME_NOT_FOUND");
+    });
+
+    it("getIdentityNames(uint256) returns array of SBT names in lower case", async () => {
+      expect(
+        await soulboundIdentity["getIdentityNames(uint256)"](identityId)
+      ).to.deep.equal([SOUL_NAME1.toLowerCase()]);
+    });
+
+    it("getIdentityNames(address) returns array of SBT names in lower case", async () => {
+      expect(
+        await soulboundIdentity["getIdentityNames(address)"](address1.address)
+      ).to.deep.equal([SOUL_NAME1.toLowerCase()]);
+    });
+  });
 });
