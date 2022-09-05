@@ -89,6 +89,19 @@ describe("Soul Factory", () => {
         soulFactory.connect(address1).setMintingIdentityPrice(newPrice)
       ).to.be.rejected;
     });
+
+    it("should set MintingNamePrice from admin", async () => {
+      const newPrice = 100;
+      await soulFactory.connect(owner).setMintingNamePrice(newPrice);
+
+      expect(await soulFactory.mintingNamePrice()).to.be.equal(newPrice);
+    });
+
+    it("should fail to set MintingNamePrice from non admin", async () => {
+      const newPrice = 100;
+      await expect(soulFactory.connect(address1).setMintingNamePrice(newPrice))
+        .to.be.rejected;
+    });
   });
 
   describe("purchase info", () => {
