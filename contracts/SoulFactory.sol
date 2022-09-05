@@ -38,21 +38,21 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
     /// @param _soulBoundIdentity Address of the Soulbound identity contract
     /// @param _mintingIdentityPrice Price of the identity minting in stable coin
     /// @param _mintingNamePrice Price of the name minting in stable coin
-    /// @param _stableCoin Stable coin to pay the fee in (USDC)
     /// @param _utilityToken Utility token to pay the fee in ($CORN)
-    /// @param _reserveWallet Wallet that will receive the fee
-    /// @param _swapRouter Swap router address
+    /// @param _stableCoin Stable coin to pay the fee in (USDC)
     /// @param _wrappedNativeToken Wrapped native token address
+    /// @param _swapRouter Swap router address
+    /// @param _reserveWallet Wallet that will receive the fee
     constructor(
         address owner,
         SoulboundIdentity _soulBoundIdentity,
         uint256 _mintingIdentityPrice,
         uint256 _mintingNamePrice,
-        address _stableCoin,
         address _utilityToken,
-        address _reserveWallet,
+        address _stableCoin,
+        address _wrappedNativeToken,
         address _swapRouter,
-        address _wrappedNativeToken
+        address _reserveWallet
     ) DexAMM(_swapRouter, _wrappedNativeToken) {
         require(_reserveWallet != address(0), "ZERO_ADDRESS");
         require(address(_soulBoundIdentity) != address(0), "ZERO_ADDRESS");
