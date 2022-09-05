@@ -142,14 +142,43 @@ describe("Soulbound Identity", () => {
   });
 
   describe("tokenURI", () => {
-    it("should get a valid token URI", async () => {
+    let tokenId;
+
+    beforeEach(async () => {
       const mintTx = await soulboundIdentity
         .connect(owner)
-        .mint(someone.address);
+        .mintIdentityWithName(someone.address, SOULBOUND_NAME1);
 
       const mintReceipt = await mintTx.wait();
-      const tokenId = mintReceipt.events![0].args![2].toNumber();
+      tokenId = mintReceipt.events![0].args![2].toNumber();
+    });
+
+    it("should get a valid token URI from its tokenId", async () => {
       const tokenUri = await soulboundIdentity["tokenURI(uint256)"](tokenId);
+
+      // check if it's a valid url
+      expect(() => new URL(tokenUri)).to.not.throw();
+      // we expect that the token uri is already encoded
+      expect(tokenUri).to.equal(encodeURI(tokenUri));
+      expect(tokenUri).to.contain("/identity/");
+    });
+
+    it("should get a valid token URI from its name", async () => {
+      const tokenUri = await soulboundIdentity["tokenURI(string)"](
+        SOULBOUND_NAME1
+      );
+
+      // check if it's a valid url
+      expect(() => new URL(tokenUri)).to.not.throw();
+      // we expect that the token uri is already encoded
+      expect(tokenUri).to.equal(encodeURI(tokenUri));
+      expect(tokenUri).to.contain("/identity/");
+    });
+
+    it("should get a valid token URI from its address", async () => {
+      const tokenUri = await soulboundIdentity["tokenURI(address)"](
+        someone.address
+      );
 
       // check if it's a valid url
       expect(() => new URL(tokenUri)).to.not.throw();
