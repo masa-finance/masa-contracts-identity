@@ -132,9 +132,7 @@ describe("Soul Factory", () => {
     it("should set StableCoin from admin", async () => {
       await soulFactory.connect(owner).setStableCoin(address1.address);
 
-      expect(await soulFactory.stableCoin()).to.be.equal(
-        address1.address
-      );
+      expect(await soulFactory.stableCoin()).to.be.equal(address1.address);
     });
 
     it("should fail to set StableCoin from non admin", async () => {
