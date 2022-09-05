@@ -15,8 +15,8 @@ let soulboundIdentity: SoulboundIdentity;
 let owner: SignerWithAddress;
 let someone: SignerWithAddress;
 
-const SOULBOUND_NAME1 = "soulName1";
-const SOULBOUND_NAME2 = "soulName2";
+const SOUL_NAME1 = "soulName1";
+const SOUL_NAME2 = "soulName2";
 
 let address1: SignerWithAddress;
 let address2: SignerWithAddress;
@@ -66,13 +66,13 @@ describe("Soulbound Identity", () => {
     it("should mint from owner", async () => {
       await soulboundIdentity
         .connect(owner)
-        .mintIdentityWithName(address1.address, SOULBOUND_NAME1);
+        .mintIdentityWithName(address1.address, SOUL_NAME1);
 
       expect(await soulboundIdentity.balanceOf(address1.address)).to.be.equal(
         1
       );
       expect(
-        await soulboundIdentity["ownerOf(string)"](SOULBOUND_NAME1)
+        await soulboundIdentity["ownerOf(string)"](SOUL_NAME1)
       ).to.be.equal(address1.address);
     });
 
@@ -80,29 +80,29 @@ describe("Soulbound Identity", () => {
       await expect(
         soulboundIdentity
           .connect(address1)
-          .mintIdentityWithName(address1.address, SOULBOUND_NAME1)
+          .mintIdentityWithName(address1.address, SOUL_NAME1)
       ).to.be.rejected;
     });
 
     it("should fail to mint twice", async () => {
       await soulboundIdentity
         .connect(owner)
-        .mintIdentityWithName(address1.address, SOULBOUND_NAME1);
+        .mintIdentityWithName(address1.address, SOUL_NAME1);
       await expect(
         soulboundIdentity
           .connect(owner)
-          .mintIdentityWithName(address1.address, SOULBOUND_NAME2)
+          .mintIdentityWithName(address1.address, SOUL_NAME2)
       ).to.be.rejectedWith("Soulbound identity already created!");
     });
 
     it("should fail to mint duplicated name", async () => {
       await soulboundIdentity
         .connect(owner)
-        .mintIdentityWithName(address1.address, SOULBOUND_NAME1);
+        .mintIdentityWithName(address1.address, SOUL_NAME1);
       await expect(
         soulboundIdentity
           .connect(owner)
-          .mintIdentityWithName(address2.address, SOULBOUND_NAME1)
+          .mintIdentityWithName(address2.address, SOUL_NAME1)
       ).to.be.rejectedWith("NAME_ALREADY_EXISTS");
     });
   });
@@ -145,7 +145,7 @@ describe("Soulbound Identity", () => {
     beforeEach(async () => {
       const mintTx = await soulboundIdentity
         .connect(owner)
-        .mintIdentityWithName(someone.address, SOULBOUND_NAME1);
+        .mintIdentityWithName(someone.address, SOUL_NAME1);
 
       const mintReceipt = await mintTx.wait();
       tokenId = mintReceipt.events![0].args![2].toNumber();
@@ -162,9 +162,7 @@ describe("Soulbound Identity", () => {
     });
 
     it("should get a valid token URI from its name", async () => {
-      const tokenUri = await soulboundIdentity["tokenURI(string)"](
-        SOULBOUND_NAME1
-      );
+      const tokenUri = await soulboundIdentity["tokenURI(string)"](SOUL_NAME1);
 
       // check if it's a valid url
       expect(() => new URL(tokenUri)).to.not.throw();
