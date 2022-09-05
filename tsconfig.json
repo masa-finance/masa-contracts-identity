@@ -14,8 +14,7 @@
   "include": [
     "./typechain",
     "./src",
-    "./test",
-    "./test_factory"
+    "./test"
   ],
   "exclude": [
     "./node_modules/*"
