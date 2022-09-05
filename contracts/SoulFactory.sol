@@ -233,9 +233,17 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
         )
     {
         priceInStableCoin = mintingIdentityPrice;
-        // TODO: get swapped price in ETH and $CORN
-        priceInETH = 0;
-        priceInUtilityToken = 0;
+        // get swapped price in ETH and $CORN
+        priceInETH = estimateSwapAmount(
+            wrappedNativeToken,
+            stableCoin,
+            mintingIdentityPrice
+        );
+        priceInUtilityToken = estimateSwapAmount(
+            utilityToken,
+            stableCoin,
+            mintingIdentityPrice
+        );
     }
 
     /// @notice Returns the price of the name minting
@@ -253,9 +261,17 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
         )
     {
         priceInStableCoin = mintingNamePrice;
-        // TODO: get swapped price in ETH and $CORN
-        priceInETH = 0;
-        priceInUtilityToken = 0;
+        // get swapped price in ETH and $CORN
+        priceInETH = estimateSwapAmount(
+            wrappedNativeToken,
+            stableCoin,
+            mintingNamePrice
+        );
+        priceInUtilityToken = estimateSwapAmount(
+            utilityToken,
+            stableCoin,
+            mintingNamePrice
+        );
     }
 
     /* ========== PRIVATE FUNCTIONS ========== */
