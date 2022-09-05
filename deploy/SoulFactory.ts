@@ -1,4 +1,4 @@
-import { getEnvParams } from "../src/utils/EnvParams";
+import { getEnvParams, getPrivateKey } from "../src/utils/EnvParams";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
 
@@ -20,13 +20,13 @@ const func: DeployFunction = async ({
   const env = getEnvParams(network.name);
 
   const corn = await deployments.get("CORN");
-  const soulboundIdentity = await deployments.get("SoulboundIdentity");
+  const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
 
   const SoulFactoryDeploymentResult = await deploy("SoulFactory", {
     from: deployer,
     args: [
       env.OWNER || owner.address,
-      soulboundIdentity.address,
+      soulboundIdentityDeployed.address,
       "5000000", // 5 USDC, with 6 decimals
       "3000000", // 3 USDC, with 6 decimals
       ethers.constants.AddressZero,
@@ -36,12 +36,23 @@ const func: DeployFunction = async ({
     log: true
   });
 
-  // TODO: Add to SoulFactory the MINTER_ROLE role to SoulboundIdentity
-
-  await ethers.getContractAt(
-    "SoulFactory",
-    SoulFactoryDeploymentResult.address
+  const soulboundIdentity = await ethers.getContractAt(
+    "SoulboundIdentity",
+    soulboundIdentityDeployed.address
   );
+
+  // we add soulFactory as soulboundIdentity minter
+  const signer = env.OWNER
+    ? new ethers.Wallet(
+        getPrivateKey(network.name),
+        ethers.getDefaultProvider(network.name)
+      )
+    : owner;
+
+  const MINTER_ROLE = await soulboundIdentity.MINTER_ROLE();
+  await soulboundIdentity
+    .connect(signer)
+    .grantRole(MINTER_ROLE, SoulFactoryDeploymentResult.address);
 };
 
 func.tags = ["SoulFactory"];
