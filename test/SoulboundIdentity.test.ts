@@ -33,8 +33,6 @@ describe("Soulbound Identity", () => {
     const { address: soulboundIdentityAddress } = await deployments.get(
       "SoulboundIdentity"
     );
-    const { address: soulNameAddr } = await deployments.get("SoulName");
-    soulNameAddress = soulNameAddr;
 
     soulboundIdentity = SoulboundIdentity__factory.connect(
       soulboundIdentityAddress,
