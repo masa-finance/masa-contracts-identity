@@ -22,6 +22,30 @@ const func: DeployFunction = async ({
   const corn = await deployments.get("CORN");
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
 
+  let stableCoin: string; // usdc
+  let wrappedNativeToken: string; // weth
+  let swapRouter: string;
+
+  if (network.config.chainId == 1) { // mainnet
+    stableCoin = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+    wrappedNativeToken = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+    swapRouter = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D';
+  } else if (network.config.chainId == 4) { // rinkeby
+    stableCoin = '0xeb8f08a975Ab53E34D8a0330E0D34de942C95926';
+    wrappedNativeToken = '0xc778417E063141139Fce010982780140Aa0cD5Ab';
+    swapRouter = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D';
+  } else if (network.config.chainId == 31337) { // hardhat
+    stableCoin = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+    wrappedNativeToken = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+    swapRouter = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D';
+  } else if (network.config.chainId == 44787) { // alfajores
+    stableCoin = '0x37f39aD164cBBf0Cc03Dd638472F3FbeC7aE426C';
+    wrappedNativeToken = '0xF194afDf50B03e69Bd7D057c1Aa9e10c9954E4C9';
+    swapRouter = '';
+  } else {
+    throw new Error("Network not supported");
+  }
+
   const SoulFactoryDeploymentResult = await deploy("SoulFactory", {
     from: deployer,
     args: [
@@ -29,8 +53,10 @@ const func: DeployFunction = async ({
       soulboundIdentityDeployed.address,
       "5000000", // 5 USDC, with 6 decimals
       "3000000", // 3 USDC, with 6 decimals
-      ethers.constants.AddressZero,
       corn.address,
+      stableCoin,
+      wrappedNativeToken,
+      swapRouter,
       env.OWNER || owner.address
     ],
     log: true
