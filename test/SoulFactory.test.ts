@@ -61,6 +61,22 @@ describe("Soul Factory", () => {
     });
   });
 
+  describe("admin functions", () => {
+    it("should set SoulboundIdentity from admin", async () => {
+      await soulFactory.connect(owner).setSoulboundIdentity(address1.address);
+
+      expect(await soulFactory.soulboundIdentity()).to.be.equal(
+        address1.address
+      );
+    });
+
+    it("should fail to set SoulboundIdentity from non admin", async () => {
+      await expect(
+        soulFactory.connect(address1).setSoulboundIdentity(address1.address)
+      ).to.be.rejected;
+    });
+  });
+
   describe("purchase info", () => {
     it("we can get purchase info", async () => {
       console.log(await soulFactory.purchaseIdentityInfo());
