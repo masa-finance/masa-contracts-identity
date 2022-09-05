@@ -45,5 +45,5 @@ const func: DeployFunction = async ({
 };
 
 func.tags = ["SoulFactory"];
-func.dependencies = ["CORN", "SoulboundIdentity"];
+func.dependencies = ["CORN", "SoulboundIdentity", "SoulName"];
 export default func;
