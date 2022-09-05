@@ -120,14 +120,24 @@ describe("Soul Factory", () => {
     it("should set UtilityToken from admin", async () => {
       await soulFactory.connect(owner).setUtilityToken(address1.address);
 
-      expect(await soulFactory.utilityToken()).to.be.equal(
-        address1.address
-      );
+      expect(await soulFactory.utilityToken()).to.be.equal(address1.address);
     });
 
     it("should fail to set UtilityToken from non admin", async () => {
       await expect(
         soulFactory.connect(address1).setUtilityToken(address1.address)
+      ).to.be.rejected;
+    });
+
+    it("should set ReserveWallet from admin", async () => {
+      await soulFactory.connect(owner).setReserveWallet(address1.address);
+
+      expect(await soulFactory.reserveWallet()).to.be.equal(address1.address);
+    });
+
+    it("should fail to set ReserveWallet from non admin", async () => {
+      await expect(
+        soulFactory.connect(address1).setReserveWallet(address1.address)
       ).to.be.rejected;
     });
   });
