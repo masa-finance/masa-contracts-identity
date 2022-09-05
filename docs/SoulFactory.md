@@ -10,6 +10,23 @@ Soul Factory, that can mint new Soulbound Identities and Soul Name NFTs, paying 
 
 ## Methods
 
+### DEADLINE
+
+```solidity
+function DEADLINE() external view returns (uint256)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
 ### DEFAULT_ADMIN_ROLE
 
 ```solidity
@@ -60,6 +77,30 @@ function defaultStableCoin() external view returns (address)
 | Name | Type | Description |
 |---|---|---|
 | _0 | address | undefined |
+
+### estimateSwapAmount
+
+```solidity
+function estimateSwapAmount(address _fromToken, address _toToken, uint256 _amountOut) external view returns (uint256)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _fromToken | address | undefined |
+| _toToken | address | undefined |
+| _amountOut | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
 
 ### getRoleAdmin
 
@@ -400,6 +441,22 @@ Sets the SoulboundIdentity contract address linked to this factory
 |---|---|---|
 | _soulboundIdentity | contract SoulboundIdentity | New SoulboundIdentity contract address |
 
+### setSwapRouter
+
+```solidity
+function setSwapRouter(address _swapRouter) external nonpayable
+```
+
+Sets the swap router address
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _swapRouter | address | New swap router address |
+
 ### setUtilityToken
 
 ```solidity
@@ -415,6 +472,22 @@ Sets the utility token to pay the fee in ($CORN)
 | Name | Type | Description |
 |---|---|---|
 | _utilityToken | address | New utility token to pay the fee in |
+
+### setWrappedNativeToken
+
+```solidity
+function setWrappedNativeToken(address _wrappedNativeToken) external nonpayable
+```
+
+Sets the wrapped native token address
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _wrappedNativeToken | address | New wrapped native token address |
 
 ### soulboundIdentity
 
@@ -455,6 +528,23 @@ function supportsInterface(bytes4 interfaceId) external view returns (bool)
 |---|---|---|
 | _0 | bool | undefined |
 
+### swapRouter
+
+```solidity
+function swapRouter() external view returns (address)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
 ### unpause
 
 ```solidity
@@ -470,6 +560,23 @@ Unpauses the operations in the smart contract
 
 ```solidity
 function utilityToken() external view returns (address)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
+### wrappedNativeToken
+
+```solidity
+function wrappedNativeToken() external view returns (address)
 ```
 
 

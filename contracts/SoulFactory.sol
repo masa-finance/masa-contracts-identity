@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
+import "./dex/DexAMM.sol";
 import "./SoulboundIdentity.sol";
 import "./SoulName.sol";
 
@@ -13,7 +14,7 @@ import "./SoulName.sol";
 /// @notice Soul Factory, that can mint new Soulbound Identities and Soul Name NFTs, paying a fee
 /// @dev From this smart contract we can mint new Soulbound Identities and Soul Name NFTs.
 /// This minting can be done paying a fee in ETH, USDC or CORN
-contract SoulFactory is Pausable, AccessControl {
+contract SoulFactory is DexAMM, Pausable, AccessControl {
     /* ========== STATE VARIABLES ========== */
 
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
@@ -147,6 +148,30 @@ contract SoulFactory is Pausable, AccessControl {
         require(_reserveWallet != address(0), "ZERO_ADDRESS");
         require(_reserveWallet != reserveWallet, "SAME_VALUE");
         reserveWallet = _reserveWallet;
+    }
+
+    /// @notice Sets the swap router address
+    /// @dev The caller must have the admin role to call this function
+    /// @param _swapRouter New swap router address
+    function setSwapRouter(address _swapRouter)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        require(_swapRouter != address(0), "ZERO_ADDRESS");
+        require(swapRouter != _swapRouter, "SAME_VALUE");
+        swapRouter = _swapRouter;
+    }
+
+    /// @notice Sets the wrapped native token address
+    /// @dev The caller must have the admin role to call this function
+    /// @param _wrappedNativeToken New wrapped native token address
+    function setWrappedNativeToken(address _wrappedNativeToken)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        require(_wrappedNativeToken != address(0), "ZERO_ADDRESS");
+        require(wrappedNativeToken != _wrappedNativeToken, "SAME_VALUE");
+        wrappedNativeToken = _wrappedNativeToken;
     }
 
     /* ========== MUTATIVE FUNCTIONS ========== */
