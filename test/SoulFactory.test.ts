@@ -31,6 +31,36 @@ describe("Soul Factory", () => {
     soulFactory = SoulFactory__factory.connect(soulFactoryAddress, owner);
   });
 
+  describe("pause", () => {
+    it("should pause from owner", async () => {
+      await soulFactory.connect(owner).pause();
+
+      expect(await soulFactory.paused()).to.be.true;
+    });
+
+    it("should unpause from owner", async () => {
+      await soulFactory.connect(owner).pause();
+
+      expect(await soulFactory.paused()).to.be.true;
+
+      await soulFactory.connect(owner).unpause();
+
+      expect(await soulFactory.paused()).to.be.false;
+    });
+
+    it("should fail to pause from non owner", async () => {
+      await expect(soulFactory.connect(address1).pause()).to.be.rejected;
+    });
+
+    it("should fail to unpause from non owner", async () => {
+      await soulFactory.connect(owner).pause();
+
+      expect(await soulFactory.paused()).to.be.true;
+
+      await expect(soulFactory.connect(address1).unpause()).to.be.rejected;
+    });
+  });
+
   describe("purchase info", () => {
     it("we can get purchase info", async () => {
       console.log(await soulFactory.purchaseIdentityInfo());
