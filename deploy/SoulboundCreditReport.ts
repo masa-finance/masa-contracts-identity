@@ -22,19 +22,11 @@ const func: DeployFunction = async ({
 
   const soulLinker = await deployments.get("SoulLinker");
 
-  const SoulboundCreditReportDeploymentResult = await deploy(
-    "SoulboundCreditReport",
-    {
-      from: deployer,
-      args: [env.OWNER || owner.address, soulLinker.address, baseUri],
-      log: true
-    }
-  );
-
-  await ethers.getContractAt(
-    "SoulboundCreditReport",
-    SoulboundCreditReportDeploymentResult.address
-  );
+  await deploy("SoulboundCreditReport", {
+    from: deployer,
+    args: [env.OWNER || owner.address, soulLinker.address, baseUri],
+    log: true
+  });
 };
 
 func.tags = ["SoulboundCreditReport"];

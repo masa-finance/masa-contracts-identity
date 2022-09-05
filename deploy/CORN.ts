@@ -19,12 +19,18 @@ const func: DeployFunction = async ({
   [, owner] = await ethers.getSigners();
   const env = getEnvParams(network.name);
 
-  await deploy("SoulLinker", {
+  const cornDeploymentResult = await deploy("CORN", {
     from: deployer,
-    args: [env.OWNER || owner.address],
+    args: [],
     log: true
   });
+
+  const corn = await ethers.getContractAt("CORN", cornDeploymentResult.address);
+  await corn.transfer(
+    env.OWNER || owner.address,
+    ethers.utils.parseEther("1000")
+  );
 };
 
-func.tags = ["SoulLinker"];
+func.tags = ["CORN"];
 export default func;

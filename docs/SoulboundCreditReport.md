@@ -1,12 +1,12 @@
 # SoulboundCreditReport
 
+*Masa Finance*
 
+> Soulbound Credit Report
 
+Soulbound token that represents a credit report.
 
-
-
-
-
+*Soulbound credit report, that inherits from the SBT contract.*
 
 ## Methods
 
@@ -106,15 +106,15 @@ function balanceOf(address owner) external view returns (uint256)
 function burn(uint256 tokenId) external nonpayable
 ```
 
+Burns the token
 
-
-*Burns `tokenId`. See {ERC721-_burn}. Requirements: - The caller must own `tokenId` or be an approved operator.*
+*The caller must own `tokenId` or be an approved operator*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| tokenId | uint256 | undefined |
+| tokenId | uint256 | The NFT ID to burn |
 
 ### getApproved
 
@@ -229,21 +229,21 @@ function isApprovedForAll(address owner, address operator) external view returns
 function mint(address to) external nonpayable returns (uint256)
 ```
 
+Mints a new NFT
 
-
-
+*The caller must have the MINTER role*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| to | address | undefined |
+| to | address | The address to mint the NFT to |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256 | undefined |
+| _0 | uint256 | The NFT ID of the newly minted NFT |
 
 ### name
 
@@ -290,9 +290,9 @@ function ownerOf(uint256 tokenId) external view returns (address)
 function pause() external nonpayable
 ```
 
+Pauses the operations in the smart contract
 
-
-
+*Sets an emergency stop mechanism that can be triggered by an authorized account.*
 
 
 ### paused
@@ -349,39 +349,39 @@ function revokeRole(bytes32 role, address account) external nonpayable
 ### safeTransferFrom
 
 ```solidity
-function safeTransferFrom(address, address, uint256) external pure
+function safeTransferFrom(address from, address to, uint256 tokenId) external pure
 ```
 
+Transfers the ownership of an NFT from one address to another address
 
-
-
+*This will raise an exception because the token is not transferable.*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | address | undefined |
-| _1 | address | undefined |
-| _2 | uint256 | undefined |
+| from | address | The current owner of the NFT |
+| to | address | The new owner |
+| tokenId | uint256 | The NFT ID to transfer |
 
 ### safeTransferFrom
 
 ```solidity
-function safeTransferFrom(address, address, uint256, bytes) external pure
+function safeTransferFrom(address from, address to, uint256 tokenId, bytes data) external pure
 ```
 
+Transfer ownership of the token to another address safely
 
-
-
+*This will raise an exception because the token is not transferable.*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | address | undefined |
-| _1 | address | undefined |
-| _2 | uint256 | undefined |
-| _3 | bytes | undefined |
+| from | address | The current owner of the NFT |
+| to | address | The new owner |
+| tokenId | uint256 | The NFT ID to transfer |
+| data | bytes | Additional data with no specified format, sent in call to `_to` |
 
 ### setApprovalForAll
 
@@ -423,21 +423,21 @@ function soulLinker() external view returns (contract SoulLinker)
 function supportsInterface(bytes4 interfaceId) external view returns (bool)
 ```
 
+Query if a contract implements an interface
 
-
-
+*Interface identification is specified in ERC-165.*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| interfaceId | bytes4 | undefined |
+| interfaceId | bytes4 | The interface identifier, as specified in ERC-165 |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | bool | undefined |
+| _0 | bool | `true` if the contract implements `interfaceId` and  `interfaceId` is not 0xffffffff, `false` otherwise |
 
 ### symbol
 
@@ -507,21 +507,21 @@ function tokenOfOwnerByIndex(address owner, uint256 index) external view returns
 function tokenURI(uint256 tokenId) external view returns (string)
 ```
 
+A distinct Uniform Resource Identifier (URI) for a given asset.
 
-
-*See {IERC721Metadata-tokenURI}.*
+*Throws if `_tokenId` is not a valid NFT. URIs are defined in RFC  3986. The URI may point to a JSON file that conforms to the &quot;ERC721  Metadata JSON Schema&quot;.*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| tokenId | uint256 | undefined |
+| tokenId | uint256 | NFT to get the URI of |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | string | undefined |
+| _0 | string | URI of the NFT |
 
 ### totalSupply
 
@@ -543,20 +543,20 @@ function totalSupply() external view returns (uint256)
 ### transferFrom
 
 ```solidity
-function transferFrom(address, address, uint256) external pure
+function transferFrom(address from, address to, uint256 tokenId) external pure
 ```
 
+Transfer ownership of an NFT -- THE CALLER IS RESPONSIBLE  TO CONFIRM THAT `_to` IS CAPABLE OF RECEIVING NFTS OR ELSE  THEY MAY BE PERMANENTLY LOST
 
-
-
+*This will raise an exception because the token is not transferable.*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | address | undefined |
-| _1 | address | undefined |
-| _2 | uint256 | undefined |
+| from | address | The current owner of the NFT |
+| to | address | The new owner |
+| tokenId | uint256 | The NFT ID to transfer |
 
 ### unpause
 
@@ -564,9 +564,9 @@ function transferFrom(address, address, uint256) external pure
 function unpause() external nonpayable
 ```
 
+Unpauses the operations in the smart contract
 
-
-
+*Unsets an emergency stop mechanism. It can be triggered by an authorized account.*
 
 
 

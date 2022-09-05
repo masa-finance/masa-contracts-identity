@@ -1,12 +1,12 @@
 # SoulName
 
+*Masa Finance*
 
+> SoulName NFT
 
+SoulName NFT that points to a Soulbound identity token
 
-
-
-
-
+*SoulName NFT, that inherits from the NFT contract, and points to a Soulbound identity token. It has an extension, and stores all the information about the identity names.*
 
 ## Methods
 
@@ -106,15 +106,15 @@ function balanceOf(address owner) external view returns (uint256)
 function burn(uint256 tokenId) external nonpayable
 ```
 
+Burn a soul name
 
-
-*Burns `tokenId`. See {ERC721-_burn}. Requirements: - The caller must own `tokenId` or be an approved operator.*
+*The caller must be the owner or an approved address of the soul name.*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| tokenId | uint256 | undefined |
+| tokenId | uint256 | TokenId of the soul name to burn |
 
 ### extension
 
@@ -161,22 +161,22 @@ function getApproved(uint256 tokenId) external view returns (address)
 function getIdentityData(string name) external view returns (string sbtName, uint256 identityId)
 ```
 
+Returns the information of a soul name
 
-
-
+*This function queries the information of a soul name*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| name | string | undefined |
+| name | string | Name of the soul name |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| sbtName | string | undefined |
-| identityId | uint256 | undefined |
+| sbtName | string | Soul name, in upper/lower case and extension |
+| identityId | uint256 | Identity id of the soul name |
 
 ### getIdentityNames
 
@@ -184,21 +184,21 @@ function getIdentityData(string name) external view returns (string sbtName, uin
 function getIdentityNames(uint256 identityId) external view returns (string[] sbtNames)
 ```
 
+Returns all the identity names of an identity
 
-
-
+*This function queries all the identity names of the specified identity Id*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| identityId | uint256 | undefined |
+| identityId | uint256 | TokenId of the identity |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| sbtNames | string[] | undefined |
+| sbtNames | string[] | Array of soul names associated to the identity Id |
 
 ### getRoleAdmin
 
@@ -291,17 +291,17 @@ function isApprovedForAll(address owner, address operator) external view returns
 function mint(address to, string name, uint256 identityId) external nonpayable returns (uint256)
 ```
 
+Mints a new soul name
 
-
-
+*The caller can mint more than one name. The soul name must be unique.*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| to | address | undefined |
-| name | string | undefined |
-| identityId | uint256 | undefined |
+| to | address | Address of the owner of the new soul name |
+| name | string | Name of the new soul name |
+| identityId | uint256 | TokenId of the soulbound identity that will be pointed from this soul name |
 
 #### Returns
 
@@ -332,21 +332,21 @@ function name() external view returns (string)
 function nameExists(string name) external view returns (bool exists)
 ```
 
+Checks if a soul name already exists
 
-
-
+*This function queries if a soul name already exists*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| name | string | undefined |
+| name | string | Name of the soul name |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| exists | bool | undefined |
+| exists | bool | `true` if the soul name exists, `false` otherwise |
 
 ### ownerOf
 
@@ -376,9 +376,9 @@ function ownerOf(uint256 tokenId) external view returns (address)
 function pause() external nonpayable
 ```
 
+Pauses the operations in the smart contract
 
-
-
+*Sets an emergency stop mechanism that can be triggered by an authorized account.*
 
 
 ### paused
@@ -492,20 +492,20 @@ function setApprovalForAll(address operator, bool approved) external nonpayable
 function setExtension(string _extension) external nonpayable
 ```
 
+Sets the extension of the soul name
 
-
-
+*The caller must have the admin role to call this function*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| _extension | string | undefined |
+| _extension | string | Extension of the soul name |
 
-### soulboundIdentityContract
+### soulboundIdentity
 
 ```solidity
-function soulboundIdentityContract() external view returns (contract SoulboundIdentity)
+function soulboundIdentity() external view returns (contract SoulboundIdentity)
 ```
 
 
@@ -525,21 +525,21 @@ function soulboundIdentityContract() external view returns (contract SoulboundId
 function supportsInterface(bytes4 interfaceId) external view returns (bool)
 ```
 
+Query if a contract implements an interface
 
-
-
+*Interface identification is specified in ERC-165.*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| interfaceId | bytes4 | undefined |
+| interfaceId | bytes4 | The interface identifier, as specified in ERC-165 |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | bool | undefined |
+| _0 | bool | `true` if the contract implements `interfaceId` and  `interfaceId` is not 0xffffffff, `false` otherwise |
 
 ### symbol
 
@@ -609,21 +609,21 @@ function tokenOfOwnerByIndex(address owner, uint256 index) external view returns
 function tokenURI(uint256 tokenId) external view returns (string)
 ```
 
+Returns the URI of a soul name
 
-
-*See {IERC721Metadata-tokenURI}.*
+*This function returns the token URI of the soul name identity specified by the tokenId*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| tokenId | uint256 | undefined |
+| tokenId | uint256 | TokenId of the soul name |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | string | undefined |
+| _0 | string | URI of the soul name |
 
 ### totalSupply
 
@@ -666,9 +666,9 @@ function transferFrom(address from, address to, uint256 tokenId) external nonpay
 function unpause() external nonpayable
 ```
 
+Unpauses the operations in the smart contract
 
-
-
+*Unsets an emergency stop mechanism. It can be triggered by an authorized account.*
 
 
 ### updateIdentityId
@@ -677,16 +677,16 @@ function unpause() external nonpayable
 function updateIdentityId(uint256 tokenId, uint256 identityId) external nonpayable
 ```
 
+Update the identity id pointed from a soul name
 
-
-
+*The caller must be the owner or an approved address of the soul name.*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| tokenId | uint256 | undefined |
-| identityId | uint256 | undefined |
+| tokenId | uint256 | TokenId of the soul name |
+| identityId | uint256 | New TokenId of the soulbound identity that will be pointed from this soul name |
 
 
 

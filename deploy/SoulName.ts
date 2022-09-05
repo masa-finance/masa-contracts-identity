@@ -19,19 +19,24 @@ const func: DeployFunction = async ({
   [, owner] = await ethers.getSigners();
   const env = getEnvParams(network.name);
 
-  const soulboundIdentity = await deployments.get("SoulboundIdentity");
+  const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
 
   const soulNameDeploymentResult = await deploy("SoulName", {
     from: deployer,
-    args: [env.OWNER || owner.address, soulboundIdentity.address, ".soul", ""],
+    args: [
+      env.OWNER || owner.address,
+      soulboundIdentityDeployed.address,
+      ".soul",
+      ""
+    ],
     log: true
   });
 
-  const soulboundIdentityContract = await ethers.getContractAt(
+  const soulboundIdentity = await ethers.getContractAt(
     "SoulboundIdentity",
-    soulboundIdentity.address
+    soulboundIdentityDeployed.address
   );
-  const soulNameContract = await ethers.getContractAt(
+  const soulName = await ethers.getContractAt(
     "SoulName",
     soulNameDeploymentResult.address
   );
@@ -44,15 +49,13 @@ const func: DeployFunction = async ({
       )
     : owner;
 
-  const MINTER_ROLE = await soulNameContract.MINTER_ROLE();
-  await soulboundIdentityContract
+  const MINTER_ROLE = await soulName.MINTER_ROLE();
+  await soulboundIdentity
     .connect(signer)
-    .setSoulNameContract(soulNameDeploymentResult.address);
-  await soulNameContract
+    .setSoulName(soulNameDeploymentResult.address);
+  await soulName
     .connect(signer)
-    .grantRole(MINTER_ROLE, soulboundIdentityContract.address);
-
-  await ethers.getContractAt("SoulName", soulNameDeploymentResult.address);
+    .grantRole(MINTER_ROLE, soulboundIdentityDeployed.address);
 };
 
 func.tags = ["SoulName"];
