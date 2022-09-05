@@ -12,8 +12,6 @@ const expect = chai.expect;
 // contract instances
 let soulboundIdentity: SoulboundIdentity;
 
-let soulNameContractAddress: string;
-
 let owner: SignerWithAddress;
 let someone: SignerWithAddress;
 
