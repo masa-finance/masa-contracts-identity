@@ -41,7 +41,7 @@ const func: DeployFunction = async ({
   } else if (network.config.chainId == 44787) { // alfajores
     stableCoin = '0x37f39aD164cBBf0Cc03Dd638472F3FbeC7aE426C';
     wrappedNativeToken = '0xF194afDf50B03e69Bd7D057c1Aa9e10c9954E4C9';
-    swapRouter = '';
+    swapRouter = '0xE3D8bd6Aed4F159bc8000a9cD47CffDb95F96121'; // Ubeswap
   } else {
     throw new Error("Network not supported");
   }
