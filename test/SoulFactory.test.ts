@@ -3,13 +3,22 @@ import chaiAsPromised from "chai-as-promised";
 import { solidity } from "ethereum-waffle";
 import { ethers, deployments } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { SoulFactory, SoulFactory__factory } from "../typechain";
+import {
+  SoulboundIdentity,
+  SoulboundIdentity__factory,
+  SoulName,
+  SoulName__factory,
+  SoulFactory,
+  SoulFactory__factory
+} from "../typechain";
 
 chai.use(chaiAsPromised);
 chai.use(solidity);
 const expect = chai.expect;
 
 // contract instances
+let soulboundIdentity: SoulboundIdentity;
+let soulName: SoulName;
 let soulFactory: SoulFactory;
 
 let owner: SignerWithAddress;
@@ -19,18 +28,32 @@ let address2: SignerWithAddress;
 const MINTING_IDENTITY_PRICE = "5000000"; // 5 USDC, with 6 decimals
 const MINTING_NAME_PRICE = "3000000"; // 3 USDC, with 6 decimals
 
+const SOUL_NAME1 = "soulNameTest1";
+const SOUL_NAME2 = "soulNameTest2";
+
 describe("Soul Factory", () => {
   before(async () => {
     [, owner, address1, address2] = await ethers.getSigners();
   });
 
   beforeEach(async () => {
+    await deployments.fixture("SoulboundIdentity", { fallbackToGlobal: false });
+    await deployments.fixture("SoulName", { fallbackToGlobal: false });
     await deployments.fixture("SoulFactory", { fallbackToGlobal: false });
 
+    const { address: soulboundIdentityAddress } = await deployments.get(
+      "SoulboundIdentity"
+    );
+    const { address: soulNameAddress } = await deployments.get("SoulName");
     const { address: soulFactoryAddress } = await deployments.get(
       "SoulFactory"
     );
 
+    soulboundIdentity = SoulboundIdentity__factory.connect(
+      soulboundIdentityAddress,
+      owner
+    );
+    soulName = SoulName__factory.connect(soulNameAddress, owner);
     soulFactory = SoulFactory__factory.connect(soulFactoryAddress, owner);
   });
 
@@ -162,6 +185,50 @@ describe("Soul Factory", () => {
       expect(priceInStableCoin).to.be.equal(MINTING_NAME_PRICE);
       expect(priceInETH).to.be.equal(0);
       expect(priceInUtilityToken).to.be.equal(0);
+    });
+  });
+
+  describe("purchase identity", () => {
+    it("we can purchase an identity with ETH", async () => {
+      await soulFactory.connect(address1).purchaseIdentity(
+        ethers.constants.AddressZero, // ETH
+        SOUL_NAME1
+      );
+    });
+
+    it("we can purchase an identity with stable coin", async () => {
+      await soulFactory.connect(address1).purchaseIdentity(
+        ethers.constants.AddressZero, // USDC
+        SOUL_NAME1
+      );
+    });
+
+    it("we can purchase an identity with utility coin", async () => {
+      await soulFactory.connect(address1).purchaseIdentity(
+        ethers.constants.AddressZero, // $CORN
+        SOUL_NAME1
+      );
+    });
+
+    it("we can't purchase an identity with ETH if we don't have funds", async () => {
+      await soulFactory.connect(address1).purchaseIdentity(
+        ethers.constants.AddressZero, // ETH
+        SOUL_NAME1
+      );
+    });
+
+    it("we can't purchase an identity with stable coin if we don't have funds", async () => {
+      await soulFactory.connect(address1).purchaseIdentity(
+        ethers.constants.AddressZero, // USDC
+        SOUL_NAME1
+      );
+    });
+
+    it("we can't purchase an identity with utility coin if we don't have funds", async () => {
+      await soulFactory.connect(address1).purchaseIdentity(
+        ethers.constants.AddressZero, // $CORN
+        SOUL_NAME1
+      );
     });
   });
 });
