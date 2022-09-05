@@ -47,6 +47,8 @@ describe("Soulbound Identity", () => {
   describe("mint", () => {
     it("should mint from owner", async () => {
       await soulboundIdentity.connect(owner).mint(someone.address);
+
+      expect(await soulboundIdentity.balanceOf(someone.address)).to.be.equal(1);
     });
 
     it("should fail to mint twice", async () => {
@@ -67,6 +69,13 @@ describe("Soulbound Identity", () => {
       await soulboundIdentity
         .connect(owner)
         .mintIdentityWithName(address1.address, SOULBOUND_NAME1);
+
+      expect(await soulboundIdentity.balanceOf(address1.address)).to.be.equal(
+        1
+      );
+      expect(
+        await soulboundIdentity["ownerOf(string)"](SOULBOUND_NAME1)
+      ).to.be.equal(address1.address);
     });
 
     it("should fail to mint from someone", async () => {
