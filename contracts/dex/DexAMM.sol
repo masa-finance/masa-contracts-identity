@@ -18,6 +18,19 @@ abstract contract DexAMM {
 
     /* ========== INITIALIZE ================================================ */
 
+    /// @notice Creates a new Dex AMM
+    /// @dev Creates a new Decentralized automated market maker (AMM) smart contract,
+    // that will call the Uniswap Router interface
+    /// @param _swapRouter Swap router address
+    /// @param _wrappedNativeToken Wrapped native token address
+    constructor(address _swapRouter, address _wrappedNativeToken) {
+        require(_swapRouter != address(0), "ZERO_ADDRESS");
+        require(_wrappedNativeToken != address(0), "ZERO_ADDRESS");
+
+        swapRouter = _swapRouter;
+        wrappedNativeToken = _wrappedNativeToken;
+    }
+
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
