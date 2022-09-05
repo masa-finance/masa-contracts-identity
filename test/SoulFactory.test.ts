@@ -102,6 +102,20 @@ describe("Soul Factory", () => {
       await expect(soulFactory.connect(address1).setMintingNamePrice(newPrice))
         .to.be.rejected;
     });
+
+    it("should set DefaultStableCoin from admin", async () => {
+      await soulFactory.connect(owner).setDefaultStableCoin(address1.address);
+
+      expect(await soulFactory.defaultStableCoin()).to.be.equal(
+        address1.address
+      );
+    });
+
+    it("should fail to set DefaultStableCoin from non admin", async () => {
+      await expect(
+        soulFactory.connect(address1).setDefaultStableCoin(address1.address)
+      ).to.be.rejected;
+    });
   });
 
   describe("purchase info", () => {
