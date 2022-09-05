@@ -24,7 +24,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
     uint256 public mintingIdentityPrice; // price in stable coin
     uint256 public mintingNamePrice; // price in stable coin
 
-    address public defaultStableCoin; // USDC
+    address public stableCoin; // USDC
     address public utilityToken; // $CORN
 
     address public reserveWallet;
@@ -38,7 +38,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
     /// @param _soulBoundIdentity Address of the Soulbound identity contract
     /// @param _mintingIdentityPrice Price of the identity minting in stable coin
     /// @param _mintingNamePrice Price of the name minting in stable coin
-    /// @param _defaultStableCoin Default stable coin to pay the fee in (USDC)
+    /// @param _stableCoin Stable coin to pay the fee in (USDC)
     /// @param _utilityToken Utility token to pay the fee in ($CORN)
     /// @param _reserveWallet Wallet that will receive the fee
     /// @param _swapRouter Swap router address
@@ -48,7 +48,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
         SoulboundIdentity _soulBoundIdentity,
         uint256 _mintingIdentityPrice,
         uint256 _mintingNamePrice,
-        address _defaultStableCoin,
+        address _stableCoin,
         address _utilityToken,
         address _reserveWallet,
         address _swapRouter,
@@ -64,7 +64,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
 
         mintingIdentityPrice = _mintingIdentityPrice;
         mintingNamePrice = _mintingNamePrice;
-        defaultStableCoin = _defaultStableCoin;
+        stableCoin = _stableCoin;
         utilityToken = _utilityToken;
 
         reserveWallet = _reserveWallet;
@@ -118,16 +118,16 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
         mintingNamePrice = _mintingNamePrice;
     }
 
-    /// @notice Sets the default stable coin to pay the fee in (USDC)
+    /// @notice Sets the stable coin to pay the fee in (USDC)
     /// @dev The caller must have the admin role to call this function
-    /// @param _defaultStableCoin New default stable coin to pay the fee in
-    function setDefaultStableCoin(address _defaultStableCoin)
+    /// @param _stableCoin New stable coin to pay the fee in
+    function setStableCoin(address _stableCoin)
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
-        require(_defaultStableCoin != address(0), "ZERO_ADDRESS");
-        require(defaultStableCoin != _defaultStableCoin, "SAME_VALUE");
-        defaultStableCoin = _defaultStableCoin;
+        require(_stableCoin != address(0), "ZERO_ADDRESS");
+        require(stableCoin != _stableCoin, "SAME_VALUE");
+        stableCoin = _stableCoin;
     }
 
     /// @notice Sets the utility token to pay the fee in ($CORN)

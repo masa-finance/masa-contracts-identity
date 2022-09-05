@@ -61,23 +61,6 @@ function PAUSER_ROLE() external view returns (bytes32)
 |---|---|---|
 | _0 | bytes32 | undefined |
 
-### defaultStableCoin
-
-```solidity
-function defaultStableCoin() external view returns (address)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | address | undefined |
-
 ### estimateSwapAmount
 
 ```solidity
@@ -361,22 +344,6 @@ function revokeRole(bytes32 role, address account) external nonpayable
 | role | bytes32 | undefined |
 | account | address | undefined |
 
-### setDefaultStableCoin
-
-```solidity
-function setDefaultStableCoin(address _defaultStableCoin) external nonpayable
-```
-
-Sets the default stable coin to pay the fee in (USDC)
-
-*The caller must have the admin role to call this function*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _defaultStableCoin | address | New default stable coin to pay the fee in |
-
 ### setMintingIdentityPrice
 
 ```solidity
@@ -440,6 +407,22 @@ Sets the SoulboundIdentity contract address linked to this factory
 | Name | Type | Description |
 |---|---|---|
 | _soulboundIdentity | contract SoulboundIdentity | New SoulboundIdentity contract address |
+
+### setStableCoin
+
+```solidity
+function setStableCoin(address _stableCoin) external nonpayable
+```
+
+Sets the stable coin to pay the fee in (USDC)
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _stableCoin | address | New stable coin to pay the fee in |
 
 ### setSwapRouter
 
@@ -505,6 +488,23 @@ function soulboundIdentity() external view returns (contract SoulboundIdentity)
 | Name | Type | Description |
 |---|---|---|
 | _0 | contract SoulboundIdentity | undefined |
+
+### stableCoin
+
+```solidity
+function stableCoin() external view returns (address)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
 
 ### supportsInterface
 
