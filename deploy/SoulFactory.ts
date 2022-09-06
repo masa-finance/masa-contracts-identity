@@ -26,22 +26,22 @@ const func: DeployFunction = async ({
   let wrappedNativeToken: string; // weth
   let swapRouter: string;
 
-  if (network.config.chainId == 1) {
+  if (ethers.provider.network.chainId == 1) {
     // mainnet
     stableCoin = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
     wrappedNativeToken = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
     swapRouter = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
-  } else if (network.config.chainId == 4) {
+  } else if (ethers.provider.network.chainId == 4) {
     // rinkeby
     stableCoin = "0x4DBCdF9B62e891a7cec5A2568C3F4FAF9E8Abe2b";
     wrappedNativeToken = "0xc778417E063141139Fce010982780140Aa0cD5Ab";
     swapRouter = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
-  } else if (network.config.chainId == 31337) {
+  } else if (ethers.provider.network.chainId == 31337) {
     // hardhat
-    stableCoin = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
-    wrappedNativeToken = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
+    stableCoin = "0x4DBCdF9B62e891a7cec5A2568C3F4FAF9E8Abe2b";
+    wrappedNativeToken = "0xc778417E063141139Fce010982780140Aa0cD5Ab";
     swapRouter = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
-  } else if (network.config.chainId == 44787) {
+  } else if (ethers.provider.network.chainId == 44787) {
     // alfajores
     stableCoin = "0x37f39aD164cBBf0Cc03Dd638472F3FbeC7aE426C";
     wrappedNativeToken = "0xF194afDf50B03e69Bd7D057c1Aa9e10c9954E4C9";
