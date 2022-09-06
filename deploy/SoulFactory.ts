@@ -33,7 +33,7 @@ const func: DeployFunction = async ({
     swapRouter = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
   } else if (network.config.chainId == 4) {
     // rinkeby
-    stableCoin = "0xeb8f08a975Ab53E34D8a0330E0D34de942C95926";
+    stableCoin = "0x4DBCdF9B62e891a7cec5A2568C3F4FAF9E8Abe2b";
     wrappedNativeToken = "0xc778417E063141139Fce010982780140Aa0cD5Ab";
     swapRouter = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
   } else if (network.config.chainId == 31337) {
