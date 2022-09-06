@@ -26,7 +26,7 @@ const networks: NetworksUserConfig = {
     gasPrice: "auto",
     gas: 13000000,
     forking: {
-      url: getInfuraURL("mainnet")
+      url: getInfuraURL("rinkeby")
     }
   },
   rinkeby: {
