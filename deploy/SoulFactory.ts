@@ -60,6 +60,7 @@ const func: DeployFunction = async ({
       soulboundIdentityDeployed.address,
       "5000000", // 5 USDC, with 6 decimals
       "3000000", // 3 USDC, with 6 decimals
+      "3000000", // 3 USDC, with 6 decimals
       chainId == 31337 || chainId == 4
         ? DAI_RINKEBY // DAI
         : corn.address,
