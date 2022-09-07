@@ -289,4 +289,23 @@ describe("Soul Factory", () => {
       );
     });
   });
+
+  it("we can't purchase an identity and name with ETH if we pay less", async () => {
+    const [, priceInETHIdentity] = await soulFactory.purchaseIdentityInfo();
+    const [, priceInETHName] = await soulFactory.purchaseNameInfo();
+
+    // first we need to purchase an identity
+    await soulFactory.connect(address1).purchaseIdentity(
+      ethers.constants.AddressZero, // ETH
+      { value: priceInETHIdentity }
+    );
+
+    await expect(
+      soulFactory.connect(address1).purchaseIdentityAndName(
+        ethers.constants.AddressZero, // ETH
+        SOUL_NAME1,
+        { value: priceInETHName.div(2) }
+      )
+    ).to.be.rejectedWith('INVALID_PAYMENT_AMOUNT');
+  });
 });
