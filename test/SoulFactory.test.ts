@@ -169,13 +169,13 @@ describe("Soul Factory", () => {
   });
 
   describe("purchase info", () => {
-    it("we can get identity purchase info", async () => {
+    it("we can get identity and name purchase info", async () => {
       const [priceInStableCoin, priceInETH, priceInUtilityToken] =
         await soulFactory.purchaseIdentityAndNameInfo();
 
       expect(priceInStableCoin).to.be.equal(MINTING_IDENTITY_AND_NAME_PRICE);
-      expect(priceInETH).to.be.within(7000000, 9000000);
-      expect(priceInUtilityToken).to.be.within(3000000000, 5000000000);
+      expect(priceInETH).to.be.within(7000000, 11000000);
+      expect(priceInUtilityToken).to.be.within(3000000000, 7000000000);
     });
 
     it("we can get identity purchase info", async () => {
@@ -203,22 +203,19 @@ describe("Soul Factory", () => {
 
       await soulFactory.connect(address1).purchaseIdentity(
         ethers.constants.AddressZero, // ETH
-        SOUL_NAME1,
         { value: priceInETH }
       );
     });
 
     /* it("we can purchase an identity with stable coin", async () => {
       await soulFactory.connect(address1).purchaseIdentity(
-        USDC_RINKEBY, // USDC
-        SOUL_NAME1
+        USDC_RINKEBY // USDC
       );
     });
 
     it("we can purchase an identity with utility coin", async () => {
       await soulFactory.connect(address1).purchaseIdentity(
-        DAI_RINKEBY, // $CORN
-        SOUL_NAME1
+        DAI_RINKEBY // $CORN
       );
     });
 
@@ -228,7 +225,6 @@ describe("Soul Factory", () => {
       await expect(
         soulFactory.connect(address1).purchaseIdentity(
           ethers.constants.AddressZero, // ETH
-          SOUL_NAME1,
           { value: priceInETH.div(2) }
         )
       ).to.be.rejected;
@@ -237,8 +233,7 @@ describe("Soul Factory", () => {
     it("we can't purchase an identity with stable coin if we don't have funds", async () => {
       await expect(
         soulFactory.connect(address1).purchaseIdentity(
-          USDC_RINKEBY, // USDC
-          SOUL_NAME1
+          USDC_RINKEBY // USDC
         )
       ).to.be.rejected;
     });
@@ -246,8 +241,7 @@ describe("Soul Factory", () => {
     it("we can't purchase an identity with utility coin if we don't have funds", async () => {
       await expect(
         soulFactory.connect(address1).purchaseIdentity(
-          DAI_RINKEBY, // $CORN
-          SOUL_NAME1
+          DAI_RINKEBY // $CORN
         )
       ).to.be.rejected;
     }); */
