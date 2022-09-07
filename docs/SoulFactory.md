@@ -61,6 +61,30 @@ function PAUSER_ROLE() external view returns (bytes32)
 |---|---|---|
 | _0 | bytes32 | undefined |
 
+### _getSwapAmounts
+
+```solidity
+function _getSwapAmounts(uint256 mintingPrice) external view returns (uint256 priceInStableCoin, uint256 priceInETH, uint256 priceInUtilityToken)
+```
+
+Returns the price of minting
+
+*Returns all current pricing and amount informations for a purchase*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| mintingPrice | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| priceInStableCoin | uint256 | Current price in stable coin |
+| priceInETH | uint256 | Current pric in native token (ETH) |
+| priceInUtilityToken | uint256 | Current price in utility token ($CORN) |
+
 ### estimateSwapAmount
 
 ```solidity
