@@ -26,7 +26,8 @@ let owner: SignerWithAddress;
 let address1: SignerWithAddress;
 let address2: SignerWithAddress;
 
-const MINTING_IDENTITY_PRICE = "5000000"; // 5 USDC, with 6 decimals
+const MINTING_IDENTITY_AND_NAME_PRICE = "5000000"; // 5 USDC, with 6 decimals
+const MINTING_IDENTITY_PRICE = "3000000"; // 3 USDC, with 6 decimals
 const MINTING_NAME_PRICE = "3000000"; // 3 USDC, with 6 decimals
 
 const SOUL_NAME1 = "soulNameTest1";
@@ -170,11 +171,20 @@ describe("Soul Factory", () => {
   describe("purchase info", () => {
     it("we can get identity purchase info", async () => {
       const [priceInStableCoin, priceInETH, priceInUtilityToken] =
+        await soulFactory.purchaseIdentityAndNameInfo();
+
+      expect(priceInStableCoin).to.be.equal(MINTING_IDENTITY_AND_NAME_PRICE);
+      expect(priceInETH).to.be.within(7000000, 9000000);
+      expect(priceInUtilityToken).to.be.within(3000000000, 5000000000);
+    });
+
+    it("we can get identity purchase info", async () => {
+      const [priceInStableCoin, priceInETH, priceInUtilityToken] =
         await soulFactory.purchaseIdentityInfo();
 
       expect(priceInStableCoin).to.be.equal(MINTING_IDENTITY_PRICE);
-      expect(priceInETH).to.be.within(7000000, 9000000);
-      expect(priceInUtilityToken).to.be.within(3000000000, 5000000000);
+      expect(priceInETH).to.be.within(4000000, 6000000);
+      expect(priceInUtilityToken).to.be.within(2000000000, 4000000000);
     });
 
     it("we can get name purchase info", async () => {
