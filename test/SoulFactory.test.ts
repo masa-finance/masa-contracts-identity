@@ -104,6 +104,22 @@ describe("Soul Factory", () => {
       ).to.be.rejected;
     });
 
+    it("should set MintingIdentityAndNamePrice from admin", async () => {
+      const newPrice = 100;
+      await soulFactory.connect(owner).setMintingIdentityAndNamePrice(newPrice);
+
+      expect(await soulFactory.mintingIdentityAndNamePrice()).to.be.equal(
+        newPrice
+      );
+    });
+
+    it("should fail to set MintingIdentityAndNamePrice from non admin", async () => {
+      const newPrice = 100;
+      await expect(
+        soulFactory.connect(address1).setMintingIdentityAndNamePrice(newPrice)
+      ).to.be.rejected;
+    });
+
     it("should set MintingIdentityPrice from admin", async () => {
       const newPrice = 100;
       await soulFactory.connect(owner).setMintingIdentityPrice(newPrice);
@@ -166,6 +182,32 @@ describe("Soul Factory", () => {
         soulFactory.connect(address1).setReserveWallet(address1.address)
       ).to.be.rejected;
     });
+
+    it("should set SwapRouter from admin", async () => {
+      await soulFactory.connect(owner).setSwapRouter(address1.address);
+
+      expect(await soulFactory.swapRouter()).to.be.equal(address1.address);
+    });
+
+    it("should fail to set SwapRouter from non admin", async () => {
+      await expect(
+        soulFactory.connect(address1).setSwapRouter(address1.address)
+      ).to.be.rejected;
+    });
+
+    it("should set WrappedNativeToken from admin", async () => {
+      await soulFactory.connect(owner).setWrappedNativeToken(address1.address);
+
+      expect(await soulFactory.wrappedNativeToken()).to.be.equal(
+        address1.address
+      );
+    });
+
+    it("should fail to set WrappedNativeToken from non admin", async () => {
+      await expect(
+        soulFactory.connect(address1).setWrappedNativeToken(address1.address)
+      ).to.be.rejected;
+    });
   });
 
   describe("purchase info", () => {
@@ -217,7 +259,7 @@ describe("Soul Factory", () => {
           SOUL_NAME1,
           { value: priceInETH.div(2) }
         )
-      ).to.be.rejectedWith('INVALID_PAYMENT_AMOUNT');
+      ).to.be.rejectedWith("INVALID_PAYMENT_AMOUNT");
     });
   });
 
@@ -251,9 +293,9 @@ describe("Soul Factory", () => {
           ethers.constants.AddressZero, // ETH
           { value: priceInETH.div(2) }
         )
-      ).to.be.rejectedWith('INVALID_PAYMENT_AMOUNT');
+      ).to.be.rejectedWith("INVALID_PAYMENT_AMOUNT");
     });
-/*
+    /*
     it("we can't purchase an identity with stable coin if we don't have funds", async () => {
       await expect(
         soulFactory.connect(address1).purchaseIdentity(
@@ -306,6 +348,6 @@ describe("Soul Factory", () => {
         SOUL_NAME1,
         { value: priceInETHName.div(2) }
       )
-    ).to.be.rejectedWith('INVALID_PAYMENT_AMOUNT');
+    ).to.be.rejectedWith("INVALID_PAYMENT_AMOUNT");
   });
 });
