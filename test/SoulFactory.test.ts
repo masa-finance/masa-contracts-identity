@@ -197,6 +197,9 @@ describe("Soul Factory", () => {
     });
   });
 
+  describe("purchase identity and name", () => {
+  });
+
   describe("purchase identity", () => {
     it("we can purchase an identity with ETH", async () => {
       const [, priceInETH] = await soulFactory.purchaseIdentityInfo();
@@ -217,7 +220,7 @@ describe("Soul Factory", () => {
       await soulFactory.connect(address1).purchaseIdentity(
         DAI_RINKEBY // $CORN
       );
-    });
+    }); */
 
     it("we can't purchase an identity with ETH if we pay less", async () => {
       const [, priceInETH] = await soulFactory.purchaseIdentityInfo();
@@ -227,9 +230,9 @@ describe("Soul Factory", () => {
           ethers.constants.AddressZero, // ETH
           { value: priceInETH.div(2) }
         )
-      ).to.be.rejected;
+      ).to.be.rejectedWith('INVALID_PAYMENT_AMOUNT');
     });
-
+/*
     it("we can't purchase an identity with stable coin if we don't have funds", async () => {
       await expect(
         soulFactory.connect(address1).purchaseIdentity(
@@ -245,5 +248,8 @@ describe("Soul Factory", () => {
         )
       ).to.be.rejected;
     }); */
+  });
+
+  describe("purchase name", () => {
   });
 });
