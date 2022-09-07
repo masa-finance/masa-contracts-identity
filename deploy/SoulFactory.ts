@@ -22,6 +22,7 @@ const func: DeployFunction = async ({
 
   const corn = await deployments.get("CORN");
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
+  const soulNameDeployed = await deployments.get("SoulName");
 
   let stableCoin: string; // usdc
   let wrappedNativeToken: string; // weth
@@ -76,8 +77,12 @@ const func: DeployFunction = async ({
     "SoulboundIdentity",
     soulboundIdentityDeployed.address
   );
+  const soulName = await ethers.getContractAt(
+    "SoulName",
+    soulNameDeployed.address
+  );
 
-  // we add soulFactory as soulboundIdentity minter
+  // we add soulFactory as soulboundIdentity and soulName minter
   const signer = env.OWNER
     ? new ethers.Wallet(
         getPrivateKey(network.name),
@@ -85,10 +90,15 @@ const func: DeployFunction = async ({
       )
     : owner;
 
-  const MINTER_ROLE = await soulboundIdentity.MINTER_ROLE();
+  const IDENTITY_MINTER_ROLE = await soulboundIdentity.MINTER_ROLE();
   await soulboundIdentity
     .connect(signer)
-    .grantRole(MINTER_ROLE, SoulFactoryDeploymentResult.address);
+    .grantRole(IDENTITY_MINTER_ROLE, SoulFactoryDeploymentResult.address);
+
+  const NAME_MINTER_ROLE = await soulName.MINTER_ROLE();
+  await soulName
+    .connect(signer)
+    .grantRole(NAME_MINTER_ROLE, SoulFactoryDeploymentResult.address);
 };
 
 func.tags = ["SoulFactory"];
