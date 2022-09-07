@@ -108,11 +108,13 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
     /// @notice Sets the price of the identity and name minting in stable coin
     /// @dev The caller must have the admin role to call this function
     /// @param _mintingIdentityAndNamePrice New price of the identity and name minting in stable coin
-    function setMintingIdentityAndNamePrice(uint256 _mintingIdentityAndNamePrice)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
-        require(mintingIdentityAndNamePrice != _mintingIdentityAndNamePrice, "SAME_VALUE");
+    function setMintingIdentityAndNamePrice(
+        uint256 _mintingIdentityAndNamePrice
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        require(
+            mintingIdentityAndNamePrice != _mintingIdentityAndNamePrice,
+            "SAME_VALUE"
+        );
         mintingIdentityAndNamePrice = _mintingIdentityAndNamePrice;
     }
 
@@ -269,16 +271,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
             uint256 priceInUtilityToken
         )
     {
-        priceInStableCoin = mintingIdentityAndNamePrice;
-        // get swapped price in ETH and $CORN
-        priceInETH = estimateSwapAmount(
-            wrappedNativeToken,
-            stableCoin,
-            mintingIdentityAndNamePrice
-        );
-        priceInUtilityToken = estimateSwapAmount(
-            utilityToken,
-            stableCoin,
+        (priceInStableCoin, priceInETH, priceInUtilityToken) = _getSwapAmounts(
             mintingIdentityAndNamePrice
         );
     }
@@ -297,16 +290,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
             uint256 priceInUtilityToken
         )
     {
-        priceInStableCoin = mintingIdentityPrice;
-        // get swapped price in ETH and $CORN
-        priceInETH = estimateSwapAmount(
-            wrappedNativeToken,
-            stableCoin,
-            mintingIdentityPrice
-        );
-        priceInUtilityToken = estimateSwapAmount(
-            utilityToken,
-            stableCoin,
+        (priceInStableCoin, priceInETH, priceInUtilityToken) = _getSwapAmounts(
             mintingIdentityPrice
         );
     }
@@ -325,21 +309,40 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
             uint256 priceInUtilityToken
         )
     {
-        priceInStableCoin = mintingNamePrice;
-        // get swapped price in ETH and $CORN
-        priceInETH = estimateSwapAmount(
-            wrappedNativeToken,
-            stableCoin,
-            mintingNamePrice
-        );
-        priceInUtilityToken = estimateSwapAmount(
-            utilityToken,
-            stableCoin,
+        (priceInStableCoin, priceInETH, priceInUtilityToken) = _getSwapAmounts(
             mintingNamePrice
         );
     }
 
     /* ========== PRIVATE FUNCTIONS ========== */
+
+    /// @notice Returns the price of minting
+    /// @dev Returns all current pricing and amount informations for a purchase
+    /// @return priceInStableCoin Current price in stable coin
+    /// @return priceInETH Current pric in native token (ETH)
+    /// @return priceInUtilityToken Current price in utility token ($CORN)
+    function _getSwapAmounts(uint256 mintingPrice)
+        public
+        view
+        returns (
+            uint256 priceInStableCoin,
+            uint256 priceInETH,
+            uint256 priceInUtilityToken
+        )
+    {
+        priceInStableCoin = mintingPrice;
+        // get swapped price in ETH and $CORN
+        priceInETH = estimateSwapAmount(
+            wrappedNativeToken,
+            stableCoin,
+            mintingPrice
+        );
+        priceInUtilityToken = estimateSwapAmount(
+            utilityToken,
+            stableCoin,
+            mintingPrice
+        );
+    }
 
     /// @notice Performs the payment for the minting
     /// @dev This method will transfer the funds to the reserve wallet, performing
@@ -419,18 +422,11 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
     /// new Soulbound Identity and emit the purchase event
     /// @param to Address of the owner of the new identity
     /// @return TokenId of the new soulbound identity
-    function _mintSoulboundIdentity(address to)
-        internal
-        returns (uint256)
-    {
+    function _mintSoulboundIdentity(address to) internal returns (uint256) {
         // mint Soulbound identity token
         uint256 tokenId = soulboundIdentity.mint(to);
 
-        emit SoulboundIdentityPurchased(
-            to,
-            tokenId,
-            mintingIdentityPrice
-        );
+        emit SoulboundIdentityPurchased(to, tokenId, mintingIdentityPrice);
 
         return tokenId;
     }
