@@ -33,7 +33,7 @@ export function getPrivateKey(networkName: string | undefined) {
 }
 
 export function getInfuraApiKey(networkName: string | undefined) {
-  return getSecretParam("INFURA_API_KEY", networkName);
+  return process.env.INFURA_API_KEY || getSecretParam("INFURA_API_KEY", networkName);
 }
 
 export function getEtherscanApiKey(networkName: string | undefined) {
