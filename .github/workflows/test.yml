@@ -18,9 +18,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: yarn
-      - run: echo $INFURA_API_KEY
-        env:
-          INFURA_API_KEY: ${{ secrets.INFURA_API_KEY }}
       - run: yarn test
         env:
           INFURA_API_KEY: ${{ secrets.INFURA_API_KEY }}
