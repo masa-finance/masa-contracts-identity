@@ -11,6 +11,7 @@ import {
   SoulFactory,
   SoulFactory__factory
 } from "../typechain";
+import { DAI_RINKEBY, USDC_RINKEBY } from "../src/constants";
 
 chai.use(chaiAsPromised);
 chai.use(solidity);
@@ -172,8 +173,8 @@ describe("Soul Factory", () => {
         await soulFactory.purchaseIdentityInfo();
 
       expect(priceInStableCoin).to.be.equal(MINTING_IDENTITY_PRICE);
-      expect(priceInETH).to.be.equal(0);
-      expect(priceInUtilityToken).to.be.equal(0);
+      expect(priceInETH).to.be.within(70000000, 90000000);
+      expect(priceInUtilityToken).to.be.within(30000000000, 50000000000);
     });
 
     it("we can get name purchase info", async () => {
@@ -181,52 +182,64 @@ describe("Soul Factory", () => {
         await soulFactory.purchaseNameInfo();
 
       expect(priceInStableCoin).to.be.equal(MINTING_NAME_PRICE);
-      expect(priceInETH).to.be.equal(0);
-      expect(priceInUtilityToken).to.be.equal(0);
+      expect(priceInETH).to.be.within(40000000, 60000000);
+      expect(priceInUtilityToken).to.be.within(20000000000, 40000000000);
     });
   });
 
   describe("purchase identity", () => {
     it("we can purchase an identity with ETH", async () => {
+      const [, priceInETH] = await soulFactory.purchaseIdentityInfo();
+
       await soulFactory.connect(address1).purchaseIdentity(
         ethers.constants.AddressZero, // ETH
-        SOUL_NAME1
+        SOUL_NAME1,
+        { value: priceInETH }
       );
     });
 
     it("we can purchase an identity with stable coin", async () => {
       await soulFactory.connect(address1).purchaseIdentity(
-        ethers.constants.AddressZero, // USDC
+        USDC_RINKEBY, // USDC
         SOUL_NAME1
       );
     });
 
     it("we can purchase an identity with utility coin", async () => {
       await soulFactory.connect(address1).purchaseIdentity(
-        ethers.constants.AddressZero, // $CORN
+        DAI_RINKEBY, // $CORN
         SOUL_NAME1
       );
     });
 
-    it("we can't purchase an identity with ETH if we don't have funds", async () => {
-      await soulFactory.connect(address1).purchaseIdentity(
-        ethers.constants.AddressZero, // ETH
-        SOUL_NAME1
-      );
+    it("we can't purchase an identity with ETH if we pay less", async () => {
+      const [, priceInETH] = await soulFactory.purchaseIdentityInfo();
+
+      await expect(
+        soulFactory.connect(address1).purchaseIdentity(
+          ethers.constants.AddressZero, // ETH
+          SOUL_NAME1,
+          { value: priceInETH.div(2) }
+        )
+      ).to.be.rejected;
     });
 
     it("we can't purchase an identity with stable coin if we don't have funds", async () => {
-      await soulFactory.connect(address1).purchaseIdentity(
-        ethers.constants.AddressZero, // USDC
-        SOUL_NAME1
-      );
+      await expect(
+        soulFactory.connect(address1).purchaseIdentity(
+          USDC_RINKEBY, // USDC
+          SOUL_NAME1
+        )
+      ).to.be.rejected;
     });
 
     it("we can't purchase an identity with utility coin if we don't have funds", async () => {
-      await soulFactory.connect(address1).purchaseIdentity(
-        ethers.constants.AddressZero, // $CORN
-        SOUL_NAME1
-      );
+      await expect(
+        soulFactory.connect(address1).purchaseIdentity(
+          DAI_RINKEBY, // $CORN
+          SOUL_NAME1
+        )
+      ).to.be.rejected;
     });
   });
 });
