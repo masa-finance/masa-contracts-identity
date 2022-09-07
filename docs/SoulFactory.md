@@ -253,7 +253,7 @@ function paused() external view returns (bool)
 ### purchaseIdentity
 
 ```solidity
-function purchaseIdentity(address paymentMethod, string name) external payable returns (uint256)
+function purchaseIdentity(address paymentMethod) external payable returns (uint256)
 ```
 
 Mints a new Soulbound Identity purchasing it
@@ -265,7 +265,6 @@ Mints a new Soulbound Identity purchasing it
 | Name | Type | Description |
 |---|---|---|
 | paymentMethod | address | Address of token that user want to pay |
-| name | string | undefined |
 
 #### Returns
 

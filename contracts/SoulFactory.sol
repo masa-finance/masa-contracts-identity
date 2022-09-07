@@ -225,7 +225,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
     /// stable coin (USDC), native token (ETH) or utility token ($CORN)
     /// @param paymentMethod Address of token that user want to pay
     /// @return TokenId of the new soulbound identity
-    function purchaseIdentity(address paymentMethod, string memory name)
+    function purchaseIdentity(address paymentMethod)
         external
         payable
         whenNotPaused
