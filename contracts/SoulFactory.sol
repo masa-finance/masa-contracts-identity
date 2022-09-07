@@ -26,6 +26,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
 
     SoulboundIdentity public soulboundIdentity;
 
+    uint256 public mintingIdentityAndNamePrice; // price in stable coin
     uint256 public mintingIdentityPrice; // price in stable coin
     uint256 public mintingNamePrice; // price in stable coin
 
@@ -41,6 +42,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
     /// and Soul Name NFTs, paying a fee
     /// @param owner Owner of the smart contract
     /// @param _soulBoundIdentity Address of the Soulbound identity contract
+    /// @param _mintingIdentityAndNamePrice Price of the identity and name minting in stable coin
     /// @param _mintingIdentityPrice Price of the identity minting in stable coin
     /// @param _mintingNamePrice Price of the name minting in stable coin
     /// @param _utilityToken Utility token to pay the fee in ($CORN)
@@ -51,6 +53,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
     constructor(
         address owner,
         SoulboundIdentity _soulBoundIdentity,
+        uint256 _mintingIdentityAndNamePrice,
         uint256 _mintingIdentityPrice,
         uint256 _mintingNamePrice,
         address _utilityToken,
@@ -67,6 +70,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
 
         soulboundIdentity = _soulBoundIdentity;
 
+        mintingIdentityAndNamePrice = _mintingIdentityAndNamePrice;
         mintingIdentityPrice = _mintingIdentityPrice;
         mintingNamePrice = _mintingNamePrice;
         stableCoin = _stableCoin;
@@ -99,6 +103,17 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
         require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
         require(soulboundIdentity != _soulboundIdentity, "SAME_VALUE");
         soulboundIdentity = _soulboundIdentity;
+    }
+
+    /// @notice Sets the price of the identity and name minting in stable coin
+    /// @dev The caller must have the admin role to call this function
+    /// @param _mintingIdentityAndNamePrice New price of the identity and name minting in stable coin
+    function setMintingIdentityAndNamePrice(uint256 _mintingIdentityAndNamePrice)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        require(mintingIdentityAndNamePrice != _mintingIdentityAndNamePrice, "SAME_VALUE");
+        mintingIdentityAndNamePrice = _mintingIdentityAndNamePrice;
     }
 
     /// @notice Sets the price of the identity minting in stable coin
@@ -185,11 +200,28 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
 
     /* ========== MUTATIVE FUNCTIONS ========== */
 
+    /// @notice Mints a new Soulbound Identity and Name purchasing it
+    /// @dev This function allows the purchase of a soulbound identity and name using
+    /// stable coin (USDC), native token (ETH) or utility token ($CORN)
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param name Name of the new soul name
+    /// @return TokenId of the new soulbound identity
+    function purchaseIdentityAndName(address paymentMethod, string memory name)
+        external
+        payable
+        whenNotPaused
+        returns (uint256)
+    {
+        _payForMinting(paymentMethod, mintingIdentityAndNamePrice);
+
+        // finalize purchase
+        return _mintSoulboundIdentityAndName(_msgSender(), name);
+    }
+
     /// @notice Mints a new Soulbound Identity purchasing it
     /// @dev This function allows the purchase of a soulbound identity using
     /// stable coin (USDC), native token (ETH) or utility token ($CORN)
     /// @param paymentMethod Address of token that user want to pay
-    /// @param name Name of the new soul name
     /// @return TokenId of the new soulbound identity
     function purchaseIdentity(address paymentMethod, string memory name)
         external
@@ -200,7 +232,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
         _payForMinting(paymentMethod, mintingIdentityPrice);
 
         // finalize purchase
-        return _mintSoulboundIdentity(_msgSender(), name);
+        return _mintSoulboundIdentity(_msgSender());
     }
 
     /// @notice Mints a new Soul Name purchasing it
@@ -222,6 +254,34 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
     }
 
     /* ========== VIEWS ========== */
+
+    /// @notice Returns the price of the identity and name minting
+    /// @dev Returns all current pricing and amount informations for a purchase
+    /// @return priceInStableCoin Current price of the identity and name minting in stable coin
+    /// @return priceInETH Current price of the identity and name minting in native token (ETH)
+    /// @return priceInUtilityToken Current price of the identity and nameminting in utility token ($CORN)
+    function purchaseIdentityAndNameInfo()
+        public
+        view
+        returns (
+            uint256 priceInStableCoin,
+            uint256 priceInETH,
+            uint256 priceInUtilityToken
+        )
+    {
+        priceInStableCoin = mintingIdentityAndNamePrice;
+        // get swapped price in ETH and $CORN
+        priceInETH = estimateSwapAmount(
+            wrappedNativeToken,
+            stableCoin,
+            mintingIdentityAndNamePrice
+        );
+        priceInUtilityToken = estimateSwapAmount(
+            utilityToken,
+            stableCoin,
+            mintingIdentityAndNamePrice
+        );
+    }
 
     /// @notice Returns the price of the identity minting
     /// @dev Returns all current pricing and amount informations for a purchase
@@ -331,23 +391,44 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
         }
     }
 
-    /// @notice Mints a new Soulbound Identity
+    /// @notice Mints a new Soulbound Identity and Name
     /// @dev The final step of all purchase options. Will mint a
     /// new Soulbound Identity and a Soul Name NFT and emit the purchase event
     /// @param to Address of the owner of the new soul name
     /// @param name Name of the new soul name
     /// @return TokenId of the new soulbound identity
-    function _mintSoulboundIdentity(address to, string memory name)
+    function _mintSoulboundIdentityAndName(address to, string memory name)
         internal
         returns (uint256)
     {
         // mint Soulbound identity token
         uint256 tokenId = soulboundIdentity.mintIdentityWithName(to, name);
 
-        emit SoulboundIdentityPurchased(
+        emit SoulboundIdentityAndNamePurchased(
             to,
             tokenId,
             name,
+            mintingIdentityPrice
+        );
+
+        return tokenId;
+    }
+
+    /// @notice Mints a new Soulbound Identity
+    /// @dev The final step of all purchase options. Will mint a
+    /// new Soulbound Identity and emit the purchase event
+    /// @param to Address of the owner of the new identity
+    /// @return TokenId of the new soulbound identity
+    function _mintSoulboundIdentity(address to)
+        internal
+        returns (uint256)
+    {
+        // mint Soulbound identity token
+        uint256 tokenId = soulboundIdentity.mint(to);
+
+        emit SoulboundIdentityPurchased(
+            to,
+            tokenId,
             mintingIdentityPrice
         );
 
@@ -379,10 +460,16 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
 
     /* ========== EVENTS ========== */
 
-    event SoulboundIdentityPurchased(
+    event SoulboundIdentityAndNamePurchased(
         address indexed account,
         uint256 tokenId,
         string indexed name,
+        uint256 price
+    );
+
+    event SoulboundIdentityPurchased(
+        address indexed account,
+        uint256 tokenId,
         uint256 price
     );
 
