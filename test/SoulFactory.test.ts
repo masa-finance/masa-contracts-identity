@@ -261,6 +261,27 @@ describe("Soul Factory", () => {
         )
       ).to.be.rejectedWith("INVALID_PAYMENT_AMOUNT");
     });
+
+    it("we can purchase an identity and name with more ETH receiving the refund", async () => {
+      const [, priceInETH] = await soulFactory.purchaseIdentityAndNameInfo();
+
+      const balance = await address1.getBalance();
+
+      const tx = await soulFactory.connect(address1).purchaseIdentityAndName(
+        ethers.constants.AddressZero, // ETH
+        SOUL_NAME1,
+        { value: priceInETH.mul(2) }
+      );
+      const receipt = await tx.wait();
+
+      const balanceAfter = await address1.getBalance();
+      const price = await address1.provider?.getGasPrice();
+      const gasCost = price?.mul(receipt.gasUsed) || 0;
+
+      await expect(balanceAfter).to.be.equal(
+        balance.sub(priceInETH).sub(gasCost)
+      );
+    });
   });
 
   describe("purchase identity", () => {
