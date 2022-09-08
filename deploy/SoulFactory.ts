@@ -1,7 +1,7 @@
 import { getEnvParams, getPrivateKey } from "../src/utils/EnvParams";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
-import { DAI_RINKEBY } from "../src/constants";
+import { DAI_RINKEBY, USDC_RINKEBY } from "../src/constants";
 
 let owner: SignerWithAddress;
 
@@ -37,12 +37,12 @@ const func: DeployFunction = async ({
     swapRouter = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
   } else if (chainId == 4) {
     // rinkeby
-    stableCoin = "0x4DBCdF9B62e891a7cec5A2568C3F4FAF9E8Abe2b";
+    stableCoin = USDC_RINKEBY;
     wrappedNativeToken = "0xc778417E063141139Fce010982780140Aa0cD5Ab";
     swapRouter = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
   } else if (chainId == 31337) {
     // hardhat
-    stableCoin = "0x4DBCdF9B62e891a7cec5A2568C3F4FAF9E8Abe2b";
+    stableCoin = USDC_RINKEBY;
     wrappedNativeToken = "0xc778417E063141139Fce010982780140Aa0cD5Ab";
     swapRouter = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
   } else if (chainId == 44787) {
