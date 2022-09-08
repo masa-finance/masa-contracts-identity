@@ -9,9 +9,16 @@ import {
   SoulName,
   SoulName__factory,
   SoulFactory,
-  SoulFactory__factory
+  SoulFactory__factory,
+  IUniswapRouter,
+  IUniswapRouter__factory
 } from "../typechain";
-import { DAI_RINKEBY, USDC_RINKEBY } from "../src/constants";
+import {
+  DAI_RINKEBY,
+  USDC_RINKEBY,
+  SWAPROUTER_RINKEBY,
+  WETH_RINKEBY
+} from "../src/constants";
 
 chai.use(chaiAsPromised);
 chai.use(solidity);
@@ -57,6 +64,24 @@ describe("Soul Factory", () => {
     );
     soulName = SoulName__factory.connect(soulNameAddress, owner);
     soulFactory = SoulFactory__factory.connect(soulFactoryAddress, owner);
+    const uniswapRouter: IUniswapRouter = IUniswapRouter__factory.connect(
+      SWAPROUTER_RINKEBY,
+      owner
+    );
+
+    await uniswapRouter.swapExactETHForTokens(
+      0,
+      [WETH_RINKEBY, DAI_RINKEBY],
+      owner.address,
+      Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
+      {
+        value: ethers.utils.parseEther("10")
+      }
+    );
+
+    // minting some stable and utility coins for the tests
+    /* await stableCoin.connect(owner).mint();
+    await stableCoin.connect(address1).mint(); */
   });
 
   describe("pause", () => {
@@ -216,8 +241,8 @@ describe("Soul Factory", () => {
         await soulFactory.purchaseIdentityAndNameInfo();
 
       expect(priceInStableCoin).to.be.equal(MINTING_IDENTITY_AND_NAME_PRICE);
-      expect(priceInETH).to.be.within(7000000, 11000000);
-      expect(priceInUtilityToken).to.be.within(3000000000, 7000000000);
+      expect(priceInETH.toNumber()).to.be.greaterThan(0);
+      expect(priceInUtilityToken.toNumber()).to.be.greaterThan(0);
     });
 
     it("we can get identity purchase info", async () => {
@@ -225,8 +250,8 @@ describe("Soul Factory", () => {
         await soulFactory.purchaseIdentityInfo();
 
       expect(priceInStableCoin).to.be.equal(MINTING_IDENTITY_PRICE);
-      expect(priceInETH).to.be.within(4000000, 6000000);
-      expect(priceInUtilityToken).to.be.within(2000000000, 4000000000);
+      expect(priceInETH.toNumber()).to.be.greaterThan(0);
+      expect(priceInUtilityToken.toNumber()).to.be.greaterThan(0);
     });
 
     it("we can get name purchase info", async () => {
@@ -234,8 +259,8 @@ describe("Soul Factory", () => {
         await soulFactory.purchaseNameInfo();
 
       expect(priceInStableCoin).to.be.equal(MINTING_NAME_PRICE);
-      expect(priceInETH).to.be.within(4000000, 6000000);
-      expect(priceInUtilityToken).to.be.within(2000000000, 4000000000);
+      expect(priceInETH.toNumber()).to.be.greaterThan(0);
+      expect(priceInUtilityToken.toNumber()).to.be.greaterThan(0);
     });
   });
 
