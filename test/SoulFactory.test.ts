@@ -14,7 +14,7 @@ import {
   IUniswapRouter__factory
 } from "../typechain";
 import {
-  DAI_RINKEBY,
+  CORN_RINKEBY,
   USDC_RINKEBY,
   SWAPROUTER_RINKEBY,
   WETH_RINKEBY
@@ -83,7 +83,7 @@ describe("Soul Factory", () => {
     // we get utility tokens for address1
     await uniswapRouter.swapExactETHForTokens(
       0,
-      [WETH_RINKEBY, DAI_RINKEBY],
+      [WETH_RINKEBY, CORN_RINKEBY],
       address1.address,
       Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
       {
@@ -336,7 +336,7 @@ describe("Soul Factory", () => {
 
     it("we can purchase an identity with utility coin", async () => {
       await soulFactory.connect(address1).purchaseIdentity(
-        DAI_RINKEBY // $CORN
+        CORN_RINKEBY // $CORN
       );
     }); */
 
@@ -362,7 +362,7 @@ describe("Soul Factory", () => {
     it("we can't purchase an identity with utility coin if we don't have funds", async () => {
       await expect(
         soulFactory.connect(address1).purchaseIdentity(
-          DAI_RINKEBY // $CORN
+          CORN_RINKEBY // $CORN
         )
       ).to.be.rejected;
     }); */

@@ -2,7 +2,7 @@ import { getEnvParams, getPrivateKey } from "../src/utils/EnvParams";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
 import {
-  DAI_RINKEBY,
+  CORN_RINKEBY,
   SWAPROUTER_RINKEBY,
   USDC_RINKEBY,
   WETH_RINKEBY
@@ -68,7 +68,7 @@ const func: DeployFunction = async ({
       "3000000", // 3 USDC, with 6 decimals
       "3000000", // 3 USDC, with 6 decimals
       chainId == 31337 || chainId == 4
-        ? DAI_RINKEBY // DAI
+        ? CORN_RINKEBY // CORN
         : corn.address,
       stableCoin,
       wrappedNativeToken,
