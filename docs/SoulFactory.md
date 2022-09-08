@@ -10,23 +10,6 @@ Soul Factory, that can mint new Soulbound Identities and Soul Name NFTs, paying 
 
 ## Methods
 
-### DEADLINE
-
-```solidity
-function DEADLINE() external view returns (uint256)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | undefined |
-
 ### DEFAULT_ADMIN_ROLE
 
 ```solidity

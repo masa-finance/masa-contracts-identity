@@ -10,23 +10,6 @@ Smart contract to call a Dex AMM smart contract
 
 ## Methods
 
-### DEADLINE
-
-```solidity
-function DEADLINE() external view returns (uint256)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | undefined |
-
 ### estimateSwapAmount
 
 ```solidity
