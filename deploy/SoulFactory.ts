@@ -1,7 +1,11 @@
 import { getEnvParams, getPrivateKey } from "../src/utils/EnvParams";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
-import { DAI_RINKEBY, USDC_RINKEBY } from "../src/constants";
+import {
+  DAI_RINKEBY,
+  SWAPROUTER_RINKEBY,
+  USDC_RINKEBY
+} from "../src/constants";
 
 let owner: SignerWithAddress;
 
@@ -34,17 +38,17 @@ const func: DeployFunction = async ({
     // mainnet
     stableCoin = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
     wrappedNativeToken = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
-    swapRouter = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
+    swapRouter = SWAPROUTER_RINKEBY;
   } else if (chainId == 4) {
     // rinkeby
     stableCoin = USDC_RINKEBY;
     wrappedNativeToken = "0xc778417E063141139Fce010982780140Aa0cD5Ab";
-    swapRouter = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
+    swapRouter = SWAPROUTER_RINKEBY;
   } else if (chainId == 31337) {
     // hardhat
     stableCoin = USDC_RINKEBY;
     wrappedNativeToken = "0xc778417E063141139Fce010982780140Aa0cD5Ab";
-    swapRouter = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
+    swapRouter = SWAPROUTER_RINKEBY;
   } else if (chainId == 44787) {
     // alfajores
     stableCoin = "0x37f39aD164cBBf0Cc03Dd638472F3FbeC7aE426C";
