@@ -13,8 +13,6 @@ abstract contract DexAMM {
 
     address public swapRouter;
     address public wrappedNativeToken;
-    uint256 public constant DEADLINE =
-        0xf000000000000000000000000000000000000000000000000000000000000000;
 
     /* ========== INITIALIZE ================================================ */
 
