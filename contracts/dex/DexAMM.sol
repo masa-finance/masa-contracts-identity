@@ -74,43 +74,6 @@ abstract contract DexAMM {
         }
     }
 
-    function _swapTokenForToken(
-        address _tokenIn,
-        address _tokenOut,
-        uint256 _amount,
-        uint256 _amountOutMin
-    ) internal returns (uint256) {
-        address[] memory path = _getPathFromTokenToToken(_tokenIn, _tokenOut);
-        uint256[] memory amounts = IUniswapRouter(swapRouter)
-            .swapExactTokensForTokens(
-                _amount,
-                _amountOutMin,
-                path,
-                address(this),
-                DEADLINE
-            );
-        return amounts[path.length - 1];
-    }
-
-    function _swapETHForToken(
-        address _tokenOut,
-        uint256 _amountIn,
-        uint256 _amountOutMin
-    ) internal returns (uint256) {
-        address[] memory path = _getPathFromTokenToToken(
-            wrappedNativeToken,
-            _tokenOut
-        );
-        uint256[] memory amounts = IUniswapRouter(swapRouter)
-            .swapExactETHForTokens{value: _amountIn}(
-            _amountOutMin,
-            path,
-            address(this),
-            DEADLINE
-        ); // amounts[0] = WETH, amounts[end] = tokens
-        return amounts[path.length - 1];
-    }
-
     /* ========== MODIFIERS ================================================= */
 
     /* ========== EVENTS ==================================================== */
