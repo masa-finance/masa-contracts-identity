@@ -4,7 +4,8 @@ import { DeployFunction } from "hardhat-deploy/dist/types";
 import {
   DAI_RINKEBY,
   SWAPROUTER_RINKEBY,
-  USDC_RINKEBY
+  USDC_RINKEBY,
+  WETH_RINKEBY
 } from "../src/constants";
 
 let owner: SignerWithAddress;
@@ -42,12 +43,12 @@ const func: DeployFunction = async ({
   } else if (chainId == 4) {
     // rinkeby
     stableCoin = USDC_RINKEBY;
-    wrappedNativeToken = "0xc778417E063141139Fce010982780140Aa0cD5Ab";
+    wrappedNativeToken = WETH_RINKEBY;
     swapRouter = SWAPROUTER_RINKEBY;
   } else if (chainId == 31337) {
     // hardhat
     stableCoin = USDC_RINKEBY;
-    wrappedNativeToken = "0xc778417E063141139Fce010982780140Aa0cD5Ab";
+    wrappedNativeToken = WETH_RINKEBY;
     swapRouter = SWAPROUTER_RINKEBY;
   } else if (chainId == 44787) {
     // alfajores
