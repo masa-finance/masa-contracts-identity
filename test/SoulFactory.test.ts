@@ -278,6 +278,7 @@ describe("Soul Factory", () => {
       const price = await address1.provider?.getGasPrice();
       const gasCost = price?.mul(receipt.gasUsed) || 0;
 
+      // TODO: it fails on coverage, but works on test
       await expect(balanceAfter).to.be.equal(
         balance.sub(priceInETH).sub(gasCost)
       );
