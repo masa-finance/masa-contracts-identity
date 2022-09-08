@@ -69,19 +69,27 @@ describe("Soul Factory", () => {
       owner
     );
 
+    // we get stable coins for address1
     await uniswapRouter.swapExactETHForTokens(
       0,
-      [WETH_RINKEBY, DAI_RINKEBY],
-      owner.address,
+      [WETH_RINKEBY, USDC_RINKEBY],
+      address1.address,
       Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
       {
         value: ethers.utils.parseEther("10")
       }
     );
 
-    // minting some stable and utility coins for the tests
-    /* await stableCoin.connect(owner).mint();
-    await stableCoin.connect(address1).mint(); */
+    // we get utility tokens for address1
+    await uniswapRouter.swapExactETHForTokens(
+      0,
+      [WETH_RINKEBY, DAI_RINKEBY],
+      address1.address,
+      Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
+      {
+        value: ethers.utils.parseEther("10")
+      }
+    );
   });
 
   describe("pause", () => {
