@@ -323,20 +323,30 @@ describe("Soul Factory", () => {
 
       // set allowance for soul factory
       const usdc: ERC20 = ERC20__factory.connect(USDC_RINKEBY, owner);
-      await usdc.connect(address1).approve(soulFactory.address, priceInStableCoin);
+      await usdc
+        .connect(address1)
+        .approve(soulFactory.address, priceInStableCoin);
 
       await soulFactory.connect(address1).purchaseIdentity(
         USDC_RINKEBY // USDC
       );
     });
 
-    /*
     it("we can purchase an identity with utility coin", async () => {
+      const [, , priceInUtilityToken] =
+        await soulFactory.purchaseIdentityInfo();
+
+      // set allowance for soul factory
+      const usdc: ERC20 = ERC20__factory.connect(CORN_RINKEBY, owner);
+      await usdc
+        .connect(address1)
+        .approve(soulFactory.address, priceInUtilityToken);
+
       // TODO: allowance to soul factory
       await soulFactory.connect(address1).purchaseIdentity(
         CORN_RINKEBY // $CORN
       );
-    }); */
+    });
 
     it("we can't purchase an identity with ETH if we pay less", async () => {
       const [, priceInETH] = await soulFactory.purchaseIdentityInfo();
