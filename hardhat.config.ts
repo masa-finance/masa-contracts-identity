@@ -16,7 +16,7 @@ import "solidity-coverage";
 import { NetworksUserConfig } from "hardhat/types";
 
 const getInfuraURL = (network: string) => {
-  return `https://${network}.infura.io/v3/${getInfuraApiKey(network)}`;
+  return `https://${network}.infura.io/v3/${getInfuraApiKey()}`;
 };
 
 const networks: NetworksUserConfig = {
@@ -64,7 +64,7 @@ export default {
   },
   etherscan: {
     apiKey: {
-      rinkeby: getEtherscanApiKey("rinkeby")
+      rinkeby: getEtherscanApiKey()
     }
   },
   gasReporter: {

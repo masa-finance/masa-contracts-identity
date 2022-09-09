@@ -46,7 +46,9 @@ The base url for the Metadata url that is beeing generated from the contract
 ### Preparations
 
 * Set `DEPLOYER_PRIVATE_KEY` to the deployers private key in `.env.{network}.secret`
-* Set `INFURA_API_KEY` to the Infura API key in `.env.{network}.secret`, if needed
+* Set `COINMARKETCAP_API_KEY` to the Infura API key in `.env`, if needed
+* Set `INFURA_API_KEY` to the Infura API key in `.env`, if needed
+* Set `ETHERSCAN_API_KEY` to the Infura API key in `.env`, if needed
 
 ### Deploy
 
