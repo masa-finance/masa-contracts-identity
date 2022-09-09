@@ -18,7 +18,7 @@ export function getEnvParams(networkName: string | undefined) {
 }
 
 export function getSecretParam(param: string, networkName: string | undefined) {
-  const path = networkName ? `.env.${networkName}.secret` : `.env.secret`;
+  const path = networkName ? `.env.${networkName}.secret` : `.env`;
 
   fsx.ensureFileSync(path);
   return parse(fs.readFileSync(path))[param];
