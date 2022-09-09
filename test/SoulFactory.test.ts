@@ -497,8 +497,7 @@ describe("Soul Factory", () => {
     });
 
     it("we can purchase a name with utility coin", async () => {
-      const [, , priceInUtilityToken] =
-        await soulFactory.purchaseNameInfo();
+      const [, , priceInUtilityToken] = await soulFactory.purchaseNameInfo();
 
       // set allowance for soul factory
       const usdc: ERC20 = ERC20__factory.connect(CORN_RINKEBY, owner);
@@ -542,8 +541,7 @@ describe("Soul Factory", () => {
     });
 
     it("we can't purchase a name with utility coin if we don't have funds", async () => {
-      const [, , priceInUtilityToken] =
-        await soulFactory.purchaseNameInfo();
+      const [, , priceInUtilityToken] = await soulFactory.purchaseNameInfo();
 
       // set allowance for soul factory
       const usdc: ERC20 = ERC20__factory.connect(CORN_RINKEBY, owner);
@@ -566,7 +564,7 @@ describe("Soul Factory", () => {
         soulFactory.connect(address1).purchaseIdentity(
           address2.address // invalid payment method
         )
-      ).to.be.rejectedWith('INVALID_PAYMENT_METHOD');
+      ).to.be.rejectedWith("INVALID_PAYMENT_METHOD");
     });
   });
 });
