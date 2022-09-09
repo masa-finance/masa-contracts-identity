@@ -1,3 +1,4 @@
+import hre from "hardhat";
 import { getEnvParams, getPrivateKey } from "../src/utils/EnvParams";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
@@ -59,7 +60,7 @@ const func: DeployFunction = async ({
     throw new Error("Network not supported");
   }
 
-  const SoulFactoryDeploymentResult = await deploy("SoulFactory", {
+  const soulFactoryDeploymentResult = await deploy("SoulFactory", {
     from: deployer,
     args: [
       env.OWNER || owner.address,
@@ -77,6 +78,27 @@ const func: DeployFunction = async ({
     ],
     log: true
   });
+
+  // verify contract with etherscan, if its not a local network
+  if ((await owner.getChainId()) != 31337) {
+    await hre.run("verify:verify", {
+      address: soulFactoryDeploymentResult.address,
+      constructorArguments: [
+        env.OWNER || owner.address,
+        soulboundIdentityDeployed.address,
+        "5000000", // 5 USDC, with 6 decimals
+        "3000000", // 3 USDC, with 6 decimals
+        "3000000", // 3 USDC, with 6 decimals
+        chainId == 31337 || chainId == 5
+          ? CORN_GOERLI // CORN
+          : corn.address,
+        stableCoin,
+        wrappedNativeToken,
+        swapRouter,
+        env.OWNER || owner.address
+      ]
+    });
+  }
 
   const soulboundIdentity = await ethers.getContractAt(
     "SoulboundIdentity",
@@ -98,12 +120,12 @@ const func: DeployFunction = async ({
   const IDENTITY_MINTER_ROLE = await soulboundIdentity.MINTER_ROLE();
   await soulboundIdentity
     .connect(signer)
-    .grantRole(IDENTITY_MINTER_ROLE, SoulFactoryDeploymentResult.address);
+    .grantRole(IDENTITY_MINTER_ROLE, soulFactoryDeploymentResult.address);
 
   const NAME_MINTER_ROLE = await soulName.MINTER_ROLE();
   await soulName
     .connect(signer)
-    .grantRole(NAME_MINTER_ROLE, SoulFactoryDeploymentResult.address);
+    .grantRole(NAME_MINTER_ROLE, soulFactoryDeploymentResult.address);
 };
 
 func.tags = ["SoulFactory"];
