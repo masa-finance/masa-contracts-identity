@@ -461,21 +461,102 @@ describe("Soul Factory", () => {
   });
 
   describe("purchase name", () => {
-    it("we can purchase a name with ETH", async () => {
-      const [, priceInETHIdentity] = await soulFactory.purchaseIdentityInfo();
-      const [, priceInETHName] = await soulFactory.purchaseNameInfo();
+    beforeEach(async () => {
+      const [, priceInETH] = await soulFactory.purchaseIdentityInfo();
 
       // first we need to purchase an identity
       await soulFactory.connect(address1).purchaseIdentity(
         ethers.constants.AddressZero, // ETH
-        { value: priceInETHIdentity }
+        { value: priceInETH }
       );
+    });
+
+    it("we can purchase a name with ETH", async () => {
+      const [, priceInETH] = await soulFactory.purchaseNameInfo();
 
       await soulFactory.connect(address1).purchaseName(
         ethers.constants.AddressZero, // ETH
         SOUL_NAME,
-        { value: priceInETHName }
+        { value: priceInETH }
       );
+    });
+
+    it("we can purchase a name with stable coin", async () => {
+      const [priceInStableCoin, ,] = await soulFactory.purchaseNameInfo();
+
+      // set allowance for soul factory
+      const usdc: ERC20 = ERC20__factory.connect(USDC_RINKEBY, owner);
+      await usdc
+        .connect(address1)
+        .approve(soulFactory.address, priceInStableCoin);
+
+      await soulFactory.connect(address1).purchaseName(
+        USDC_RINKEBY, // USDC
+        SOUL_NAME
+      );
+    });
+
+    it("we can purchase a name with utility coin", async () => {
+      const [, , priceInUtilityToken] =
+        await soulFactory.purchaseNameInfo();
+
+      // set allowance for soul factory
+      const usdc: ERC20 = ERC20__factory.connect(CORN_RINKEBY, owner);
+      await usdc
+        .connect(address1)
+        .approve(soulFactory.address, priceInUtilityToken);
+
+      await soulFactory.connect(address1).purchaseName(
+        CORN_RINKEBY, // $CORN
+        SOUL_NAME
+      );
+    });
+
+    it("we can't purchase a name with ETH if we pay less", async () => {
+      const [, priceInETH] = await soulFactory.purchaseNameInfo();
+
+      await expect(
+        soulFactory.connect(address1).purchaseName(
+          ethers.constants.AddressZero, // ETH
+          SOUL_NAME,
+          { value: priceInETH.div(2) }
+        )
+      ).to.be.rejectedWith("INVALID_PAYMENT_AMOUNT");
+    });
+
+    it("we can't purchase a name with stable coin if we don't have funds", async () => {
+      const [priceInStableCoin, ,] = await soulFactory.purchaseNameInfo();
+
+      // set allowance for soul factory
+      const usdc: ERC20 = ERC20__factory.connect(USDC_RINKEBY, owner);
+      await usdc
+        .connect(address2)
+        .approve(soulFactory.address, priceInStableCoin);
+
+      await expect(
+        soulFactory.connect(address2).purchaseName(
+          USDC_RINKEBY, // USDC
+          SOUL_NAME
+        )
+      ).to.be.rejected;
+    });
+
+    it("we can't purchase a name with utility coin if we don't have funds", async () => {
+      const [, , priceInUtilityToken] =
+        await soulFactory.purchaseNameInfo();
+
+      // set allowance for soul factory
+      const usdc: ERC20 = ERC20__factory.connect(CORN_RINKEBY, owner);
+      await usdc
+        .connect(address2)
+        .approve(soulFactory.address, priceInUtilityToken);
+
+      await expect(
+        soulFactory.connect(address2).purchaseName(
+          CORN_RINKEBY, // $CORN
+          SOUL_NAME
+        )
+      ).to.be.rejected;
     });
   });
 });
