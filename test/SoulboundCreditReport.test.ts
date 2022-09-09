@@ -62,6 +62,27 @@ describe("Soulbound Credit Report", () => {
           .connect(someone)
           .transferFrom(someone.address, someone.address, 1)
       ).to.be.rejectedWith("SBT_TRANSFER_NOT_PERMITTED");
+
+      await expect(
+        soulboundCreditReport
+          .connect(someone)
+          ["safeTransferFrom(address,address,uint256)"](
+            someone.address,
+            someone.address,
+            1
+          )
+      ).to.be.rejectedWith("SBT_TRANSFER_NOT_PERMITTED");
+
+      await expect(
+        soulboundCreditReport
+          .connect(someone)
+          ["safeTransferFrom(address,address,uint256,bytes)"](
+            someone.address,
+            someone.address,
+            1,
+            []
+          )
+      ).to.be.rejectedWith("SBT_TRANSFER_NOT_PERMITTED");
     });
   });
 

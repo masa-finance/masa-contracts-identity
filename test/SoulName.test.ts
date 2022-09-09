@@ -60,6 +60,19 @@ describe("Soul Name", () => {
     identityId2 = mintReceipt.events![0].args![2].toNumber();
   });
 
+  describe("set extension", () => {
+    it("should fail to set extension from non admin user", async () => {
+      await expect(soulName.connect(address1).setExtension(".other")).to.be
+        .rejected;
+    });
+
+    it("should success to set extension from admin user", async () => {
+      await soulName.connect(owner).setExtension(".other");
+
+      expect(await soulName.extension()).to.be.equal(".other");
+    });
+  });
+
   describe("mint", () => {
     it("should mint from owner", async () => {
       const mintTx = await soulName
