@@ -12,10 +12,10 @@ import {
   SoulFactory__factory
 } from "../typechain";
 import {
-  CORN_RINKEBY,
-  USDC_RINKEBY,
-  SWAPROUTER_RINKEBY,
-  WETH_RINKEBY
+  CORN_GOERLI,
+  USDC_GOERLI,
+  SWAPROUTER_GOERLI,
+  WETH_GOERLI
 } from "../src/constants";
 
 chai.use(chaiAsPromised);
@@ -55,14 +55,14 @@ describe("Soul Factory", () => {
 
     soulFactory = SoulFactory__factory.connect(soulFactoryAddress, owner);
     const uniswapRouter: IUniswapRouter = IUniswapRouter__factory.connect(
-      SWAPROUTER_RINKEBY,
+      SWAPROUTER_GOERLI,
       owner
     );
 
     // we get stable coins for address1
     await uniswapRouter.swapExactETHForTokens(
       0,
-      [WETH_RINKEBY, USDC_RINKEBY],
+      [WETH_GOERLI, USDC_GOERLI],
       address1.address,
       Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
       {
@@ -73,7 +73,7 @@ describe("Soul Factory", () => {
     // we get utility tokens for address1
     await uniswapRouter.swapExactETHForTokens(
       0,
-      [WETH_RINKEBY, CORN_RINKEBY],
+      [WETH_GOERLI, CORN_GOERLI],
       address1.address,
       Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
       {
@@ -278,13 +278,13 @@ describe("Soul Factory", () => {
         await soulFactory.purchaseIdentityAndNameInfo();
 
       // set allowance for soul factory
-      const usdc: ERC20 = ERC20__factory.connect(USDC_RINKEBY, owner);
+      const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, owner);
       await usdc
         .connect(address1)
         .approve(soulFactory.address, priceInStableCoin);
 
       await soulFactory.connect(address1).purchaseIdentityAndName(
-        USDC_RINKEBY, // USDC
+        USDC_GOERLI, // USDC
         SOUL_NAME
       );
     });
@@ -294,13 +294,13 @@ describe("Soul Factory", () => {
         await soulFactory.purchaseIdentityAndNameInfo();
 
       // set allowance for soul factory
-      const usdc: ERC20 = ERC20__factory.connect(CORN_RINKEBY, owner);
+      const usdc: ERC20 = ERC20__factory.connect(CORN_GOERLI, owner);
       await usdc
         .connect(address1)
         .approve(soulFactory.address, priceInUtilityToken);
 
       await soulFactory.connect(address1).purchaseIdentityAndName(
-        CORN_RINKEBY, // $CORN
+        CORN_GOERLI, // $CORN
         SOUL_NAME
       );
     });
@@ -322,14 +322,14 @@ describe("Soul Factory", () => {
         await soulFactory.purchaseIdentityAndNameInfo();
 
       // set allowance for soul factory
-      const usdc: ERC20 = ERC20__factory.connect(USDC_RINKEBY, owner);
+      const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, owner);
       await usdc
         .connect(address2)
         .approve(soulFactory.address, priceInStableCoin);
 
       await expect(
         soulFactory.connect(address2).purchaseIdentityAndName(
-          USDC_RINKEBY, // USDC
+          USDC_GOERLI, // USDC
           SOUL_NAME
         )
       ).to.be.rejected;
@@ -340,14 +340,14 @@ describe("Soul Factory", () => {
         await soulFactory.purchaseIdentityAndNameInfo();
 
       // set allowance for soul factory
-      const usdc: ERC20 = ERC20__factory.connect(CORN_RINKEBY, owner);
+      const usdc: ERC20 = ERC20__factory.connect(CORN_GOERLI, owner);
       await usdc
         .connect(address2)
         .approve(soulFactory.address, priceInUtilityToken);
 
       await expect(
         soulFactory.connect(address2).purchaseIdentityAndName(
-          CORN_RINKEBY, // $CORN
+          CORN_GOERLI, // $CORN
           SOUL_NAME
         )
       ).to.be.rejected;
@@ -390,13 +390,13 @@ describe("Soul Factory", () => {
       const [priceInStableCoin, ,] = await soulFactory.purchaseIdentityInfo();
 
       // set allowance for soul factory
-      const usdc: ERC20 = ERC20__factory.connect(USDC_RINKEBY, owner);
+      const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, owner);
       await usdc
         .connect(address1)
         .approve(soulFactory.address, priceInStableCoin);
 
       await soulFactory.connect(address1).purchaseIdentity(
-        USDC_RINKEBY // USDC
+        USDC_GOERLI // USDC
       );
     });
 
@@ -405,13 +405,13 @@ describe("Soul Factory", () => {
         await soulFactory.purchaseIdentityInfo();
 
       // set allowance for soul factory
-      const usdc: ERC20 = ERC20__factory.connect(CORN_RINKEBY, owner);
+      const usdc: ERC20 = ERC20__factory.connect(CORN_GOERLI, owner);
       await usdc
         .connect(address1)
         .approve(soulFactory.address, priceInUtilityToken);
 
       await soulFactory.connect(address1).purchaseIdentity(
-        CORN_RINKEBY // $CORN
+        CORN_GOERLI // $CORN
       );
     });
 
@@ -430,14 +430,14 @@ describe("Soul Factory", () => {
       const [priceInStableCoin, ,] = await soulFactory.purchaseIdentityInfo();
 
       // set allowance for soul factory
-      const usdc: ERC20 = ERC20__factory.connect(USDC_RINKEBY, owner);
+      const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, owner);
       await usdc
         .connect(address2)
         .approve(soulFactory.address, priceInStableCoin);
 
       await expect(
         soulFactory.connect(address2).purchaseIdentity(
-          USDC_RINKEBY // USDC
+          USDC_GOERLI // USDC
         )
       ).to.be.rejected;
     });
@@ -447,14 +447,14 @@ describe("Soul Factory", () => {
         await soulFactory.purchaseIdentityInfo();
 
       // set allowance for soul factory
-      const usdc: ERC20 = ERC20__factory.connect(CORN_RINKEBY, owner);
+      const usdc: ERC20 = ERC20__factory.connect(CORN_GOERLI, owner);
       await usdc
         .connect(address2)
         .approve(soulFactory.address, priceInUtilityToken);
 
       await expect(
         soulFactory.connect(address2).purchaseIdentity(
-          CORN_RINKEBY // $CORN
+          CORN_GOERLI // $CORN
         )
       ).to.be.rejected;
     });
@@ -485,13 +485,13 @@ describe("Soul Factory", () => {
       const [priceInStableCoin, ,] = await soulFactory.purchaseNameInfo();
 
       // set allowance for soul factory
-      const usdc: ERC20 = ERC20__factory.connect(USDC_RINKEBY, owner);
+      const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, owner);
       await usdc
         .connect(address1)
         .approve(soulFactory.address, priceInStableCoin);
 
       await soulFactory.connect(address1).purchaseName(
-        USDC_RINKEBY, // USDC
+        USDC_GOERLI, // USDC
         SOUL_NAME
       );
     });
@@ -500,13 +500,13 @@ describe("Soul Factory", () => {
       const [, , priceInUtilityToken] = await soulFactory.purchaseNameInfo();
 
       // set allowance for soul factory
-      const usdc: ERC20 = ERC20__factory.connect(CORN_RINKEBY, owner);
+      const usdc: ERC20 = ERC20__factory.connect(CORN_GOERLI, owner);
       await usdc
         .connect(address1)
         .approve(soulFactory.address, priceInUtilityToken);
 
       await soulFactory.connect(address1).purchaseName(
-        CORN_RINKEBY, // $CORN
+        CORN_GOERLI, // $CORN
         SOUL_NAME
       );
     });
@@ -527,14 +527,14 @@ describe("Soul Factory", () => {
       const [priceInStableCoin, ,] = await soulFactory.purchaseNameInfo();
 
       // set allowance for soul factory
-      const usdc: ERC20 = ERC20__factory.connect(USDC_RINKEBY, owner);
+      const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, owner);
       await usdc
         .connect(address2)
         .approve(soulFactory.address, priceInStableCoin);
 
       await expect(
         soulFactory.connect(address2).purchaseName(
-          USDC_RINKEBY, // USDC
+          USDC_GOERLI, // USDC
           SOUL_NAME
         )
       ).to.be.rejected;
@@ -544,14 +544,14 @@ describe("Soul Factory", () => {
       const [, , priceInUtilityToken] = await soulFactory.purchaseNameInfo();
 
       // set allowance for soul factory
-      const usdc: ERC20 = ERC20__factory.connect(CORN_RINKEBY, owner);
+      const usdc: ERC20 = ERC20__factory.connect(CORN_GOERLI, owner);
       await usdc
         .connect(address2)
         .approve(soulFactory.address, priceInUtilityToken);
 
       await expect(
         soulFactory.connect(address2).purchaseName(
-          CORN_RINKEBY, // $CORN
+          CORN_GOERLI, // $CORN
           SOUL_NAME
         )
       ).to.be.rejected;

@@ -2,10 +2,10 @@ import { getEnvParams, getPrivateKey } from "../src/utils/EnvParams";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
 import {
-  CORN_RINKEBY,
-  SWAPROUTER_RINKEBY,
-  USDC_RINKEBY,
-  WETH_RINKEBY
+  CORN_GOERLI,
+  SWAPROUTER_GOERLI,
+  USDC_GOERLI,
+  WETH_GOERLI
 } from "../src/constants";
 
 let owner: SignerWithAddress;
@@ -39,17 +39,17 @@ const func: DeployFunction = async ({
     // mainnet
     stableCoin = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
     wrappedNativeToken = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
-    swapRouter = SWAPROUTER_RINKEBY;
-  } else if (chainId == 4) {
-    // rinkeby
-    stableCoin = USDC_RINKEBY;
-    wrappedNativeToken = WETH_RINKEBY;
-    swapRouter = SWAPROUTER_RINKEBY;
+    swapRouter = SWAPROUTER_GOERLI;
+  } else if (chainId == 5) {
+    // goerli
+    stableCoin = USDC_GOERLI;
+    wrappedNativeToken = WETH_GOERLI;
+    swapRouter = SWAPROUTER_GOERLI;
   } else if (chainId == 31337) {
     // hardhat
-    stableCoin = USDC_RINKEBY;
-    wrappedNativeToken = WETH_RINKEBY;
-    swapRouter = SWAPROUTER_RINKEBY;
+    stableCoin = USDC_GOERLI;
+    wrappedNativeToken = WETH_GOERLI;
+    swapRouter = SWAPROUTER_GOERLI;
   } else if (chainId == 44787) {
     // alfajores
     stableCoin = "0x37f39aD164cBBf0Cc03Dd638472F3FbeC7aE426C";
@@ -67,8 +67,8 @@ const func: DeployFunction = async ({
       "5000000", // 5 USDC, with 6 decimals
       "3000000", // 3 USDC, with 6 decimals
       "3000000", // 3 USDC, with 6 decimals
-      chainId == 31337 || chainId == 4
-        ? CORN_RINKEBY // CORN
+      chainId == 31337 || chainId == 5
+        ? CORN_GOERLI // CORN
         : corn.address,
       stableCoin,
       wrappedNativeToken,

@@ -26,12 +26,12 @@ const networks: NetworksUserConfig = {
     gasPrice: "auto",
     gas: 13000000,
     forking: {
-      url: getInfuraURL("rinkeby")
+      url: getInfuraURL("goerli")
     }
   },
-  rinkeby: {
-    url: getInfuraURL("rinkeby"),
-    accounts: [getPrivateKey("rinkeby")],
+  goerli: {
+    url: getInfuraURL("goerli"),
+    accounts: [getPrivateKey("goerli")],
     gas: 20000000,
     gasPrice: "auto"
   },
@@ -63,9 +63,7 @@ export default {
     }
   },
   etherscan: {
-    apiKey: {
-      rinkeby: getEtherscanApiKey()
-    }
+    apiKey: getEtherscanApiKey()
   },
   gasReporter: {
     currency: "USD",
