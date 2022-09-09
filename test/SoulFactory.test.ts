@@ -239,8 +239,8 @@ describe("Soul Factory", () => {
         await soulFactory.purchaseIdentityAndNameInfo();
 
       expect(priceInStableCoin).to.be.equal(MINTING_IDENTITY_AND_NAME_PRICE);
-      expect(priceInETH.toNumber()).to.be.greaterThan(0);
-      expect(priceInUtilityToken.toNumber()).to.be.greaterThan(0);
+      expect(priceInETH).not.to.be.equal("0");
+      expect(priceInUtilityToken).not.to.be.equal("0");
     });
 
     it("we can get identity purchase info", async () => {
@@ -248,8 +248,8 @@ describe("Soul Factory", () => {
         await soulFactory.purchaseIdentityInfo();
 
       expect(priceInStableCoin).to.be.equal(MINTING_IDENTITY_PRICE);
-      expect(priceInETH.toNumber()).to.be.greaterThan(0);
-      expect(priceInUtilityToken.toNumber()).to.be.greaterThan(0);
+      expect(priceInETH).not.to.be.equal("0");
+      expect(priceInUtilityToken).not.to.be.equal("0");
     });
 
     it("we can get name purchase info", async () => {
@@ -257,8 +257,8 @@ describe("Soul Factory", () => {
         await soulFactory.purchaseNameInfo();
 
       expect(priceInStableCoin).to.be.equal(MINTING_NAME_PRICE);
-      expect(priceInETH.toNumber()).to.be.greaterThan(0);
-      expect(priceInUtilityToken.toNumber()).to.be.greaterThan(0);
+      expect(priceInETH).not.to.be.equal("0");
+      expect(priceInUtilityToken).not.to.be.equal("0");
     });
   });
 
