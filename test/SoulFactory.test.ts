@@ -273,6 +273,37 @@ describe("Soul Factory", () => {
       );
     });
 
+    it("we can purchase an identity and name with stable coin", async () => {
+      const [priceInStableCoin, ,] = await soulFactory.purchaseIdentityAndNameInfo();
+
+      // set allowance for soul factory
+      const usdc: ERC20 = ERC20__factory.connect(USDC_RINKEBY, owner);
+      await usdc
+        .connect(address1)
+        .approve(soulFactory.address, priceInStableCoin);
+
+      await soulFactory.connect(address1).purchaseIdentityAndName(
+        USDC_RINKEBY, // USDC
+        SOUL_NAME
+      );
+    });
+
+    it("we can purchase an identity and name with utility coin", async () => {
+      const [, , priceInUtilityToken] =
+        await soulFactory.purchaseIdentityAndNameInfo();
+
+      // set allowance for soul factory
+      const usdc: ERC20 = ERC20__factory.connect(CORN_RINKEBY, owner);
+      await usdc
+        .connect(address1)
+        .approve(soulFactory.address, priceInUtilityToken);
+
+      await soulFactory.connect(address1).purchaseIdentityAndName(
+        CORN_RINKEBY, // $CORN
+        SOUL_NAME
+      );
+    });
+
     it("we can't purchase an identity and name with ETH if we pay less", async () => {
       const [, priceInETH] = await soulFactory.purchaseIdentityAndNameInfo();
 
@@ -342,7 +373,6 @@ describe("Soul Factory", () => {
         .connect(address1)
         .approve(soulFactory.address, priceInUtilityToken);
 
-      // TODO: allowance to soul factory
       await soulFactory.connect(address1).purchaseIdentity(
         CORN_RINKEBY // $CORN
       );
