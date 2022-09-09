@@ -358,9 +358,16 @@ describe("Soul Factory", () => {
         )
       ).to.be.rejectedWith("INVALID_PAYMENT_AMOUNT");
     });
-    /*
+    
     it("we can't purchase an identity with stable coin if we don't have funds", async () => {
-      // TODO: allowance to soul factory
+      const [priceInStableCoin, ,] = await soulFactory.purchaseIdentityInfo();
+
+      // set allowance for soul factory
+      const usdc: ERC20 = ERC20__factory.connect(USDC_RINKEBY, owner);
+      await usdc
+        .connect(address2)
+        .approve(soulFactory.address, priceInStableCoin);
+
       await expect(
         soulFactory.connect(address2).purchaseIdentity(
           USDC_RINKEBY // USDC
@@ -369,13 +376,21 @@ describe("Soul Factory", () => {
     });
 
     it("we can't purchase an identity with utility coin if we don't have funds", async () => {
-      // TODO: allowance to soul factory
+      const [, , priceInUtilityToken] =
+      await soulFactory.purchaseIdentityInfo();
+
+      // set allowance for soul factory
+      const usdc: ERC20 = ERC20__factory.connect(CORN_RINKEBY, owner);
+      await usdc
+        .connect(address2)
+        .approve(soulFactory.address, priceInUtilityToken);
+        
       await expect(
         soulFactory.connect(address2).purchaseIdentity(
           CORN_RINKEBY // $CORN
         )
       ).to.be.rejected;
-    }); */
+    });
   });
 
   describe("purchase name", () => {
