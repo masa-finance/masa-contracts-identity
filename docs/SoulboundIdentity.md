@@ -116,6 +116,23 @@ Burns the token
 |---|---|---|
 | tokenId | uint256 | The NFT ID to burn |
 
+### extension
+
+```solidity
+function extension() external view returns (string)
+```
+
+Returns the extension of the soul name
+
+*This function returns the extension of the soul name*
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string | Extension of the soul name |
+
 ### getApproved
 
 ```solidity

@@ -71,6 +71,13 @@ contract SoulboundIdentity is SBT {
 
     /* ========== VIEWS ===================================================== */
 
+    /// @notice Returns the extension of the soul name
+    /// @dev This function returns the extension of the soul name
+    /// @return Extension of the soul name
+    function extension() public view returns (string memory) {
+        return soulName.extension();
+    }
+
     /// @notice Returns the owner address of an identity
     /// @dev This function returns the owner address of the identity specified by the tokenId
     /// @param tokenId TokenId of the identity
