@@ -4,14 +4,12 @@ import { solidity } from "ethereum-waffle";
 import { ethers, deployments } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
-  SoulboundIdentity,
-  SoulboundIdentity__factory,
-  SoulName,
-  SoulName__factory,
-  SoulFactory,
-  SoulFactory__factory,
+  ERC20,
+  ERC20__factory,
   IUniswapRouter,
-  IUniswapRouter__factory
+  IUniswapRouter__factory,
+  SoulFactory,
+  SoulFactory__factory
 } from "../typechain";
 import {
   CORN_RINKEBY,
@@ -25,8 +23,6 @@ chai.use(solidity);
 const expect = chai.expect;
 
 // contract instances
-let soulboundIdentity: SoulboundIdentity;
-let soulName: SoulName;
 let soulFactory: SoulFactory;
 
 let owner: SignerWithAddress;
@@ -37,8 +33,7 @@ const MINTING_IDENTITY_AND_NAME_PRICE = "5000000"; // 5 USDC, with 6 decimals
 const MINTING_IDENTITY_PRICE = "3000000"; // 3 USDC, with 6 decimals
 const MINTING_NAME_PRICE = "3000000"; // 3 USDC, with 6 decimals
 
-const SOUL_NAME1 = "soulNameTest1";
-const SOUL_NAME2 = "soulNameTest2";
+const SOUL_NAME = "soulNameTest";
 
 describe("Soul Factory", () => {
   before(async () => {
@@ -58,11 +53,6 @@ describe("Soul Factory", () => {
       "SoulFactory"
     );
 
-    soulboundIdentity = SoulboundIdentity__factory.connect(
-      soulboundIdentityAddress,
-      owner
-    );
-    soulName = SoulName__factory.connect(soulNameAddress, owner);
     soulFactory = SoulFactory__factory.connect(soulFactoryAddress, owner);
     const uniswapRouter: IUniswapRouter = IUniswapRouter__factory.connect(
       SWAPROUTER_RINKEBY,
@@ -278,7 +268,7 @@ describe("Soul Factory", () => {
 
       await soulFactory.connect(address1).purchaseIdentityAndName(
         ethers.constants.AddressZero, // ETH
-        SOUL_NAME1,
+        SOUL_NAME,
         { value: priceInETH }
       );
     });
@@ -289,7 +279,7 @@ describe("Soul Factory", () => {
       await expect(
         soulFactory.connect(address1).purchaseIdentityAndName(
           ethers.constants.AddressZero, // ETH
-          SOUL_NAME1,
+          SOUL_NAME,
           { value: priceInETH.div(2) }
         )
       ).to.be.rejectedWith("INVALID_PAYMENT_AMOUNT");
@@ -302,7 +292,7 @@ describe("Soul Factory", () => {
 
       const tx = await soulFactory.connect(address1).purchaseIdentityAndName(
         ethers.constants.AddressZero, // ETH
-        SOUL_NAME1,
+        SOUL_NAME,
         { value: priceInETH.mul(2) }
       );
       const receipt = await tx.wait();
@@ -328,17 +318,19 @@ describe("Soul Factory", () => {
       );
     });
 
-    /* it("we can purchase an identity with stable coin", async () => {
+    it("we can purchase an identity with stable coin", async () => {
+      // TODO: allowance to soul factory
       await soulFactory.connect(address1).purchaseIdentity(
         USDC_RINKEBY // USDC
       );
     });
 
     it("we can purchase an identity with utility coin", async () => {
+      // TODO: allowance to soul factory
       await soulFactory.connect(address1).purchaseIdentity(
         CORN_RINKEBY // $CORN
       );
-    }); */
+    });
 
     it("we can't purchase an identity with ETH if we pay less", async () => {
       const [, priceInETH] = await soulFactory.purchaseIdentityInfo();
@@ -352,16 +344,18 @@ describe("Soul Factory", () => {
     });
     /*
     it("we can't purchase an identity with stable coin if we don't have funds", async () => {
+      // TODO: allowance to soul factory
       await expect(
-        soulFactory.connect(address1).purchaseIdentity(
+        soulFactory.connect(address2).purchaseIdentity(
           USDC_RINKEBY // USDC
         )
       ).to.be.rejected;
     });
 
     it("we can't purchase an identity with utility coin if we don't have funds", async () => {
+      // TODO: allowance to soul factory
       await expect(
-        soulFactory.connect(address1).purchaseIdentity(
+        soulFactory.connect(address2).purchaseIdentity(
           CORN_RINKEBY // $CORN
         )
       ).to.be.rejected;
@@ -381,7 +375,7 @@ describe("Soul Factory", () => {
 
       await soulFactory.connect(address1).purchaseName(
         ethers.constants.AddressZero, // ETH
-        SOUL_NAME1,
+        SOUL_NAME,
         { value: priceInETHName }
       );
     });
@@ -400,7 +394,7 @@ describe("Soul Factory", () => {
     await expect(
       soulFactory.connect(address1).purchaseIdentityAndName(
         ethers.constants.AddressZero, // ETH
-        SOUL_NAME1,
+        SOUL_NAME,
         { value: priceInETHName.div(2) }
       )
     ).to.be.rejectedWith("INVALID_PAYMENT_AMOUNT");
