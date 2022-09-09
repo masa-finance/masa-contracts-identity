@@ -559,4 +559,14 @@ describe("Soul Factory", () => {
       ).to.be.rejected;
     });
   });
+
+  describe("use invalid payment method", () => {
+    it("we can't use an invalid payment method", async () => {
+      await expect(
+        soulFactory.connect(address1).purchaseIdentity(
+          address2.address // invalid payment method
+        )
+      ).to.be.rejectedWith('INVALID_PAYMENT_METHOD');
+    });
+  });
 });
