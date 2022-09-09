@@ -7,4 +7,8 @@ contract CORN is ERC20 {
     constructor() ERC20("$CORN", "$CORN") {
         _mint(msg.sender, 1000000e18);
     }
+
+    function mint() external {
+        _mint(msg.sender, 1000000e18);
+    }
 }

@@ -25,7 +25,9 @@ export function getSecretParam(param: string, networkName: string | undefined) {
 }
 
 export function getPrivateKey(networkName: string | undefined) {
-  const privateKey = getSecretParam("DEPLOYER_PRIVATE_KEY", networkName);
+  const privateKey =
+    process.env.DEPLOYER_PRIVATE_KEY ||
+    getSecretParam("DEPLOYER_PRIVATE_KEY", networkName);
 
   return privateKey
     ? privateKey
@@ -33,13 +35,21 @@ export function getPrivateKey(networkName: string | undefined) {
 }
 
 export function getInfuraApiKey(networkName: string | undefined) {
-  return getSecretParam("INFURA_API_KEY", networkName);
+  return (
+    process.env.INFURA_API_KEY || getSecretParam("INFURA_API_KEY", networkName)
+  );
 }
 
 export function getEtherscanApiKey(networkName: string | undefined) {
-  return getSecretParam("ETHERSCAN_API_KEY", networkName);
+  return (
+    process.env.ETHERSCAN_API_KEY ||
+    getSecretParam("ETHERSCAN_API_KEY", networkName)
+  );
 }
 
 export function getCoinMarketCapApiKey() {
-  return getSecretParam("COINMARKETCAP_API_KEY", undefined);
+  return (
+    process.env.COINMARKETCAP_API_KEY ||
+    getSecretParam("COINMARKETCAP_API_KEY", undefined)
+  );
 }

@@ -24,7 +24,10 @@ const networks: NetworksUserConfig = {
     hardfork: "istanbul",
     allowUnlimitedContractSize: true,
     gasPrice: "auto",
-    gas: 13000000
+    gas: 13000000,
+    forking: {
+      url: getInfuraURL("rinkeby")
+    }
   },
   rinkeby: {
     url: getInfuraURL("rinkeby"),

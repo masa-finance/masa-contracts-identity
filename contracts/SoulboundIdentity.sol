@@ -64,7 +64,7 @@ contract SoulboundIdentity is SBT {
         returns (uint256)
     {
         uint256 identityId = mint(to);
-        uint256 nameId = soulName.mint(to, name, identityId);
+        soulName.mint(to, name, identityId);
 
         return identityId;
     }
