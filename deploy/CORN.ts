@@ -1,3 +1,4 @@
+import hre from "hardhat";
 import { getEnvParams } from "../src/utils/EnvParams";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
@@ -24,6 +25,14 @@ const func: DeployFunction = async ({
     args: [],
     log: true
   });
+
+  // verify contract with etherscan, if its not a local network
+  if (await owner.getChainId() != 31337) {
+    await hre.run("verify:verify", {
+      address: cornDeploymentResult.address,
+      constructorArguments: []
+    });
+  }
 
   const corn = await ethers.getContractAt("CORN", cornDeploymentResult.address);
   await corn.transfer(
