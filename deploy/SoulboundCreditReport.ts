@@ -1,3 +1,4 @@
+import hre from "hardhat";
 import { getEnvParams } from "../src/utils/EnvParams";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
@@ -22,11 +23,26 @@ const func: DeployFunction = async ({
 
   const soulLinker = await deployments.get("SoulLinker");
 
-  await deploy("SoulboundCreditReport", {
-    from: deployer,
-    args: [env.OWNER || owner.address, soulLinker.address, baseUri],
-    log: true
-  });
+  const soulboundCreditReportDeploymentResult = await deploy(
+    "SoulboundCreditReport",
+    {
+      from: deployer,
+      args: [env.OWNER || owner.address, soulLinker.address, baseUri],
+      log: true
+    }
+  );
+
+  // verify contract with etherscan, if its not a local network
+  if ((await owner.getChainId()) != 31337) {
+    await hre.run("verify:verify", {
+      address: soulboundCreditReportDeploymentResult.address,
+      constructorArguments: [
+        env.OWNER || owner.address,
+        soulLinker.address,
+        baseUri
+      ]
+    });
+  }
 };
 
 func.tags = ["SoulboundCreditReport"];
