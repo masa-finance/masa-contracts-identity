@@ -27,7 +27,7 @@ const func: DeployFunction = async ({
   });
 
   // verify contract with etherscan, if its not a local network
-  if (await owner.getChainId() != 31337) {
+  if ((await owner.getChainId()) != 31337) {
     await hre.run("verify:verify", {
       address: cornDeploymentResult.address,
       constructorArguments: []
