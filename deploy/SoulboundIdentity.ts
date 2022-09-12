@@ -17,6 +17,9 @@ const func: DeployFunction = async ({
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
 
+  // const currentNonce: number = await ethers.provider.getTransactionCount(deployer);
+  // to solve REPLACEMENT_UNDERPRICED, when needed
+
   [, owner] = await ethers.getSigners();
   const env = getEnvParams(network.name);
   const baseUri = `${env.BASE_URI}/identity/`;
@@ -27,6 +30,7 @@ const func: DeployFunction = async ({
     from: deployer,
     args: [env.OWNER || owner.address, soulLinker.address, baseUri],
     log: true
+    // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
   });
 
   // verify contract with etherscan, if its not a local network
