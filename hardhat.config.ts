@@ -32,16 +32,16 @@ const networks: NetworksUserConfig = {
   goerli: {
     url: getInfuraURL("goerli"),
     accounts: [getPrivateKey("goerli")],
-    gas: 20000000,
+    gas: "auto", // 20000000
     gasPrice: "auto"
   },
   alfajores: {
     url: "https://alfajores-forno.celo-testnet.org", // Localhost (default: none)
     accounts: [getPrivateKey("alfajores")],
     allowUnlimitedContractSize: true,
-    gas: 20000000,
-    gasPrice: "auto",
-    blockGasLimit: 13000000
+    gas: "auto", // 20000000
+    gasPrice: "auto" // 200000000000
+    // blockGasLimit: 13000000
   }
 };
 
