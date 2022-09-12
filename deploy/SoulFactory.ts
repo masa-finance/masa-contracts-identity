@@ -80,7 +80,7 @@ const func: DeployFunction = async ({
   });
 
   // verify contract with etherscan, if its not a local network
-  if ((await owner.getChainId()) != 31337) {
+  if (network.name == 'mainnet' || network.name == 'goerli') {
     await hre.run("verify:verify", {
       address: soulFactoryDeploymentResult.address,
       constructorArguments: [
