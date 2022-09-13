@@ -25,6 +25,7 @@
     "prettier": "prettier --write 'contracts/**/*.sol' '**/*.ts' '**/*.js'",
     "solhint": "solhint contracts/**/*.sol",
     "prepare": "yarn build",
+    "release": "release-it",
     "publish:npm": "yarn publish --access public"
   },
   "dependencies": {
@@ -64,5 +65,19 @@
     "ts-generator": "^0.1.1",
     "ts-node": "^10.9.1",
     "typechain": "^8.1.0"
+  },
+  "release-it": {
+    "hooks": {
+      "after:bump": "npm build"
+    },
+    "git": {
+      "tagName": "v${version}"
+    },
+    "github": {
+      "release": true
+    },
+    "npm": {
+      "publish": false
+    }
   }
 }
