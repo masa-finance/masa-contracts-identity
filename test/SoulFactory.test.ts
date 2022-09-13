@@ -47,10 +47,7 @@ describe("Soul Factory", () => {
     await deployments.fixture("SoulName", { fallbackToGlobal: false });
     await deployments.fixture("SoulFactory", { fallbackToGlobal: false });
 
-    const { address: soulboundIdentityAddress } = await deployments.get(
-      "SoulboundIdentity"
-    );
-    const { address: soulNameAddress } = await deployments.get("SoulName");
+    const { address: cornAddress } = await deployments.get("CORN");
     const { address: soulFactoryAddress } = await deployments.get(
       "SoulFactory"
     );
@@ -62,7 +59,7 @@ describe("Soul Factory", () => {
     );
 
     // we get $CORN tokens for address1
-    const corn: CORN = CORN__factory.connect(CORN_GOERLI, owner);
+    const corn: CORN = CORN__factory.connect(cornAddress, owner);
     await corn.connect(address1).mint();
 
     // we get stable coins for address1
