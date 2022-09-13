@@ -60,6 +60,36 @@ describe("Soul Name", () => {
     identityId2 = mintReceipt.events![0].args![2].toNumber();
   });
 
+  describe("pause", () => {
+    it("should pause from owner", async () => {
+      await soulName.connect(owner).pause();
+
+      expect(await soulName.paused()).to.be.true;
+    });
+
+    it("should unpause from owner", async () => {
+      await soulName.connect(owner).pause();
+
+      expect(await soulName.paused()).to.be.true;
+
+      await soulName.connect(owner).unpause();
+
+      expect(await soulName.paused()).to.be.false;
+    });
+
+    it("should fail to pause from non owner", async () => {
+      await expect(soulName.connect(address1).pause()).to.be.rejected;
+    });
+
+    it("should fail to unpause from non owner", async () => {
+      await soulName.connect(owner).pause();
+
+      expect(await soulName.paused()).to.be.true;
+
+      await expect(soulName.connect(address1).unpause()).to.be.rejected;
+    });
+  });
+
   describe("set extension", () => {
     it("should fail to set extension from non admin user", async () => {
       await expect(soulName.connect(address1).setExtension(".other")).to.be
