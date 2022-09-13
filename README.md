@@ -76,7 +76,17 @@ console.log(await soulboundIdentity.symbol());
 
 ## Generation of a new release
 
-With this command the version is bumped and a new release is created:
+From a clean `main` branch you can run the release task bumping the version accordingly based on semantic versioning:
 ```bash
 yarn release
 ```
+
+The task does the following:
+
+* Bumps the project version in `package.json`
+* Creates a Git tag
+* Commits and pushes everything
+* Creates a GitHub release
+* Git tag push will trigger a GitHub Action workflow to do a `npm` release
+
+For the GitHub releases steps a GitHub personal access token, exported as `GITHUB_TOKEN` is required. You can add this environment variable to the `.env` file. [Setup](https://github.com/release-it/release-it#github-releases)
