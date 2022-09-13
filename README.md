@@ -73,3 +73,10 @@ const soulboundIdentity: SoulboundIdentity = SoulboundIdentity__factory.connect(
 );
 console.log(await soulboundIdentity.symbol());
 ```
+
+## Generation of a new release
+
+With this command the version is bumped and a new release is created:
+```bash
+yarn release
+```
