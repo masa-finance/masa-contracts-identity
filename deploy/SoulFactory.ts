@@ -34,22 +34,22 @@ const func: DeployFunction = async ({
   let wrappedNativeToken: string; // weth
   let swapRouter: string;
 
-  if (network.name == 'mainnet') {
+  if (network.name == "mainnet") {
     // mainnet
     stableCoin = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
     wrappedNativeToken = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
     swapRouter = SWAPROUTER_GOERLI;
-  } else if (network.name == 'goerli') {
+  } else if (network.name == "goerli") {
     // goerli
     stableCoin = USDC_GOERLI;
     wrappedNativeToken = WETH_GOERLI;
     swapRouter = SWAPROUTER_GOERLI;
-  } else if (network.name == 'hardhat') {
+  } else if (network.name == "hardhat") {
     // hardhat
     stableCoin = USDC_GOERLI;
     wrappedNativeToken = WETH_GOERLI;
     swapRouter = SWAPROUTER_GOERLI;
-  } else if (network.name == 'alfajores') {
+  } else if (network.name == "alfajores") {
     // alfajores
     stableCoin = "0x37f39aD164cBBf0Cc03Dd638472F3FbeC7aE426C";
     wrappedNativeToken = "0xF194afDf50B03e69Bd7D057c1Aa9e10c9954E4C9";
@@ -66,7 +66,7 @@ const func: DeployFunction = async ({
       "5000000", // 5 USDC, with 6 decimals
       "3000000", // 3 USDC, with 6 decimals
       "3000000", // 3 USDC, with 6 decimals
-      (network.name == 'hardhat' || network.name == 'goerli')
+      network.name == "hardhat" || network.name == "goerli"
         ? CORN_GOERLI // CORN
         : corn.address,
       stableCoin,
@@ -78,7 +78,7 @@ const func: DeployFunction = async ({
   });
 
   // verify contract with etherscan, if its not a local network
-  if (network.name == 'mainnet' || network.name == 'goerli') {
+  if (network.name == "mainnet" || network.name == "goerli") {
     await hre.run("verify:verify", {
       address: soulFactoryDeploymentResult.address,
       constructorArguments: [
