@@ -1,3 +1,4 @@
+import hre from "hardhat";
 import { getEnvParams } from "../src/utils/EnvParams";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
@@ -16,17 +17,36 @@ const func: DeployFunction = async ({
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
 
+  // const currentNonce: number = await ethers.provider.getTransactionCount(deployer);
+  // to solve REPLACEMENT_UNDERPRICED, when needed
+
   [, owner] = await ethers.getSigners();
   const env = getEnvParams(network.name);
   const baseUri = `${env.BASE_URI}/credit-report/`;
 
   const soulLinker = await deployments.get("SoulLinker");
 
-  await deploy("SoulboundCreditReport", {
-    from: deployer,
-    args: [env.OWNER || owner.address, soulLinker.address, baseUri],
-    log: true
-  });
+  const soulboundCreditReportDeploymentResult = await deploy(
+    "SoulboundCreditReport",
+    {
+      from: deployer,
+      args: [env.OWNER || owner.address, soulLinker.address, baseUri],
+      log: true
+      // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
+    }
+  );
+
+  // verify contract with etherscan, if its not a local network
+  if (network.name == 'mainnet' || network.name == 'goerli') {
+    await hre.run("verify:verify", {
+      address: soulboundCreditReportDeploymentResult.address,
+      constructorArguments: [
+        env.OWNER || owner.address,
+        soulLinker.address,
+        baseUri
+      ]
+    });
+  }
 };
 
 func.tags = ["SoulboundCreditReport"];

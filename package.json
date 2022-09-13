@@ -1,6 +1,6 @@
 {
   "name": "@masa-finance/masa-contracts-identity",
-  "version": "0.1.6",
+  "version": "0.1.9",
   "main": "dist/typechain/index.js",
   "types": "dist/typechain/index.d.ts",
   "files": [
@@ -25,16 +25,16 @@
     "prettier": "prettier --write 'contracts/**/*.sol' '**/*.ts' '**/*.js'",
     "solhint": "solhint contracts/**/*.sol",
     "prepare": "yarn build",
-    "publish:npm": "yarn publish --access public"
+    "release": "GITHUB_TOKEN=$(grep GITHUB_TOKEN .env | cut -d '=' -f2) release-it"
   },
   "dependencies": {
     "@nomiclabs/hardhat-ethers": "^2.1.0",
-    "@nomiclabs/hardhat-etherscan": "^3.1.0",
     "@types/node": "^18.7.1",
     "ethers": "^5.6.9",
     "typescript": "^4.7.4"
   },
   "devDependencies": {
+    "@nomiclabs/hardhat-etherscan": "^3.1.0",
     "@nomiclabs/hardhat-solhint": "^2.0.1",
     "@nomiclabs/hardhat-waffle": "^2.0.3",
     "@openzeppelin/contracts": "^4.7.3",
@@ -57,11 +57,26 @@
     "hardhat-waffle": "^0.0.1-security",
     "prettier": "^2.7.1",
     "prettier-plugin-solidity": "^1.0.0-beta.24",
+    "release-it": "^15.4.1",
     "solhint": "^3.3.7",
     "solhint-plugin-prettier": "^0.0.5",
     "solidity-coverage": "^0.7.21",
     "ts-generator": "^0.1.1",
     "ts-node": "^10.9.1",
     "typechain": "^8.1.0"
+  },
+  "release-it": {
+    "hooks": {
+      "after:bump": "yarn build"
+    },
+    "git": {
+      "tagName": "v${version}"
+    },
+    "github": {
+      "release": true
+    },
+    "npm": {
+      "publish": false
+    }
   }
 }

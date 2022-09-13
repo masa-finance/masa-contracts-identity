@@ -18,7 +18,7 @@ export function getEnvParams(networkName: string | undefined) {
 }
 
 export function getSecretParam(param: string, networkName: string | undefined) {
-  const path = networkName ? `.env.${networkName}.secret` : `.env.secret`;
+  const path = networkName ? `.env.${networkName}.secret` : `.env`;
 
   fsx.ensureFileSync(path);
   return parse(fs.readFileSync(path))[param];
@@ -34,16 +34,16 @@ export function getPrivateKey(networkName: string | undefined) {
     : "0x0000000000000000000000000000000000000000000000000000000000000000";
 }
 
-export function getInfuraApiKey(networkName: string | undefined) {
+export function getInfuraApiKey() {
   return (
-    process.env.INFURA_API_KEY || getSecretParam("INFURA_API_KEY", networkName)
+    process.env.INFURA_API_KEY || getSecretParam("INFURA_API_KEY", undefined)
   );
 }
 
-export function getEtherscanApiKey(networkName: string | undefined) {
+export function getEtherscanApiKey() {
   return (
     process.env.ETHERSCAN_API_KEY ||
-    getSecretParam("ETHERSCAN_API_KEY", networkName)
+    getSecretParam("ETHERSCAN_API_KEY", undefined)
   );
 }
 

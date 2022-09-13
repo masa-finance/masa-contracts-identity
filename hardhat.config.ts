@@ -16,7 +16,7 @@ import "solidity-coverage";
 import { NetworksUserConfig } from "hardhat/types";
 
 const getInfuraURL = (network: string) => {
-  return `https://${network}.infura.io/v3/${getInfuraApiKey(network)}`;
+  return `https://${network}.infura.io/v3/${getInfuraApiKey()}`;
 };
 
 const networks: NetworksUserConfig = {
@@ -26,22 +26,22 @@ const networks: NetworksUserConfig = {
     gasPrice: "auto",
     gas: 13000000,
     forking: {
-      url: getInfuraURL("rinkeby")
+      url: getInfuraURL("goerli")
     }
   },
-  rinkeby: {
-    url: getInfuraURL("rinkeby"),
-    accounts: [getPrivateKey("rinkeby")],
-    gas: 20000000,
+  goerli: {
+    url: getInfuraURL("goerli"),
+    accounts: [getPrivateKey("goerli")],
+    gas: "auto", // 20000000
     gasPrice: "auto"
   },
   alfajores: {
     url: "https://alfajores-forno.celo-testnet.org", // Localhost (default: none)
     accounts: [getPrivateKey("alfajores")],
     allowUnlimitedContractSize: true,
-    gas: 20000000,
-    gasPrice: "auto",
-    blockGasLimit: 13000000
+    gas: "auto", // 20000000
+    gasPrice: "auto" // 200000000000
+    // blockGasLimit: 13000000
   }
 };
 
@@ -63,9 +63,7 @@ export default {
     }
   },
   etherscan: {
-    apiKey: {
-      rinkeby: getEtherscanApiKey("rinkeby")
-    }
+    apiKey: getEtherscanApiKey()
   },
   gasReporter: {
     currency: "USD",

@@ -1,11 +1,12 @@
+import hre from "hardhat";
 import { getEnvParams, getPrivateKey } from "../src/utils/EnvParams";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
 import {
-  CORN_RINKEBY,
-  SWAPROUTER_RINKEBY,
-  USDC_RINKEBY,
-  WETH_RINKEBY
+  CORN_GOERLI,
+  SWAPROUTER_GOERLI,
+  USDC_GOERLI,
+  WETH_GOERLI
 } from "../src/constants";
 
 let owner: SignerWithAddress;
@@ -33,24 +34,22 @@ const func: DeployFunction = async ({
   let wrappedNativeToken: string; // weth
   let swapRouter: string;
 
-  const chainId = await owner.getChainId();
-
-  if (chainId == 1) {
+  if (network.name == 'mainnet') {
     // mainnet
     stableCoin = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
     wrappedNativeToken = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
-    swapRouter = SWAPROUTER_RINKEBY;
-  } else if (chainId == 4) {
-    // rinkeby
-    stableCoin = USDC_RINKEBY;
-    wrappedNativeToken = WETH_RINKEBY;
-    swapRouter = SWAPROUTER_RINKEBY;
-  } else if (chainId == 31337) {
+    swapRouter = SWAPROUTER_GOERLI;
+  } else if (network.name == 'goerli') {
+    // goerli
+    stableCoin = USDC_GOERLI;
+    wrappedNativeToken = WETH_GOERLI;
+    swapRouter = SWAPROUTER_GOERLI;
+  } else if (network.name == 'hardhat') {
     // hardhat
-    stableCoin = USDC_RINKEBY;
-    wrappedNativeToken = WETH_RINKEBY;
-    swapRouter = SWAPROUTER_RINKEBY;
-  } else if (chainId == 44787) {
+    stableCoin = USDC_GOERLI;
+    wrappedNativeToken = WETH_GOERLI;
+    swapRouter = SWAPROUTER_GOERLI;
+  } else if (network.name == 'alfajores') {
     // alfajores
     stableCoin = "0x37f39aD164cBBf0Cc03Dd638472F3FbeC7aE426C";
     wrappedNativeToken = "0xF194afDf50B03e69Bd7D057c1Aa9e10c9954E4C9";
@@ -59,7 +58,7 @@ const func: DeployFunction = async ({
     throw new Error("Network not supported");
   }
 
-  const SoulFactoryDeploymentResult = await deploy("SoulFactory", {
+  const soulFactoryDeploymentResult = await deploy("SoulFactory", {
     from: deployer,
     args: [
       env.OWNER || owner.address,
@@ -67,8 +66,8 @@ const func: DeployFunction = async ({
       "5000000", // 5 USDC, with 6 decimals
       "3000000", // 3 USDC, with 6 decimals
       "3000000", // 3 USDC, with 6 decimals
-      chainId == 31337 || chainId == 4
-        ? CORN_RINKEBY // CORN
+      (network.name == 'hardhat' || network.name == 'goerli')
+        ? CORN_GOERLI // CORN
         : corn.address,
       stableCoin,
       wrappedNativeToken,
@@ -77,6 +76,25 @@ const func: DeployFunction = async ({
     ],
     log: true
   });
+
+  // verify contract with etherscan, if its not a local network
+  if (network.name == 'mainnet' || network.name == 'goerli') {
+    await hre.run("verify:verify", {
+      address: soulFactoryDeploymentResult.address,
+      constructorArguments: [
+        env.OWNER || owner.address,
+        soulboundIdentityDeployed.address,
+        "5000000", // 5 USDC, with 6 decimals
+        "3000000", // 3 USDC, with 6 decimals
+        "3000000", // 3 USDC, with 6 decimals
+        CORN_GOERLI, // CORN
+        stableCoin,
+        wrappedNativeToken,
+        swapRouter,
+        env.OWNER || owner.address
+      ]
+    });
+  }
 
   const soulboundIdentity = await ethers.getContractAt(
     "SoulboundIdentity",
@@ -98,12 +116,12 @@ const func: DeployFunction = async ({
   const IDENTITY_MINTER_ROLE = await soulboundIdentity.MINTER_ROLE();
   await soulboundIdentity
     .connect(signer)
-    .grantRole(IDENTITY_MINTER_ROLE, SoulFactoryDeploymentResult.address);
+    .grantRole(IDENTITY_MINTER_ROLE, soulFactoryDeploymentResult.address);
 
   const NAME_MINTER_ROLE = await soulName.MINTER_ROLE();
   await soulName
     .connect(signer)
-    .grantRole(NAME_MINTER_ROLE, SoulFactoryDeploymentResult.address);
+    .grantRole(NAME_MINTER_ROLE, soulFactoryDeploymentResult.address);
 };
 
 func.tags = ["SoulFactory"];
