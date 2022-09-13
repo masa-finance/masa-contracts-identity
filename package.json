@@ -68,7 +68,7 @@
   },
   "release-it": {
     "hooks": {
-      "after:bump": "npm build"
+      "after:bump": "yarn build"
     },
     "git": {
       "tagName": "v${version}"
