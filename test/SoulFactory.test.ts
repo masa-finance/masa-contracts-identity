@@ -4,6 +4,8 @@ import { solidity } from "ethereum-waffle";
 import { ethers, deployments } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
+  CORN,
+  CORN__factory,
   ERC20,
   ERC20__factory,
   IUniswapRouter,
@@ -58,6 +60,10 @@ describe("Soul Factory", () => {
       SWAPROUTER_GOERLI,
       owner
     );
+
+    // we get $CORN tokens for address1
+    const corn: CORN = CORN__factory.connect(CORN_GOERLI, owner);
+    await corn.connect(address1).mint();
 
     // we get stable coins for address1
     await uniswapRouter.swapExactETHForTokens(
