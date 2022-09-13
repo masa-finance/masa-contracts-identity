@@ -25,7 +25,7 @@
     "prettier": "prettier --write 'contracts/**/*.sol' '**/*.ts' '**/*.js'",
     "solhint": "solhint contracts/**/*.sol",
     "prepare": "yarn build",
-    "release": "release-it"
+    "release": "GITHUB_TOKEN=$(grep GITHUB_TOKEN .env | cut -d '=' -f2) release-it"
   },
   "dependencies": {
     "@nomiclabs/hardhat-ethers": "^2.1.0",
