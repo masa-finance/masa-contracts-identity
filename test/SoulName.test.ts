@@ -90,6 +90,12 @@ describe("Soul Name", () => {
     });
   });
 
+  describe("supportsInterface", () => {
+    it("get data from supportsInterface()", async () => {
+      expect(await soulName.supportsInterface("0x01ffc9a7")).to.be.true;
+    });
+  });
+
   describe("set extension", () => {
     it("should fail to set extension from non admin user", async () => {
       await expect(soulName.connect(address1).setExtension(".other")).to.be
