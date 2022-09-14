@@ -175,7 +175,7 @@ contract SoulName is NFT, ISoulNameResolver {
         require(bytes(soulNameData.name).length > 0, "NAME_NOT_FOUND");
 
         return (
-            string(bytes.concat(bytes(soulNameData.name), bytes(extension))),
+            _getName(soulNameData.name),
             soulNameData.identityId
         );
     }
@@ -214,7 +214,7 @@ contract SoulName is NFT, ISoulNameResolver {
         bytes memory dataURI = abi.encodePacked(
             "{",
             '"name": "',
-            string(bytes.concat(bytes(soulNameData.name), bytes(extension))),
+            _getName(soulNameData.name),
             '", ',
             '"description": "This is a SoulName',
             '", ',
@@ -272,6 +272,10 @@ contract SoulName is NFT, ISoulNameResolver {
                 break;
             }
         }
+    }
+
+    function _getName(string memory name) private view returns (string memory) {
+        return string(bytes.concat(bytes(name), bytes(extension)));
     }
 
     /* ========== MODIFIERS ========== */
