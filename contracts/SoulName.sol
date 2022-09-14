@@ -212,25 +212,39 @@ contract SoulName is NFT, ISoulNameResolver {
         string memory _url = _getUrl(tokenId);
         string memory _imageUrl = _getImageUrl(soulNameData.name);
 
+        uint256 createdDate = 1635617066000;
+        uint256 lenght = 7;
+        uint256 registrationDate = 1635617066000;
+        uint256 expirationDate = 1667174018000;
+
         bytes memory dataURI = abi.encodePacked(
             "{",
             '"name": "',
             _name,
-            '", ',
-            '"description": "',
+            '", "description": "',
             _name,
             ', a soul name for the Soulbound Identity"',
-            '", ',
-            '"external_url": "',
+            ', "attributes": [',
+            '  {"trait_type": "Created Date", "display_type": "date", "value":',
+            createdDate.toString(),
+            "}, ",
+            '  {"trait_type": "Length", "display_type": "number", "value":',
+            lenght.toString(),
+            "}, ",
+            '  {"trait_type": "Registration Date", "display_type": "date", "value":',
+            registrationDate.toString(),
+            "}, ",
+            '  {"trait_type": "Expiration Date", "display_type": "date", "value":',
+            expirationDate.toString(),
+            "} ",
+            "]",
+            ', "external_url": "',
             _url,
-            '", ',
-            '"url": "',
+            '", "url": "',
             _url,
-            '", ',
-            '"image": "',
+            '", "image": "',
             _imageUrl,
-            '", ',
-            '"image_url": "',
+            '", "image_url": "',
             _imageUrl,
             '"',
             "}"
