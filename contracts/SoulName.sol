@@ -174,10 +174,7 @@ contract SoulName is NFT, ISoulNameResolver {
         SoulNameData memory soulNameData = soulNames[lowercaseName];
         require(bytes(soulNameData.name).length > 0, "NAME_NOT_FOUND");
 
-        return (
-            _getName(soulNameData.name),
-            soulNameData.identityId
-        );
+        return (_getName(soulNameData.name), soulNameData.identityId);
     }
 
     /// @notice Returns all the identity names of an identity
@@ -290,11 +287,27 @@ contract SoulName is NFT, ISoulNameResolver {
     }
 
     function _getUrl(uint256 tokenId) private view returns (string memory) {
-        return string(bytes.concat(bytes("https://soulname.com/"), bytes(tokenId.toString())));
+        return
+            string(
+                bytes.concat(
+                    bytes("https://soulname.com/"),
+                    bytes(tokenId.toString())
+                )
+            );
     }
 
-    function _getImageUrl(string memory name) private view returns (string memory) {
-        return string(bytes.concat(bytes("https://via.placeholder.com/500?text="), bytes(_getName(name))));
+    function _getImageUrl(string memory name)
+        private
+        view
+        returns (string memory)
+    {
+        return
+            string(
+                bytes.concat(
+                    bytes("https://via.placeholder.com/500?text="),
+                    bytes(_getName(name))
+                )
+            );
     }
 
     /* ========== MODIFIERS ========== */
