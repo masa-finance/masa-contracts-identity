@@ -208,26 +208,30 @@ contract SoulName is NFT, ISoulNameResolver {
         SoulNameData memory soulNameData = soulNames[lowercaseName];
         require(bytes(soulNameData.name).length > 0, "NAME_NOT_FOUND");
 
+        string memory _name = _getName(soulNameData.name);
+        string memory _url = _getUrl(tokenId);
+        string memory _imageUrl = _getUrl(tokenId); // _getImageUrl(soulNameData.name);
+
         bytes memory dataURI = abi.encodePacked(
             "{",
             '"name": "',
-            _getName(soulNameData.name),
+            _name,
             '", ',
             '"description": "',
-            _getName(soulNameData.name),
+            _name,
             ', a soul name for the Soulbound Identity"',
             '", ',
             '"external_url": "',
-            _getUrl(tokenId),
+            _url,
             '"',
             '"url": "',
-            _getUrl(tokenId),
+            _url,
             '", ',
             '"image": "',
-            _getImageUrl(soulNameData.name),
+            _imageUrl,
             '"',
             '"image_url": "',
-            _getImageUrl(soulNameData.name),
+            _imageUrl,
             '"',
             "}"
         );
