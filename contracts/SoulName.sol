@@ -220,11 +220,11 @@ contract SoulName is NFT, ISoulNameResolver {
             _getName(soulNameData.name),
             ', a soul name for the Soulbound Identity"',
             '", ',
-            '"external_url": "https://soulname.com/',
-            tokenId.toString(),
+            '"external_url": "',
+            _getUrl(tokenId),
             '"',
-            '"url": "https://soulname.com/',
-            tokenId.toString(),
+            '"url": "',
+            _getUrl(tokenId),
             '"',
             "}"
         );
