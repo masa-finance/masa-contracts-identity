@@ -225,6 +225,12 @@ contract SoulName is NFT, ISoulNameResolver {
             '"',
             '"url": "',
             _getUrl(tokenId),
+            '", ',
+            '"image": "',
+            _getImageUrl(soulNameData.name),
+            '"',
+            '"image_url": "',
+            _getImageUrl(soulNameData.name),
             '"',
             "}"
         );
