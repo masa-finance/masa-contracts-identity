@@ -283,6 +283,14 @@ contract SoulName is NFT, ISoulNameResolver {
         return string(bytes.concat(bytes(name), bytes(extension)));
     }
 
+    function _getUrl(uint256 tokenId) private view returns (string memory) {
+        return string(bytes.concat(bytes("https://soulname.com/"), bytes(tokenId.toString())));
+    }
+
+    function _getImageUrl(string memory name) private view returns (string memory) {
+        return string(bytes.concat(bytes("https://via.placeholder.com/500?text="), bytes(_getName(name))));
+    }
+
     /* ========== MODIFIERS ========== */
 
     /* ========== EVENTS ========== */
