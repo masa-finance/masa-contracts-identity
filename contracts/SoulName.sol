@@ -210,7 +210,7 @@ contract SoulName is NFT, ISoulNameResolver {
 
         string memory _name = _getName(soulNameData.name);
         string memory _url = _getUrl(tokenId);
-        string memory _imageUrl = _getUrl(tokenId); // _getImageUrl(soulNameData.name);
+        string memory _imageUrl = _getImageUrl(soulNameData.name);
 
         bytes memory dataURI = abi.encodePacked(
             "{",
@@ -223,13 +223,13 @@ contract SoulName is NFT, ISoulNameResolver {
             '", ',
             '"external_url": "',
             _url,
-            '"',
+            '", ',
             '"url": "',
             _url,
             '", ',
             '"image": "',
             _imageUrl,
-            '"',
+            '", ',
             '"image_url": "',
             _imageUrl,
             '"',
