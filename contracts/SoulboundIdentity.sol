@@ -2,8 +2,8 @@
 pragma solidity ^0.8.7;
 
 import "./interfaces/ISoulLinker.sol";
+import "./interfaces/ISoulName.sol";
 import "./tokens/SBT.sol";
-import "./SoulName.sol";
 
 /// @title Soulbound Identity
 /// @author Masa Finance
@@ -12,7 +12,7 @@ import "./SoulName.sol";
 contract SoulboundIdentity is SBT {
     /* ========== STATE VARIABLES =========================================== */
 
-    SoulName public soulName;
+    ISoulName public soulName;
 
     /* ========== INITIALIZE ================================================ */
 
@@ -32,7 +32,7 @@ contract SoulboundIdentity is SBT {
     /// @notice Sets the SoulName contract address linked to this identity
     /// @dev The caller must have the admin role to call this function
     /// @param _soulName Address of the SoulName contract
-    function setSoulName(SoulName _soulName)
+    function setSoulName(ISoulName _soulName)
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
     {

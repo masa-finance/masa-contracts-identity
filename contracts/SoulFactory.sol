@@ -8,8 +8,8 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 import "./dex/DexAMM.sol";
+import "./interfaces/ISoulName.sol";
 import "./SoulboundIdentity.sol";
-import "./SoulName.sol";
 
 /// @title Soul Factory
 /// @author Masa Finance
@@ -442,7 +442,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
         returns (uint256)
     {
         // mint Soul Name token
-        SoulName soulName = soulboundIdentity.soulName();
+        ISoulName soulName = soulboundIdentity.soulName();
         uint256 identityId = soulboundIdentity.tokenOfOwner(to);
 
         uint256 tokenId = soulName.mint(to, name, identityId);
