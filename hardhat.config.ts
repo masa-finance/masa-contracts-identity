@@ -5,6 +5,7 @@ import {
   getEtherscanApiKey
 } from "./src/utils/EnvParams";
 import "hardhat-deploy";
+import "hardhat-contract-sizer";
 import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-solhint";
 import "@nomiclabs/hardhat-etherscan";
@@ -40,7 +41,7 @@ const networks: NetworksUserConfig = {
     accounts: [getPrivateKey("alfajores")],
     allowUnlimitedContractSize: true,
     gas: "auto", // 20000000
-    gasPrice: "auto" // 200000000000
+    gasPrice: 200000000000
     // blockGasLimit: 13000000
   }
 };
