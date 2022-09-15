@@ -9,6 +9,7 @@
     "esModuleInterop": true,
     "rootDirs": ["./test"],
     "forceConsistentCasingInFileNames": true,
+    "useUnknownInCatchVariables": false,
     "noImplicitAny": false
   },
   "include": [
