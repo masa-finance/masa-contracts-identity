@@ -69,7 +69,7 @@ describe("Soul Name", () => {
     it("should success to set extension from admin user", async () => {
       await soulName.connect(owner).setExtension(".other");
 
-      expect(await soulName.extension()).to.be.equal(".other");
+      expect(await soulName.getExtension()).to.be.equal(".other");
     });
   });
 
@@ -146,7 +146,7 @@ describe("Soul Name", () => {
 
     it("getIdentityData with an existing name", async () => {
       const [sbtName, identityId] = await soulName.getIdentityData(SOUL_NAME1);
-      const extension = await soulName.extension();
+      const extension = await soulName.getExtension();
 
       await expect(sbtName).to.be.equals(SOUL_NAME1 + extension);
       await expect(identityId).to.be.equals(identityId1);
@@ -156,7 +156,7 @@ describe("Soul Name", () => {
       let [sbtName, identityId] = await soulName.getIdentityData(
         SOUL_NAME1.toLowerCase()
       );
-      const extension = await soulName.extension();
+      const extension = await soulName.getExtension();
 
       await expect(sbtName).to.be.equals(SOUL_NAME1 + extension);
       await expect(identityId).to.be.equals(identityId1);
