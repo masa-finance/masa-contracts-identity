@@ -155,6 +155,23 @@ function getApproved(uint256 tokenId) external view returns (address)
 |---|---|---|
 | _0 | address | undefined |
 
+### getExtension
+
+```solidity
+function getExtension() external view returns (string)
+```
+
+Returns the extension of the soul name
+
+*This function is used to get the extension of the soul name*
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string | Extension of the soul name |
+
 ### getIdentityData
 
 ```solidity
@@ -505,7 +522,7 @@ Sets the extension of the soul name
 ### soulboundIdentity
 
 ```solidity
-function soulboundIdentity() external view returns (contract SoulboundIdentity)
+function soulboundIdentity() external view returns (contract ISoulboundIdentity)
 ```
 
 
@@ -517,7 +534,7 @@ function soulboundIdentity() external view returns (contract SoulboundIdentity)
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | contract SoulboundIdentity | undefined |
+| _0 | contract ISoulboundIdentity | undefined |
 
 ### supportsInterface
 

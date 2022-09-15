@@ -476,7 +476,7 @@ Set the reserve wallet
 ### setSoulboundIdentity
 
 ```solidity
-function setSoulboundIdentity(contract SoulboundIdentity _soulboundIdentity) external nonpayable
+function setSoulboundIdentity(contract ISoulboundIdentity _soulboundIdentity) external nonpayable
 ```
 
 Sets the SoulboundIdentity contract address linked to this factory
@@ -487,7 +487,7 @@ Sets the SoulboundIdentity contract address linked to this factory
 
 | Name | Type | Description |
 |---|---|---|
-| _soulboundIdentity | contract SoulboundIdentity | New SoulboundIdentity contract address |
+| _soulboundIdentity | contract ISoulboundIdentity | New SoulboundIdentity contract address |
 
 ### setStableCoin
 
@@ -556,7 +556,7 @@ Sets the wrapped native token address
 ### soulboundIdentity
 
 ```solidity
-function soulboundIdentity() external view returns (contract SoulboundIdentity)
+function soulboundIdentity() external view returns (contract ISoulboundIdentity)
 ```
 
 
@@ -568,7 +568,7 @@ function soulboundIdentity() external view returns (contract SoulboundIdentity)
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | contract SoulboundIdentity | undefined |
+| _0 | contract ISoulboundIdentity | undefined |
 
 ### stableCoin
 

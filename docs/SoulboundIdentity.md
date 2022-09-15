@@ -116,23 +116,6 @@ Burns the token
 |---|---|---|
 | tokenId | uint256 | The NFT ID to burn |
 
-### extension
-
-```solidity
-function extension() external view returns (string)
-```
-
-Returns the extension of the soul name
-
-*This function returns the extension of the soul name*
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | string | Extension of the soul name |
-
 ### getApproved
 
 ```solidity
@@ -154,6 +137,23 @@ function getApproved(uint256 tokenId) external view returns (address)
 | Name | Type | Description |
 |---|---|---|
 | _0 | address | undefined |
+
+### getExtension
+
+```solidity
+function getExtension() external view returns (string)
+```
+
+Returns the extension of the soul name
+
+*This function returns the extension of the soul name*
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string | Extension of the soul name |
 
 ### getIdentityData
 
@@ -243,6 +243,23 @@ function getRoleAdmin(bytes32 role) external view returns (bytes32)
 | Name | Type | Description |
 |---|---|---|
 | _0 | bytes32 | undefined |
+
+### getSoulName
+
+```solidity
+function getSoulName() external view returns (contract ISoulName)
+```
+
+Returns the address of the SoulName contract linked to this identity
+
+*This function returns the address of the SoulName contract linked to this identity*
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | contract ISoulName | Address of the SoulName contract |
 
 ### grantRole
 
@@ -554,7 +571,7 @@ function setApprovalForAll(address operator, bool approved) external nonpayable
 ### setSoulName
 
 ```solidity
-function setSoulName(contract SoulName _soulName) external nonpayable
+function setSoulName(contract ISoulName _soulName) external nonpayable
 ```
 
 Sets the SoulName contract address linked to this identity
@@ -565,7 +582,7 @@ Sets the SoulName contract address linked to this identity
 
 | Name | Type | Description |
 |---|---|---|
-| _soulName | contract SoulName | Address of the SoulName contract |
+| _soulName | contract ISoulName | Address of the SoulName contract |
 
 ### soulLinker
 
@@ -587,7 +604,7 @@ function soulLinker() external view returns (contract ISoulLinker)
 ### soulName
 
 ```solidity
-function soulName() external view returns (contract SoulName)
+function soulName() external view returns (contract ISoulName)
 ```
 
 
@@ -599,7 +616,7 @@ function soulName() external view returns (contract SoulName)
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | contract SoulName | undefined |
+| _0 | contract ISoulName | undefined |
 
 ### supportsInterface
 
