@@ -4,7 +4,7 @@ pragma solidity ^0.8.7;
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 import "./tokens/NFT.sol";
-import "./interfaces/ISoulNameResolver.sol";
+import "./interfaces/ISoulName.sol";
 import "./SoulboundIdentity.sol";
 
 /// @title SoulName NFT
@@ -12,7 +12,7 @@ import "./SoulboundIdentity.sol";
 /// @notice SoulName NFT that points to a Soulbound identity token
 /// @dev SoulName NFT, that inherits from the NFT contract, and points to a Soulbound identity token.
 /// It has an extension, and stores all the information about the identity names.
-contract SoulName is NFT, ISoulNameResolver {
+contract SoulName is NFT, ISoulName {
     /* ========== STATE VARIABLES ========== */
     using Strings for uint256;
 
