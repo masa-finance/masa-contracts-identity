@@ -8,8 +8,8 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 import "./dex/DexAMM.sol";
+import "./interfaces/ISoulboundIdentity.sol";
 import "./interfaces/ISoulName.sol";
-import "./SoulboundIdentity.sol";
 
 /// @title Soul Factory
 /// @author Masa Finance
@@ -24,7 +24,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
 
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
 
-    SoulboundIdentity public soulboundIdentity;
+    ISoulboundIdentity public soulboundIdentity;
 
     uint256 public mintingIdentityAndNamePrice; // price in stable coin
     uint256 public mintingIdentityPrice; // price in stable coin
@@ -52,7 +52,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
     /// @param _reserveWallet Wallet that will receive the fee
     constructor(
         address owner,
-        SoulboundIdentity _soulBoundIdentity,
+        ISoulboundIdentity _soulBoundIdentity,
         uint256 _mintingIdentityAndNamePrice,
         uint256 _mintingIdentityPrice,
         uint256 _mintingNamePrice,
@@ -96,7 +96,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
     /// @notice Sets the SoulboundIdentity contract address linked to this factory
     /// @dev The caller must have the admin role to call this function
     /// @param _soulboundIdentity New SoulboundIdentity contract address
-    function setSoulboundIdentity(SoulboundIdentity _soulboundIdentity)
+    function setSoulboundIdentity(ISoulboundIdentity _soulboundIdentity)
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
@@ -442,7 +442,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
         returns (uint256)
     {
         // mint Soul Name token
-        ISoulName soulName = soulboundIdentity.soulName();
+        ISoulName soulName = soulboundIdentity.getSoulName();
         uint256 identityId = soulboundIdentity.tokenOfOwner(to);
 
         uint256 tokenId = soulName.mint(to, name, identityId);

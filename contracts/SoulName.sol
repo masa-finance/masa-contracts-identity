@@ -5,8 +5,8 @@ import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 import "./tokens/NFT.sol";
+import "./interfaces/ISoulboundIdentity.sol";
 import "./interfaces/ISoulName.sol";
-import "./SoulboundIdentity.sol";
 
 /// @title SoulName NFT
 /// @author Masa Finance
@@ -17,7 +17,7 @@ contract SoulName is NFT, ISoulName {
     /* ========== STATE VARIABLES ========== */
     using Strings for uint256;
 
-    SoulboundIdentity public soulboundIdentity;
+    ISoulboundIdentity public soulboundIdentity;
     string public extension; // suffix of the names (.sol?)
 
     mapping(uint256 => string) tokenIdToName; // used to sort through all names (name in lowercase)
@@ -39,7 +39,7 @@ contract SoulName is NFT, ISoulName {
     /// @param baseTokenURI Base URI of the token
     constructor(
         address owner,
-        SoulboundIdentity _soulboundIdentity,
+        ISoulboundIdentity _soulboundIdentity,
         string memory _extension,
         string memory baseTokenURI
     ) NFT(owner, "Masa Identity Name", "MIN", baseTokenURI) {
