@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 import "./tokens/NFT.sol";
@@ -253,8 +252,8 @@ contract SoulName is NFT, ISoulNameResolver {
         return
             string(
                 abi.encodePacked(
-                    "data:application/json;base64,",
-                    Base64.encode(dataURI)
+                    "data:application/json;base64,"// ,
+                    // Base64.encode(dataURI)
                 )
             );
     }

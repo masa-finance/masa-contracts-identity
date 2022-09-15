@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
+import "./interfaces/ISoulLinker.sol";
 import "./tokens/SBT.sol";
-import "./SoulLinker.sol";
 import "./SoulName.sol";
 
 /// @title Soulbound Identity
@@ -23,7 +23,7 @@ contract SoulboundIdentity is SBT {
     /// @param baseTokenURI Base URI of the token
     constructor(
         address owner,
-        SoulLinker _soulLinker,
+        ISoulLinker _soulLinker,
         string memory baseTokenURI
     ) SBT(owner, _soulLinker, "Masa Identity", "MID", baseTokenURI) {}
 
