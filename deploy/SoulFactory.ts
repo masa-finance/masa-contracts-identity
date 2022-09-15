@@ -79,21 +79,27 @@ const func: DeployFunction = async ({
 
   // verify contract with etherscan, if its not a local network
   if (network.name == "mainnet" || network.name == "goerli") {
-    await hre.run("verify:verify", {
-      address: soulFactoryDeploymentResult.address,
-      constructorArguments: [
-        env.OWNER || owner.address,
-        soulboundIdentityDeployed.address,
-        "5000000", // 5 USDC, with 6 decimals
-        "3000000", // 3 USDC, with 6 decimals
-        "3000000", // 3 USDC, with 6 decimals
-        CORN_GOERLI, // CORN
-        stableCoin,
-        wrappedNativeToken,
-        swapRouter,
-        env.OWNER || owner.address
-      ]
-    });
+    try {
+      await hre.run("verify:verify", {
+        address: soulFactoryDeploymentResult.address,
+        constructorArguments: [
+          env.OWNER || owner.address,
+          soulboundIdentityDeployed.address,
+          "5000000", // 5 USDC, with 6 decimals
+          "3000000", // 3 USDC, with 6 decimals
+          "3000000", // 3 USDC, with 6 decimals
+          CORN_GOERLI, // CORN
+          stableCoin,
+          wrappedNativeToken,
+          swapRouter,
+          env.OWNER || owner.address
+        ]
+      });
+    } catch (error) {
+      if (error.message != "Contract source code already verified") {
+        throw error;
+      }
+    }
   }
 
   const soulboundIdentity = await ethers.getContractAt(
