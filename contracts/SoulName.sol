@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
+import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 import "./tokens/NFT.sol";
@@ -76,7 +77,7 @@ contract SoulName is NFT, ISoulName {
         address to,
         string memory name,
         uint256 identityId
-    ) public returns (uint256) {
+    ) public override returns (uint256) {
         require(!nameExists(name), "NAME_ALREADY_EXISTS");
         require(bytes(name).length > 0, "ZERO_LENGTH_NAME");
         require(
@@ -143,6 +144,13 @@ contract SoulName is NFT, ISoulName {
     }
 
     /* ========== VIEWS ========== */
+
+    /// @notice Returns the extension of the soul name
+    /// @dev This function is used to get the extension of the soul name
+    /// @return Extension of the soul name
+    function getExtension() external view override returns (string memory) {
+        return extension;
+    }
 
     /// @notice Checks if a soul name already exists
     /// @dev This function queries if a soul name already exists
@@ -252,8 +260,8 @@ contract SoulName is NFT, ISoulName {
         return
             string(
                 abi.encodePacked(
-                    "data:application/json;base64,"// ,
-                    // Base64.encode(dataURI)
+                    "data:application/json;base64,",
+                    Base64.encode(dataURI)
                 )
             );
     }
