@@ -184,11 +184,13 @@ describe("Soul Name", () => {
     it("should get a valid token URI", async () => {
       const tokenUri = await soulName.tokenURI(nameId);
 
+      console.log(tokenUri);
+
       // check if it's a valid url
       expect(() => new URL(tokenUri)).to.not.throw();
       // we expect that the token uri is already encoded
       expect(tokenUri).to.equal(encodeURI(tokenUri));
-      expect(tokenUri).to.contain("data:application/json");
+      expect(tokenUri).to.contain("/name/");
     });
   });
 
