@@ -19,6 +19,7 @@ const func: DeployFunction = async ({
 
   [, owner] = await ethers.getSigners();
   const env = getEnvParams(network.name);
+  const baseUri = `${env.BASE_URI}/name/`;
 
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
 
@@ -28,7 +29,7 @@ const func: DeployFunction = async ({
       env.OWNER || owner.address,
       soulboundIdentityDeployed.address,
       ".soul",
-      ""
+      baseUri
     ],
     log: true
   });
