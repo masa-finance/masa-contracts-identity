@@ -626,21 +626,21 @@ function tokenOfOwnerByIndex(address owner, uint256 index) external view returns
 function tokenURI(uint256 tokenId) external view returns (string)
 ```
 
-Returns the URI of a soul name
+A distinct Uniform Resource Identifier (URI) for a given asset.
 
-*This function returns the token URI of the soul name identity specified by the tokenId*
+*Throws if `_tokenId` is not a valid NFT. URIs are defined in RFC  3986. The URI may point to a JSON file that conforms to the &quot;ERC721  Metadata JSON Schema&quot;.*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| tokenId | uint256 | TokenId of the soul name |
+| tokenId | uint256 | NFT to get the URI of |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | string | URI of the soul name |
+| _0 | string | URI of the NFT |
 
 ### totalSupply
 

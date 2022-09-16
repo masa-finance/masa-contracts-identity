@@ -198,74 +198,6 @@ contract SoulName is NFT, ISoulName {
         return identityIdToNames[identityId];
     }
 
-    /// @notice Returns the URI of a soul name
-    /// @dev This function returns the token URI of the soul name identity specified by the tokenId
-    /// @param tokenId TokenId of the soul name
-    /// @return URI of the soul name
-    function tokenURI(uint256 tokenId)
-        public
-        view
-        override
-        returns (string memory)
-    {
-        string memory name = tokenIdToName[tokenId];
-        require(bytes(name).length != 0, "TOKEN_NOT_FOUND");
-
-        string memory lowercaseName = _toLowerCase(name);
-        SoulNameData memory soulNameData = soulNames[lowercaseName];
-        require(bytes(soulNameData.name).length > 0, "NAME_NOT_FOUND");
-
-        string memory _name = _getName(soulNameData.name);
-        string memory _url = _getUrl(tokenId);
-        string memory _imageUrl = _getImageUrl(soulNameData.name);
-
-        uint256 createdDate = 1635617066000;
-        uint256 lenght = 7;
-        uint256 registrationDate = 1635617066000;
-        uint256 expirationDate = 1667174018000;
-
-        bytes memory dataURI = abi.encodePacked(
-            "{",
-            '"name": "',
-            _name,
-            '", "description": "',
-            _name,
-            ', a soul name for the Soulbound Identity"',
-            ', "attributes": [',
-            '  {"trait_type": "Created Date", "display_type": "date", "value":',
-            createdDate.toString(),
-            "}, ",
-            '  {"trait_type": "Length", "display_type": "number", "value":',
-            lenght.toString(),
-            "}, ",
-            '  {"trait_type": "Registration Date", "display_type": "date", "value":',
-            registrationDate.toString(),
-            "}, ",
-            '  {"trait_type": "Expiration Date", "display_type": "date", "value":',
-            expirationDate.toString(),
-            "} ",
-            "]",
-            ', "external_url": "',
-            _url,
-            '", "url": "',
-            _url,
-            '", "image": "',
-            _imageUrl,
-            '", "image_url": "',
-            _imageUrl,
-            '"',
-            "}"
-        );
-
-        return
-            string(
-                abi.encodePacked(
-                    "data:application/json;base64,",
-                    Base64.encode(dataURI)
-                )
-            );
-    }
-
     /* ========== PRIVATE FUNCTIONS ========== */
 
     function _toLowerCase(string memory _str)
@@ -309,30 +241,6 @@ contract SoulName is NFT, ISoulName {
 
     function _getName(string memory name) private view returns (string memory) {
         return string(bytes.concat(bytes(name), bytes(extension)));
-    }
-
-    function _getUrl(uint256 tokenId) private view returns (string memory) {
-        return
-            string(
-                bytes.concat(
-                    bytes("https://soulname.com/"),
-                    bytes(tokenId.toString())
-                )
-            );
-    }
-
-    function _getImageUrl(string memory name)
-        private
-        view
-        returns (string memory)
-    {
-        return
-            string(
-                bytes.concat(
-                    bytes("https://via.placeholder.com/500?text="),
-                    bytes(_getName(name))
-                )
-            );
     }
 
     /* ========== MODIFIERS ========== */
