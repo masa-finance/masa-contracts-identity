@@ -5,7 +5,6 @@ import {
   getEtherscanApiKey
 } from "./src/utils/EnvParams";
 import "hardhat-deploy";
-import "hardhat-contract-sizer";
 import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-solhint";
 import "@nomiclabs/hardhat-etherscan";
