@@ -256,7 +256,9 @@ describe("Soul Name", () => {
 
       const [, identityId] = await soulName.getIdentityData(SOUL_NAME1);
 
-      await expect(identityId).to.be.equals(identityId1);
+      const identityAddress2 = await soulboundIdentity.tokenOfOwner(address2.address);
+
+      await expect(identityId).to.be.equals(identityAddress2);
     });
 
     it("should update identity Id", async () => {
