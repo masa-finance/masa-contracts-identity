@@ -166,8 +166,7 @@ contract SoulName is NFT, ISoulName {
         sbtNames = new string[](balance);
         for (uint256 i = 0; i < balance; i++) {
             uint256 tokenId = tokenOfOwnerByIndex(owner, i);
-            string memory name = tokenIdToName[tokenId];
-            sbtNames[i] = name;
+            sbtNames[i] = tokenIdToName[tokenId];
         }
 
         return sbtNames;
