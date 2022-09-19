@@ -17,5 +17,7 @@ interface ISoulboundIdentity {
 
     function tokenOfOwner(address owner) external view returns (uint256);
 
+    function balanceOf(address owner) external view returns (uint256);
+
     // soulName();
 }
