@@ -149,7 +149,7 @@ contract SoulName is NFT, ISoulName {
         address owner = ownerOf(soulNameData.tokenId);
         identityId = soulboundIdentity.tokenOfOwner(owner);
 
-        return (_getName(name), identityId);
+        return (_getName(soulNameData.name), identityId);
     }
 
     /// @notice Returns all the identity names of an account
