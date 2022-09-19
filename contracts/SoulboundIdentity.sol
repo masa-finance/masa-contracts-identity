@@ -1,18 +1,19 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
+import "./interfaces/ISoulboundIdentity.sol";
+import "./interfaces/ISoulLinker.sol";
+import "./interfaces/ISoulName.sol";
 import "./tokens/SBT.sol";
-import "./SoulLinker.sol";
-import "./SoulName.sol";
 
 /// @title Soulbound Identity
 /// @author Masa Finance
 /// @notice Soulbound token that represents an identity.
 /// @dev Soulbound identity, that inherits from the SBT contract.
-contract SoulboundIdentity is SBT {
+contract SoulboundIdentity is SBT, ISoulboundIdentity {
     /* ========== STATE VARIABLES =========================================== */
 
-    SoulName public soulName;
+    ISoulName public soulName;
 
     /* ========== INITIALIZE ================================================ */
 
@@ -23,7 +24,7 @@ contract SoulboundIdentity is SBT {
     /// @param baseTokenURI Base URI of the token
     constructor(
         address owner,
-        SoulLinker _soulLinker,
+        ISoulLinker _soulLinker,
         string memory baseTokenURI
     ) SBT(owner, _soulLinker, "Masa Identity", "MID", baseTokenURI) {}
 
@@ -32,7 +33,7 @@ contract SoulboundIdentity is SBT {
     /// @notice Sets the SoulName contract address linked to this identity
     /// @dev The caller must have the admin role to call this function
     /// @param _soulName Address of the SoulName contract
-    function setSoulName(SoulName _soulName)
+    function setSoulName(ISoulName _soulName)
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
@@ -46,7 +47,11 @@ contract SoulboundIdentity is SBT {
     /// @notice Mints a new soulbound identity
     /// @dev The caller can only mint one identity per address
     /// @param to Address of the owner of the new identity
-    function mint(address to) public override returns (uint256) {
+    function mint(address to)
+        public
+        override(SBT, ISoulboundIdentity)
+        returns (uint256)
+    {
         // Soulbound identity already created!
         require(balanceOf(to) < 1, "SB_IDENTITY_ALREADY_CREATED");
 
@@ -60,6 +65,7 @@ contract SoulboundIdentity is SBT {
     function mintIdentityWithName(address to, string memory name)
         public
         payable
+        override
         soulNameAlreadySet
         returns (uint256)
     {
@@ -71,18 +77,30 @@ contract SoulboundIdentity is SBT {
 
     /* ========== VIEWS ===================================================== */
 
+    /// @notice Returns the address of the SoulName contract linked to this identity
+    /// @dev This function returns the address of the SoulName contract linked to this identity
+    /// @return Address of the SoulName contract
+    function getSoulName() public view override returns (ISoulName) {
+        return soulName;
+    }
+
     /// @notice Returns the extension of the soul name
     /// @dev This function returns the extension of the soul name
     /// @return Extension of the soul name
-    function extension() public view returns (string memory) {
-        return soulName.extension();
+    function getExtension() public view returns (string memory) {
+        return soulName.getExtension();
     }
 
     /// @notice Returns the owner address of an identity
     /// @dev This function returns the owner address of the identity specified by the tokenId
     /// @param tokenId TokenId of the identity
     /// @return Address of the owner of the identity
-    function ownerOf(uint256 tokenId) public view override returns (address) {
+    function ownerOf(uint256 tokenId)
+        public
+        view
+        override(ERC721, ISoulboundIdentity)
+        returns (address)
+    {
         return super.ownerOf(tokenId);
     }
 
@@ -127,7 +145,12 @@ contract SoulboundIdentity is SBT {
     /// @dev This function returns the tokenId of the identity owned by an account
     /// @param owner Address of the owner of the identity
     /// @return TokenId of the identity owned by the account
-    function tokenOfOwner(address owner) public view returns (uint256) {
+    function tokenOfOwner(address owner)
+        public
+        view
+        override
+        returns (uint256)
+    {
         return super.tokenOfOwnerByIndex(owner, 0);
     }
 

@@ -40,7 +40,7 @@ const networks: NetworksUserConfig = {
     accounts: [getPrivateKey("alfajores")],
     allowUnlimitedContractSize: true,
     gas: "auto", // 20000000
-    gasPrice: "auto" // 200000000000
+    gasPrice: 200000000000
     // blockGasLimit: 13000000
   }
 };
@@ -52,8 +52,11 @@ export default {
     version: "0.8.7",
     settings: {
       optimizer: {
-        enabled: true,
-        runs: 200
+        enabled: false,
+        runs: 200,
+        details: {
+          yul: false
+        }
       }
     }
   },

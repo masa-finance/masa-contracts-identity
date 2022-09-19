@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
-import "./NFT.sol";
 import "../interfaces/ISoulLinker.sol";
-import "../SoulLinker.sol";
+import "./NFT.sol";
 
 /// @title SBT
 /// @author Masa Finance
@@ -12,7 +11,7 @@ import "../SoulLinker.sol";
 abstract contract SBT is NFT {
     /* ========== STATE VARIABLES =========================================== */
 
-    SoulLinker public soulLinker;
+    ISoulLinker public soulLinker;
 
     /* ========== INITIALIZE ================================================ */
 
@@ -25,7 +24,7 @@ abstract contract SBT is NFT {
     /// @param baseTokenURI Base URI of the token
     constructor(
         address owner,
-        SoulLinker _soulLinker,
+        ISoulLinker _soulLinker,
         string memory name,
         string memory symbol,
         string memory baseTokenURI

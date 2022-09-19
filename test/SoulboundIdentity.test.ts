@@ -240,7 +240,7 @@ describe("Soulbound Identity", () => {
       const [sbtName, identityId] = await soulboundIdentity.getIdentityData(
         SOUL_NAME1
       );
-      const extension = await soulboundIdentity.extension();
+      const extension = await soulboundIdentity.getExtension();
 
       await expect(sbtName).to.be.equals(SOUL_NAME1 + extension);
     });
@@ -249,7 +249,7 @@ describe("Soulbound Identity", () => {
       let [sbtName, identityId] = await soulboundIdentity.getIdentityData(
         SOUL_NAME1.toLowerCase()
       );
-      const extension = await soulboundIdentity.extension();
+      const extension = await soulboundIdentity.getExtension();
 
       await expect(sbtName).to.be.equals(SOUL_NAME1 + extension);
 

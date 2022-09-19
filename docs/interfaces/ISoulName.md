@@ -1,4 +1,4 @@
-# ISoulNameResolver
+# ISoulName
 
 
 
@@ -10,10 +10,27 @@
 
 ## Methods
 
+### getExtension
+
+```solidity
+function getExtension() external view returns (string)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string | undefined |
+
 ### getIdentityData
 
 ```solidity
-function getIdentityData(string name) external nonpayable returns (string sbtName, uint256 identityId)
+function getIdentityData(string name) external view returns (string sbtName, uint256 identityId)
 ```
 
 
@@ -55,10 +72,34 @@ function getIdentityNames(uint256 identityId) external view returns (string[] sb
 |---|---|---|
 | sbtNames | string[] | undefined |
 
+### mint
+
+```solidity
+function mint(address to, string name, uint256 identityId) external nonpayable returns (uint256)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| to | address | undefined |
+| name | string | undefined |
+| identityId | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
 ### nameExists
 
 ```solidity
-function nameExists(string name) external nonpayable returns (bool exists)
+function nameExists(string name) external view returns (bool exists)
 ```
 
 

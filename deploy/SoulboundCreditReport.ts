@@ -38,14 +38,20 @@ const func: DeployFunction = async ({
 
   // verify contract with etherscan, if its not a local network
   if (network.name == "mainnet" || network.name == "goerli") {
-    await hre.run("verify:verify", {
-      address: soulboundCreditReportDeploymentResult.address,
-      constructorArguments: [
-        env.OWNER || owner.address,
-        soulLinker.address,
-        baseUri
-      ]
-    });
+    try {
+      await hre.run("verify:verify", {
+        address: soulboundCreditReportDeploymentResult.address,
+        constructorArguments: [
+          env.OWNER || owner.address,
+          soulLinker.address,
+          baseUri
+        ]
+      });
+    } catch (error) {
+      if (error.message != "Contract source code already verified") {
+        throw error;
+      }
+    }
   }
 };
 

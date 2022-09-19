@@ -19,6 +19,7 @@ const func: DeployFunction = async ({
 
   [, owner] = await ethers.getSigners();
   const env = getEnvParams(network.name);
+  const baseUri = `${env.BASE_URI}/name/`;
 
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
 
@@ -28,22 +29,28 @@ const func: DeployFunction = async ({
       env.OWNER || owner.address,
       soulboundIdentityDeployed.address,
       ".soul",
-      ""
+      baseUri
     ],
     log: true
   });
 
   // verify contract with etherscan, if its not a local network
   if (network.name == "mainnet" || network.name == "goerli") {
-    await hre.run("verify:verify", {
-      address: soulNameDeploymentResult.address,
-      constructorArguments: [
-        env.OWNER || owner.address,
-        soulboundIdentityDeployed.address,
-        ".soul",
-        ""
-      ]
-    });
+    try {
+      await hre.run("verify:verify", {
+        address: soulNameDeploymentResult.address,
+        constructorArguments: [
+          env.OWNER || owner.address,
+          soulboundIdentityDeployed.address,
+          ".soul",
+          ""
+        ]
+      });
+    } catch (error) {
+      if (error.message != "Contract source code already verified") {
+        throw error;
+      }
+    }
   }
 
   const soulboundIdentity = await ethers.getContractAt(

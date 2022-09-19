@@ -5,19 +5,19 @@ import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 import "./tokens/NFT.sol";
-import "./interfaces/ISoulNameResolver.sol";
-import "./SoulboundIdentity.sol";
+import "./interfaces/ISoulboundIdentity.sol";
+import "./interfaces/ISoulName.sol";
 
 /// @title SoulName NFT
 /// @author Masa Finance
 /// @notice SoulName NFT that points to a Soulbound identity token
 /// @dev SoulName NFT, that inherits from the NFT contract, and points to a Soulbound identity token.
 /// It has an extension, and stores all the information about the identity names.
-contract SoulName is NFT, ISoulNameResolver {
+contract SoulName is NFT, ISoulName {
     /* ========== STATE VARIABLES ========== */
     using Strings for uint256;
 
-    SoulboundIdentity public soulboundIdentity;
+    ISoulboundIdentity public soulboundIdentity;
     string public extension; // suffix of the names (.sol?)
 
     mapping(uint256 => string) tokenIdToName; // used to sort through all names (name in lowercase)
@@ -39,7 +39,7 @@ contract SoulName is NFT, ISoulNameResolver {
     /// @param baseTokenURI Base URI of the token
     constructor(
         address owner,
-        SoulboundIdentity _soulboundIdentity,
+        ISoulboundIdentity _soulboundIdentity,
         string memory _extension,
         string memory baseTokenURI
     ) NFT(owner, "Masa Identity Name", "MIN", baseTokenURI) {
@@ -77,7 +77,7 @@ contract SoulName is NFT, ISoulNameResolver {
         address to,
         string memory name,
         uint256 identityId
-    ) public returns (uint256) {
+    ) public override returns (uint256) {
         require(!nameExists(name), "NAME_ALREADY_EXISTS");
         require(bytes(name).length > 0, "ZERO_LENGTH_NAME");
         require(
@@ -145,6 +145,13 @@ contract SoulName is NFT, ISoulNameResolver {
 
     /* ========== VIEWS ========== */
 
+    /// @notice Returns the extension of the soul name
+    /// @dev This function is used to get the extension of the soul name
+    /// @return Extension of the soul name
+    function getExtension() external view override returns (string memory) {
+        return extension;
+    }
+
     /// @notice Checks if a soul name already exists
     /// @dev This function queries if a soul name already exists
     /// @param name Name of the soul name
@@ -174,10 +181,7 @@ contract SoulName is NFT, ISoulNameResolver {
         SoulNameData memory soulNameData = soulNames[lowercaseName];
         require(bytes(soulNameData.name).length > 0, "NAME_NOT_FOUND");
 
-        return (
-            string(bytes.concat(bytes(soulNameData.name), bytes(extension))),
-            soulNameData.identityId
-        );
+        return (_getName(soulNameData.name), soulNameData.identityId);
     }
 
     /// @notice Returns all the identity names of an identity
@@ -192,45 +196,6 @@ contract SoulName is NFT, ISoulNameResolver {
     {
         // return identity names if exists
         return identityIdToNames[identityId];
-    }
-
-    /// @notice Returns the URI of a soul name
-    /// @dev This function returns the token URI of the soul name identity specified by the tokenId
-    /// @param tokenId TokenId of the soul name
-    /// @return URI of the soul name
-    function tokenURI(uint256 tokenId)
-        public
-        view
-        override
-        returns (string memory)
-    {
-        string memory name = tokenIdToName[tokenId];
-        require(bytes(name).length != 0, "TOKEN_NOT_FOUND");
-
-        string memory lowercaseName = _toLowerCase(name);
-        SoulNameData memory soulNameData = soulNames[lowercaseName];
-        require(bytes(soulNameData.name).length > 0, "NAME_NOT_FOUND");
-
-        bytes memory dataURI = abi.encodePacked(
-            "{",
-            '"name": "',
-            string(bytes.concat(bytes(soulNameData.name), bytes(extension))),
-            '", ',
-            '"description": "This is a SoulName',
-            '", ',
-            '"external_url": "https://soulname.com/',
-            tokenId.toString(),
-            '"',
-            "}"
-        );
-
-        return
-            string(
-                abi.encodePacked(
-                    "data:application/json;base64,",
-                    Base64.encode(dataURI)
-                )
-            );
     }
 
     /* ========== PRIVATE FUNCTIONS ========== */
@@ -272,6 +237,10 @@ contract SoulName is NFT, ISoulNameResolver {
                 break;
             }
         }
+    }
+
+    function _getName(string memory name) private view returns (string memory) {
+        return string(bytes.concat(bytes(name), bytes(extension)));
     }
 
     /* ========== MODIFIERS ========== */
