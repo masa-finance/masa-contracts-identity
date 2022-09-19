@@ -113,7 +113,7 @@ describe("Soul Name", () => {
     it("should mint from owner", async () => {
       const mintTx = await soulName
         .connect(owner)
-        .mint(address1.address, SOUL_NAME1, identityId1);
+        .mint(address1.address, SOUL_NAME1);
       const mintReceipt = await mintTx.wait();
 
       const nameId = mintReceipt.events![0].args![2].toNumber();
@@ -125,20 +125,20 @@ describe("Soul Name", () => {
     it("should success to mint a name twice to the same idenity", async () => {
       await soulName
         .connect(owner)
-        .mint(address1.address, SOUL_NAME1, identityId1);
+        .mint(address1.address, SOUL_NAME1);
 
       await soulName
         .connect(owner)
-        .mint(address1.address, SOUL_NAME2, identityId1);
+        .mint(address1.address, SOUL_NAME2);
     });
 
     it("should fail to mint duplicated name", async () => {
       await soulName
         .connect(owner)
-        .mint(address1.address, SOUL_NAME1, identityId1);
+        .mint(address1.address, SOUL_NAME1);
 
       await expect(
-        soulName.connect(owner).mint(address1.address, SOUL_NAME1, identityId1)
+        soulName.connect(owner).mint(address1.address, SOUL_NAME1)
       ).to.be.rejected;
     });
 
@@ -146,7 +146,7 @@ describe("Soul Name", () => {
       await expect(
         soulName
           .connect(address1)
-          .mint(address1.address, SOUL_NAME1, identityId1)
+          .mint(address1.address, SOUL_NAME1)
       ).to.be.rejected;
     });
   });
@@ -157,7 +157,7 @@ describe("Soul Name", () => {
     beforeEach(async () => {
       const mintTx = await soulName
         .connect(owner)
-        .mint(address1.address, SOUL_NAME1, identityId1);
+        .mint(address1.address, SOUL_NAME1);
       const mintReceipt = await mintTx.wait();
 
       nameId = mintReceipt.events![0].args![2].toNumber();
@@ -212,7 +212,7 @@ describe("Soul Name", () => {
     });
 
     it("getIdentityNames returns array of SBT names in lower case", async () => {
-      expect(await soulName.getIdentityNames(identityId1)).to.deep.equal([
+      expect(await soulName["getIdentityNames(uint256)"](identityId1)).to.deep.equal([
         SOUL_NAME1.toLowerCase()
       ]);
     });
@@ -234,7 +234,7 @@ describe("Soul Name", () => {
     beforeEach(async () => {
       const mintTx = await soulName
         .connect(owner)
-        .mint(address1.address, SOUL_NAME1, identityId1);
+        .mint(address1.address, SOUL_NAME1);
       const mintReceipt = await mintTx.wait();
 
       nameId = mintReceipt.events![0].args![2].toNumber();
@@ -264,8 +264,6 @@ describe("Soul Name", () => {
         .connect(address1)
         .transferFrom(address1.address, address2.address, nameId);
 
-      await soulName.connect(address2).updateIdentityId(nameId, identityId2);
-
       expect(await soulboundIdentity.balanceOf(address1.address)).to.be.equal(
         1
       );
@@ -287,7 +285,7 @@ describe("Soul Name", () => {
     beforeEach(async () => {
       const mintTx = await soulName
         .connect(owner)
-        .mint(address1.address, SOUL_NAME1, identityId1);
+        .mint(address1.address, SOUL_NAME1);
       const mintReceipt = await mintTx.wait();
 
       nameId = mintReceipt.events![0].args![2].toNumber();
@@ -300,7 +298,7 @@ describe("Soul Name", () => {
       await expect(
         soulName.getIdentityData("soulNameTest1")
       ).to.be.rejectedWith("NAME_NOT_FOUND");
-      await expect(await soulName.getIdentityNames(identityId1)).to.be.empty;
+      await expect(await soulName["getIdentityNames(uint256)"](identityId1)).to.be.empty;
     });
   });
 });
