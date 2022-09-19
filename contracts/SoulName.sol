@@ -147,7 +147,12 @@ contract SoulName is NFT, ISoulName {
         require(bytes(soulNameData.name).length > 0, "NAME_NOT_FOUND");
 
         address owner = ownerOf(soulNameData.tokenId);
-        identityId = soulboundIdentity.tokenOfOwner(owner);
+
+        if (soulboundIdentity.balanceOf(owner) > 0) {
+          identityId = soulboundIdentity.tokenOfOwner(owner);
+        } else {
+          revert("USER_MUST_HAVE_AN_IDENTITY");
+        }
 
         return (_getName(soulNameData.name), identityId);
     }
