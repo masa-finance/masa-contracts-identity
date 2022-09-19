@@ -123,30 +123,21 @@ describe("Soul Name", () => {
     });
 
     it("should success to mint a name twice to the same idenity", async () => {
-      await soulName
-        .connect(owner)
-        .mint(address1.address, SOUL_NAME1);
+      await soulName.connect(owner).mint(address1.address, SOUL_NAME1);
 
-      await soulName
-        .connect(owner)
-        .mint(address1.address, SOUL_NAME2);
+      await soulName.connect(owner).mint(address1.address, SOUL_NAME2);
     });
 
     it("should fail to mint duplicated name", async () => {
-      await soulName
-        .connect(owner)
-        .mint(address1.address, SOUL_NAME1);
+      await soulName.connect(owner).mint(address1.address, SOUL_NAME1);
 
-      await expect(
-        soulName.connect(owner).mint(address1.address, SOUL_NAME1)
-      ).to.be.rejected;
+      await expect(soulName.connect(owner).mint(address1.address, SOUL_NAME1))
+        .to.be.rejected;
     });
 
     it("should fail to mint from non-owner address", async () => {
       await expect(
-        soulName
-          .connect(address1)
-          .mint(address1.address, SOUL_NAME1)
+        soulName.connect(address1).mint(address1.address, SOUL_NAME1)
       ).to.be.rejected;
     });
   });
@@ -212,9 +203,9 @@ describe("Soul Name", () => {
     });
 
     it("getIdentityNames returns array of SBT names in lower case", async () => {
-      expect(await soulName["getIdentityNames(uint256)"](identityId1)).to.deep.equal([
-        SOUL_NAME1.toLowerCase()
-      ]);
+      expect(
+        await soulName["getIdentityNames(uint256)"](identityId1)
+      ).to.deep.equal([SOUL_NAME1.toLowerCase()]);
     });
 
     it("should get a valid token URI", async () => {
@@ -256,7 +247,9 @@ describe("Soul Name", () => {
 
       const [, identityId] = await soulName.getIdentityData(SOUL_NAME1);
 
-      const identityAddress2 = await soulboundIdentity.tokenOfOwner(address2.address);
+      const identityAddress2 = await soulboundIdentity.tokenOfOwner(
+        address2.address
+      );
 
       await expect(identityId).to.be.equals(identityAddress2);
     });
@@ -300,7 +293,8 @@ describe("Soul Name", () => {
       await expect(
         soulName.getIdentityData("soulNameTest1")
       ).to.be.rejectedWith("NAME_NOT_FOUND");
-      await expect(await soulName["getIdentityNames(uint256)"](identityId1)).to.be.empty;
+      await expect(await soulName["getIdentityNames(uint256)"](identityId1)).to
+        .be.empty;
     });
   });
 });

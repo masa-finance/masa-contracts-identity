@@ -71,10 +71,11 @@ contract SoulName is NFT, ISoulName {
     /// @dev The caller can mint more than one name. The soul name must be unique.
     /// @param to Address of the owner of the new soul name
     /// @param name Name of the new soul name
-    function mint(
-        address to,
-        string memory name
-    ) public override returns (uint256) {
+    function mint(address to, string memory name)
+        public
+        override
+        returns (uint256)
+    {
         require(!nameExists(name), "NAME_ALREADY_EXISTS");
         require(bytes(name).length > 0, "ZERO_LENGTH_NAME");
         require(
@@ -149,9 +150,9 @@ contract SoulName is NFT, ISoulName {
         address owner = ownerOf(soulNameData.tokenId);
 
         if (soulboundIdentity.balanceOf(owner) > 0) {
-          identityId = soulboundIdentity.tokenOfOwner(owner);
+            identityId = soulboundIdentity.tokenOfOwner(owner);
         } else {
-          revert("USER_MUST_HAVE_AN_IDENTITY");
+            revert("USER_MUST_HAVE_AN_IDENTITY");
         }
 
         return (_getName(soulNameData.name), identityId);
@@ -189,7 +190,7 @@ contract SoulName is NFT, ISoulName {
     {
         // return identity id if exists
         address owner = soulboundIdentity.ownerOf(identityId);
-        
+
         return getIdentityNames(owner);
     }
 
