@@ -24,13 +24,14 @@ let soulName: SoulName;
 let owner: SignerWithAddress;
 let address1: SignerWithAddress;
 let address2: SignerWithAddress;
+let address3: SignerWithAddress;
 
 let identityId1: number;
 let identityId2: number;
 
 describe("Soul Name", () => {
   before(async () => {
-    [, owner, address1, address2] = await ethers.getSigners();
+    [, owner, address1, address2, address3] = await ethers.getSigners();
   });
 
   beforeEach(async () => {
@@ -271,6 +272,25 @@ describe("Soul Name", () => {
       const [, identityId] = await soulName.getIdentityData(SOUL_NAME1);
 
       await expect(identityId).to.be.equals(identityId2);
+    });
+
+    it("should raise if we transfer the soul name to a user that doesn't have an identity", async () => {
+      await soulName
+        .connect(address1)
+        .transferFrom(address1.address, address3.address, nameId);
+
+      expect(await soulboundIdentity.balanceOf(address1.address)).to.be.equal(
+        1
+      );
+      expect(await soulboundIdentity.balanceOf(address3.address)).to.be.equal(
+        0
+      );
+      expect(await soulName.balanceOf(address1.address)).to.be.equal(0);
+      expect(await soulName.balanceOf(address3.address)).to.be.equal(1);
+
+      await expect(soulName.getIdentityData(SOUL_NAME1)).to.be.rejectedWith(
+        "USER_MUST_HAVE_AN_IDENTITY"
+      );
     });
   });
 
