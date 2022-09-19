@@ -72,10 +72,32 @@ function getIdentityNames(uint256 identityId) external view returns (string[] sb
 |---|---|---|
 | sbtNames | string[] | undefined |
 
+### getIdentityNames
+
+```solidity
+function getIdentityNames(address owner) external view returns (string[] sbtNames)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| owner | address | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| sbtNames | string[] | undefined |
+
 ### mint
 
 ```solidity
-function mint(address to, string name, uint256 identityId) external nonpayable returns (uint256)
+function mint(address to, string name) external nonpayable returns (uint256)
 ```
 
 
@@ -88,7 +110,6 @@ function mint(address to, string name, uint256 identityId) external nonpayable r
 |---|---|---|
 | to | address | undefined |
 | name | string | undefined |
-| identityId | uint256 | undefined |
 
 #### Returns
 

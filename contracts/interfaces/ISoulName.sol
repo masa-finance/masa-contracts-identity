@@ -16,10 +16,13 @@ interface ISoulName {
         view
         returns (string memory sbtName, uint256 identityId);
 
-    function getIdentityNames(uint256 identityId) // TODO: getIdentityNames from account?
+    function getIdentityNames(address owner)
         external
         view
         returns (string[] memory sbtNames);
 
-    // extension
+    function getIdentityNames(uint256 identityId)
+        external
+        view
+        returns (string[] memory sbtNames);
 }

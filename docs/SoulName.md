@@ -217,6 +217,28 @@ Returns all the identity names of an identity
 |---|---|---|
 | sbtNames | string[] | Array of soul names associated to the identity Id |
 
+### getIdentityNames
+
+```solidity
+function getIdentityNames(address owner) external view returns (string[] sbtNames)
+```
+
+Returns all the identity names of an account
+
+*This function queries all the identity names of the specified account*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| owner | address | Address of the owner of the identities |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| sbtNames | string[] | Array of soul names associated to the account |
+
 ### getRoleAdmin
 
 ```solidity
@@ -305,7 +327,7 @@ function isApprovedForAll(address owner, address operator) external view returns
 ### mint
 
 ```solidity
-function mint(address to, string name, uint256 identityId) external nonpayable returns (uint256)
+function mint(address to, string name) external nonpayable returns (uint256)
 ```
 
 Mints a new soul name
@@ -318,7 +340,6 @@ Mints a new soul name
 |---|---|---|
 | to | address | Address of the owner of the new soul name |
 | name | string | Name of the new soul name |
-| identityId | uint256 | TokenId of the soulbound identity that will be pointed from this soul name |
 
 #### Returns
 
@@ -687,23 +708,6 @@ Unpauses the operations in the smart contract
 
 *Unsets an emergency stop mechanism. It can be triggered by an authorized account.*
 
-
-### updateIdentityId
-
-```solidity
-function updateIdentityId(uint256 tokenId, uint256 identityId) external nonpayable
-```
-
-Update the identity id pointed from a soul name
-
-*The caller must be the owner or an approved address of the soul name.*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| tokenId | uint256 | TokenId of the soul name |
-| identityId | uint256 | New TokenId of the soulbound identity that will be pointed from this soul name |
 
 
 

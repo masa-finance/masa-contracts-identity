@@ -70,7 +70,7 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
         returns (uint256)
     {
         uint256 identityId = mint(to);
-        soulName.mint(to, name, identityId);
+        soulName.mint(to, name);
 
         return identityId;
     }
@@ -98,7 +98,7 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
     function ownerOf(uint256 tokenId)
         public
         view
-        override(ERC721, ISoulboundIdentity)
+        override(ERC721, IERC721)
         returns (address)
     {
         return super.ownerOf(tokenId);
