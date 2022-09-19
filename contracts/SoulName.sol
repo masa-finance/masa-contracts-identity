@@ -167,7 +167,7 @@ contract SoulName is NFT, ISoulName {
         for (uint256 i = 0; i < balance; i++) {
             uint256 tokenId = tokenOfOwnerByIndex(owner, i);
             string memory name = tokenIdToName[tokenId];
-            sbtNames[i] = _getName(name);
+            sbtNames[i] = name;
         }
 
         return sbtNames;
@@ -212,11 +212,7 @@ contract SoulName is NFT, ISoulName {
     }
 
     function _getName(string memory name) private view returns (string memory) {
-        string memory lowercaseName = _toLowerCase(name);
-        SoulNameData memory soulNameData = soulNames[lowercaseName];
-        require(bytes(soulNameData.name).length > 0, "NAME_NOT_FOUND");
-
-        return string(bytes.concat(bytes(soulNameData.name), bytes(extension)));
+        return string(bytes.concat(bytes(name), bytes(extension)));
     }
 
     /* ========== MODIFIERS ========== */
