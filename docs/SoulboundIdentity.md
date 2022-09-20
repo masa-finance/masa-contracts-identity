@@ -596,10 +596,10 @@ function soulName() external view returns (contract ISoulName)
 |---|---|---|
 | _0 | contract ISoulName | undefined |
 
-### soulnameExists
+### soulNameExists
 
 ```solidity
-function soulnameExists(string name) external view returns (bool exists)
+function soulNameExists(string name) external view returns (bool exists)
 ```
 
 Checks if a soul name already exists

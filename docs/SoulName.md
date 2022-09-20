@@ -557,27 +557,10 @@ function soulNameData(string) external view returns (string name, uint256 tokenI
 | name | string | undefined |
 | tokenId | uint256 | undefined |
 
-### soulboundIdentity
+### soulNameExists
 
 ```solidity
-function soulboundIdentity() external view returns (contract ISoulboundIdentity)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | contract ISoulboundIdentity | undefined |
-
-### soulnameExists
-
-```solidity
-function soulnameExists(string name) external view returns (bool exists)
+function soulNameExists(string name) external view returns (bool exists)
 ```
 
 Checks if a soul name already exists
@@ -595,6 +578,23 @@ Checks if a soul name already exists
 | Name | Type | Description |
 |---|---|---|
 | exists | bool | `true` if the soul name exists, `false` otherwise |
+
+### soulboundIdentity
+
+```solidity
+function soulboundIdentity() external view returns (contract ISoulboundIdentity)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | contract ISoulboundIdentity | undefined |
 
 ### supportsInterface
 

@@ -88,7 +88,7 @@ contract SoulName is NFT, ISoulName {
         override
         returns (uint256)
     {
-        require(!soulnameExists(name), "NAME_ALREADY_EXISTS");
+        require(!soulNameExists(name), "NAME_ALREADY_EXISTS");
         require(bytes(name).length > 0, "ZERO_LENGTH_NAME");
         require(
             soulboundIdentity.balanceOf(to) > 0,
@@ -134,7 +134,7 @@ contract SoulName is NFT, ISoulName {
     /// @dev This function queries if a soul name already exists
     /// @param name Name of the soul name
     /// @return exists `true` if the soul name exists, `false` otherwise
-    function soulnameExists(string memory name)
+    function soulNameExists(string memory name)
         public
         view
         override
