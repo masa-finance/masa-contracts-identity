@@ -22,7 +22,7 @@ contract SoulName is NFT, ISoulName {
 
     mapping(uint256 => string) public tokenIdName; // used to sort through all names (name in lowercase)
     mapping(string => SoulNameData) public soulNameData; // register of all soulbound names (name in lowercase)
-    mapping(uint256 => string[]) identityIdToNames; // register of all names associated to an identityId
+    mapping(uint256 => string[]) identityIdNames; // register of all names associated to an identityId
 
     struct SoulNameData {
         string name; // Name with lowercase and uppercase
@@ -105,7 +105,7 @@ contract SoulName is NFT, ISoulName {
         soulNameData[lowercaseName].name = name;
         soulNameData[lowercaseName].identityId = identityId;
 
-        identityIdToNames[identityId].push(lowercaseName);
+        identityIdNames[identityId].push(lowercaseName);
 
         return tokenId;
     }
@@ -131,11 +131,11 @@ contract SoulName is NFT, ISoulName {
         // change value from soulNames
         soulNameData[name].identityId = identityId;
 
-        // remove name from identityIdToNames[oldIdentityId]
-        _removeFromIdentityIdToNames(oldIdentityId, name);
+        // remove name from identityIdNames[oldIdentityId]
+        _removeFromIdentityIdNames(oldIdentityId, name);
 
-        // add name to identityIdToNames[identityId]
-        identityIdToNames[identityId].push(name);
+        // add name to identityIdNames[identityId]
+        identityIdNames[identityId].push(name);
     }
 
     /// @notice Burn a soul name
@@ -150,7 +150,7 @@ contract SoulName is NFT, ISoulName {
         // remove info from tokenIdName and soulNameData
         delete tokenIdName[tokenId];
         delete soulNameData[name];
-        _removeFromIdentityIdToNames(identityId, name);
+        _removeFromIdentityIdNames(identityId, name);
 
         super.burn(tokenId);
     }
@@ -223,7 +223,7 @@ contract SoulName is NFT, ISoulName {
         returns (string[] memory sbtNames)
     {
         // return identity names if exists
-        return identityIdToNames[identityId];
+        return identityIdNames[identityId];
     }
 
     /* ========== PRIVATE FUNCTIONS ========== */
@@ -248,20 +248,20 @@ contract SoulName is NFT, ISoulName {
         return string(bLower);
     }
 
-    function _removeFromIdentityIdToNames(
+    function _removeFromIdentityIdNames(
         uint256 identityId,
         string memory name
     ) private {
-        for (uint256 i = 0; i < identityIdToNames[identityId].length; i++) {
+        for (uint256 i = 0; i < identityIdNames[identityId].length; i++) {
             if (
                 keccak256(
-                    abi.encodePacked((identityIdToNames[identityId][i]))
+                    abi.encodePacked((identityIdNames[identityId][i]))
                 ) == keccak256(abi.encodePacked((name)))
             ) {
-                identityIdToNames[identityId][i] = identityIdToNames[
+                identityIdNames[identityId][i] = identityIdNames[
                     identityId
-                ][identityIdToNames[identityId].length - 1];
-                identityIdToNames[identityId].pop();
+                ][identityIdNames[identityId].length - 1];
+                identityIdNames[identityId].pop();
                 break;
             }
         }
