@@ -128,7 +128,7 @@ describe("Soul Name", () => {
     it("should mint from owner", async () => {
       const mintTx = await soulName
         .connect(owner)
-        .mint(address1.address, SOUL_NAME1);
+        .mint(address1.address, SOUL_NAME1, identityId1);
       const mintReceipt = await mintTx.wait();
 
       const nameId = mintReceipt.events![0].args![2].toNumber();
@@ -138,21 +138,21 @@ describe("Soul Name", () => {
     });
 
     it("should success to mint a name twice to the same idenity", async () => {
-      await soulName.connect(owner).mint(address1.address, SOUL_NAME1);
+      await soulName.connect(owner).mint(address1.address, SOUL_NAME1, identityId1);
 
-      await soulName.connect(owner).mint(address1.address, SOUL_NAME2);
+      await soulName.connect(owner).mint(address1.address, SOUL_NAME2, identityId1);
     });
 
     it("should fail to mint duplicated name", async () => {
-      await soulName.connect(owner).mint(address1.address, SOUL_NAME1);
+      await soulName.connect(owner).mint(address1.address, SOUL_NAME1, identityId1);
 
-      await expect(soulName.connect(owner).mint(address1.address, SOUL_NAME1))
+      await expect(soulName.connect(owner).mint(address1.address, SOUL_NAME1, identityId1))
         .to.be.rejected;
     });
 
     it("should fail to mint from non-owner address", async () => {
       await expect(
-        soulName.connect(address1).mint(address1.address, SOUL_NAME1)
+        soulName.connect(address1).mint(address1.address, SOUL_NAME1, identityId1)
       ).to.be.rejected;
     });
   });
@@ -163,7 +163,7 @@ describe("Soul Name", () => {
     beforeEach(async () => {
       const mintTx = await soulName
         .connect(owner)
-        .mint(address1.address, SOUL_NAME1);
+        .mint(address1.address, SOUL_NAME1, identityId1);
       const mintReceipt = await mintTx.wait();
 
       nameId = mintReceipt.events![0].args![2].toNumber();
@@ -244,7 +244,7 @@ describe("Soul Name", () => {
     beforeEach(async () => {
       const mintTx = await soulName
         .connect(owner)
-        .mint(address1.address, SOUL_NAME1);
+        .mint(address1.address, SOUL_NAME1, identityId1);
       const mintReceipt = await mintTx.wait();
 
       nameId = mintReceipt.events![0].args![2].toNumber();
@@ -318,7 +318,7 @@ describe("Soul Name", () => {
     beforeEach(async () => {
       const mintTx = await soulName
         .connect(owner)
-        .mint(address1.address, SOUL_NAME1);
+        .mint(address1.address, SOUL_NAME1, identityId1);
       const mintReceipt = await mintTx.wait();
 
       nameId = mintReceipt.events![0].args![2].toNumber();
