@@ -172,50 +172,6 @@ Returns the extension of the soul name
 |---|---|---|
 | _0 | string | Extension of the soul name |
 
-### getIdentityNames
-
-```solidity
-function getIdentityNames(uint256 identityId) external view returns (string[] sbtNames)
-```
-
-Returns all the identity names of an identity
-
-*This function queries all the identity names of the specified identity Id*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| identityId | uint256 | TokenId of the identity |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| sbtNames | string[] | Array of soul names associated to the identity Id |
-
-### getIdentityNames
-
-```solidity
-function getIdentityNames(address owner) external view returns (string[] sbtNames)
-```
-
-Returns all the identity names of an account
-
-*This function queries all the identity names of the specified account*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| owner | address | Address of the owner of the identities |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| sbtNames | string[] | Array of soul names associated to the account |
-
 ### getRoleAdmin
 
 ```solidity
@@ -260,6 +216,50 @@ Returns the information of a soul name
 |---|---|---|
 | sbtName | string | Soul name, in upper/lower case and extension |
 | identityId | uint256 | Identity id of the soul name |
+
+### getSoulNames
+
+```solidity
+function getSoulNames(uint256 identityId) external view returns (string[] sbtNames)
+```
+
+Returns all the identity names of an identity
+
+*This function queries all the identity names of the specified identity Id*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| identityId | uint256 | TokenId of the identity |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| sbtNames | string[] | Array of soul names associated to the identity Id |
+
+### getSoulNames
+
+```solidity
+function getSoulNames(address owner) external view returns (string[] sbtNames)
+```
+
+Returns all the identity names of an account
+
+*This function queries all the identity names of the specified account*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| owner | address | Address of the owner of the identities |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| sbtNames | string[] | Array of soul names associated to the account |
 
 ### grantRole
 

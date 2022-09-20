@@ -266,15 +266,15 @@ describe("Soulbound Identity", () => {
       ).to.be.rejectedWith("NAME_NOT_FOUND");
     });
 
-    it("getIdentityNames(uint256) returns array of SBT names in lower case", async () => {
+    it("getSoulNames(uint256) returns array of SBT names in lower case", async () => {
       expect(
-        await soulboundIdentity["getIdentityNames(uint256)"](identityId)
+        await soulboundIdentity["getSoulNames(uint256)"](identityId)
       ).to.deep.equal([SOUL_NAME1.toLowerCase()]);
     });
 
-    it("getIdentityNames(address) returns array of SBT names in lower case", async () => {
+    it("getSoulNames(address) returns array of SBT names in lower case", async () => {
       expect(
-        await soulboundIdentity["getIdentityNames(address)"](address1.address)
+        await soulboundIdentity["getSoulNames(address)"](address1.address)
       ).to.deep.equal([SOUL_NAME1.toLowerCase()]);
     });
   });

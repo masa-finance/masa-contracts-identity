@@ -185,27 +185,27 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
     /// @dev This function queries all the identity names of the specified account
     /// @param owner Address of the owner of the identities
     /// @return sbtNames Array of soul names associated to the account
-    function getIdentityNames(address owner)
+    function getSoulNames(address owner)
         external
         view
         soulNameAlreadySet
         returns (string[] memory sbtNames)
     {
         uint256 tokenId = tokenOfOwner(owner);
-        return soulName.getIdentityNames(tokenId);
+        return soulName.getSoulNames(tokenId);
     }
 
     /// @notice Returns all the identity names of an identity
     /// @dev This function queries all the identity names of the specified identity Id
     /// @param tokenId TokenId of the identity
     /// @return sbtNames Array of soul names associated to the identity Id
-    function getIdentityNames(uint256 tokenId)
+    function getSoulNames(uint256 tokenId)
         external
         view
         soulNameAlreadySet
         returns (string[] memory sbtNames)
     {
-        return soulName.getIdentityNames(tokenId);
+        return soulName.getSoulNames(tokenId);
     }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */

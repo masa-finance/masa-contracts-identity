@@ -27,50 +27,6 @@ function getExtension() external view returns (string)
 |---|---|---|
 | _0 | string | undefined |
 
-### getIdentityNames
-
-```solidity
-function getIdentityNames(uint256 identityId) external view returns (string[] sbtNames)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| identityId | uint256 | undefined |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| sbtNames | string[] | undefined |
-
-### getIdentityNames
-
-```solidity
-function getIdentityNames(address owner) external view returns (string[] sbtNames)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| owner | address | undefined |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| sbtNames | string[] | undefined |
-
 ### getSoulNameData
 
 ```solidity
@@ -93,6 +49,50 @@ function getSoulNameData(string name) external view returns (string sbtName, uin
 |---|---|---|
 | sbtName | string | undefined |
 | identityId | uint256 | undefined |
+
+### getSoulNames
+
+```solidity
+function getSoulNames(uint256 identityId) external view returns (string[] sbtNames)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| identityId | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| sbtNames | string[] | undefined |
+
+### getSoulNames
+
+```solidity
+function getSoulNames(address owner) external view returns (string[] sbtNames)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| owner | address | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| sbtNames | string[] | undefined |
 
 ### mint
 

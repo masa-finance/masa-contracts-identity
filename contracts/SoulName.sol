@@ -174,7 +174,7 @@ contract SoulName is NFT, ISoulName {
     /// @dev This function queries all the identity names of the specified account
     /// @param owner Address of the owner of the identities
     /// @return sbtNames Array of soul names associated to the account
-    function getIdentityNames(address owner)
+    function getSoulNames(address owner)
         public
         view
         override
@@ -194,7 +194,7 @@ contract SoulName is NFT, ISoulName {
     /// @dev This function queries all the identity names of the specified identity Id
     /// @param identityId TokenId of the identity
     /// @return sbtNames Array of soul names associated to the identity Id
-    function getIdentityNames(uint256 identityId)
+    function getSoulNames(uint256 identityId)
         external
         view
         override
@@ -203,7 +203,7 @@ contract SoulName is NFT, ISoulName {
         // return identity id if exists
         address owner = soulboundIdentity.ownerOf(identityId);
 
-        return getIdentityNames(owner);
+        return getSoulNames(owner);
     }
 
     /* ========== PRIVATE FUNCTIONS ========== */

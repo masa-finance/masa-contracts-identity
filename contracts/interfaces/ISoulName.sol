@@ -16,12 +16,12 @@ interface ISoulName {
         view
         returns (string memory sbtName, uint256 identityId);
 
-    function getIdentityNames(address owner)
+    function getSoulNames(address owner)
         external
         view
         returns (string[] memory sbtNames);
 
-    function getIdentityNames(uint256 identityId)
+    function getSoulNames(uint256 identityId)
         external
         view
         returns (string[] memory sbtNames);

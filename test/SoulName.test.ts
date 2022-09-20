@@ -221,9 +221,9 @@ describe("Soul Name", () => {
       );
     });
 
-    it("getIdentityNames returns array of SBT names in lower case", async () => {
+    it("getSoulNames returns array of SBT names in lower case", async () => {
       expect(
-        await soulName["getIdentityNames(uint256)"](identityId1)
+        await soulName["getSoulNames(uint256)"](identityId1)
       ).to.deep.equal([SOUL_NAME1.toLowerCase()]);
     });
 
@@ -333,8 +333,8 @@ describe("Soul Name", () => {
       await expect(
         soulName.getSoulNameData("soulNameTest1")
       ).to.be.rejectedWith("NAME_NOT_FOUND");
-      await expect(await soulName["getIdentityNames(uint256)"](identityId1)).to
-        .be.empty;
+      await expect(await soulName["getSoulNames(uint256)"](identityId1)).to.be
+        .empty;
     });
   });
 });
