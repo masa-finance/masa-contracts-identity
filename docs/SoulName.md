@@ -540,6 +540,22 @@ Sets the extension of the soul name
 |---|---|---|
 | _extension | string | Extension of the soul name |
 
+### setSoulboundIdentity
+
+```solidity
+function setSoulboundIdentity(contract ISoulboundIdentity _soulboundIdentity) external nonpayable
+```
+
+Sets the SoulboundIdentity contract address linked to this soul name
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _soulboundIdentity | contract ISoulboundIdentity | Address of the SoulboundIdentity contract |
+
 ### soulNameData
 
 ```solidity

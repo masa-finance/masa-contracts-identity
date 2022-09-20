@@ -48,7 +48,19 @@ contract SoulName is NFT, ISoulName {
         extension = _extension;
     }
 
-    /* ========== RESTRICTED FUNCTIONS ========== */
+    /* ========== RESTRICTED FUNCTIONS ====================================== */
+
+    /// @notice Sets the SoulboundIdentity contract address linked to this soul name
+    /// @dev The caller must have the admin role to call this function
+    /// @param _soulboundIdentity Address of the SoulboundIdentity contract
+    function setSoulboundIdentity(ISoulboundIdentity _soulboundIdentity)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
+        require(soulboundIdentity != _soulboundIdentity, "SAME_VALUE");
+        soulboundIdentity = _soulboundIdentity;
+    }
 
     /// @notice Sets the extension of the soul name
     /// @dev The caller must have the admin role to call this function
@@ -144,10 +156,10 @@ contract SoulName is NFT, ISoulName {
         returns (string memory sbtName, uint256 identityId)
     {
         string memory lowercaseName = _toLowerCase(name);
-        SoulNameData memory soulNameData = soulNameData[lowercaseName];
-        require(bytes(soulNameData.name).length > 0, "NAME_NOT_FOUND");
+        SoulNameData memory _soulNameData = soulNameData[lowercaseName];
+        require(bytes(_soulNameData.name).length > 0, "NAME_NOT_FOUND");
 
-        address owner = ownerOf(soulNameData.tokenId);
+        address owner = ownerOf(_soulNameData.tokenId);
 
         require(
             soulboundIdentity.balanceOf(owner) > 0,
@@ -155,7 +167,7 @@ contract SoulName is NFT, ISoulName {
         );
         identityId = soulboundIdentity.tokenOfOwner(owner);
 
-        return (_getName(soulNameData.name), identityId);
+        return (_getName(_soulNameData.name), identityId);
     }
 
     /// @notice Returns all the identity names of an account
