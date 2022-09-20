@@ -327,7 +327,7 @@ function isApprovedForAll(address owner, address operator) external view returns
 ### mint
 
 ```solidity
-function mint(address to, string name) external nonpayable returns (uint256)
+function mint(address to, string name, uint256 identityId) external nonpayable returns (uint256)
 ```
 
 Mints a new soul name
@@ -340,6 +340,7 @@ Mints a new soul name
 |---|---|---|
 | to | address | Address of the owner of the new soul name |
 | name | string | Name of the new soul name |
+| identityId | uint256 | TokenId of the soulbound identity that will be pointed from this soul name |
 
 #### Returns
 
@@ -537,7 +538,7 @@ Sets the SoulboundIdentity contract address linked to this soul name
 ### soulNameData
 
 ```solidity
-function soulNameData(string) external view returns (string name, uint256 tokenId)
+function soulNameData(string) external view returns (string name, uint256 identityId)
 ```
 
 
@@ -555,7 +556,7 @@ function soulNameData(string) external view returns (string name, uint256 tokenI
 | Name | Type | Description |
 |---|---|---|
 | name | string | undefined |
-| tokenId | uint256 | undefined |
+| identityId | uint256 | undefined |
 
 ### soulNameExists
 
@@ -769,6 +770,23 @@ Unpauses the operations in the smart contract
 
 *Unsets an emergency stop mechanism. It can be triggered by an authorized account.*
 
+
+### updateIdentityId
+
+```solidity
+function updateIdentityId(uint256 tokenId, uint256 identityId) external nonpayable
+```
+
+Update the identity id pointed from a soul name
+
+*The caller must be the owner or an approved address of the soul name.*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId | uint256 | TokenId of the soul name |
+| identityId | uint256 | New TokenId of the soulbound identity that will be pointed from this soul name |
 
 
 

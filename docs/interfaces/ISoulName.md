@@ -97,7 +97,7 @@ function getSoulNames(address owner) external view returns (string[] sbtNames)
 ### mint
 
 ```solidity
-function mint(address to, string name) external nonpayable returns (uint256)
+function mint(address to, string name, uint256 identityId) external nonpayable returns (uint256)
 ```
 
 
@@ -110,6 +110,7 @@ function mint(address to, string name) external nonpayable returns (uint256)
 |---|---|---|
 | to | address | undefined |
 | name | string | undefined |
+| identityId | uint256 | undefined |
 
 #### Returns
 
