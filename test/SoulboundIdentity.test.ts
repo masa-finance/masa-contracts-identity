@@ -40,6 +40,20 @@ describe("Soulbound Identity", () => {
     );
   });
 
+  describe("set soulName", () => {
+    it("should fail to set soulName from non admin user", async () => {
+      await expect(
+        soulboundIdentity.connect(address1).setSoulName(address2.address)
+      ).to.be.rejected;
+    });
+
+    it("should success to set soulName from admin user", async () => {
+      await soulboundIdentity.connect(owner).setSoulName(address2.address);
+
+      expect(await soulboundIdentity.soulName()).to.be.equal(address2.address);
+    });
+  });
+
   describe("mint", () => {
     it("should mint from owner", async () => {
       await soulboundIdentity.connect(owner).mint(someone.address);
