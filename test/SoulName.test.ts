@@ -291,25 +291,6 @@ describe("Soul Name", () => {
 
       await expect(identityId).to.be.equals(identityId2);
     });
-
-    it("should raise if we transfer the soul name to a user that doesn't have an identity", async () => {
-      await soulName
-        .connect(address1)
-        .transferFrom(address1.address, address3.address, nameId);
-
-      expect(await soulboundIdentity.balanceOf(address1.address)).to.be.equal(
-        1
-      );
-      expect(await soulboundIdentity.balanceOf(address3.address)).to.be.equal(
-        0
-      );
-      expect(await soulName.balanceOf(address1.address)).to.be.equal(0);
-      expect(await soulName.balanceOf(address3.address)).to.be.equal(1);
-
-      await expect(soulName.getSoulNameData(SOUL_NAME1)).to.be.rejectedWith(
-        "USER_MUST_HAVE_AN_IDENTITY"
-      );
-    });
   });
 
   describe("burn", () => {
