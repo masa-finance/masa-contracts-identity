@@ -266,17 +266,15 @@ describe("Soul Name", () => {
 
       const [, identityId] = await soulName.getSoulNameData(SOUL_NAME1);
 
-      const identityAddress2 = await soulboundIdentity.tokenOfOwner(
-        address2.address
-      );
-
-      await expect(identityId).to.be.equals(identityAddress2);
+      await expect(identityId).to.be.equals(identityId1);
     });
 
     it("should update identity Id", async () => {
       await soulName
         .connect(address1)
         .transferFrom(address1.address, address2.address, nameId);
+      
+      await soulName.connect(address2).updateIdentityId(nameId, identityId2);
 
       expect(await soulboundIdentity.balanceOf(address1.address)).to.be.equal(
         1
