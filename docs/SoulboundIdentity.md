@@ -386,28 +386,6 @@ function name() external view returns (string)
 |---|---|---|
 | _0 | string | undefined |
 
-### nameExists
-
-```solidity
-function nameExists(string name) external view returns (bool exists)
-```
-
-Checks if a soul name already exists
-
-*This function queries if a soul name already exists*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| name | string | Name of the soul name |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| exists | bool | `true` if the soul name exists, `false` otherwise |
-
 ### ownerOf
 
 ```solidity
@@ -617,6 +595,28 @@ function soulName() external view returns (contract ISoulName)
 | Name | Type | Description |
 |---|---|---|
 | _0 | contract ISoulName | undefined |
+
+### soulnameExists
+
+```solidity
+function soulnameExists(string name) external view returns (bool exists)
+```
+
+Checks if a soul name already exists
+
+*This function queries if a soul name already exists*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | Name of the soul name |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| exists | bool | `true` if the soul name exists, `false` otherwise |
 
 ### supportsInterface
 

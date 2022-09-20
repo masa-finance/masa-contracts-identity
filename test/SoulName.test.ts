@@ -97,6 +97,19 @@ describe("Soul Name", () => {
     });
   });
 
+  describe("set soulboundIdentity", () => {
+    it("should fail to set soulboundIdentity from non admin user", async () => {
+      await expect(soulName.connect(address1).setSoulboundIdentity(address2.address)).to.be
+        .rejected;
+    });
+
+    it("should success to set soulboundIdentity from admin user", async () => {
+      await soulName.connect(owner).setSoulboundIdentity(address2.address);
+
+      expect(await soulName.soulboundIdentity()).to.be.equal(address2.address);
+    });
+  });
+
   describe("set extension", () => {
     it("should fail to set extension from non admin user", async () => {
       await expect(soulName.connect(address1).setExtension(".other")).to.be
@@ -155,21 +168,21 @@ describe("Soul Name", () => {
       nameId = mintReceipt.events![0].args![2].toNumber();
     });
 
-    it("nameExists true with an existing name", async () => {
-      await expect(await soulName.nameExists(SOUL_NAME1)).to.be.equals(true);
+    it("soulnameExists true with an existing name", async () => {
+      await expect(await soulName.soulnameExists(SOUL_NAME1)).to.be.equals(true);
     });
 
-    it("nameExists true with an existing name - case insensitive", async () => {
+    it("soulnameExists true with an existing name - case insensitive", async () => {
       await expect(
-        await soulName.nameExists(SOUL_NAME1.toLowerCase())
+        await soulName.soulnameExists(SOUL_NAME1.toLowerCase())
       ).to.be.equals(true);
       await expect(
-        await soulName.nameExists(SOUL_NAME1.toUpperCase())
+        await soulName.soulnameExists(SOUL_NAME1.toUpperCase())
       ).to.be.equals(true);
     });
 
-    it("nameExists false with a non existing name", async () => {
-      await expect(await soulName.nameExists("fakeName")).to.be.equals(false);
+    it("soulnameExists false with a non existing name", async () => {
+      await expect(await soulName.soulnameExists("fakeName")).to.be.equals(false);
     });
 
     it("getIdentityData with an existing name", async () => {
@@ -309,7 +322,7 @@ describe("Soul Name", () => {
     it("should burn", async () => {
       await soulName.connect(address1).burn(nameId);
 
-      await expect(await soulName.nameExists(SOUL_NAME1)).to.be.equals(false);
+      await expect(await soulName.soulnameExists(SOUL_NAME1)).to.be.equals(false);
       await expect(
         soulName.getIdentityData("soulNameTest1")
       ).to.be.rejectedWith("NAME_NOT_FOUND");

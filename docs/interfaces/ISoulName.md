@@ -117,10 +117,10 @@ function mint(address to, string name) external nonpayable returns (uint256)
 |---|---|---|
 | _0 | uint256 | undefined |
 
-### nameExists
+### soulnameExists
 
 ```solidity
-function nameExists(string name) external view returns (bool exists)
+function soulnameExists(string name) external view returns (bool exists)
 ```
 
 

@@ -158,13 +158,13 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
     /// @dev This function queries if a soul name already exists
     /// @param name Name of the soul name
     /// @return exists `true` if the soul name exists, `false` otherwise
-    function nameExists(string memory name)
+    function soulnameExists(string memory name)
         public
         view
         soulNameAlreadySet
         returns (bool exists)
     {
-        return soulName.nameExists(name);
+        return soulName.soulnameExists(name);
     }
 
     /// @notice Returns the information of a soul name
