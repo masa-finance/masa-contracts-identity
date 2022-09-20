@@ -6,9 +6,12 @@ interface ISoulName {
 
     function getExtension() external view returns (string memory);
 
-    function soulNameExists(string memory name) external view returns (bool exists);
+    function soulNameExists(string memory name)
+        external
+        view
+        returns (bool exists);
 
-    function getIdentityData(string memory name)
+    function getSoulNameData(string memory name)
         external
         view
         returns (string memory sbtName, uint256 identityId);

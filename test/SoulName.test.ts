@@ -99,8 +99,9 @@ describe("Soul Name", () => {
 
   describe("set soulboundIdentity", () => {
     it("should fail to set soulboundIdentity from non admin user", async () => {
-      await expect(soulName.connect(address1).setSoulboundIdentity(address2.address)).to.be
-        .rejected;
+      await expect(
+        soulName.connect(address1).setSoulboundIdentity(address2.address)
+      ).to.be.rejected;
     });
 
     it("should success to set soulboundIdentity from admin user", async () => {
@@ -169,7 +170,9 @@ describe("Soul Name", () => {
     });
 
     it("soulNameExists true with an existing name", async () => {
-      await expect(await soulName.soulNameExists(SOUL_NAME1)).to.be.equals(true);
+      await expect(await soulName.soulNameExists(SOUL_NAME1)).to.be.equals(
+        true
+      );
     });
 
     it("soulNameExists true with an existing name - case insensitive", async () => {
@@ -182,19 +185,21 @@ describe("Soul Name", () => {
     });
 
     it("soulNameExists false with a non existing name", async () => {
-      await expect(await soulName.soulNameExists("fakeName")).to.be.equals(false);
+      await expect(await soulName.soulNameExists("fakeName")).to.be.equals(
+        false
+      );
     });
 
-    it("getIdentityData with an existing name", async () => {
-      const [sbtName, identityId] = await soulName.getIdentityData(SOUL_NAME1);
+    it("getSoulNameData with an existing name", async () => {
+      const [sbtName, identityId] = await soulName.getSoulNameData(SOUL_NAME1);
       const extension = await soulName.getExtension();
 
       await expect(sbtName).to.be.equals(SOUL_NAME1 + extension);
       await expect(identityId).to.be.equals(identityId1);
     });
 
-    it("getIdentityData with an existing name - case insensitive", async () => {
-      let [sbtName, identityId] = await soulName.getIdentityData(
+    it("getSoulNameData with an existing name - case insensitive", async () => {
+      let [sbtName, identityId] = await soulName.getSoulNameData(
         SOUL_NAME1.toLowerCase()
       );
       const extension = await soulName.getExtension();
@@ -202,7 +207,7 @@ describe("Soul Name", () => {
       await expect(sbtName).to.be.equals(SOUL_NAME1 + extension);
       await expect(identityId).to.be.equals(identityId1);
 
-      [sbtName, identityId] = await soulName.getIdentityData(
+      [sbtName, identityId] = await soulName.getSoulNameData(
         SOUL_NAME1.toUpperCase()
       );
 
@@ -210,8 +215,8 @@ describe("Soul Name", () => {
       await expect(identityId).to.be.equals(identityId1);
     });
 
-    it("getIdentityData with a non existing name", async () => {
-      await expect(soulName.getIdentityData("fakeName")).to.be.rejectedWith(
+    it("getSoulNameData with a non existing name", async () => {
+      await expect(soulName.getSoulNameData("fakeName")).to.be.rejectedWith(
         "NAME_NOT_FOUND"
       );
     });
@@ -259,7 +264,7 @@ describe("Soul Name", () => {
       expect(await soulName.balanceOf(address1.address)).to.be.equal(0);
       expect(await soulName.balanceOf(address2.address)).to.be.equal(1);
 
-      const [, identityId] = await soulName.getIdentityData(SOUL_NAME1);
+      const [, identityId] = await soulName.getSoulNameData(SOUL_NAME1);
 
       const identityAddress2 = await soulboundIdentity.tokenOfOwner(
         address2.address
@@ -282,7 +287,7 @@ describe("Soul Name", () => {
       expect(await soulName.balanceOf(address1.address)).to.be.equal(0);
       expect(await soulName.balanceOf(address2.address)).to.be.equal(1);
 
-      const [, identityId] = await soulName.getIdentityData(SOUL_NAME1);
+      const [, identityId] = await soulName.getSoulNameData(SOUL_NAME1);
 
       await expect(identityId).to.be.equals(identityId2);
     });
@@ -301,7 +306,7 @@ describe("Soul Name", () => {
       expect(await soulName.balanceOf(address1.address)).to.be.equal(0);
       expect(await soulName.balanceOf(address3.address)).to.be.equal(1);
 
-      await expect(soulName.getIdentityData(SOUL_NAME1)).to.be.rejectedWith(
+      await expect(soulName.getSoulNameData(SOUL_NAME1)).to.be.rejectedWith(
         "USER_MUST_HAVE_AN_IDENTITY"
       );
     });
@@ -322,9 +327,11 @@ describe("Soul Name", () => {
     it("should burn", async () => {
       await soulName.connect(address1).burn(nameId);
 
-      await expect(await soulName.soulNameExists(SOUL_NAME1)).to.be.equals(false);
+      await expect(await soulName.soulNameExists(SOUL_NAME1)).to.be.equals(
+        false
+      );
       await expect(
-        soulName.getIdentityData("soulNameTest1")
+        soulName.getSoulNameData("soulNameTest1")
       ).to.be.rejectedWith("NAME_NOT_FOUND");
       await expect(await soulName["getIdentityNames(uint256)"](identityId1)).to
         .be.empty;

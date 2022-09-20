@@ -149,7 +149,7 @@ contract SoulName is NFT, ISoulName {
     /// @param name Name of the soul name
     /// @return sbtName Soul name, in upper/lower case and extension
     /// @return identityId Identity id of the soul name
-    function getIdentityData(string memory name)
+    function getSoulNameData(string memory name)
         external
         view
         override
