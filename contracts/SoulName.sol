@@ -20,8 +20,8 @@ contract SoulName is NFT, ISoulName {
     ISoulboundIdentity public soulboundIdentity;
     string public extension; // suffix of the names (.sol?)
 
-    mapping(uint256 => string) tokenIdToName; // used to sort through all names (name in lowercase)
-    mapping(string => SoulNameData) soulNames; // register of all soulbound names (name in lowercase)
+    mapping(uint256 => string) public tokenIdName; // used to sort through all names (name in lowercase)
+    mapping(string => SoulNameData) public soulNameData; // register of all soulbound names (name in lowercase)
 
     struct SoulNameData {
         string name; // Name with lowercase and uppercase
@@ -86,10 +86,10 @@ contract SoulName is NFT, ISoulName {
         uint256 tokenId = _mintWithCounter(to);
 
         string memory lowercaseName = _toLowerCase(name);
-        tokenIdToName[tokenId] = lowercaseName;
+        tokenIdName[tokenId] = lowercaseName;
 
-        soulNames[lowercaseName].name = name;
-        soulNames[lowercaseName].tokenId = tokenId;
+        soulNameData[lowercaseName].name = name;
+        soulNameData[lowercaseName].tokenId = tokenId;
 
         return tokenId;
     }
@@ -100,11 +100,11 @@ contract SoulName is NFT, ISoulName {
     function burn(uint256 tokenId) public override {
         require(_exists(tokenId), "TOKEN_NOT_FOUND");
 
-        string memory name = tokenIdToName[tokenId];
+        string memory name = tokenIdName[tokenId];
 
-        // remove info from tokenIdToName, soulnames and identityIdToNames
-        delete tokenIdToName[tokenId];
-        delete soulNames[name];
+        // remove info from tokenIdName and soulNameData
+        delete tokenIdName[tokenId];
+        delete soulNameData[name];
 
         super.burn(tokenId);
     }
@@ -129,7 +129,7 @@ contract SoulName is NFT, ISoulName {
         returns (bool exists)
     {
         string memory lowercaseName = _toLowerCase(name);
-        return (bytes(soulNames[lowercaseName].name).length > 0);
+        return (bytes(soulNameData[lowercaseName].name).length > 0);
     }
 
     /// @notice Returns the information of a soul name
@@ -144,7 +144,7 @@ contract SoulName is NFT, ISoulName {
         returns (string memory sbtName, uint256 identityId)
     {
         string memory lowercaseName = _toLowerCase(name);
-        SoulNameData memory soulNameData = soulNames[lowercaseName];
+        SoulNameData memory soulNameData = soulNameData[lowercaseName];
         require(bytes(soulNameData.name).length > 0, "NAME_NOT_FOUND");
 
         address owner = ownerOf(soulNameData.tokenId);
@@ -172,7 +172,7 @@ contract SoulName is NFT, ISoulName {
         sbtNames = new string[](balance);
         for (uint256 i = 0; i < balance; i++) {
             uint256 tokenId = tokenOfOwnerByIndex(owner, i);
-            sbtNames[i] = tokenIdToName[tokenId];
+            sbtNames[i] = tokenIdName[tokenId];
         }
 
         return sbtNames;

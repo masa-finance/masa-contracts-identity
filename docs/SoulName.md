@@ -540,6 +540,29 @@ Sets the extension of the soul name
 |---|---|---|
 | _extension | string | Extension of the soul name |
 
+### soulNameData
+
+```solidity
+function soulNameData(string) external view returns (string name, uint256 tokenId)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | undefined |
+| tokenId | uint256 | undefined |
+
 ### soulboundIdentity
 
 ```solidity
@@ -617,6 +640,28 @@ function tokenByIndex(uint256 index) external view returns (uint256)
 | Name | Type | Description |
 |---|---|---|
 | _0 | uint256 | undefined |
+
+### tokenIdName
+
+```solidity
+function tokenIdName(uint256) external view returns (string)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string | undefined |
 
 ### tokenOfOwnerByIndex
 
