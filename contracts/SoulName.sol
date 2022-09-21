@@ -145,6 +145,22 @@ contract SoulName is NFT, ISoulName {
         identityIdNames[identityId].push(name);
     }
 
+    /// @notice Update the expiration date of a soul name
+    /// @dev The caller must be the owner or an approved address of the soul name.
+    /// @param tokenId TokenId of the soul name
+    /// @param period Period of validity of the name
+    function renewPeriod(uint256 tokenId, uint256 period) public {
+        // ERC721: caller is not token owner nor approved
+        require(
+            _isApprovedOrOwner(_msgSender(), tokenId),
+            "ERC721_CALLER_NOT_OWNER"
+        );
+        require(period > 0, "ZERO_PERIOD");
+
+        string memory name = tokenIdName[tokenId];
+        soulNameData[name].expirationDate = block.timestamp + period;
+    }
+
     /// @notice Burn a soul name
     /// @dev The caller must be the owner or an approved address of the soul name.
     /// @param tokenId TokenId of the soul name to burn
