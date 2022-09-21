@@ -27,6 +27,8 @@ contract SoulName is NFT, ISoulName {
     struct SoulNameData {
         string name; // Name with lowercase and uppercase
         uint256 identityId;
+        uint256 initialDate;
+        uint256 expirationDate;
     }
 
     /* ========== INITIALIZE ========== */
@@ -85,13 +87,16 @@ contract SoulName is NFT, ISoulName {
     /// @param to Address of the owner of the new soul name
     /// @param name Name of the new soul name
     /// @param identityId TokenId of the soulbound identity that will be pointed from this soul name
+    /// @param period Period of validity of the name
     function mint(
         address to,
         string memory name,
-        uint256 identityId
+        uint256 identityId,
+        uint256 period
     ) public override returns (uint256) {
         require(!soulNameExists(name), "NAME_ALREADY_EXISTS");
         require(bytes(name).length > 0, "ZERO_LENGTH_NAME");
+        require(period > 0, "ZERO_PERIOD");
         require(
             soulboundIdentity.ownerOf(identityId) != address(0),
             "IDENTITY_NOT_FOUND"
@@ -104,6 +109,8 @@ contract SoulName is NFT, ISoulName {
 
         soulNameData[lowercaseName].name = name;
         soulNameData[lowercaseName].identityId = identityId;
+        soulNameData[lowercaseName].initialDate = block.timestamp;
+        soulNameData[lowercaseName].expirationDate = block.timestamp + period;
 
         identityIdNames[identityId].push(lowercaseName);
 

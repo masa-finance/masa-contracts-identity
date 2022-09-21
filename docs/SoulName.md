@@ -327,7 +327,7 @@ function isApprovedForAll(address owner, address operator) external view returns
 ### mint
 
 ```solidity
-function mint(address to, string name, uint256 identityId) external nonpayable returns (uint256)
+function mint(address to, string name, uint256 identityId, uint256 period) external nonpayable returns (uint256)
 ```
 
 Mints a new soul name
@@ -341,6 +341,7 @@ Mints a new soul name
 | to | address | Address of the owner of the new soul name |
 | name | string | Name of the new soul name |
 | identityId | uint256 | TokenId of the soulbound identity that will be pointed from this soul name |
+| period | uint256 | Period of validity of the name |
 
 #### Returns
 
@@ -538,7 +539,7 @@ Sets the SoulboundIdentity contract address linked to this soul name
 ### soulNameData
 
 ```solidity
-function soulNameData(string) external view returns (string name, uint256 identityId)
+function soulNameData(string) external view returns (string name, uint256 identityId, uint256 initialDate, uint256 expirationDate)
 ```
 
 
@@ -557,6 +558,8 @@ function soulNameData(string) external view returns (string name, uint256 identi
 |---|---|---|
 | name | string | undefined |
 | identityId | uint256 | undefined |
+| initialDate | uint256 | undefined |
+| expirationDate | uint256 | undefined |
 
 ### soulNameExists
 

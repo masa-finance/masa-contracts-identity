@@ -5,7 +5,8 @@ interface ISoulName {
     function mint(
         address to,
         string memory name,
-        uint256 identityId
+        uint256 identityId,
+        uint256 period
     ) external returns (uint256);
 
     function getExtension() external view returns (string memory);
