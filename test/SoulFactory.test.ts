@@ -36,6 +36,7 @@ const MINTING_IDENTITY_PRICE = "3000000"; // 3 USDC, with 6 decimals
 const MINTING_NAME_PRICE = "3000000"; // 3 USDC, with 6 decimals
 
 const SOUL_NAME = "soulNameTest";
+const YEAR = 31536000; // 60 seconds * 60 minutes * 24 hours * 365 days
 
 describe("Soul Factory", () => {
   before(async () => {
@@ -272,6 +273,7 @@ describe("Soul Factory", () => {
       await soulFactory.connect(address1).purchaseIdentityAndName(
         ethers.constants.AddressZero, // ETH
         SOUL_NAME,
+        YEAR,
         { value: priceInETH }
       );
     });
@@ -288,7 +290,8 @@ describe("Soul Factory", () => {
 
       await soulFactory.connect(address1).purchaseIdentityAndName(
         USDC_GOERLI, // USDC
-        SOUL_NAME
+        SOUL_NAME,
+        YEAR
       );
     });
 
@@ -304,7 +307,8 @@ describe("Soul Factory", () => {
 
       await soulFactory.connect(address1).purchaseIdentityAndName(
         CORN_GOERLI, // $CORN
-        SOUL_NAME
+        SOUL_NAME,
+        YEAR
       );
     });
 
@@ -315,6 +319,7 @@ describe("Soul Factory", () => {
         soulFactory.connect(address1).purchaseIdentityAndName(
           ethers.constants.AddressZero, // ETH
           SOUL_NAME,
+          YEAR,
           { value: priceInETH.div(2) }
         )
       ).to.be.rejectedWith("INVALID_PAYMENT_AMOUNT");
@@ -333,7 +338,8 @@ describe("Soul Factory", () => {
       await expect(
         soulFactory.connect(address2).purchaseIdentityAndName(
           USDC_GOERLI, // USDC
-          SOUL_NAME
+          SOUL_NAME,
+          YEAR
         )
       ).to.be.rejected;
     });
@@ -351,7 +357,8 @@ describe("Soul Factory", () => {
       await expect(
         soulFactory.connect(address2).purchaseIdentityAndName(
           CORN_GOERLI, // $CORN
-          SOUL_NAME
+          SOUL_NAME,
+          YEAR
         )
       ).to.be.rejected;
     });
@@ -364,6 +371,7 @@ describe("Soul Factory", () => {
       const tx = await soulFactory.connect(address1).purchaseIdentityAndName(
         ethers.constants.AddressZero, // ETH
         SOUL_NAME,
+        YEAR,
         { value: priceInETH.mul(2) }
       );
       const receipt = await tx.wait();
@@ -480,6 +488,7 @@ describe("Soul Factory", () => {
       await soulFactory.connect(address1).purchaseName(
         ethers.constants.AddressZero, // ETH
         SOUL_NAME,
+        YEAR,
         { value: priceInETH }
       );
     });
@@ -495,7 +504,8 @@ describe("Soul Factory", () => {
 
       await soulFactory.connect(address1).purchaseName(
         USDC_GOERLI, // USDC
-        SOUL_NAME
+        SOUL_NAME,
+        YEAR
       );
     });
 
@@ -510,7 +520,8 @@ describe("Soul Factory", () => {
 
       await soulFactory.connect(address1).purchaseName(
         CORN_GOERLI, // $CORN
-        SOUL_NAME
+        SOUL_NAME,
+        YEAR
       );
     });
 
@@ -521,6 +532,7 @@ describe("Soul Factory", () => {
         soulFactory.connect(address1).purchaseName(
           ethers.constants.AddressZero, // ETH
           SOUL_NAME,
+          YEAR,
           { value: priceInETH.div(2) }
         )
       ).to.be.rejectedWith("INVALID_PAYMENT_AMOUNT");
@@ -538,7 +550,8 @@ describe("Soul Factory", () => {
       await expect(
         soulFactory.connect(address2).purchaseName(
           USDC_GOERLI, // USDC
-          SOUL_NAME
+          SOUL_NAME,
+          YEAR
         )
       ).to.be.rejected;
     });
@@ -555,7 +568,8 @@ describe("Soul Factory", () => {
       await expect(
         soulFactory.connect(address2).purchaseName(
           CORN_GOERLI, // $CORN
-          SOUL_NAME
+          SOUL_NAME,
+          YEAR
         )
       ).to.be.rejected;
     });

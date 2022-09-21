@@ -16,6 +16,7 @@ const expect = chai.expect;
 
 const SOUL_NAME1 = "soulNameTest1";
 const SOUL_NAME2 = "soulNameTest2";
+const YEAR = 31536000; // 60 seconds * 60 minutes * 24 hours * 365 days
 
 // contract instances
 let soulboundIdentity: SoulboundIdentity;
@@ -128,7 +129,7 @@ describe("Soul Name", () => {
     it("should mint from owner", async () => {
       const mintTx = await soulName
         .connect(owner)
-        .mint(address1.address, SOUL_NAME1, identityId1);
+        .mint(address1.address, SOUL_NAME1, YEAR, identityId1);
       const mintReceipt = await mintTx.wait();
 
       const nameId = mintReceipt.events![0].args![2].toNumber();
@@ -138,21 +139,32 @@ describe("Soul Name", () => {
     });
 
     it("should success to mint a name twice to the same idenity", async () => {
-      await soulName.connect(owner).mint(address1.address, SOUL_NAME1, identityId1);
+      await soulName
+        .connect(owner)
+        .mint(address1.address, SOUL_NAME1, YEAR, identityId1);
 
-      await soulName.connect(owner).mint(address1.address, SOUL_NAME2, identityId1);
+      await soulName
+        .connect(owner)
+        .mint(address1.address, SOUL_NAME2, YEAR, identityId1);
     });
 
     it("should fail to mint duplicated name", async () => {
-      await soulName.connect(owner).mint(address1.address, SOUL_NAME1, identityId1);
+      await soulName
+        .connect(owner)
+        .mint(address1.address, SOUL_NAME1, YEAR, identityId1);
 
-      await expect(soulName.connect(owner).mint(address1.address, SOUL_NAME1, identityId1))
-        .to.be.rejected;
+      await expect(
+        soulName
+          .connect(owner)
+          .mint(address1.address, SOUL_NAME1, YEAR, identityId1)
+      ).to.be.rejected;
     });
 
     it("should fail to mint from non-owner address", async () => {
       await expect(
-        soulName.connect(address1).mint(address1.address, SOUL_NAME1, identityId1)
+        soulName
+          .connect(address1)
+          .mint(address1.address, SOUL_NAME1, YEAR, identityId1)
       ).to.be.rejected;
     });
   });
@@ -163,7 +175,7 @@ describe("Soul Name", () => {
     beforeEach(async () => {
       const mintTx = await soulName
         .connect(owner)
-        .mint(address1.address, SOUL_NAME1, identityId1);
+        .mint(address1.address, SOUL_NAME1, YEAR, identityId1);
       const mintReceipt = await mintTx.wait();
 
       nameId = mintReceipt.events![0].args![2].toNumber();
@@ -244,7 +256,7 @@ describe("Soul Name", () => {
     beforeEach(async () => {
       const mintTx = await soulName
         .connect(owner)
-        .mint(address1.address, SOUL_NAME1, identityId1);
+        .mint(address1.address, SOUL_NAME1, YEAR, identityId1);
       const mintReceipt = await mintTx.wait();
 
       nameId = mintReceipt.events![0].args![2].toNumber();
@@ -273,7 +285,7 @@ describe("Soul Name", () => {
       await soulName
         .connect(address1)
         .transferFrom(address1.address, address2.address, nameId);
-      
+
       await soulName.connect(address2).updateIdentityId(nameId, identityId2);
 
       expect(await soulboundIdentity.balanceOf(address1.address)).to.be.equal(
@@ -297,7 +309,7 @@ describe("Soul Name", () => {
     beforeEach(async () => {
       const mintTx = await soulName
         .connect(owner)
-        .mint(address1.address, SOUL_NAME1, identityId1);
+        .mint(address1.address, SOUL_NAME1, YEAR, identityId1);
       const mintReceipt = await mintTx.wait();
 
       nameId = mintReceipt.events![0].args![2].toNumber();

@@ -17,6 +17,7 @@ let someone: SignerWithAddress;
 
 const SOUL_NAME1 = "soulName1";
 const SOUL_NAME2 = "soulName2";
+const YEAR = 31536000; // 60 seconds * 60 minutes * 24 hours * 365 days
 
 let address1: SignerWithAddress;
 let address2: SignerWithAddress;
@@ -78,7 +79,7 @@ describe("Soulbound Identity", () => {
     it("should mint from owner", async () => {
       await soulboundIdentity
         .connect(owner)
-        .mintIdentityWithName(address1.address, SOUL_NAME1);
+        .mintIdentityWithName(address1.address, SOUL_NAME1, YEAR);
 
       expect(await soulboundIdentity.balanceOf(address1.address)).to.be.equal(
         1
@@ -92,29 +93,29 @@ describe("Soulbound Identity", () => {
       await expect(
         soulboundIdentity
           .connect(address1)
-          .mintIdentityWithName(address1.address, SOUL_NAME1)
+          .mintIdentityWithName(address1.address, SOUL_NAME1, YEAR)
       ).to.be.rejected;
     });
 
     it("should fail to mint twice", async () => {
       await soulboundIdentity
         .connect(owner)
-        .mintIdentityWithName(address1.address, SOUL_NAME1);
+        .mintIdentityWithName(address1.address, SOUL_NAME1, YEAR);
       await expect(
         soulboundIdentity
           .connect(owner)
-          .mintIdentityWithName(address1.address, SOUL_NAME2)
+          .mintIdentityWithName(address1.address, SOUL_NAME2, YEAR)
       ).to.be.rejectedWith("Soulbound identity already created!");
     });
 
     it("should fail to mint duplicated name", async () => {
       await soulboundIdentity
         .connect(owner)
-        .mintIdentityWithName(address1.address, SOUL_NAME1);
+        .mintIdentityWithName(address1.address, SOUL_NAME1, YEAR);
       await expect(
         soulboundIdentity
           .connect(owner)
-          .mintIdentityWithName(address2.address, SOUL_NAME1)
+          .mintIdentityWithName(address2.address, SOUL_NAME1, YEAR)
       ).to.be.rejectedWith("NAME_ALREADY_EXISTS");
     });
   });
@@ -178,7 +179,7 @@ describe("Soulbound Identity", () => {
     beforeEach(async () => {
       const mintTx = await soulboundIdentity
         .connect(owner)
-        .mintIdentityWithName(someone.address, SOUL_NAME1);
+        .mintIdentityWithName(someone.address, SOUL_NAME1, YEAR);
 
       const mintReceipt = await mintTx.wait();
       tokenId = mintReceipt.events![0].args![2].toNumber();
@@ -223,7 +224,7 @@ describe("Soulbound Identity", () => {
     beforeEach(async () => {
       const mintTx = await soulboundIdentity
         .connect(owner)
-        .mintIdentityWithName(address1.address, SOUL_NAME1);
+        .mintIdentityWithName(address1.address, SOUL_NAME1, YEAR);
       const mintReceipt = await mintTx.wait();
 
       identityId = mintReceipt.events![0].args![2].toNumber();
