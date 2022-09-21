@@ -255,19 +255,17 @@ contract SoulName is NFT, ISoulName {
         return string(bLower);
     }
 
-    function _removeFromIdentityIdNames(
-        uint256 identityId,
-        string memory name
-    ) private {
+    function _removeFromIdentityIdNames(uint256 identityId, string memory name)
+        private
+    {
         for (uint256 i = 0; i < identityIdNames[identityId].length; i++) {
             if (
-                keccak256(
-                    abi.encodePacked((identityIdNames[identityId][i]))
-                ) == keccak256(abi.encodePacked((name)))
+                keccak256(abi.encodePacked((identityIdNames[identityId][i]))) ==
+                keccak256(abi.encodePacked((name)))
             ) {
-                identityIdNames[identityId][i] = identityIdNames[
-                    identityId
-                ][identityIdNames[identityId].length - 1];
+                identityIdNames[identityId][i] = identityIdNames[identityId][
+                    identityIdNames[identityId].length - 1
+                ];
                 identityIdNames[identityId].pop();
                 break;
             }

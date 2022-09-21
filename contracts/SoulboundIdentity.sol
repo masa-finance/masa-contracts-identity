@@ -63,13 +63,11 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
     /// @param to Address of the owner of the new identity
     /// @param name Name of the new identity
     /// @param period Period of validity of the name
-    function mintIdentityWithName(address to, string memory name, uint256 period)
-        public
-        payable
-        override
-        soulNameAlreadySet
-        returns (uint256)
-    {
+    function mintIdentityWithName(
+        address to,
+        string memory name,
+        uint256 period
+    ) public payable override soulNameAlreadySet returns (uint256) {
         uint256 identityId = mint(to);
         soulName.mint(to, name, identityId, period);
 

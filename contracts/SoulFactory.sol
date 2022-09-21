@@ -209,12 +209,11 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
     /// @param name Name of the new soul name
     /// @param period Period of validity of the name
     /// @return TokenId of the new soulbound identity
-    function purchaseIdentityAndName(address paymentMethod, string memory name, uint256 period)
-        external
-        payable
-        whenNotPaused
-        returns (uint256)
-    {
+    function purchaseIdentityAndName(
+        address paymentMethod,
+        string memory name,
+        uint256 period
+    ) external payable whenNotPaused returns (uint256) {
         _payForMinting(paymentMethod, mintingIdentityAndNamePrice);
 
         // finalize purchase
@@ -245,12 +244,11 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
     /// @param name Name of the new soul name
     /// @param period Period of validity of the name
     /// @return TokenId of the new sou name
-    function purchaseName(address paymentMethod, string memory name, uint256 period)
-        external
-        payable
-        whenNotPaused
-        returns (uint256)
-    {
+    function purchaseName(
+        address paymentMethod,
+        string memory name,
+        uint256 period
+    ) external payable whenNotPaused returns (uint256) {
         _payForMinting(paymentMethod, mintingNamePrice);
 
         // finalize purchase
@@ -403,12 +401,17 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
     /// @param name Name of the new soul name
     /// @param period Period of validity of the name
     /// @return TokenId of the new soulbound identity
-    function _mintSoulboundIdentityAndName(address to, string memory name, uint256 period)
-        internal
-        returns (uint256)
-    {
+    function _mintSoulboundIdentityAndName(
+        address to,
+        string memory name,
+        uint256 period
+    ) internal returns (uint256) {
         // mint Soulbound identity token
-        uint256 tokenId = soulboundIdentity.mintIdentityWithName(to, name, period);
+        uint256 tokenId = soulboundIdentity.mintIdentityWithName(
+            to,
+            name,
+            period
+        );
 
         emit SoulboundIdentityAndNamePurchased(
             to,
@@ -440,10 +443,11 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
     /// @param to Address of the owner of the new soul name
     /// @param name Name of the new soul name
     /// @return TokenId of the new soul name
-    function _mintSoulName(address to, string memory name, uint256 period)
-        internal
-        returns (uint256)
-    {
+    function _mintSoulName(
+        address to,
+        string memory name,
+        uint256 period
+    ) internal returns (uint256) {
         // mint Soul Name token
         ISoulName soulName = soulboundIdentity.getSoulName();
         uint256 identityId = soulboundIdentity.tokenOfOwner(to);

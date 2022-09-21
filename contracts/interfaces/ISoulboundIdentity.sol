@@ -8,10 +8,11 @@ import "./ISoulName.sol";
 interface ISoulboundIdentity is IERC721 {
     function mint(address to) external returns (uint256);
 
-    function mintIdentityWithName(address to, string memory name, uint256 period)
-        external
-        payable
-        returns (uint256);
+    function mintIdentityWithName(
+        address to,
+        string memory name,
+        uint256 period
+    ) external payable returns (uint256);
 
     function getSoulName() external view returns (ISoulName);
 
