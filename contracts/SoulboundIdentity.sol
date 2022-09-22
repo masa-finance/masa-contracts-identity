@@ -113,7 +113,7 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
         soulNameAlreadySet
         returns (address)
     {
-        (, uint256 tokenId, ) = soulName.getTokenData(name);
+        (, uint256 tokenId, , ) = soulName.getTokenData(name);
         return super.ownerOf(tokenId);
     }
 
@@ -127,7 +127,7 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
         soulNameAlreadySet
         returns (string memory)
     {
-        (, uint256 tokenId, ) = soulName.getTokenData(name);
+        (, uint256 tokenId, , ) = soulName.getTokenData(name);
         return super.tokenURI(tokenId);
     }
 
@@ -172,6 +172,7 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
     /// @return sbtName Soul name, in upper/lower case and extension
     /// @return identityId Identity id of the soul name
     /// @return expirationDate Expiration date of the soul name
+    /// @return active `true` if the soul name is active, `false` otherwise
     function getTokenData(string memory name)
         external
         view
@@ -179,7 +180,8 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
         returns (
             string memory sbtName,
             uint256 identityId,
-            uint256 expirationDate
+            uint256 expirationDate,
+            bool active
         )
     {
         return soulName.getTokenData(name);

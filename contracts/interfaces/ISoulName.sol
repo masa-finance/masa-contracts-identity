@@ -22,7 +22,8 @@ interface ISoulName {
         returns (
             string memory sbtName,
             uint256 identityId,
-            uint256 expirationDate
+            uint256 expirationDate,
+            bool active
         );
 
     function getSoulNames(address owner)

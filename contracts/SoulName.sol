@@ -221,6 +221,7 @@ contract SoulName is NFT, ISoulName {
     /// @return sbtName Soul name, in upper/lower case and extension
     /// @return identityId Identity id of the soul name
     /// @return expirationDate Expiration date of the soul name
+    /// @return active `true` if the soul name is active, `false` otherwise
     function getTokenData(string memory name)
         external
         view
@@ -228,7 +229,8 @@ contract SoulName is NFT, ISoulName {
         returns (
             string memory sbtName,
             uint256 identityId,
-            uint256 expirationDate
+            uint256 expirationDate,
+            bool active
         )
     {
         string memory lowercaseName = _toLowerCase(name);
@@ -241,7 +243,8 @@ contract SoulName is NFT, ISoulName {
         return (
             _getName(_tokenData.name),
             _tokenData.identityId,
-            _tokenData.expirationDate
+            _tokenData.expirationDate,
+            _tokenData.expirationDate >= block.timestamp
         );
     }
 

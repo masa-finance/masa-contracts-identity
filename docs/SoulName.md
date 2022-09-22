@@ -241,7 +241,7 @@ Returns all the identity names of an account
 ### getTokenData
 
 ```solidity
-function getTokenData(string name) external view returns (string sbtName, uint256 identityId, uint256 expirationDate)
+function getTokenData(string name) external view returns (string sbtName, uint256 identityId, uint256 expirationDate, bool active)
 ```
 
 Returns the information of a soul name
@@ -261,6 +261,7 @@ Returns the information of a soul name
 | sbtName | string | Soul name, in upper/lower case and extension |
 | identityId | uint256 | Identity id of the soul name |
 | expirationDate | uint256 | Expiration date of the soul name |
+| active | bool | `true` if the soul name is active, `false` otherwise |
 
 ### grantRole
 
