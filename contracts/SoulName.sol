@@ -22,15 +22,19 @@ contract SoulName is NFT, ISoulName {
     ISoulboundIdentity public soulboundIdentity;
     string public extension; // suffix of the names (.sol?)
 
-    mapping(uint256 => string) public tokenIdName; // used to sort through all names (name in lowercase)
-    mapping(string => SoulNameData) public soulNameData; // register of all soulbound names (name in lowercase)
-    mapping(uint256 => string[]) identityIdNames; // register of all names associated to an identityId
+    mapping(uint256 => TokenData) public tokenData; // used to store the data of the token id
+    mapping(string => NameData) public nameData; // stores the token id of the current active soul name
+    mapping(uint256 => string[]) identityNames; // register of all names associated to an identityId
 
-    struct SoulNameData {
+    struct TokenData {
         string name; // Name with lowercase and uppercase
         uint256 identityId;
-        uint256 initialDate;
         uint256 expirationDate;
+    }
+
+    struct NameData {
+        bool exists;
+        uint256 tokenId;
     }
 
     /* ========== INITIALIZE ========== */
@@ -106,15 +110,15 @@ contract SoulName is NFT, ISoulName {
 
         uint256 tokenId = _mintWithCounter(to);
 
+        tokenData[tokenId].name = name;
+        tokenData[tokenId].identityId = identityId;
+        tokenData[tokenId].expirationDate = block.timestamp.add(period);
+
         string memory lowercaseName = _toLowerCase(name);
-        tokenIdName[tokenId] = lowercaseName;
+        nameData[lowercaseName].tokenId = tokenId;
+        nameData[lowercaseName].exists = true;
 
-        soulNameData[lowercaseName].name = name;
-        soulNameData[lowercaseName].identityId = identityId;
-        soulNameData[lowercaseName].initialDate = block.timestamp;
-        soulNameData[lowercaseName].expirationDate = block.timestamp.add(period);
-
-        identityIdNames[identityId].push(lowercaseName);
+        identityNames[identityId].push(lowercaseName);
 
         return tokenId;
     }
@@ -134,17 +138,18 @@ contract SoulName is NFT, ISoulName {
             "IDENTITY_NOT_FOUND"
         );
 
-        string memory name = tokenIdName[tokenId];
-        uint256 oldIdentityId = soulNameData[name].identityId;
+        uint256 oldIdentityId = tokenData[tokenId].identityId;
+        require(identityId != oldIdentityId, "SAME_VALUE");
 
         // change value from soulNames
-        soulNameData[name].identityId = identityId;
+        tokenData[tokenId].identityId = identityId;
 
-        // remove name from identityIdNames[oldIdentityId]
-        _removeFromIdentityIdNames(oldIdentityId, name);
+        string memory lowercaseName = _toLowerCase(tokenData[tokenId].name);
+        // remove name from identityNames[oldIdentityId]
+        _removeFromIdentityNames(oldIdentityId, lowercaseName);
 
-        // add name to identityIdNames[identityId]
-        identityIdNames[identityId].push(name);
+        // add name to identityNames[identityId]
+        identityNames[identityId].push(lowercaseName);
     }
 
     /// @notice Update the expiration date of a soul name
@@ -159,8 +164,11 @@ contract SoulName is NFT, ISoulName {
         );
         require(period > 0, "ZERO_PERIOD");
 
-        string memory name = tokenIdName[tokenId];
-        soulNameData[name].expirationDate = block.timestamp.add(period);
+        // TODO: review if we need to check if the name is expired
+        // tokenData[tokenId].expirationDate = block.timestamp.add(period);
+        tokenData[tokenId].expirationDate = tokenData[tokenId]
+            .expirationDate
+            .add(period);
     }
 
     /// @notice Burn a soul name
@@ -169,13 +177,15 @@ contract SoulName is NFT, ISoulName {
     function burn(uint256 tokenId) public override {
         require(_exists(tokenId), "TOKEN_NOT_FOUND");
 
-        string memory name = tokenIdName[tokenId];
-        uint256 identityId = soulNameData[name].identityId;
+        string memory lowercaseName = _toLowerCase(tokenData[tokenId].name);
+        uint256 identityId = tokenData[tokenId].identityId;
 
-        // remove info from tokenIdName and soulNameData
-        delete tokenIdName[tokenId];
-        delete soulNameData[name];
-        _removeFromIdentityIdNames(identityId, name);
+        // remove info from tokenIdName and tokenData
+        delete tokenData[tokenId];
+
+        // TODO: if it's the current valid soul name
+        delete nameData[lowercaseName];
+        _removeFromIdentityNames(identityId, lowercaseName);
 
         super.burn(tokenId);
     }
@@ -200,7 +210,7 @@ contract SoulName is NFT, ISoulName {
         returns (bool exists)
     {
         string memory lowercaseName = _toLowerCase(name);
-        return (bytes(soulNameData[lowercaseName].name).length > 0);
+        return nameData[lowercaseName].exists;
     }
 
     /// @notice Returns the information of a soul name
@@ -208,17 +218,31 @@ contract SoulName is NFT, ISoulName {
     /// @param name Name of the soul name
     /// @return sbtName Soul name, in upper/lower case and extension
     /// @return identityId Identity id of the soul name
-    function getSoulNameData(string memory name)
+    /// @return expirationDate Expiration date of the soul name
+    function getTokenData(string memory name)
         external
         view
         override
-        returns (string memory sbtName, uint256 identityId)
+        returns (
+            string memory sbtName,
+            uint256 identityId,
+            uint256 expirationDate
+        )
     {
         string memory lowercaseName = _toLowerCase(name);
-        SoulNameData memory _soulNameData = soulNameData[lowercaseName];
-        require(bytes(_soulNameData.name).length > 0, "NAME_NOT_FOUND");
 
-        return (_getName(_soulNameData.name), _soulNameData.identityId);
+        if (nameData[lowercaseName].exists) {
+            uint256 tokenId = nameData[lowercaseName].tokenId;
+
+            TokenData memory _tokenData = tokenData[tokenId];
+            return (
+                _getName(_tokenData.name),
+                _tokenData.identityId,
+                _tokenData.expirationDate
+            );
+        } else {
+            return ("", 0, 0);
+        }
     }
 
     /// @notice Returns all the identity names of an account
@@ -248,7 +272,7 @@ contract SoulName is NFT, ISoulName {
         returns (string[] memory sbtNames)
     {
         // return identity names if exists
-        return identityIdNames[identityId];
+        return identityNames[identityId];
     }
 
     /* ========== PRIVATE FUNCTIONS ========== */
@@ -273,18 +297,18 @@ contract SoulName is NFT, ISoulName {
         return string(bLower);
     }
 
-    function _removeFromIdentityIdNames(uint256 identityId, string memory name)
+    function _removeFromIdentityNames(uint256 identityId, string memory name)
         private
     {
-        for (uint256 i = 0; i < identityIdNames[identityId].length; i++) {
+        for (uint256 i = 0; i < identityNames[identityId].length; i++) {
             if (
-                keccak256(abi.encodePacked((identityIdNames[identityId][i]))) ==
+                keccak256(abi.encodePacked((identityNames[identityId][i]))) ==
                 keccak256(abi.encodePacked((name)))
             ) {
-                identityIdNames[identityId][i] = identityIdNames[identityId][
-                    identityIdNames[identityId].length - 1
+                identityNames[identityId][i] = identityNames[identityId][
+                    identityNames[identityId].length - 1
                 ];
-                identityIdNames[identityId].pop();
+                identityNames[identityId].pop();
                 break;
             }
         }

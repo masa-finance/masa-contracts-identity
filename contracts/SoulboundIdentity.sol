@@ -113,7 +113,7 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
         soulNameAlreadySet
         returns (address)
     {
-        (, uint256 tokenId) = soulName.getSoulNameData(name);
+        (, uint256 tokenId, ) = soulName.getTokenData(name);
         return super.ownerOf(tokenId);
     }
 
@@ -127,7 +127,7 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
         soulNameAlreadySet
         returns (string memory)
     {
-        (, uint256 tokenId) = soulName.getSoulNameData(name);
+        (, uint256 tokenId, ) = soulName.getTokenData(name);
         return super.tokenURI(tokenId);
     }
 
@@ -171,13 +171,18 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
     /// @param name Name of the soul name
     /// @return sbtName Soul name, in upper/lower case and extension
     /// @return identityId Identity id of the soul name
-    function getSoulNameData(string memory name)
+    /// @return expirationDate Expiration date of the soul name
+    function getTokenData(string memory name)
         external
         view
         soulNameAlreadySet
-        returns (string memory sbtName, uint256 identityId)
+        returns (
+            string memory sbtName,
+            uint256 identityId,
+            uint256 expirationDate
+        )
     {
-        return soulName.getSoulNameData(name);
+        return soulName.getTokenData(name);
     }
 
     /// @notice Returns all the identity names of an account
@@ -193,6 +198,9 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
         uint256 tokenId = tokenOfOwner(owner);
         return soulName.getSoulNames(tokenId);
     }
+
+    // SoulName -> SoulboundIdentity.tokenId
+    // SoulName -> account -> SoulboundIdentity.tokenId
 
     /// @notice Returns all the identity names of an identity
     /// @dev This function queries all the identity names of the specified identity Id

@@ -194,29 +194,6 @@ Returns the address of the SoulName contract linked to this identity
 |---|---|---|
 | _0 | contract ISoulName | Address of the SoulName contract |
 
-### getSoulNameData
-
-```solidity
-function getSoulNameData(string name) external view returns (string sbtName, uint256 identityId)
-```
-
-Returns the information of a soul name
-
-*This function queries the information of a soul name*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| name | string | Name of the soul name |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| sbtName | string | Soul name, in upper/lower case and extension |
-| identityId | uint256 | Identity id of the soul name |
-
 ### getSoulNames
 
 ```solidity
@@ -260,6 +237,30 @@ Returns all the identity names of an account
 | Name | Type | Description |
 |---|---|---|
 | sbtNames | string[] | Array of soul names associated to the account |
+
+### getTokenData
+
+```solidity
+function getTokenData(string name) external view returns (string sbtName, uint256 identityId, uint256 expirationDate)
+```
+
+Returns the information of a soul name
+
+*This function queries the information of a soul name*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | Name of the soul name |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| sbtName | string | Soul name, in upper/lower case and extension |
+| identityId | uint256 | Identity id of the soul name |
+| expirationDate | uint256 | Expiration date of the soul name |
 
 ### grantRole
 

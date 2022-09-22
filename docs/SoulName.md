@@ -194,29 +194,6 @@ function getRoleAdmin(bytes32 role) external view returns (bytes32)
 |---|---|---|
 | _0 | bytes32 | undefined |
 
-### getSoulNameData
-
-```solidity
-function getSoulNameData(string name) external view returns (string sbtName, uint256 identityId)
-```
-
-Returns the information of a soul name
-
-*This function queries the information of a soul name*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| name | string | Name of the soul name |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| sbtName | string | Soul name, in upper/lower case and extension |
-| identityId | uint256 | Identity id of the soul name |
-
 ### getSoulNames
 
 ```solidity
@@ -260,6 +237,30 @@ Returns all the identity names of an account
 | Name | Type | Description |
 |---|---|---|
 | sbtNames | string[] | Array of soul names associated to the account |
+
+### getTokenData
+
+```solidity
+function getTokenData(string name) external view returns (string sbtName, uint256 identityId, uint256 expirationDate)
+```
+
+Returns the information of a soul name
+
+*This function queries the information of a soul name*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | Name of the soul name |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| sbtName | string | Soul name, in upper/lower case and extension |
+| identityId | uint256 | Identity id of the soul name |
+| expirationDate | uint256 | Expiration date of the soul name |
 
 ### grantRole
 
@@ -366,6 +367,29 @@ function name() external view returns (string)
 |---|---|---|
 | _0 | string | undefined |
 
+### nameData
+
+```solidity
+function nameData(string) external view returns (bool exists, uint256 tokenId)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| exists | bool | undefined |
+| tokenId | uint256 | undefined |
+
 ### ownerOf
 
 ```solidity
@@ -415,6 +439,23 @@ function paused() external view returns (bool)
 | Name | Type | Description |
 |---|---|---|
 | _0 | bool | undefined |
+
+### renewPeriod
+
+```solidity
+function renewPeriod(uint256 tokenId, uint256 period) external nonpayable
+```
+
+Update the expiration date of a soul name
+
+*The caller must be the owner or an approved address of the soul name.*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId | uint256 | TokenId of the soul name |
+| period | uint256 | Period of validity of the name |
 
 ### renounceRole
 
@@ -536,31 +577,6 @@ Sets the SoulboundIdentity contract address linked to this soul name
 |---|---|---|
 | _soulboundIdentity | contract ISoulboundIdentity | Address of the SoulboundIdentity contract |
 
-### soulNameData
-
-```solidity
-function soulNameData(string) external view returns (string name, uint256 identityId, uint256 initialDate, uint256 expirationDate)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | string | undefined |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| name | string | undefined |
-| identityId | uint256 | undefined |
-| initialDate | uint256 | undefined |
-| expirationDate | uint256 | undefined |
-
 ### soulNameExists
 
 ```solidity
@@ -661,10 +677,10 @@ function tokenByIndex(uint256 index) external view returns (uint256)
 |---|---|---|
 | _0 | uint256 | undefined |
 
-### tokenIdName
+### tokenData
 
 ```solidity
-function tokenIdName(uint256) external view returns (string)
+function tokenData(uint256) external view returns (string name, uint256 identityId, uint256 expirationDate)
 ```
 
 
@@ -681,7 +697,9 @@ function tokenIdName(uint256) external view returns (string)
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | string | undefined |
+| name | string | undefined |
+| identityId | uint256 | undefined |
+| expirationDate | uint256 | undefined |
 
 ### tokenOfOwnerByIndex
 
