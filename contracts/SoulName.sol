@@ -97,7 +97,7 @@ contract SoulName is NFT, ISoulName {
         uint256 identityId,
         uint256 period
     ) public override returns (uint256) {
-        require(!soulNameExists(name), "NAME_ALREADY_EXISTS");
+        require(!isAvailable(name), "NAME_ALREADY_EXISTS");
         require(bytes(name).length > 0, "ZERO_LENGTH_NAME");
         require(period > 0, "ZERO_PERIOD");
         require(
@@ -196,18 +196,25 @@ contract SoulName is NFT, ISoulName {
         return extension;
     }
 
-    /// @notice Checks if a soul name already exists
-    /// @dev This function queries if a soul name already exists
+    /// @notice Checks if a soul name is available
+    /// @dev This function queries if a soul name already exists and is in the available state
     /// @param name Name of the soul name
-    /// @return exists `true` if the soul name exists, `false` otherwise
-    function soulNameExists(string memory name)
+    /// @return available `true` if the soul name is available, `false` otherwise
+    function isAvailable(string memory name)
         public
         view
         override
-        returns (bool exists)
+        returns (bool available)
     {
         string memory lowercaseName = _toLowerCase(name);
-        return nameData[lowercaseName].exists;
+        if (nameData[lowercaseName].exists) {
+            uint256 tokenId = nameData[lowercaseName].tokenId;
+            available =
+                (tokenData[tokenId].expirationDate > 0) &&
+                (tokenData[tokenId].expirationDate < block.timestamp);
+        } else {
+            return false;
+        }
     }
 
     /// @notice Returns the information of a soul name

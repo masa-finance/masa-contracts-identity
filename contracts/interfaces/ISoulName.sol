@@ -11,10 +11,10 @@ interface ISoulName {
 
     function getExtension() external view returns (string memory);
 
-    function soulNameExists(string memory name)
+    function isAvailable(string memory name)
         external
         view
-        returns (bool exists);
+        returns (bool available);
 
     function getTokenData(string memory name)
         external

@@ -153,17 +153,17 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
         return super.tokenOfOwnerByIndex(owner, 0);
     }
 
-    /// @notice Checks if a soul name already exists
-    /// @dev This function queries if a soul name already exists
+    /// @notice Checks if a soul name is available
+    /// @dev This function queries if a soul name already exists and is in the available state
     /// @param name Name of the soul name
-    /// @return exists `true` if the soul name exists, `false` otherwise
-    function soulNameExists(string memory name)
+    /// @return available `true` if the soul name is available, `false` otherwise
+    function isAvailable(string memory name)
         public
         view
         soulNameAlreadySet
-        returns (bool exists)
+        returns (bool available)
     {
-        return soulName.soulNameExists(name);
+        return soulName.isAvailable(name);
     }
 
     /// @notice Returns the information of a soul name

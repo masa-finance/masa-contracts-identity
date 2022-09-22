@@ -325,6 +325,28 @@ function isApprovedForAll(address owner, address operator) external view returns
 |---|---|---|
 | _0 | bool | undefined |
 
+### isAvailable
+
+```solidity
+function isAvailable(string name) external view returns (bool available)
+```
+
+Checks if a soul name is available
+
+*This function queries if a soul name already exists and is in the available state*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | Name of the soul name |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| available | bool | `true` if the soul name is available, `false` otherwise |
+
 ### mint
 
 ```solidity
@@ -597,28 +619,6 @@ function soulName() external view returns (contract ISoulName)
 | Name | Type | Description |
 |---|---|---|
 | _0 | contract ISoulName | undefined |
-
-### soulNameExists
-
-```solidity
-function soulNameExists(string name) external view returns (bool exists)
-```
-
-Checks if a soul name already exists
-
-*This function queries if a soul name already exists*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| name | string | Name of the soul name |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| exists | bool | `true` if the soul name exists, `false` otherwise |
 
 ### supportsInterface
 

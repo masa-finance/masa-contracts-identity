@@ -95,6 +95,28 @@ function getTokenData(string name) external view returns (string sbtName, uint25
 | identityId | uint256 | undefined |
 | expirationDate | uint256 | undefined |
 
+### isAvailable
+
+```solidity
+function isAvailable(string name) external view returns (bool available)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| available | bool | undefined |
+
 ### mint
 
 ```solidity
@@ -119,28 +141,6 @@ function mint(address to, string name, uint256 identityId, uint256 period) exter
 | Name | Type | Description |
 |---|---|---|
 | _0 | uint256 | undefined |
-
-### soulNameExists
-
-```solidity
-function soulNameExists(string name) external view returns (bool exists)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| name | string | undefined |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| exists | bool | undefined |
 
 
 
