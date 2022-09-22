@@ -443,8 +443,9 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
     {
         // mint Soul Name token
         ISoulName soulName = soulboundIdentity.getSoulName();
+        uint256 identityId = soulboundIdentity.tokenOfOwner(to);
 
-        uint256 tokenId = soulName.mint(to, name);
+        uint256 tokenId = soulName.mint(to, name, identityId);
 
         emit SoulNamePurchased(to, tokenId, name, mintingNamePrice);
 

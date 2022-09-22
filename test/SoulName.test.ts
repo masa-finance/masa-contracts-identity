@@ -128,7 +128,7 @@ describe("Soul Name", () => {
     it("should mint from owner", async () => {
       const mintTx = await soulName
         .connect(owner)
-        .mint(address1.address, SOUL_NAME1);
+        .mint(address1.address, SOUL_NAME1, identityId1);
       const mintReceipt = await mintTx.wait();
 
       const nameId = mintReceipt.events![0].args![2].toNumber();
@@ -138,21 +138,21 @@ describe("Soul Name", () => {
     });
 
     it("should success to mint a name twice to the same idenity", async () => {
-      await soulName.connect(owner).mint(address1.address, SOUL_NAME1);
+      await soulName.connect(owner).mint(address1.address, SOUL_NAME1, identityId1);
 
-      await soulName.connect(owner).mint(address1.address, SOUL_NAME2);
+      await soulName.connect(owner).mint(address1.address, SOUL_NAME2, identityId1);
     });
 
     it("should fail to mint duplicated name", async () => {
-      await soulName.connect(owner).mint(address1.address, SOUL_NAME1);
+      await soulName.connect(owner).mint(address1.address, SOUL_NAME1, identityId1);
 
-      await expect(soulName.connect(owner).mint(address1.address, SOUL_NAME1))
+      await expect(soulName.connect(owner).mint(address1.address, SOUL_NAME1, identityId1))
         .to.be.rejected;
     });
 
     it("should fail to mint from non-owner address", async () => {
       await expect(
-        soulName.connect(address1).mint(address1.address, SOUL_NAME1)
+        soulName.connect(address1).mint(address1.address, SOUL_NAME1, identityId1)
       ).to.be.rejected;
     });
   });
@@ -163,7 +163,7 @@ describe("Soul Name", () => {
     beforeEach(async () => {
       const mintTx = await soulName
         .connect(owner)
-        .mint(address1.address, SOUL_NAME1);
+        .mint(address1.address, SOUL_NAME1, identityId1);
       const mintReceipt = await mintTx.wait();
 
       nameId = mintReceipt.events![0].args![2].toNumber();
@@ -244,7 +244,7 @@ describe("Soul Name", () => {
     beforeEach(async () => {
       const mintTx = await soulName
         .connect(owner)
-        .mint(address1.address, SOUL_NAME1);
+        .mint(address1.address, SOUL_NAME1, identityId1);
       const mintReceipt = await mintTx.wait();
 
       nameId = mintReceipt.events![0].args![2].toNumber();
@@ -266,17 +266,15 @@ describe("Soul Name", () => {
 
       const [, identityId] = await soulName.getSoulNameData(SOUL_NAME1);
 
-      const identityAddress2 = await soulboundIdentity.tokenOfOwner(
-        address2.address
-      );
-
-      await expect(identityId).to.be.equals(identityAddress2);
+      await expect(identityId).to.be.equals(identityId1);
     });
 
     it("should update identity Id", async () => {
       await soulName
         .connect(address1)
         .transferFrom(address1.address, address2.address, nameId);
+      
+      await soulName.connect(address2).updateIdentityId(nameId, identityId2);
 
       expect(await soulboundIdentity.balanceOf(address1.address)).to.be.equal(
         1
@@ -291,25 +289,6 @@ describe("Soul Name", () => {
 
       await expect(identityId).to.be.equals(identityId2);
     });
-
-    it("should raise if we transfer the soul name to a user that doesn't have an identity", async () => {
-      await soulName
-        .connect(address1)
-        .transferFrom(address1.address, address3.address, nameId);
-
-      expect(await soulboundIdentity.balanceOf(address1.address)).to.be.equal(
-        1
-      );
-      expect(await soulboundIdentity.balanceOf(address3.address)).to.be.equal(
-        0
-      );
-      expect(await soulName.balanceOf(address1.address)).to.be.equal(0);
-      expect(await soulName.balanceOf(address3.address)).to.be.equal(1);
-
-      await expect(soulName.getSoulNameData(SOUL_NAME1)).to.be.rejectedWith(
-        "USER_MUST_HAVE_AN_IDENTITY"
-      );
-    });
   });
 
   describe("burn", () => {
@@ -318,7 +297,7 @@ describe("Soul Name", () => {
     beforeEach(async () => {
       const mintTx = await soulName
         .connect(owner)
-        .mint(address1.address, SOUL_NAME1);
+        .mint(address1.address, SOUL_NAME1, identityId1);
       const mintReceipt = await mintTx.wait();
 
       nameId = mintReceipt.events![0].args![2].toNumber();
