@@ -5,9 +5,9 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-import "./tokens/NFT.sol";
 import "./interfaces/ISoulboundIdentity.sol";
 import "./interfaces/ISoulName.sol";
+import "./tokens/NFT.sol";
 
 /// @title SoulName NFT
 /// @author Masa Finance
@@ -269,6 +269,7 @@ contract SoulName is NFT, ISoulName {
         override
         returns (string[] memory sbtNames)
     {
+        // TODO: review if the identity is active
         // return identity names if exists
         return identityNames[identityId];
     }
