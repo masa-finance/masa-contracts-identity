@@ -230,24 +230,24 @@ describe("Soulbound Identity", () => {
       identityId = mintReceipt.events![0].args![2].toNumber();
     });
 
-    it("soulNameExists true with an existing name", async () => {
+    it("isAvailable true with an existing name", async () => {
       await expect(
-        await soulboundIdentity.soulNameExists(SOUL_NAME1)
+        await soulboundIdentity.isAvailable(SOUL_NAME1)
       ).to.be.equals(true);
     });
 
-    it("soulNameExists true with an existing name - case insensitive", async () => {
+    it("isAvailable true with an existing name - case insensitive", async () => {
       await expect(
-        await soulboundIdentity.soulNameExists(SOUL_NAME1.toLowerCase())
+        await soulboundIdentity.isAvailable(SOUL_NAME1.toLowerCase())
       ).to.be.equals(true);
       await expect(
-        await soulboundIdentity.soulNameExists(SOUL_NAME1.toUpperCase())
+        await soulboundIdentity.isAvailable(SOUL_NAME1.toUpperCase())
       ).to.be.equals(true);
     });
 
-    it("soulNameExists false with a non existing name", async () => {
+    it("isAvailable false with a non existing name", async () => {
       await expect(
-        await soulboundIdentity.soulNameExists("fakeName")
+        await soulboundIdentity.isAvailable("fakeName")
       ).to.be.equals(false);
     });
 
