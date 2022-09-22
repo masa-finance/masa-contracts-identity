@@ -209,9 +209,7 @@ contract SoulName is NFT, ISoulName {
         string memory lowercaseName = _toLowerCase(name);
         if (nameData[lowercaseName].exists) {
             uint256 tokenId = nameData[lowercaseName].tokenId;
-            available =
-                (tokenData[tokenId].expirationDate > 0) &&
-                (tokenData[tokenId].expirationDate < block.timestamp);
+            available = tokenData[tokenId].expirationDate > block.timestamp;
         } else {
             return false;
         }
