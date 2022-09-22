@@ -27,10 +27,10 @@ function getExtension() external view returns (string)
 |---|---|---|
 | _0 | string | undefined |
 
-### getIdentityData
+### getSoulNameData
 
 ```solidity
-function getIdentityData(string name) external view returns (string sbtName, uint256 identityId)
+function getSoulNameData(string name) external view returns (string sbtName, uint256 identityId)
 ```
 
 
@@ -50,10 +50,10 @@ function getIdentityData(string name) external view returns (string sbtName, uin
 | sbtName | string | undefined |
 | identityId | uint256 | undefined |
 
-### getIdentityNames
+### getSoulNames
 
 ```solidity
-function getIdentityNames(uint256 identityId) external view returns (string[] sbtNames)
+function getSoulNames(uint256 identityId) external view returns (string[] sbtNames)
 ```
 
 
@@ -65,6 +65,28 @@ function getIdentityNames(uint256 identityId) external view returns (string[] sb
 | Name | Type | Description |
 |---|---|---|
 | identityId | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| sbtNames | string[] | undefined |
+
+### getSoulNames
+
+```solidity
+function getSoulNames(address owner) external view returns (string[] sbtNames)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| owner | address | undefined |
 
 #### Returns
 
@@ -96,10 +118,10 @@ function mint(address to, string name, uint256 identityId) external nonpayable r
 |---|---|---|
 | _0 | uint256 | undefined |
 
-### nameExists
+### soulNameExists
 
 ```solidity
-function nameExists(string name) external view returns (bool exists)
+function soulNameExists(string name) external view returns (bool exists)
 ```
 
 

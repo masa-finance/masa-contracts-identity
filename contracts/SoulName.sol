@@ -20,9 +20,9 @@ contract SoulName is NFT, ISoulName {
     ISoulboundIdentity public soulboundIdentity;
     string public extension; // suffix of the names (.sol?)
 
-    mapping(uint256 => string) tokenIdToName; // used to sort through all names (name in lowercase)
-    mapping(string => SoulNameData) soulNames; // register of all soulbound names (name in lowercase)
-    mapping(uint256 => string[]) identityIdToNames; // register of all names associated to an identityId
+    mapping(uint256 => string) public tokenIdName; // used to sort through all names (name in lowercase)
+    mapping(string => SoulNameData) public soulNameData; // register of all soulbound names (name in lowercase)
+    mapping(uint256 => string[]) identityIdNames; // register of all names associated to an identityId
 
     struct SoulNameData {
         string name; // Name with lowercase and uppercase
@@ -49,7 +49,19 @@ contract SoulName is NFT, ISoulName {
         extension = _extension;
     }
 
-    /* ========== RESTRICTED FUNCTIONS ========== */
+    /* ========== RESTRICTED FUNCTIONS ====================================== */
+
+    /// @notice Sets the SoulboundIdentity contract address linked to this soul name
+    /// @dev The caller must have the admin role to call this function
+    /// @param _soulboundIdentity Address of the SoulboundIdentity contract
+    function setSoulboundIdentity(ISoulboundIdentity _soulboundIdentity)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
+        require(soulboundIdentity != _soulboundIdentity, "SAME_VALUE");
+        soulboundIdentity = _soulboundIdentity;
+    }
 
     /// @notice Sets the extension of the soul name
     /// @dev The caller must have the admin role to call this function
@@ -78,7 +90,7 @@ contract SoulName is NFT, ISoulName {
         string memory name,
         uint256 identityId
     ) public override returns (uint256) {
-        require(!nameExists(name), "NAME_ALREADY_EXISTS");
+        require(!soulNameExists(name), "NAME_ALREADY_EXISTS");
         require(bytes(name).length > 0, "ZERO_LENGTH_NAME");
         require(
             soulboundIdentity.ownerOf(identityId) != address(0),
@@ -88,12 +100,12 @@ contract SoulName is NFT, ISoulName {
         uint256 tokenId = _mintWithCounter(to);
 
         string memory lowercaseName = _toLowerCase(name);
-        tokenIdToName[tokenId] = lowercaseName;
+        tokenIdName[tokenId] = lowercaseName;
 
-        soulNames[lowercaseName].name = name;
-        soulNames[lowercaseName].identityId = identityId;
+        soulNameData[lowercaseName].name = name;
+        soulNameData[lowercaseName].identityId = identityId;
 
-        identityIdToNames[identityId].push(lowercaseName);
+        identityIdNames[identityId].push(lowercaseName);
 
         return tokenId;
     }
@@ -113,17 +125,17 @@ contract SoulName is NFT, ISoulName {
             "IDENTITY_NOT_FOUND"
         );
 
-        string memory name = tokenIdToName[tokenId];
-        uint256 oldIdentityId = soulNames[name].identityId;
+        string memory name = tokenIdName[tokenId];
+        uint256 oldIdentityId = soulNameData[name].identityId;
 
         // change value from soulNames
-        soulNames[name].identityId = identityId;
+        soulNameData[name].identityId = identityId;
 
-        // remove name from identityIdToNames[oldIdentityId]
-        _removeFromIdentityIdToNames(oldIdentityId, name);
+        // remove name from identityIdNames[oldIdentityId]
+        _removeFromIdentityIdNames(oldIdentityId, name);
 
-        // add name to identityIdToNames[identityId]
-        identityIdToNames[identityId].push(name);
+        // add name to identityIdNames[identityId]
+        identityIdNames[identityId].push(name);
     }
 
     /// @notice Burn a soul name
@@ -132,13 +144,13 @@ contract SoulName is NFT, ISoulName {
     function burn(uint256 tokenId) public override {
         require(_exists(tokenId), "TOKEN_NOT_FOUND");
 
-        string memory name = tokenIdToName[tokenId];
-        uint256 identityId = soulNames[name].identityId;
+        string memory name = tokenIdName[tokenId];
+        uint256 identityId = soulNameData[name].identityId;
 
-        // remove info from tokenIdToName, soulnames and identityIdToNames
-        delete tokenIdToName[tokenId];
-        delete soulNames[name];
-        _removeFromIdentityIdToNames(identityId, name);
+        // remove info from tokenIdName and soulNameData
+        delete tokenIdName[tokenId];
+        delete soulNameData[name];
+        _removeFromIdentityIdNames(identityId, name);
 
         super.burn(tokenId);
     }
@@ -156,14 +168,14 @@ contract SoulName is NFT, ISoulName {
     /// @dev This function queries if a soul name already exists
     /// @param name Name of the soul name
     /// @return exists `true` if the soul name exists, `false` otherwise
-    function nameExists(string memory name)
+    function soulNameExists(string memory name)
         public
         view
         override
         returns (bool exists)
     {
         string memory lowercaseName = _toLowerCase(name);
-        return (bytes(soulNames[lowercaseName].name).length > 0);
+        return (bytes(soulNameData[lowercaseName].name).length > 0);
     }
 
     /// @notice Returns the information of a soul name
@@ -171,31 +183,47 @@ contract SoulName is NFT, ISoulName {
     /// @param name Name of the soul name
     /// @return sbtName Soul name, in upper/lower case and extension
     /// @return identityId Identity id of the soul name
-    function getIdentityData(string memory name)
+    function getSoulNameData(string memory name)
         external
         view
         override
         returns (string memory sbtName, uint256 identityId)
     {
         string memory lowercaseName = _toLowerCase(name);
-        SoulNameData memory soulNameData = soulNames[lowercaseName];
-        require(bytes(soulNameData.name).length > 0, "NAME_NOT_FOUND");
+        SoulNameData memory _soulNameData = soulNameData[lowercaseName];
+        require(bytes(_soulNameData.name).length > 0, "NAME_NOT_FOUND");
 
-        return (_getName(soulNameData.name), soulNameData.identityId);
+        return (_getName(_soulNameData.name), _soulNameData.identityId);
+    }
+
+    /// @notice Returns all the identity names of an account
+    /// @dev This function queries all the identity names of the specified account
+    /// @param owner Address of the owner of the identities
+    /// @return sbtNames Array of soul names associated to the account
+    function getSoulNames(address owner)
+        external
+        view
+        override
+        returns (string[] memory sbtNames)
+    {
+        // return identity id if exists
+        uint256 identityId = soulboundIdentity.tokenOfOwner(owner);
+
+        return getSoulNames(identityId);
     }
 
     /// @notice Returns all the identity names of an identity
     /// @dev This function queries all the identity names of the specified identity Id
     /// @param identityId TokenId of the identity
     /// @return sbtNames Array of soul names associated to the identity Id
-    function getIdentityNames(uint256 identityId)
-        external
+    function getSoulNames(uint256 identityId)
+        public
         view
         override
         returns (string[] memory sbtNames)
     {
         // return identity names if exists
-        return identityIdToNames[identityId];
+        return identityIdNames[identityId];
     }
 
     /* ========== PRIVATE FUNCTIONS ========== */
@@ -220,20 +248,20 @@ contract SoulName is NFT, ISoulName {
         return string(bLower);
     }
 
-    function _removeFromIdentityIdToNames(
+    function _removeFromIdentityIdNames(
         uint256 identityId,
         string memory name
     ) private {
-        for (uint256 i = 0; i < identityIdToNames[identityId].length; i++) {
+        for (uint256 i = 0; i < identityIdNames[identityId].length; i++) {
             if (
                 keccak256(
-                    abi.encodePacked((identityIdToNames[identityId][i]))
+                    abi.encodePacked((identityIdNames[identityId][i]))
                 ) == keccak256(abi.encodePacked((name)))
             ) {
-                identityIdToNames[identityId][i] = identityIdToNames[
+                identityIdNames[identityId][i] = identityIdNames[
                     identityId
-                ][identityIdToNames[identityId].length - 1];
-                identityIdToNames[identityId].pop();
+                ][identityIdNames[identityId].length - 1];
+                identityIdNames[identityId].pop();
                 break;
             }
         }

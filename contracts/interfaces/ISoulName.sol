@@ -10,17 +10,23 @@ interface ISoulName {
 
     function getExtension() external view returns (string memory);
 
-    function nameExists(string memory name) external view returns (bool exists);
+    function soulNameExists(string memory name)
+        external
+        view
+        returns (bool exists);
 
-    function getIdentityData(string memory name)
+    function getSoulNameData(string memory name)
         external
         view
         returns (string memory sbtName, uint256 identityId);
 
-    function getIdentityNames(uint256 identityId)
+    function getSoulNames(address owner)
         external
         view
         returns (string[] memory sbtNames);
 
-    // extension
+    function getSoulNames(uint256 identityId)
+        external
+        view
+        returns (string[] memory sbtNames);
 }

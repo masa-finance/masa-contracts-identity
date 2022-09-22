@@ -40,6 +40,20 @@ describe("Soulbound Identity", () => {
     );
   });
 
+  describe("set soulName", () => {
+    it("should fail to set soulName from non admin user", async () => {
+      await expect(
+        soulboundIdentity.connect(address1).setSoulName(address2.address)
+      ).to.be.rejected;
+    });
+
+    it("should success to set soulName from admin user", async () => {
+      await soulboundIdentity.connect(owner).setSoulName(address2.address);
+
+      expect(await soulboundIdentity.soulName()).to.be.equal(address2.address);
+    });
+  });
+
   describe("mint", () => {
     it("should mint from owner", async () => {
       await soulboundIdentity.connect(owner).mint(someone.address);
@@ -215,29 +229,29 @@ describe("Soulbound Identity", () => {
       identityId = mintReceipt.events![0].args![2].toNumber();
     });
 
-    it("nameExists true with an existing name", async () => {
-      await expect(await soulboundIdentity.nameExists(SOUL_NAME1)).to.be.equals(
-        true
-      );
-    });
-
-    it("nameExists true with an existing name - case insensitive", async () => {
+    it("soulNameExists true with an existing name", async () => {
       await expect(
-        await soulboundIdentity.nameExists(SOUL_NAME1.toLowerCase())
-      ).to.be.equals(true);
-      await expect(
-        await soulboundIdentity.nameExists(SOUL_NAME1.toUpperCase())
+        await soulboundIdentity.soulNameExists(SOUL_NAME1)
       ).to.be.equals(true);
     });
 
-    it("nameExists false with a non existing name", async () => {
-      await expect(await soulboundIdentity.nameExists("fakeName")).to.be.equals(
-        false
-      );
+    it("soulNameExists true with an existing name - case insensitive", async () => {
+      await expect(
+        await soulboundIdentity.soulNameExists(SOUL_NAME1.toLowerCase())
+      ).to.be.equals(true);
+      await expect(
+        await soulboundIdentity.soulNameExists(SOUL_NAME1.toUpperCase())
+      ).to.be.equals(true);
     });
 
-    it("getIdentityData with an existing name", async () => {
-      const [sbtName, identityId] = await soulboundIdentity.getIdentityData(
+    it("soulNameExists false with a non existing name", async () => {
+      await expect(
+        await soulboundIdentity.soulNameExists("fakeName")
+      ).to.be.equals(false);
+    });
+
+    it("getSoulNameData with an existing name", async () => {
+      const [sbtName, identityId] = await soulboundIdentity.getSoulNameData(
         SOUL_NAME1
       );
       const extension = await soulboundIdentity.getExtension();
@@ -245,36 +259,36 @@ describe("Soulbound Identity", () => {
       await expect(sbtName).to.be.equals(SOUL_NAME1 + extension);
     });
 
-    it("getIdentityData with an existing name - case insensitive", async () => {
-      let [sbtName, identityId] = await soulboundIdentity.getIdentityData(
+    it("getSoulNameData with an existing name - case insensitive", async () => {
+      let [sbtName, identityId] = await soulboundIdentity.getSoulNameData(
         SOUL_NAME1.toLowerCase()
       );
       const extension = await soulboundIdentity.getExtension();
 
       await expect(sbtName).to.be.equals(SOUL_NAME1 + extension);
 
-      [sbtName, identityId] = await soulboundIdentity.getIdentityData(
+      [sbtName, identityId] = await soulboundIdentity.getSoulNameData(
         SOUL_NAME1.toUpperCase()
       );
 
       await expect(sbtName).to.be.equals(SOUL_NAME1 + extension);
     });
 
-    it("getIdentityData with a non existing name", async () => {
+    it("getSoulNameData with a non existing name", async () => {
       await expect(
-        soulboundIdentity.getIdentityData("fakeName")
+        soulboundIdentity.getSoulNameData("fakeName")
       ).to.be.rejectedWith("NAME_NOT_FOUND");
     });
 
-    it("getIdentityNames(uint256) returns array of SBT names in lower case", async () => {
+    it("getSoulNames(uint256) returns array of SBT names in lower case", async () => {
       expect(
-        await soulboundIdentity["getIdentityNames(uint256)"](identityId)
+        await soulboundIdentity["getSoulNames(uint256)"](identityId)
       ).to.deep.equal([SOUL_NAME1.toLowerCase()]);
     });
 
-    it("getIdentityNames(address) returns array of SBT names in lower case", async () => {
+    it("getSoulNames(address) returns array of SBT names in lower case", async () => {
       expect(
-        await soulboundIdentity["getIdentityNames(address)"](address1.address)
+        await soulboundIdentity["getSoulNames(address)"](address1.address)
       ).to.deep.equal([SOUL_NAME1.toLowerCase()]);
     });
   });
