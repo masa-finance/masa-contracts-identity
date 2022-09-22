@@ -139,11 +139,10 @@ describe("Soul Name", () => {
     });
 
     it("should success to mint a name twice to the same idenity", async () => {
-      console.log(YEAR);
       await soulName
         .connect(owner)
         .mint(address1.address, SOUL_NAME1, identityId1, YEAR);
-      console.log(YEAR);
+
       await soulName
         .connect(owner)
         .mint(address1.address, SOUL_NAME2, identityId1, YEAR);
