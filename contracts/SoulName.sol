@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
@@ -16,6 +17,7 @@ import "./interfaces/ISoulName.sol";
 contract SoulName is NFT, ISoulName {
     /* ========== STATE VARIABLES ========== */
     using Strings for uint256;
+    using SafeMath for uint256;
 
     ISoulboundIdentity public soulboundIdentity;
     string public extension; // suffix of the names (.sol?)
@@ -110,7 +112,7 @@ contract SoulName is NFT, ISoulName {
         soulNameData[lowercaseName].name = name;
         soulNameData[lowercaseName].identityId = identityId;
         soulNameData[lowercaseName].initialDate = block.timestamp;
-        soulNameData[lowercaseName].expirationDate = block.timestamp + period;
+        soulNameData[lowercaseName].expirationDate = block.timestamp.add(period);
 
         identityIdNames[identityId].push(lowercaseName);
 
@@ -158,7 +160,7 @@ contract SoulName is NFT, ISoulName {
         require(period > 0, "ZERO_PERIOD");
 
         string memory name = tokenIdName[tokenId];
-        soulNameData[name].expirationDate = block.timestamp + period;
+        soulNameData[name].expirationDate = block.timestamp.add(period);
     }
 
     /// @notice Burn a soul name
