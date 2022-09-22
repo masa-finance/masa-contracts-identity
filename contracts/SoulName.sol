@@ -161,6 +161,11 @@ contract SoulName is NFT, ISoulName {
         );
         require(period > 0, "ZERO_PERIOD");
 
+        // check that the last registered tokenId for that name is the current token
+        string memory lowercaseName = _toLowerCase(tokenData[tokenId].name);
+        require(nameData[lowercaseName].exists, "NAME_NOT_FOUND");
+        require(nameData[lowercaseName].tokenId == tokenId, "CAN_NOT_RENEW");
+
         // check if the name is expired
         if (tokenData[tokenId].expirationDate < block.timestamp) {
             tokenData[tokenId].expirationDate = block.timestamp.add(period);
