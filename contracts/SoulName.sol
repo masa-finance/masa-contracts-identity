@@ -2,8 +2,6 @@
 pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "@openzeppelin/contracts/utils/Base64.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
 
 import "./interfaces/ISoulboundIdentity.sol";
 import "./interfaces/ISoulName.sol";
@@ -16,7 +14,6 @@ import "./tokens/NFT.sol";
 /// It has an extension, and stores all the information about the identity names.
 contract SoulName is NFT, ISoulName {
     /* ========== STATE VARIABLES ========== */
-    using Strings for uint256;
     using SafeMath for uint256;
 
     ISoulboundIdentity public soulboundIdentity;
