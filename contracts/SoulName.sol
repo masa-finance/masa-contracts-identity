@@ -231,18 +231,16 @@ contract SoulName is NFT, ISoulName {
     {
         string memory lowercaseName = _toLowerCase(name);
 
-        if (nameData[lowercaseName].exists) {
-            uint256 tokenId = nameData[lowercaseName].tokenId;
+        require(nameData[lowercaseName].exists, "NAME_NOT_FOUND");
 
-            TokenData memory _tokenData = tokenData[tokenId];
-            return (
-                _getName(_tokenData.name),
-                _tokenData.identityId,
-                _tokenData.expirationDate
-            );
-        } else {
-            return ("", 0, 0);
-        }
+        uint256 tokenId = nameData[lowercaseName].tokenId;
+
+        TokenData memory _tokenData = tokenData[tokenId];
+        return (
+            _getName(_tokenData.name),
+            _tokenData.identityId,
+            _tokenData.expirationDate
+        );
     }
 
     /// @notice Returns all the identity names of an account
