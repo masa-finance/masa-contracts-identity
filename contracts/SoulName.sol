@@ -161,11 +161,14 @@ contract SoulName is NFT, ISoulName {
         );
         require(period > 0, "ZERO_PERIOD");
 
-        // TODO: review if we need to check if the name is expired
-        // tokenData[tokenId].expirationDate = block.timestamp.add(period);
-        tokenData[tokenId].expirationDate = tokenData[tokenId]
-            .expirationDate
-            .add(period);
+        // check if the name is expired
+        if (tokenData[tokenId].expirationDate < block.timestamp) {
+            tokenData[tokenId].expirationDate = block.timestamp.add(period);
+        } else {
+            tokenData[tokenId].expirationDate = tokenData[tokenId]
+                .expirationDate
+                .add(period);
+        }
     }
 
     /// @notice Burn a soul name
