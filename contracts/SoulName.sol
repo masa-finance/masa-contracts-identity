@@ -188,8 +188,10 @@ contract SoulName is NFT, ISoulName {
         // remove info from tokenIdName and tokenData
         delete tokenData[tokenId];
 
-        // TODO: if it's the current valid soul name
-        delete nameData[lowercaseName];
+        // if the last owner of the name is burning it, remove the name from nameData
+        if (nameData[lowercaseName].tokenId == tokenId) {
+            delete nameData[lowercaseName];
+        }
         _removeFromIdentityNames(identityId, lowercaseName);
 
         super.burn(tokenId);
