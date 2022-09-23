@@ -12,6 +12,7 @@ import "@primitivefi/hardhat-dodoc";
 import "@typechain/ethers-v5";
 import "@typechain/hardhat";
 import "hardhat-gas-reporter";
+import "hardhat-contract-sizer";
 import "solidity-coverage";
 import { NetworksUserConfig } from "hardhat/types";
 
@@ -75,5 +76,8 @@ export default {
   dodoc: {},
   typechain: {
     outDir: "typechain"
+  },
+  contractSizer: {
+    runOnCompile: true
   }
 };
