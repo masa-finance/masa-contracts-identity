@@ -284,9 +284,35 @@ contract SoulName is NFT, ISoulName {
         override
         returns (string[] memory sbtNames)
     {
-        // TODO: review if the identity is active
-        // return identity names if exists
-        return identityNames[identityId];
+        uint256 results;
+        for (uint256 i = 0; i < identityNames[identityId].length; i++) {
+            string memory lowercaseName = identityNames[identityId][i];
+
+            if (nameData[lowercaseName].exists) {
+                uint256 tokenId = nameData[lowercaseName].tokenId;
+                if (tokenData[tokenId].expirationDate >= block.timestamp) {
+                    results = results.add(1);
+                }
+            }
+        }
+
+        string[] memory _sbtNames = new string[](results);
+        uint256 index;
+
+        for (uint256 i = 0; i < identityNames[identityId].length; i++) {
+            string memory lowercaseName = identityNames[identityId][i];
+
+            if (nameData[lowercaseName].exists) {
+                uint256 tokenId = nameData[lowercaseName].tokenId;
+                if (tokenData[tokenId].expirationDate >= block.timestamp) {
+                    _sbtNames[index] = lowercaseName;
+                    index = index.add(1);
+                }
+            }
+        }
+
+        // return identity names if exists and are active
+        return _sbtNames;
     }
 
     /* ========== PRIVATE FUNCTIONS ========== */
