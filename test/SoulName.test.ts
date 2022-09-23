@@ -348,6 +348,9 @@ describe("Soul Name", () => {
 
       expect(expirationDate).to.be.above(0);
       expect(active).to.be.true;
+      expect(
+        await soulName["getSoulNames(uint256)"](identityId1)
+      ).to.deep.equal([SOUL_NAME1.toLowerCase()]);
     });
 
     it("should return an inactive registration period", async () => {
@@ -361,6 +364,9 @@ describe("Soul Name", () => {
 
       expect(expirationDate).to.be.above(0);
       expect(active).to.be.false;
+      expect(
+        await soulName["getSoulNames(uint256)"](identityId1)
+      ).to.deep.equal([]);
     });
   });
 });
