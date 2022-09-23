@@ -25,14 +25,13 @@ let soulName: SoulName;
 let owner: SignerWithAddress;
 let address1: SignerWithAddress;
 let address2: SignerWithAddress;
-let address3: SignerWithAddress;
 
 let identityId1: number;
 let identityId2: number;
 
 describe("Soul Name", () => {
   before(async () => {
-    [, owner, address1, address2, address3] = await ethers.getSigners();
+    [, owner, address1, address2] = await ethers.getSigners();
   });
 
   beforeEach(async () => {
@@ -355,8 +354,8 @@ describe("Soul Name", () => {
 
     it("should return an inactive registration period", async () => {
       // increase time to expire the registration period
-      await network.provider.send('evm_increaseTime', [YEAR + 1]);
-      await network.provider.send('evm_mine');
+      await network.provider.send("evm_increaseTime", [YEAR + 1]);
+      await network.provider.send("evm_mine");
 
       const [, , expirationDate, active] = await soulName.getTokenData(
         SOUL_NAME1
@@ -371,12 +370,10 @@ describe("Soul Name", () => {
 
     it("should renew period when period hasn't expired", async () => {
       // increase time to half the registration period
-      await network.provider.send('evm_increaseTime', [YEAR/2]);
-      await network.provider.send('evm_mine');
+      await network.provider.send("evm_increaseTime", [YEAR / 2]);
+      await network.provider.send("evm_mine");
 
-      const [, , expirationDateStart,] = await soulName.getTokenData(
-        SOUL_NAME1
-      );
+      const [, , expirationDateStart] = await soulName.getTokenData(SOUL_NAME1);
 
       await soulName.connect(address1).renewPeriod(nameId, YEAR);
 
@@ -384,7 +381,9 @@ describe("Soul Name", () => {
         SOUL_NAME1
       );
 
-      expect(expirationDateFinish.toNumber() - expirationDateStart.toNumber()).to.be.equal(YEAR);
+      expect(
+        expirationDateFinish.toNumber() - expirationDateStart.toNumber()
+      ).to.be.equal(YEAR);
       expect(active).to.be.true;
       expect(
         await soulName["getSoulNames(uint256)"](identityId1)
@@ -392,13 +391,11 @@ describe("Soul Name", () => {
     });
 
     it("should renew period when period has expired", async () => {
-      // increase time to half the registration period
-      await network.provider.send('evm_increaseTime', [YEAR + 1]);
-      await network.provider.send('evm_mine');
+      // increase time to expire the registration period
+      await network.provider.send("evm_increaseTime", [YEAR + 1]);
+      await network.provider.send("evm_mine");
 
-      const [, , expirationDateStart,] = await soulName.getTokenData(
-        SOUL_NAME1
-      );
+      const [, , expirationDateStart] = await soulName.getTokenData(SOUL_NAME1);
 
       await soulName.connect(address1).renewPeriod(nameId, YEAR);
 
@@ -406,7 +403,9 @@ describe("Soul Name", () => {
         SOUL_NAME1
       );
 
-      expect(expirationDateFinish.toNumber() - expirationDateStart.toNumber()).to.be.above(YEAR);
+      expect(
+        expirationDateFinish.toNumber() - expirationDateStart.toNumber()
+      ).to.be.above(YEAR);
       expect(active).to.be.true;
       expect(
         await soulName["getSoulNames(uint256)"](identityId1)
@@ -414,9 +413,21 @@ describe("Soul Name", () => {
     });
 
     it("shouldn't renew period when period has expired and somebody has minted same name", async () => {
+      // increase time to expire the registration period
+      await network.provider.send("evm_increaseTime", [YEAR + 1]);
+      await network.provider.send("evm_mine");
+
+      // once expired, another user mints the same soul name
+      await soulName
+        .connect(owner)
+        .mint(address2.address, SOUL_NAME1, identityId2, YEAR);
+
+      // the first owner of the soul name tries to renew the period and fails
+      await expect(
+        soulName.connect(address1).renewPeriod(nameId, YEAR)
+      ).to.be.rejectedWith("CAN_NOT_RENEW");
     });
 
-    it("should allow mint same name if previous has expired", async () => {
-    });
+    it("should allow mint same name if previous has expired", async () => {});
   });
 });
