@@ -1,7 +1,7 @@
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 import { solidity } from "ethereum-waffle";
-import { ethers, deployments } from "hardhat";
+import { ethers, deployments, network } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
   SoulboundIdentity,
@@ -326,6 +326,41 @@ describe("Soul Name", () => {
       );
       await expect(await soulName["getSoulNames(uint256)"](identityId1)).to.be
         .empty;
+    });
+  });
+
+  describe("expiration data", async () => {
+    let nameId: number;
+
+    beforeEach(async () => {
+      const mintTx = await soulName
+        .connect(owner)
+        .mint(address1.address, SOUL_NAME1, identityId1, YEAR);
+      const mintReceipt = await mintTx.wait();
+
+      nameId = mintReceipt.events![0].args![2].toNumber();
+    });
+
+    it("should return an active registration period", async () => {
+      const [, , expirationDate, active] = await soulName.getTokenData(
+        SOUL_NAME1
+      );
+
+      expect(expirationDate).to.be.above(0);
+      expect(active).to.be.true;
+    });
+
+    it("should return an inactive registration period", async () => {
+      // increase time to expire the registration period
+      await network.provider.send('evm_increaseTime', [YEAR + 1]);
+      await network.provider.send('evm_mine');
+
+      const [, , expirationDate, active] = await soulName.getTokenData(
+        SOUL_NAME1
+      );
+
+      expect(expirationDate).to.be.above(0);
+      expect(active).to.be.false;
     });
   });
 });
