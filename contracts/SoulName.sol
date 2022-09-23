@@ -258,7 +258,7 @@ contract SoulName is NFT, ISoulName {
         );
     }
 
-    /// @notice Returns all the identity names of an account
+    /// @notice Returns all the active soul names of an account
     /// @dev This function queries all the identity names of the specified account
     /// @param owner Address of the owner of the identities
     /// @return sbtNames Array of soul names associated to the account
@@ -274,7 +274,7 @@ contract SoulName is NFT, ISoulName {
         return getSoulNames(identityId);
     }
 
-    /// @notice Returns all the identity names of an identity
+    /// @notice Returns all the active soul names of an account
     /// @dev This function queries all the identity names of the specified identity Id
     /// @param identityId TokenId of the identity
     /// @return sbtNames Array of soul names associated to the identity Id

@@ -200,7 +200,7 @@ Returns the address of the SoulName contract linked to this identity
 function getSoulNames(uint256 tokenId) external view returns (string[] sbtNames)
 ```
 
-Returns all the identity names of an identity
+Returns all the active soul names of an account
 
 *This function queries all the identity names of the specified identity Id*
 
@@ -222,7 +222,7 @@ Returns all the identity names of an identity
 function getSoulNames(address owner) external view returns (string[] sbtNames)
 ```
 
-Returns all the identity names of an account
+Returns all the active soul names of an account
 
 *This function queries all the identity names of the specified account*
 
