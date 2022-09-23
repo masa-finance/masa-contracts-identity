@@ -349,7 +349,7 @@ function revokeRole(bytes32 role, address account) external nonpayable
 ### safeTransferFrom
 
 ```solidity
-function safeTransferFrom(address from, address to, uint256 tokenId) external pure
+function safeTransferFrom(address, address, uint256) external pure
 ```
 
 Transfers the ownership of an NFT from one address to another address
@@ -360,14 +360,14 @@ Transfers the ownership of an NFT from one address to another address
 
 | Name | Type | Description |
 |---|---|---|
-| from | address | The current owner of the NFT |
-| to | address | The new owner |
-| tokenId | uint256 | The NFT ID to transfer |
+| _0 | address | undefined |
+| _1 | address | undefined |
+| _2 | uint256 | undefined |
 
 ### safeTransferFrom
 
 ```solidity
-function safeTransferFrom(address from, address to, uint256 tokenId, bytes data) external pure
+function safeTransferFrom(address, address, uint256, bytes) external pure
 ```
 
 Transfer ownership of the token to another address safely
@@ -378,10 +378,10 @@ Transfer ownership of the token to another address safely
 
 | Name | Type | Description |
 |---|---|---|
-| from | address | The current owner of the NFT |
-| to | address | The new owner |
-| tokenId | uint256 | The NFT ID to transfer |
-| data | bytes | Additional data with no specified format, sent in call to `_to` |
+| _0 | address | undefined |
+| _1 | address | undefined |
+| _2 | uint256 | undefined |
+| _3 | bytes | undefined |
 
 ### setApprovalForAll
 
@@ -543,7 +543,7 @@ function totalSupply() external view returns (uint256)
 ### transferFrom
 
 ```solidity
-function transferFrom(address from, address to, uint256 tokenId) external pure
+function transferFrom(address, address, uint256) external pure
 ```
 
 Transfer ownership of an NFT -- THE CALLER IS RESPONSIBLE  TO CONFIRM THAT `_to` IS CAPABLE OF RECEIVING NFTS OR ELSE  THEY MAY BE PERMANENTLY LOST
@@ -554,9 +554,9 @@ Transfer ownership of an NFT -- THE CALLER IS RESPONSIBLE  TO CONFIRM THAT `_to`
 
 | Name | Type | Description |
 |---|---|---|
-| from | address | The current owner of the NFT |
-| to | address | The new owner |
-| tokenId | uint256 | The NFT ID to transfer |
+| _0 | address | undefined |
+| _1 | address | undefined |
+| _2 | uint256 | undefined |
 
 ### unpause
 

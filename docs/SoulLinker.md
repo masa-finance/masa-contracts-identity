@@ -13,7 +13,7 @@ Soul linker smart contract that let add links to a Soulbound token.
 ### hasLinks
 
 ```solidity
-function hasLinks(address token, uint256 tokenId) external view returns (bool)
+function hasLinks(address, uint256) external pure returns (bool)
 ```
 
 Query if the contract has links for the given token id
@@ -24,8 +24,8 @@ Query if the contract has links for the given token id
 
 | Name | Type | Description |
 |---|---|---|
-| token | address | Address of the token |
-| tokenId | uint256 | Id of the token |
+| _0 | address | undefined |
+| _1 | uint256 | undefined |
 
 #### Returns
 
