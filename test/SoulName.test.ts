@@ -229,9 +229,15 @@ describe("Soul Name", () => {
       );
     });
 
-    it("getSoulNames returns array of SBT names in lower case", async () => {
+    it("getSoulNames(uint256) returns array of SBT names in lower case", async () => {
       expect(
         await soulName["getSoulNames(uint256)"](identityId1)
+      ).to.deep.equal([SOUL_NAME1.toLowerCase()]);
+    });
+
+    it("getSoulNames(address) returns array of SBT names in lower case", async () => {
+      expect(
+        await soulName["getSoulNames(address)"](address1.address)
       ).to.deep.equal([SOUL_NAME1.toLowerCase()]);
     });
 

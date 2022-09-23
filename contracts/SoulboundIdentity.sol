@@ -197,8 +197,7 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
         soulNameAlreadySet
         returns (string[] memory sbtNames)
     {
-        uint256 tokenId = tokenOfOwner(owner);
-        return soulName.getSoulNames(tokenId);
+        return soulName.getSoulNames(owner);
     }
 
     // SoulName -> SoulboundIdentity.tokenId
