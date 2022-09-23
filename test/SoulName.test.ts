@@ -346,7 +346,7 @@ describe("Soul Name", () => {
         SOUL_NAME1
       );
 
-      expect(expirationDate).to.be.above(0);
+      expect(expirationDate).to.be.above(YEAR);
       expect(active).to.be.true;
       expect(
         await soulName["getSoulNames(uint256)"](identityId1)
@@ -362,11 +362,42 @@ describe("Soul Name", () => {
         SOUL_NAME1
       );
 
-      expect(expirationDate).to.be.above(0);
+      expect(expirationDate).to.be.above(YEAR);
       expect(active).to.be.false;
       expect(
         await soulName["getSoulNames(uint256)"](identityId1)
       ).to.deep.equal([]);
+    });
+
+    it("should renew period when period hasn't expired", async () => {
+      // increase time to half the registration period
+      await network.provider.send('evm_increaseTime', [YEAR/2]);
+      await network.provider.send('evm_mine');
+
+      const [, , expirationDateStart,] = await soulName.getTokenData(
+        SOUL_NAME1
+      );
+
+      await soulName.connect(address1).renewPeriod(nameId, YEAR);
+
+      const [, , expirationDateFinish, active] = await soulName.getTokenData(
+        SOUL_NAME1
+      );
+
+      expect(expirationDateFinish.toNumber() - expirationDateStart.toNumber()).to.be.equal(YEAR);
+      expect(active).to.be.true;
+      expect(
+        await soulName["getSoulNames(uint256)"](identityId1)
+      ).to.deep.equal([SOUL_NAME1.toLowerCase()]);
+    });
+
+    it("should renew period when period has expired", async () => {
+    });
+
+    it("shouldn't renew period when period has expired and somebody has minted same name", async () => {
+    });
+
+    it("should allow mint same name if previous has expired", async () => {
     });
   });
 });
