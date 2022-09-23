@@ -412,6 +412,17 @@ describe("Soul Name", () => {
       ).to.deep.equal([SOUL_NAME1.toLowerCase()]);
     });
 
+    it("should allow mint same name if previous has expired", async () => {
+      // increase time to expire the registration period
+      await network.provider.send("evm_increaseTime", [YEAR + 1]);
+      await network.provider.send("evm_mine");
+
+      // once expired, another user mints the same soul name
+      await soulName
+        .connect(owner)
+        .mint(address2.address, SOUL_NAME1, identityId2, YEAR);
+    });
+
     it("shouldn't renew period when period has expired and somebody has minted same name", async () => {
       // increase time to expire the registration period
       await network.provider.send("evm_increaseTime", [YEAR + 1]);
@@ -427,7 +438,5 @@ describe("Soul Name", () => {
         soulName.connect(address1).renewPeriod(nameId, YEAR)
       ).to.be.rejectedWith("CAN_NOT_RENEW");
     });
-
-    it("should allow mint same name if previous has expired", async () => {});
   });
 });
