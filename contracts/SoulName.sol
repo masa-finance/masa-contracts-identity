@@ -3,6 +3,7 @@ pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
+import "./libraries/Utils.sol";
 import "./interfaces/ISoulboundIdentity.sol";
 import "./interfaces/ISoulName.sol";
 import "./tokens/NFT.sol";
@@ -111,7 +112,7 @@ contract SoulName is NFT, ISoulName {
         tokenData[tokenId].identityId = identityId;
         tokenData[tokenId].expirationDate = block.timestamp.add(period);
 
-        string memory lowercaseName = _toLowerCase(name);
+        string memory lowercaseName = Utils.toLowerCase(name);
         nameData[lowercaseName].tokenId = tokenId;
         nameData[lowercaseName].exists = true;
 
@@ -141,9 +142,14 @@ contract SoulName is NFT, ISoulName {
         // change value from soulNames
         tokenData[tokenId].identityId = identityId;
 
-        string memory lowercaseName = _toLowerCase(tokenData[tokenId].name);
+        string memory lowercaseName = Utils.toLowerCase(
+            tokenData[tokenId].name
+        );
         // remove name from identityNames[oldIdentityId]
-        _removeFromIdentityNames(oldIdentityId, lowercaseName);
+        Utils.removeStringFromArray(
+            identityNames[oldIdentityId],
+            lowercaseName
+        );
 
         // add name to identityNames[identityId]
         identityNames[identityId].push(lowercaseName);
@@ -162,7 +168,9 @@ contract SoulName is NFT, ISoulName {
         require(period > 0, "ZERO_PERIOD");
 
         // check that the last registered tokenId for that name is the current token
-        string memory lowercaseName = _toLowerCase(tokenData[tokenId].name);
+        string memory lowercaseName = Utils.toLowerCase(
+            tokenData[tokenId].name
+        );
         require(nameData[lowercaseName].exists, "NAME_NOT_FOUND");
         require(nameData[lowercaseName].tokenId == tokenId, "CAN_NOT_RENEW");
 
@@ -182,7 +190,9 @@ contract SoulName is NFT, ISoulName {
     function burn(uint256 tokenId) public override {
         require(_exists(tokenId), "TOKEN_NOT_FOUND");
 
-        string memory lowercaseName = _toLowerCase(tokenData[tokenId].name);
+        string memory lowercaseName = Utils.toLowerCase(
+            tokenData[tokenId].name
+        );
         uint256 identityId = tokenData[tokenId].identityId;
 
         // remove info from tokenIdName and tokenData
@@ -192,7 +202,7 @@ contract SoulName is NFT, ISoulName {
         if (nameData[lowercaseName].tokenId == tokenId) {
             delete nameData[lowercaseName];
         }
-        _removeFromIdentityNames(identityId, lowercaseName);
+        Utils.removeStringFromArray(identityNames[identityId], lowercaseName);
 
         super.burn(tokenId);
     }
@@ -216,7 +226,7 @@ contract SoulName is NFT, ISoulName {
         override
         returns (bool available)
     {
-        string memory lowercaseName = _toLowerCase(name);
+        string memory lowercaseName = Utils.toLowerCase(name);
         if (nameData[lowercaseName].exists) {
             uint256 tokenId = nameData[lowercaseName].tokenId;
             return tokenData[tokenId].expirationDate >= block.timestamp;
@@ -243,7 +253,7 @@ contract SoulName is NFT, ISoulName {
             bool active
         )
     {
-        string memory lowercaseName = _toLowerCase(name);
+        string memory lowercaseName = Utils.toLowerCase(name);
 
         require(nameData[lowercaseName].exists, "NAME_NOT_FOUND");
 
@@ -316,43 +326,6 @@ contract SoulName is NFT, ISoulName {
     }
 
     /* ========== PRIVATE FUNCTIONS ========== */
-
-    function _toLowerCase(string memory _str)
-        private
-        pure
-        returns (string memory)
-    {
-        bytes memory bStr = bytes(_str);
-        bytes memory bLower = new bytes(bStr.length);
-
-        for (uint256 i = 0; i < bStr.length; i++) {
-            // Uppercase character...
-            if ((bStr[i] >= 0x41) && (bStr[i] <= 0x5A)) {
-                // So we add 0x20 to make it lowercase
-                bLower[i] = bytes1(uint8(bStr[i]) + 0x20);
-            } else {
-                bLower[i] = bStr[i];
-            }
-        }
-        return string(bLower);
-    }
-
-    function _removeFromIdentityNames(uint256 identityId, string memory name)
-        private
-    {
-        for (uint256 i = 0; i < identityNames[identityId].length; i++) {
-            if (
-                keccak256(abi.encodePacked((identityNames[identityId][i]))) ==
-                keccak256(abi.encodePacked((name)))
-            ) {
-                identityNames[identityId][i] = identityNames[identityId][
-                    identityNames[identityId].length - 1
-                ];
-                identityNames[identityId].pop();
-                break;
-            }
-        }
-    }
 
     function _getName(string memory name) private view returns (string memory) {
         return string(bytes.concat(bytes(name), bytes(extension)));
