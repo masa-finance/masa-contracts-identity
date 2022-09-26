@@ -47,7 +47,10 @@ const func: DeployFunction = async ({
         ]
       });
     } catch (error) {
-      if (error.message != "Contract source code already verified") {
+      if (
+        !error.message.includes("Contract source code already verified") &&
+        !error.message.includes("Reason: Already Verified")
+      ) {
         throw error;
       }
     }
