@@ -463,10 +463,10 @@ function paused() external view returns (bool)
 |---|---|---|
 | _0 | bool | undefined |
 
-### renewPeriod
+### renewYearsPeriod
 
 ```solidity
-function renewPeriod(uint256 tokenId, uint256 yearsPeriod) external nonpayable
+function renewYearsPeriod(uint256 tokenId, uint256 yearsPeriod) external nonpayable
 ```
 
 Update the expiration date of a soul name

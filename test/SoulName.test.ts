@@ -375,7 +375,7 @@ describe("Soul Name", () => {
 
       const [, , expirationDateStart] = await soulName.getTokenData(SOUL_NAME1);
 
-      await soulName.connect(address1).renewPeriod(nameId, YEAR);
+      await soulName.connect(address1).renewYearsPeriod(nameId, YEAR);
 
       const [, , expirationDateFinish, active] = await soulName.getTokenData(
         SOUL_NAME1
@@ -397,7 +397,7 @@ describe("Soul Name", () => {
 
       const [, , expirationDateStart] = await soulName.getTokenData(SOUL_NAME1);
 
-      await soulName.connect(address1).renewPeriod(nameId, YEAR);
+      await soulName.connect(address1).renewYearsPeriod(nameId, YEAR);
 
       const [, , expirationDateFinish, active] = await soulName.getTokenData(
         SOUL_NAME1
@@ -435,7 +435,7 @@ describe("Soul Name", () => {
 
       // the first owner of the soul name tries to renew the period and fails
       await expect(
-        soulName.connect(address1).renewPeriod(nameId, YEAR)
+        soulName.connect(address1).renewYearsPeriod(nameId, YEAR)
       ).to.be.rejectedWith("CAN_NOT_RENEW");
     });
   });

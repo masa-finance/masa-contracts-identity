@@ -159,7 +159,7 @@ contract SoulName is NFT, ISoulName {
     /// @dev The caller must be the owner or an approved address of the soul name.
     /// @param tokenId TokenId of the soul name
     /// @param yearsPeriod Years of validity of the name
-    function renewPeriod(uint256 tokenId, uint256 yearsPeriod) public {
+    function renewYearsPeriod(uint256 tokenId, uint256 yearsPeriod) public {
         // ERC721: caller is not token owner nor approved
         require(
             _isApprovedOrOwner(_msgSender(), tokenId),
@@ -176,7 +176,9 @@ contract SoulName is NFT, ISoulName {
 
         // check if the name is expired
         if (tokenData[tokenId].expirationDate < block.timestamp) {
-            tokenData[tokenId].expirationDate = block.timestamp.add(yearsPeriod);
+            tokenData[tokenId].expirationDate = block.timestamp.add(
+                yearsPeriod
+            );
         } else {
             tokenData[tokenId].expirationDate = tokenData[tokenId]
                 .expirationDate
