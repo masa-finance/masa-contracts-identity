@@ -231,31 +231,31 @@ describe("Soulbound Identity", () => {
     });
 
     it("isAvailable true with an existing name", async () => {
-      await expect(
-        await soulboundIdentity.isAvailable(SOUL_NAME1)
-      ).to.be.equals(true);
+      await expect(await soulboundIdentity.isAvailable(SOUL_NAME1)).to.be.equal(
+        true
+      );
     });
 
     it("isAvailable true with an existing name - case insensitive", async () => {
       await expect(
         await soulboundIdentity.isAvailable(SOUL_NAME1.toLowerCase())
-      ).to.be.equals(true);
+      ).to.be.equal(true);
       await expect(
         await soulboundIdentity.isAvailable(SOUL_NAME1.toUpperCase())
-      ).to.be.equals(true);
+      ).to.be.equal(true);
     });
 
     it("isAvailable false with a non existing name", async () => {
-      await expect(
-        await soulboundIdentity.isAvailable("fakeName")
-      ).to.be.equals(false);
+      await expect(await soulboundIdentity.isAvailable("fakeName")).to.be.equal(
+        false
+      );
     });
 
     it("getTokenData with an existing name", async () => {
       const [sbtName, , ,] = await soulboundIdentity.getTokenData(SOUL_NAME1);
       const extension = await soulboundIdentity.getExtension();
 
-      await expect(sbtName).to.be.equals(SOUL_NAME1 + extension);
+      await expect(sbtName).to.be.equal(SOUL_NAME1 + extension);
     });
 
     it("getTokenData with an existing name - case insensitive", async () => {
@@ -264,13 +264,13 @@ describe("Soulbound Identity", () => {
       );
       const extension = await soulboundIdentity.getExtension();
 
-      await expect(sbtName).to.be.equals(SOUL_NAME1 + extension);
+      await expect(sbtName).to.be.equal(SOUL_NAME1 + extension);
 
       [sbtName, identityId, ,] = await soulboundIdentity.getTokenData(
         SOUL_NAME1.toUpperCase()
       );
 
-      await expect(sbtName).to.be.equals(SOUL_NAME1 + extension);
+      await expect(sbtName).to.be.equal(SOUL_NAME1 + extension);
     });
 
     it("getTokenData with a non existing name", async () => {

@@ -182,28 +182,28 @@ describe("Soul Name", () => {
     });
 
     it("isAvailable true with an existing name", async () => {
-      await expect(await soulName.isAvailable(SOUL_NAME1)).to.be.equals(true);
+      await expect(await soulName.isAvailable(SOUL_NAME1)).to.be.equal(true);
     });
 
     it("isAvailable true with an existing name - case insensitive", async () => {
       await expect(
         await soulName.isAvailable(SOUL_NAME1.toLowerCase())
-      ).to.be.equals(true);
+      ).to.be.equal(true);
       await expect(
         await soulName.isAvailable(SOUL_NAME1.toUpperCase())
-      ).to.be.equals(true);
+      ).to.be.equal(true);
     });
 
     it("isAvailable false with a non existing name", async () => {
-      await expect(await soulName.isAvailable("fakeName")).to.be.equals(false);
+      await expect(await soulName.isAvailable("fakeName")).to.be.equal(false);
     });
 
     it("getTokenData with an existing name", async () => {
       const [sbtName, identityId, ,] = await soulName.getTokenData(SOUL_NAME1);
       const extension = await soulName.getExtension();
 
-      await expect(sbtName).to.be.equals(SOUL_NAME1 + extension);
-      await expect(identityId).to.be.equals(identityId1);
+      await expect(sbtName).to.be.equal(SOUL_NAME1 + extension);
+      await expect(identityId).to.be.equal(identityId1);
     });
 
     it("getTokenData with an existing name - case insensitive", async () => {
@@ -212,15 +212,15 @@ describe("Soul Name", () => {
       );
       const extension = await soulName.getExtension();
 
-      await expect(sbtName).to.be.equals(SOUL_NAME1 + extension);
-      await expect(identityId).to.be.equals(identityId1);
+      await expect(sbtName).to.be.equal(SOUL_NAME1 + extension);
+      await expect(identityId).to.be.equal(identityId1);
 
       [sbtName, identityId] = await soulName.getTokenData(
         SOUL_NAME1.toUpperCase()
       );
 
-      await expect(sbtName).to.be.equals(SOUL_NAME1 + extension);
-      await expect(identityId).to.be.equals(identityId1);
+      await expect(sbtName).to.be.equal(SOUL_NAME1 + extension);
+      await expect(identityId).to.be.equal(identityId1);
     });
 
     it("getTokenData with a non existing name", async () => {
@@ -280,7 +280,7 @@ describe("Soul Name", () => {
 
       const [, identityId, ,] = await soulName.getTokenData(SOUL_NAME1);
 
-      await expect(identityId).to.be.equals(identityId1);
+      await expect(identityId).to.be.equal(identityId1);
     });
 
     it("should update identity Id", async () => {
@@ -301,7 +301,7 @@ describe("Soul Name", () => {
 
       const [, identityId] = await soulName.getTokenData(SOUL_NAME1);
 
-      await expect(identityId).to.be.equals(identityId2);
+      await expect(identityId).to.be.equal(identityId2);
     });
   });
 
@@ -320,7 +320,7 @@ describe("Soul Name", () => {
     it("should burn", async () => {
       await soulName.connect(address1).burn(nameId);
 
-      await expect(await soulName.isAvailable(SOUL_NAME1)).to.be.equals(false);
+      await expect(await soulName.isAvailable(SOUL_NAME1)).to.be.equal(false);
       await expect(soulName.getTokenData("soulNameTest1")).to.be.rejectedWith(
         "NAME_NOT_FOUND"
       );
