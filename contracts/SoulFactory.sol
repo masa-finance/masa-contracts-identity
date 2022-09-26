@@ -187,7 +187,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
         string memory name,
         uint256 period
     ) external payable whenNotPaused returns (uint256) {
-        _payForMinting(paymentMethod, _getRegisterPerYearNamePrice(name));
+        _payForMinting(paymentMethod, getRegisterPerYearNamePrice(name));
 
         // finalize purchase
         return _mintSoulboundIdentityAndName(_msgSender(), name, period);
@@ -218,13 +218,31 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
         string memory name,
         uint256 period
     ) external payable whenNotPaused returns (uint256) {
-        _payForMinting(paymentMethod, _getRegisterPerYearNamePrice(name));
+        _payForMinting(paymentMethod, getRegisterPerYearNamePrice(name));
 
         // finalize purchase
         return _mintSoulName(_msgSender(), name, period);
     }
 
     /* ========== VIEWS ========== */
+
+    /// @notice Returns the price of register a name per year in stable coin for an specific length
+    /// @dev Returns the price for registering per year in USD for an specific name length
+    /// @param nameLength Length of the name
+    /// @return Price in stable coin for that name length
+    function getRegisterPerYearNamePrice(string memory nameLength)
+        public
+        view
+        returns (uint256)
+    {
+        uint256 bytelength = bytes(nameLength).length;
+        uint256 price = registerPerYearNamePrice[bytelength];
+        if (price == 0) {
+            // if not found, return the default price
+            price = registerPerYearNamePrice[0];
+        }
+        return price;
+    }
 
     /// @notice Returns the price of the name minting
     /// @dev Returns all current pricing and amount informations for a purchase
@@ -242,29 +260,11 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
         )
     {
         (priceInStableCoin, priceInETH, priceInUtilityToken) = _getSwapAmounts(
-            _getRegisterPerYearNamePrice(name)
+            getRegisterPerYearNamePrice(name)
         );
     }
 
     /* ========== PRIVATE FUNCTIONS ========== */
-
-    /// @notice Returns the price of register a name per year in stable coin for an specific length
-    /// @dev Returns the price for registering per year in USD for an specific name length
-    /// @param nameLength Length of the name
-    /// @return Price in stable coin for that name length
-    function _getRegisterPerYearNamePrice(string memory nameLength)
-        private
-        view
-        returns (uint256)
-    {
-        uint256 bytelength = bytes(nameLength).length;
-        uint256 price = registerPerYearNamePrice[bytelength];
-        if (price == 0) {
-            // if not found, return the default price
-            price = registerPerYearNamePrice[0];
-        }
-        return price;
-    }
 
     /// @notice Returns the price of minting
     /// @dev Returns all current pricing and amount informations for a purchase
@@ -367,7 +367,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
             to,
             tokenId,
             name,
-            _getRegisterPerYearNamePrice(name)
+            getRegisterPerYearNamePrice(name)
         );
 
         return tokenId;
@@ -408,7 +408,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
             to,
             tokenId,
             name,
-            _getRegisterPerYearNamePrice(name)
+            getRegisterPerYearNamePrice(name)
         );
 
         return tokenId;

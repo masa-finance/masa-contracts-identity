@@ -92,6 +92,28 @@ function estimateSwapAmount(address _fromToken, address _toToken, uint256 _amoun
 |---|---|---|
 | _0 | uint256 | undefined |
 
+### getRegisterPerYearNamePrice
+
+```solidity
+function getRegisterPerYearNamePrice(string nameLength) external view returns (uint256)
+```
+
+Returns the price of register a name per year in stable coin for an specific length
+
+*Returns the price for registering per year in USD for an specific name length*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| nameLength | string | Length of the name |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | Price in stable coin for that name length |
+
 ### getRoleAdmin
 
 ```solidity
