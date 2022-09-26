@@ -129,17 +129,20 @@ describe("Soul Factory", () => {
       ).to.be.rejected;
     });
 
-    it("should set MintingNamePrice from admin", async () => {
+    it("should set RegisterPerYearNamePrice from admin", async () => {
       const newPrice = 100;
-      await soulFactory.connect(owner).setMintingNamePrice(newPrice);
+      await soulFactory.connect(owner).setRegisterPerYearNamePrice(0, newPrice);
 
-      expect(await soulFactory.mintingNamePrice()).to.be.equal(newPrice);
+      expect(
+        await soulFactory.getRegisterPerYearNamePrice(SOUL_NAME)
+      ).to.be.equal(newPrice);
     });
 
     it("should fail to set MintingNamePrice from non admin", async () => {
       const newPrice = 100;
-      await expect(soulFactory.connect(address1).setMintingNamePrice(newPrice))
-        .to.be.rejected;
+      await expect(
+        soulFactory.connect(address1).setRegisterPerYearNamePrice(0, newPrice)
+      ).to.be.rejected;
     });
 
     it("should set StableCoin from admin", async () => {
@@ -208,7 +211,7 @@ describe("Soul Factory", () => {
   describe("purchase info", () => {
     it("we can get name purchase info", async () => {
       const [priceInStableCoin, priceInETH, priceInUtilityToken] =
-        await soulFactory.purchaseNameInfo();
+        await soulFactory.purchaseNameInfo(SOUL_NAME);
 
       expect(priceInStableCoin).to.be.equal(MINTING_NAME_PRICE);
       expect(priceInETH).not.to.be.equal("0");
@@ -218,7 +221,7 @@ describe("Soul Factory", () => {
 
   describe("purchase identity and name", () => {
     it("we can purchase an identity and name with ETH", async () => {
-      const [, priceInETH] = await soulFactory.purchaseNameInfo();
+      const [, priceInETH] = await soulFactory.purchaseNameInfo(SOUL_NAME);
 
       await soulFactory.connect(address1).purchaseIdentityAndName(
         ethers.constants.AddressZero, // ETH
@@ -229,7 +232,9 @@ describe("Soul Factory", () => {
     });
 
     it("we can purchase an identity and name with stable coin", async () => {
-      const [priceInStableCoin, ,] = await soulFactory.purchaseNameInfo();
+      const [priceInStableCoin, ,] = await soulFactory.purchaseNameInfo(
+        SOUL_NAME
+      );
 
       // set allowance for soul factory
       const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, owner);
@@ -245,7 +250,9 @@ describe("Soul Factory", () => {
     });
 
     it("we can purchase an identity and name with utility coin", async () => {
-      const [, , priceInUtilityToken] = await soulFactory.purchaseNameInfo();
+      const [, , priceInUtilityToken] = await soulFactory.purchaseNameInfo(
+        SOUL_NAME
+      );
 
       // set allowance for soul factory
       const usdc: ERC20 = ERC20__factory.connect(CORN_GOERLI, owner);
@@ -261,7 +268,7 @@ describe("Soul Factory", () => {
     });
 
     it("we can't purchase an identity and name with ETH if we pay less", async () => {
-      const [, priceInETH] = await soulFactory.purchaseNameInfo();
+      const [, priceInETH] = await soulFactory.purchaseNameInfo(SOUL_NAME);
 
       await expect(
         soulFactory.connect(address1).purchaseIdentityAndName(
@@ -274,7 +281,9 @@ describe("Soul Factory", () => {
     });
 
     it("we can't purchase an identity and name with stable coin if we don't have funds", async () => {
-      const [priceInStableCoin, ,] = await soulFactory.purchaseNameInfo();
+      const [priceInStableCoin, ,] = await soulFactory.purchaseNameInfo(
+        SOUL_NAME
+      );
 
       // set allowance for soul factory
       const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, owner);
@@ -292,7 +301,9 @@ describe("Soul Factory", () => {
     });
 
     it("we can't purchase an identity and name with utility coin if we don't have funds", async () => {
-      const [, , priceInUtilityToken] = await soulFactory.purchaseNameInfo();
+      const [, , priceInUtilityToken] = await soulFactory.purchaseNameInfo(
+        SOUL_NAME
+      );
 
       // set allowance for soul factory
       const usdc: ERC20 = ERC20__factory.connect(CORN_GOERLI, owner);
@@ -310,7 +321,7 @@ describe("Soul Factory", () => {
     });
 
     it("we can purchase an identity and name with more ETH receiving the refund", async () => {
-      const [, priceInETH] = await soulFactory.purchaseNameInfo();
+      const [, priceInETH] = await soulFactory.purchaseNameInfo(SOUL_NAME);
 
       const balance = await address1.getBalance();
 
@@ -346,7 +357,7 @@ describe("Soul Factory", () => {
     });
 
     it("we can purchase a name with ETH", async () => {
-      const [, priceInETH] = await soulFactory.purchaseNameInfo();
+      const [, priceInETH] = await soulFactory.purchaseNameInfo(SOUL_NAME);
 
       await soulFactory.connect(address1).purchaseName(
         ethers.constants.AddressZero, // ETH
@@ -357,7 +368,9 @@ describe("Soul Factory", () => {
     });
 
     it("we can purchase a name with stable coin", async () => {
-      const [priceInStableCoin, ,] = await soulFactory.purchaseNameInfo();
+      const [priceInStableCoin, ,] = await soulFactory.purchaseNameInfo(
+        SOUL_NAME
+      );
 
       // set allowance for soul factory
       const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, owner);
@@ -373,7 +386,9 @@ describe("Soul Factory", () => {
     });
 
     it("we can purchase a name with utility coin", async () => {
-      const [, , priceInUtilityToken] = await soulFactory.purchaseNameInfo();
+      const [, , priceInUtilityToken] = await soulFactory.purchaseNameInfo(
+        SOUL_NAME
+      );
 
       // set allowance for soul factory
       const usdc: ERC20 = ERC20__factory.connect(CORN_GOERLI, owner);
@@ -389,7 +404,7 @@ describe("Soul Factory", () => {
     });
 
     it("we can't purchase a name with ETH if we pay less", async () => {
-      const [, priceInETH] = await soulFactory.purchaseNameInfo();
+      const [, priceInETH] = await soulFactory.purchaseNameInfo(SOUL_NAME);
 
       await expect(
         soulFactory.connect(address1).purchaseName(
@@ -402,7 +417,9 @@ describe("Soul Factory", () => {
     });
 
     it("we can't purchase a name with stable coin if we don't have funds", async () => {
-      const [priceInStableCoin, ,] = await soulFactory.purchaseNameInfo();
+      const [priceInStableCoin, ,] = await soulFactory.purchaseNameInfo(
+        SOUL_NAME
+      );
 
       // set allowance for soul factory
       const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, owner);
@@ -420,7 +437,9 @@ describe("Soul Factory", () => {
     });
 
     it("we can't purchase a name with utility coin if we don't have funds", async () => {
-      const [, , priceInUtilityToken] = await soulFactory.purchaseNameInfo();
+      const [, , priceInUtilityToken] = await soulFactory.purchaseNameInfo(
+        SOUL_NAME
+      );
 
       // set allowance for soul factory
       const usdc: ERC20 = ERC20__factory.connect(CORN_GOERLI, owner);
