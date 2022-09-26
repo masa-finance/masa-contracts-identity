@@ -92,10 +92,10 @@ function estimateSwapAmount(address _fromToken, address _toToken, uint256 _amoun
 |---|---|---|
 | _0 | uint256 | undefined |
 
-### getRegisterPerYearNamePrice
+### getNameRegistrationPricePerYear
 
 ```solidity
-function getRegisterPerYearNamePrice(string nameLength) external view returns (uint256)
+function getNameRegistrationPricePerYear(string nameLength) external view returns (uint256)
 ```
 
 Returns the price of register a name per year in stable coin for an specific length
@@ -175,6 +175,28 @@ function hasRole(bytes32 role, address account) external view returns (bool)
 | Name | Type | Description |
 |---|---|---|
 | _0 | bool | undefined |
+
+### nameRegistrationPricePerYear
+
+```solidity
+function nameRegistrationPricePerYear(uint256) external view returns (uint256)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
 
 ### pause
 
@@ -293,28 +315,6 @@ Returns the price of the name minting
 | priceInETH | uint256 | Current price of the name minting in native token (ETH) |
 | priceInUtilityToken | uint256 | Current price of the name minting in utility token ($CORN) |
 
-### registerPerYearNamePrice
-
-```solidity
-function registerPerYearNamePrice(uint256) external view returns (uint256)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | undefined |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | undefined |
-
 ### renounceRole
 
 ```solidity
@@ -366,10 +366,10 @@ function revokeRole(bytes32 role, address account) external nonpayable
 | role | bytes32 | undefined |
 | account | address | undefined |
 
-### setRegisterPerYearNamePrice
+### setNameRegistrationPricePerYear
 
 ```solidity
-function setRegisterPerYearNamePrice(uint256 _nameLength, uint256 _registerPerYearNamePrice) external nonpayable
+function setNameRegistrationPricePerYear(uint256 _nameLength, uint256 _nameRegistrationPricePerYear) external nonpayable
 ```
 
 Sets the price of the name registering per one year in stable coin
@@ -381,7 +381,7 @@ Sets the price of the name registering per one year in stable coin
 | Name | Type | Description |
 |---|---|---|
 | _nameLength | uint256 | Length of the name |
-| _registerPerYearNamePrice | uint256 | New price of the name registering per one year in stable coin for that name length per year |
+| _nameRegistrationPricePerYear | uint256 | New price of the name registering per one year in stable coin for that name length per year |
 
 ### setReserveWallet
 

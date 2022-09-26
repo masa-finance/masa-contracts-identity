@@ -129,19 +129,23 @@ describe("Soul Factory", () => {
       ).to.be.rejected;
     });
 
-    it("should set RegisterPerYearNamePrice from admin", async () => {
+    it("should set NameRegistrationPricePerYear from admin", async () => {
       const newPrice = 100;
-      await soulFactory.connect(owner).setRegisterPerYearNamePrice(0, newPrice);
+      await soulFactory
+        .connect(owner)
+        .setNameRegistrationPricePerYear(0, newPrice);
 
       expect(
-        await soulFactory.getRegisterPerYearNamePrice(SOUL_NAME)
+        await soulFactory.getNameRegistrationPricePerYear(SOUL_NAME)
       ).to.be.equal(newPrice);
     });
 
     it("should fail to set MintingNamePrice from non admin", async () => {
       const newPrice = 100;
       await expect(
-        soulFactory.connect(address1).setRegisterPerYearNamePrice(0, newPrice)
+        soulFactory
+          .connect(address1)
+          .setNameRegistrationPricePerYear(0, newPrice)
       ).to.be.rejected;
     });
 

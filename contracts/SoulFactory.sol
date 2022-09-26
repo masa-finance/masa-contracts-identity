@@ -26,7 +26,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
 
     ISoulboundIdentity public soulboundIdentity;
 
-    mapping(uint256 => uint256) public registerPerYearNamePrice; // (length --> price in stable coin per year)
+    mapping(uint256 => uint256) public nameRegistrationPricePerYear; // (length --> price in stable coin per year)
 
     address public stableCoin; // USDC
     address public utilityToken; // $CORN
@@ -40,7 +40,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
     /// and Soul Name NFTs, paying a fee
     /// @param owner Owner of the smart contract
     /// @param _soulBoundIdentity Address of the Soulbound identity contract
-    /// @param _registerPerYearNamePrice Price of the default name registering in stable coin per year
+    /// @param _nameRegistrationPricePerYear Price of the default name registering in stable coin per year
     /// @param _utilityToken Utility token to pay the fee in ($CORN)
     /// @param _stableCoin Stable coin to pay the fee in (USDC)
     /// @param _wrappedNativeToken Wrapped native token address
@@ -49,7 +49,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
     constructor(
         address owner,
         ISoulboundIdentity _soulBoundIdentity,
-        uint256 _registerPerYearNamePrice,
+        uint256 _nameRegistrationPricePerYear,
         address _utilityToken,
         address _stableCoin,
         address _wrappedNativeToken,
@@ -64,7 +64,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
 
         soulboundIdentity = _soulBoundIdentity;
 
-        registerPerYearNamePrice[0] = _registerPerYearNamePrice; // name price for default length per year
+        nameRegistrationPricePerYear[0] = _nameRegistrationPricePerYear; // name price for default length per year
         stableCoin = _stableCoin;
         utilityToken = _utilityToken;
 
@@ -100,17 +100,20 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
     /// @notice Sets the price of the name registering per one year in stable coin
     /// @dev The caller must have the admin role to call this function
     /// @param _nameLength Length of the name
-    /// @param _registerPerYearNamePrice New price of the name registering per one
+    /// @param _nameRegistrationPricePerYear New price of the name registering per one
     /// year in stable coin for that name length per year
-    function setRegisterPerYearNamePrice(
+    function setNameRegistrationPricePerYear(
         uint256 _nameLength,
-        uint256 _registerPerYearNamePrice
+        uint256 _nameRegistrationPricePerYear
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         require(
-            registerPerYearNamePrice[_nameLength] != _registerPerYearNamePrice,
+            nameRegistrationPricePerYear[_nameLength] !=
+                _nameRegistrationPricePerYear,
             "SAME_VALUE"
         );
-        registerPerYearNamePrice[_nameLength] = _registerPerYearNamePrice;
+        nameRegistrationPricePerYear[
+            _nameLength
+        ] = _nameRegistrationPricePerYear;
     }
 
     /// @notice Sets the stable coin to pay the fee in (USDC)
@@ -187,7 +190,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
         string memory name,
         uint256 yearsPeriod
     ) external payable whenNotPaused returns (uint256) {
-        _payForMinting(paymentMethod, getRegisterPerYearNamePrice(name));
+        _payForMinting(paymentMethod, getNameRegistrationPricePerYear(name));
 
         // finalize purchase
         return _mintSoulboundIdentityAndName(_msgSender(), name, yearsPeriod);
@@ -218,7 +221,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
         string memory name,
         uint256 yearsPeriod
     ) external payable whenNotPaused returns (uint256) {
-        _payForMinting(paymentMethod, getRegisterPerYearNamePrice(name));
+        _payForMinting(paymentMethod, getNameRegistrationPricePerYear(name));
 
         // finalize purchase
         return _mintSoulName(_msgSender(), name, yearsPeriod);
@@ -230,16 +233,16 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
     /// @dev Returns the price for registering per year in USD for an specific name length
     /// @param nameLength Length of the name
     /// @return Price in stable coin for that name length
-    function getRegisterPerYearNamePrice(string memory nameLength)
+    function getNameRegistrationPricePerYear(string memory nameLength)
         public
         view
         returns (uint256)
     {
         uint256 bytelength = bytes(nameLength).length;
-        uint256 price = registerPerYearNamePrice[bytelength];
+        uint256 price = nameRegistrationPricePerYear[bytelength];
         if (price == 0) {
             // if not found, return the default price
-            price = registerPerYearNamePrice[0];
+            price = nameRegistrationPricePerYear[0];
         }
         return price;
     }
@@ -260,7 +263,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
         )
     {
         (priceInStableCoin, priceInETH, priceInUtilityToken) = _getSwapAmounts(
-            getRegisterPerYearNamePrice(name)
+            getNameRegistrationPricePerYear(name)
         );
     }
 
@@ -367,7 +370,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
             to,
             tokenId,
             name,
-            getRegisterPerYearNamePrice(name)
+            getNameRegistrationPricePerYear(name)
         );
 
         return tokenId;
@@ -409,7 +412,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
             to,
             tokenId,
             name,
-            getRegisterPerYearNamePrice(name)
+            getNameRegistrationPricePerYear(name)
         );
 
         return tokenId;
