@@ -62,14 +62,14 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
     /// @dev The caller can only mint one identity per address, and the name must be unique
     /// @param to Address of the owner of the new identity
     /// @param name Name of the new identity
-    /// @param period Period of validity of the name
+    /// @param yearsPeriod Years of validity of the name
     function mintIdentityWithName(
         address to,
         string memory name,
-        uint256 period
+        uint256 yearsPeriod
     ) public payable override soulNameAlreadySet returns (uint256) {
         uint256 identityId = mint(to);
-        soulName.mint(to, name, identityId, period);
+        soulName.mint(to, name, identityId, yearsPeriod);
 
         return identityId;
     }

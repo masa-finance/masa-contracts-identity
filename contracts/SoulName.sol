@@ -91,16 +91,16 @@ contract SoulName is NFT, ISoulName {
     /// @param to Address of the owner of the new soul name
     /// @param name Name of the new soul name
     /// @param identityId TokenId of the soulbound identity that will be pointed from this soul name
-    /// @param period Period of validity of the name
+    /// @param yearsPeriod Years of validity of the name
     function mint(
         address to,
         string memory name,
         uint256 identityId,
-        uint256 period
+        uint256 yearsPeriod
     ) public override returns (uint256) {
         require(!isAvailable(name), "NAME_ALREADY_EXISTS");
         require(bytes(name).length > 0, "ZERO_LENGTH_NAME");
-        require(period > 0, "ZERO_PERIOD");
+        require(yearsPeriod > 0, "ZERO_YEARS_PERIOD");
         require(
             soulboundIdentity.ownerOf(identityId) != address(0),
             "IDENTITY_NOT_FOUND"
@@ -110,7 +110,7 @@ contract SoulName is NFT, ISoulName {
 
         tokenData[tokenId].name = name;
         tokenData[tokenId].identityId = identityId;
-        tokenData[tokenId].expirationDate = block.timestamp.add(period);
+        tokenData[tokenId].expirationDate = block.timestamp.add(yearsPeriod);
 
         string memory lowercaseName = Utils.toLowerCase(name);
         nameData[lowercaseName].tokenId = tokenId;
@@ -158,14 +158,14 @@ contract SoulName is NFT, ISoulName {
     /// @notice Update the expiration date of a soul name
     /// @dev The caller must be the owner or an approved address of the soul name.
     /// @param tokenId TokenId of the soul name
-    /// @param period Period of validity of the name
-    function renewPeriod(uint256 tokenId, uint256 period) public {
+    /// @param yearsPeriod Years of validity of the name
+    function renewPeriod(uint256 tokenId, uint256 yearsPeriod) public {
         // ERC721: caller is not token owner nor approved
         require(
             _isApprovedOrOwner(_msgSender(), tokenId),
             "ERC721_CALLER_NOT_OWNER"
         );
-        require(period > 0, "ZERO_PERIOD");
+        require(yearsPeriod > 0, "ZERO_YEARS_PERIOD");
 
         // check that the last registered tokenId for that name is the current token
         string memory lowercaseName = Utils.toLowerCase(
@@ -176,11 +176,11 @@ contract SoulName is NFT, ISoulName {
 
         // check if the name is expired
         if (tokenData[tokenId].expirationDate < block.timestamp) {
-            tokenData[tokenId].expirationDate = block.timestamp.add(period);
+            tokenData[tokenId].expirationDate = block.timestamp.add(yearsPeriod);
         } else {
             tokenData[tokenId].expirationDate = tokenData[tokenId]
                 .expirationDate
-                .add(period);
+                .add(yearsPeriod);
         }
     }
 

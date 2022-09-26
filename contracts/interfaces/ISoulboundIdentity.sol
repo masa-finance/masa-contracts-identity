@@ -11,7 +11,7 @@ interface ISoulboundIdentity is IERC721 {
     function mintIdentityWithName(
         address to,
         string memory name,
-        uint256 period
+        uint256 yearsPeriod
     ) external payable returns (uint256);
 
     function getSoulName() external view returns (ISoulName);

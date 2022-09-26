@@ -224,7 +224,7 @@ Mints a new Soulbound Identity purchasing it
 ### purchaseIdentityAndName
 
 ```solidity
-function purchaseIdentityAndName(address paymentMethod, string name, uint256 period) external payable returns (uint256)
+function purchaseIdentityAndName(address paymentMethod, string name, uint256 yearsPeriod) external payable returns (uint256)
 ```
 
 Mints a new Soulbound Identity and Name purchasing it
@@ -237,7 +237,7 @@ Mints a new Soulbound Identity and Name purchasing it
 |---|---|---|
 | paymentMethod | address | Address of token that user want to pay |
 | name | string | Name of the new soul name |
-| period | uint256 | Period of validity of the name |
+| yearsPeriod | uint256 | Years of validity of the name |
 
 #### Returns
 
@@ -248,7 +248,7 @@ Mints a new Soulbound Identity and Name purchasing it
 ### purchaseName
 
 ```solidity
-function purchaseName(address paymentMethod, string name, uint256 period) external payable returns (uint256)
+function purchaseName(address paymentMethod, string name, uint256 yearsPeriod) external payable returns (uint256)
 ```
 
 Mints a new Soul Name purchasing it
@@ -261,7 +261,7 @@ Mints a new Soul Name purchasing it
 |---|---|---|
 | paymentMethod | address | Address of token that user want to pay |
 | name | string | Name of the new soul name |
-| period | uint256 | Period of validity of the name |
+| yearsPeriod | uint256 | Years of validity of the name |
 
 #### Returns
 

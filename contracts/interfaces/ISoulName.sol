@@ -6,7 +6,7 @@ interface ISoulName {
         address to,
         string memory name,
         uint256 identityId,
-        uint256 period
+        uint256 yearsPeriod
     ) external returns (uint256);
 
     function getExtension() external view returns (string memory);

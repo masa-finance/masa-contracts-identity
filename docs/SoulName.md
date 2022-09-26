@@ -351,7 +351,7 @@ Checks if a soul name is available
 ### mint
 
 ```solidity
-function mint(address to, string name, uint256 identityId, uint256 period) external nonpayable returns (uint256)
+function mint(address to, string name, uint256 identityId, uint256 yearsPeriod) external nonpayable returns (uint256)
 ```
 
 Mints a new soul name
@@ -365,7 +365,7 @@ Mints a new soul name
 | to | address | Address of the owner of the new soul name |
 | name | string | Name of the new soul name |
 | identityId | uint256 | TokenId of the soulbound identity that will be pointed from this soul name |
-| period | uint256 | Period of validity of the name |
+| yearsPeriod | uint256 | Years of validity of the name |
 
 #### Returns
 
@@ -466,7 +466,7 @@ function paused() external view returns (bool)
 ### renewPeriod
 
 ```solidity
-function renewPeriod(uint256 tokenId, uint256 period) external nonpayable
+function renewPeriod(uint256 tokenId, uint256 yearsPeriod) external nonpayable
 ```
 
 Update the expiration date of a soul name
@@ -478,7 +478,7 @@ Update the expiration date of a soul name
 | Name | Type | Description |
 |---|---|---|
 | tokenId | uint256 | TokenId of the soul name |
-| period | uint256 | Period of validity of the name |
+| yearsPeriod | uint256 | Years of validity of the name |
 
 ### renounceRole
 
