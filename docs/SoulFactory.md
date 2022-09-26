@@ -154,23 +154,6 @@ function hasRole(bytes32 role, address account) external view returns (bool)
 |---|---|---|
 | _0 | bool | undefined |
 
-### mintingNamePrice
-
-```solidity
-function mintingNamePrice() external view returns (uint256)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | undefined |
-
 ### pause
 
 ```solidity
@@ -267,13 +250,18 @@ Mints a new Soul Name purchasing it
 ### purchaseNameInfo
 
 ```solidity
-function purchaseNameInfo() external view returns (uint256 priceInStableCoin, uint256 priceInETH, uint256 priceInUtilityToken)
+function purchaseNameInfo(string name) external view returns (uint256 priceInStableCoin, uint256 priceInETH, uint256 priceInUtilityToken)
 ```
 
 Returns the price of the name minting
 
 *Returns all current pricing and amount informations for a purchase*
 
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | Name of the new soul name |
 
 #### Returns
 
@@ -282,6 +270,28 @@ Returns the price of the name minting
 | priceInStableCoin | uint256 | Current price of the name minting in stable coin |
 | priceInETH | uint256 | Current price of the name minting in native token (ETH) |
 | priceInUtilityToken | uint256 | Current price of the name minting in utility token ($CORN) |
+
+### registerPerYearNamePrice
+
+```solidity
+function registerPerYearNamePrice(uint256) external view returns (uint256)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
 
 ### renounceRole
 
@@ -334,13 +344,13 @@ function revokeRole(bytes32 role, address account) external nonpayable
 | role | bytes32 | undefined |
 | account | address | undefined |
 
-### setMintingNamePrice
+### setRegisterPerYearNamePrice
 
 ```solidity
-function setMintingNamePrice(uint256 _mintingNamePrice) external nonpayable
+function setRegisterPerYearNamePrice(uint256 _nameLength, uint256 _registerPerYearNamePrice) external nonpayable
 ```
 
-Sets the price of the name minting in stable coin
+Sets the price of the name registering per one year in stable coin
 
 *The caller must have the admin role to call this function*
 
@@ -348,7 +358,8 @@ Sets the price of the name minting in stable coin
 
 | Name | Type | Description |
 |---|---|---|
-| _mintingNamePrice | uint256 | New price of the name minting in stable coin |
+| _nameLength | uint256 | Length of the name |
+| _registerPerYearNamePrice | uint256 | New price of the name registering per one year in stable coin for that name length per year |
 
 ### setReserveWallet
 
