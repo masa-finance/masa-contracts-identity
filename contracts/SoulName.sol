@@ -17,6 +17,8 @@ contract SoulName is NFT, ISoulName {
     /* ========== STATE VARIABLES ========== */
     using SafeMath for uint256;
 
+    uint256 constant YEAR = 31536000; // 60 seconds * 60 minutes * 24 hours * 365 days
+
     ISoulboundIdentity public soulboundIdentity;
     string public extension; // suffix of the names (.sol?)
 
@@ -110,7 +112,9 @@ contract SoulName is NFT, ISoulName {
 
         tokenData[tokenId].name = name;
         tokenData[tokenId].identityId = identityId;
-        tokenData[tokenId].expirationDate = block.timestamp.add(yearsPeriod);
+        tokenData[tokenId].expirationDate = block.timestamp.add(
+            YEAR.mul(yearsPeriod)
+        );
 
         string memory lowercaseName = Utils.toLowerCase(name);
         nameData[lowercaseName].tokenId = tokenId;
@@ -177,12 +181,12 @@ contract SoulName is NFT, ISoulName {
         // check if the name is expired
         if (tokenData[tokenId].expirationDate < block.timestamp) {
             tokenData[tokenId].expirationDate = block.timestamp.add(
-                yearsPeriod
+                YEAR.mul(yearsPeriod)
             );
         } else {
             tokenData[tokenId].expirationDate = tokenData[tokenId]
                 .expirationDate
-                .add(yearsPeriod);
+                .add(YEAR.mul(yearsPeriod));
         }
     }
 
