@@ -63,8 +63,6 @@ const func: DeployFunction = async ({
     args: [
       env.OWNER || owner.address,
       soulboundIdentityDeployed.address,
-      "5000000", // 5 USDC, with 6 decimals
-      "3000000", // 3 USDC, with 6 decimals
       "3000000", // 3 USDC, with 6 decimals
       network.name == "hardhat" || network.name == "goerli"
         ? CORN_GOERLI // CORN
@@ -85,8 +83,6 @@ const func: DeployFunction = async ({
         constructorArguments: [
           env.OWNER || owner.address,
           soulboundIdentityDeployed.address,
-          "5000000", // 5 USDC, with 6 decimals
-          "3000000", // 3 USDC, with 6 decimals
           "3000000", // 3 USDC, with 6 decimals
           CORN_GOERLI, // CORN
           stableCoin,
