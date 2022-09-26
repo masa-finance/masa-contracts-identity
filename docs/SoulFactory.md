@@ -154,40 +154,6 @@ function hasRole(bytes32 role, address account) external view returns (bool)
 |---|---|---|
 | _0 | bool | undefined |
 
-### mintingIdentityAndNamePrice
-
-```solidity
-function mintingIdentityAndNamePrice() external view returns (uint256)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | undefined |
-
-### mintingIdentityPrice
-
-```solidity
-function mintingIdentityPrice() external view returns (uint256)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | undefined |
-
 ### mintingNamePrice
 
 ```solidity
@@ -236,18 +202,13 @@ function paused() external view returns (bool)
 ### purchaseIdentity
 
 ```solidity
-function purchaseIdentity(address paymentMethod) external payable returns (uint256)
+function purchaseIdentity() external payable returns (uint256)
 ```
 
 Mints a new Soulbound Identity purchasing it
 
-*This function allows the purchase of a soulbound identity using stable coin (USDC), native token (ETH) or utility token ($CORN)*
+*This function allows the purchase of a soulbound identity for free*
 
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| paymentMethod | address | Address of token that user want to pay |
 
 #### Returns
 
@@ -297,25 +258,6 @@ Returns the price of the identity and name minting
 | priceInStableCoin | uint256 | Current price of the identity and name minting in stable coin |
 | priceInETH | uint256 | Current price of the identity and name minting in native token (ETH) |
 | priceInUtilityToken | uint256 | Current price of the identity and nameminting in utility token ($CORN) |
-
-### purchaseIdentityInfo
-
-```solidity
-function purchaseIdentityInfo() external view returns (uint256 priceInStableCoin, uint256 priceInETH, uint256 priceInUtilityToken)
-```
-
-Returns the price of the identity minting
-
-*Returns all current pricing and amount informations for a purchase*
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| priceInStableCoin | uint256 | Current price of the identity minting in stable coin |
-| priceInETH | uint256 | Current price of the identity minting in native token (ETH) |
-| priceInUtilityToken | uint256 | Current price of the identity minting in utility token ($CORN) |
 
 ### purchaseName
 
@@ -410,38 +352,6 @@ function revokeRole(bytes32 role, address account) external nonpayable
 |---|---|---|
 | role | bytes32 | undefined |
 | account | address | undefined |
-
-### setMintingIdentityAndNamePrice
-
-```solidity
-function setMintingIdentityAndNamePrice(uint256 _mintingIdentityAndNamePrice) external nonpayable
-```
-
-Sets the price of the identity and name minting in stable coin
-
-*The caller must have the admin role to call this function*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _mintingIdentityAndNamePrice | uint256 | New price of the identity and name minting in stable coin |
-
-### setMintingIdentityPrice
-
-```solidity
-function setMintingIdentityPrice(uint256 _mintingIdentityPrice) external nonpayable
-```
-
-Sets the price of the identity minting in stable coin
-
-*The caller must have the admin role to call this function*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _mintingIdentityPrice | uint256 | New price of the identity minting in stable coin |
 
 ### setMintingNamePrice
 
@@ -788,7 +698,7 @@ event SoulboundIdentityAndNamePurchased(address indexed account, uint256 tokenId
 ### SoulboundIdentityPurchased
 
 ```solidity
-event SoulboundIdentityPurchased(address indexed account, uint256 tokenId, uint256 price)
+event SoulboundIdentityPurchased(address indexed account, uint256 tokenId)
 ```
 
 
@@ -801,7 +711,6 @@ event SoulboundIdentityPurchased(address indexed account, uint256 tokenId, uint2
 |---|---|---|
 | account `indexed` | address | undefined |
 | tokenId  | uint256 | undefined |
-| price  | uint256 | undefined |
 
 ### Unpaused
 

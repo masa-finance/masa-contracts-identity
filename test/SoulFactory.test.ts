@@ -131,36 +131,6 @@ describe("Soul Factory", () => {
       ).to.be.rejected;
     });
 
-    it("should set MintingIdentityAndNamePrice from admin", async () => {
-      const newPrice = 100;
-      await soulFactory.connect(owner).setMintingIdentityAndNamePrice(newPrice);
-
-      expect(await soulFactory.mintingIdentityAndNamePrice()).to.be.equal(
-        newPrice
-      );
-    });
-
-    it("should fail to set MintingIdentityAndNamePrice from non admin", async () => {
-      const newPrice = 100;
-      await expect(
-        soulFactory.connect(address1).setMintingIdentityAndNamePrice(newPrice)
-      ).to.be.rejected;
-    });
-
-    it("should set MintingIdentityPrice from admin", async () => {
-      const newPrice = 100;
-      await soulFactory.connect(owner).setMintingIdentityPrice(newPrice);
-
-      expect(await soulFactory.mintingIdentityPrice()).to.be.equal(newPrice);
-    });
-
-    it("should fail to set MintingIdentityPrice from non admin", async () => {
-      const newPrice = 100;
-      await expect(
-        soulFactory.connect(address1).setMintingIdentityPrice(newPrice)
-      ).to.be.rejected;
-    });
-
     it("should set MintingNamePrice from admin", async () => {
       const newPrice = 100;
       await soulFactory.connect(owner).setMintingNamePrice(newPrice);
@@ -243,15 +213,6 @@ describe("Soul Factory", () => {
         await soulFactory.purchaseIdentityAndNameInfo();
 
       expect(priceInStableCoin).to.be.equal(MINTING_IDENTITY_AND_NAME_PRICE);
-      expect(priceInETH).not.to.be.equal("0");
-      expect(priceInUtilityToken).not.to.be.equal("0");
-    });
-
-    it("we can get identity purchase info", async () => {
-      const [priceInStableCoin, priceInETH, priceInUtilityToken] =
-        await soulFactory.purchaseIdentityInfo();
-
-      expect(priceInStableCoin).to.be.equal(MINTING_IDENTITY_PRICE);
       expect(priceInETH).not.to.be.equal("0");
       expect(priceInUtilityToken).not.to.be.equal("0");
     });
@@ -388,98 +349,15 @@ describe("Soul Factory", () => {
   });
 
   describe("purchase identity", () => {
-    it("we can purchase an identity with ETH", async () => {
-      const [, priceInETH] = await soulFactory.purchaseIdentityInfo();
-
-      await soulFactory.connect(address1).purchaseIdentity(
-        ethers.constants.AddressZero, // ETH
-        { value: priceInETH }
-      );
-    });
-
-    it("we can purchase an identity with stable coin", async () => {
-      const [priceInStableCoin, ,] = await soulFactory.purchaseIdentityInfo();
-
-      // set allowance for soul factory
-      const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, owner);
-      await usdc
-        .connect(address1)
-        .approve(soulFactory.address, priceInStableCoin);
-
-      await soulFactory.connect(address1).purchaseIdentity(
-        USDC_GOERLI // USDC
-      );
-    });
-
-    it("we can purchase an identity with utility coin", async () => {
-      const [, , priceInUtilityToken] =
-        await soulFactory.purchaseIdentityInfo();
-
-      // set allowance for soul factory
-      const usdc: ERC20 = ERC20__factory.connect(CORN_GOERLI, owner);
-      await usdc
-        .connect(address1)
-        .approve(soulFactory.address, priceInUtilityToken);
-
-      await soulFactory.connect(address1).purchaseIdentity(
-        CORN_GOERLI // $CORN
-      );
-    });
-
-    it("we can't purchase an identity with ETH if we pay less", async () => {
-      const [, priceInETH] = await soulFactory.purchaseIdentityInfo();
-
-      await expect(
-        soulFactory.connect(address1).purchaseIdentity(
-          ethers.constants.AddressZero, // ETH
-          { value: priceInETH.div(2) }
-        )
-      ).to.be.rejectedWith("INVALID_PAYMENT_AMOUNT");
-    });
-
-    it("we can't purchase an identity with stable coin if we don't have funds", async () => {
-      const [priceInStableCoin, ,] = await soulFactory.purchaseIdentityInfo();
-
-      // set allowance for soul factory
-      const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, owner);
-      await usdc
-        .connect(address2)
-        .approve(soulFactory.address, priceInStableCoin);
-
-      await expect(
-        soulFactory.connect(address2).purchaseIdentity(
-          USDC_GOERLI // USDC
-        )
-      ).to.be.rejected;
-    });
-
-    it("we can't purchase an identity with utility coin if we don't have funds", async () => {
-      const [, , priceInUtilityToken] =
-        await soulFactory.purchaseIdentityInfo();
-
-      // set allowance for soul factory
-      const usdc: ERC20 = ERC20__factory.connect(CORN_GOERLI, owner);
-      await usdc
-        .connect(address2)
-        .approve(soulFactory.address, priceInUtilityToken);
-
-      await expect(
-        soulFactory.connect(address2).purchaseIdentity(
-          CORN_GOERLI // $CORN
-        )
-      ).to.be.rejected;
+    it("we can purchase an identity", async () => {
+      await soulFactory.connect(address1).purchaseIdentity();
     });
   });
 
   describe("purchase name", () => {
     beforeEach(async () => {
-      const [, priceInETH] = await soulFactory.purchaseIdentityInfo();
-
       // first we need to purchase an identity
-      await soulFactory.connect(address1).purchaseIdentity(
-        ethers.constants.AddressZero, // ETH
-        { value: priceInETH }
-      );
+      await soulFactory.connect(address1).purchaseIdentity();
     });
 
     it("we can purchase a name with ETH", async () => {
@@ -578,8 +456,10 @@ describe("Soul Factory", () => {
   describe("use invalid payment method", () => {
     it("we can't use an invalid payment method", async () => {
       await expect(
-        soulFactory.connect(address1).purchaseIdentity(
-          address2.address // invalid payment method
+        soulFactory.connect(address1).purchaseIdentityAndName(
+          address2.address, // invalid payment method
+          SOUL_NAME,
+          YEAR
         )
       ).to.be.rejectedWith("INVALID_PAYMENT_METHOD");
     });
