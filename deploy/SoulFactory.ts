@@ -107,13 +107,24 @@ const func: DeployFunction = async ({
     soulNameDeployed.address
   );
 
-  // we add soulFactory as soulboundIdentity and soulName minter
   const signer = env.OWNER
     ? new ethers.Wallet(
         getPrivateKey(network.name),
         ethers.getDefaultProvider(network.name)
       )
     : owner;
+
+  // we set the registration prices per year and length of name
+  const soulFactory = await ethers.getContractAt(
+    "SoulFactory",
+    soulFactoryDeploymentResult.address
+  );
+  await soulFactory.connect(signer).setRegisterPerYearNamePrice(1, 50000000000); // 1 length, 50,000 USDC
+  await soulFactory.connect(signer).setRegisterPerYearNamePrice(2, 5000000000); // 2 length, 5,000 USDC
+  await soulFactory.connect(signer).setRegisterPerYearNamePrice(3, 1500000000); // 3 length, 1,500 USDC
+  await soulFactory.connect(signer).setRegisterPerYearNamePrice(4, 500000000); // 4 length, 500 USDC
+
+  // we add soulFactory as soulboundIdentity and soulName minter
 
   const IDENTITY_MINTER_ROLE = await soulboundIdentity.MINTER_ROLE();
   await soulboundIdentity
