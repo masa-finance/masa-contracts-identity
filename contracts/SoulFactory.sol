@@ -190,7 +190,10 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
         string memory name,
         uint256 yearsPeriod
     ) external payable whenNotPaused returns (uint256) {
-        _payForMinting(paymentMethod, getNameRegistrationPricePerYear(name));
+        _payForMinting(
+            paymentMethod,
+            getNameRegistrationPricePerYear(name).mul(yearsPeriod)
+        );
 
         // finalize purchase
         return _mintSoulboundIdentityAndName(_msgSender(), name, yearsPeriod);
@@ -221,7 +224,10 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
         string memory name,
         uint256 yearsPeriod
     ) external payable whenNotPaused returns (uint256) {
-        _payForMinting(paymentMethod, getNameRegistrationPricePerYear(name));
+        _payForMinting(
+            paymentMethod,
+            getNameRegistrationPricePerYear(name).mul(yearsPeriod)
+        );
 
         // finalize purchase
         return _mintSoulName(_msgSender(), name, yearsPeriod);
@@ -366,12 +372,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
             yearsPeriod
         );
 
-        emit SoulboundIdentityAndNamePurchased(
-            to,
-            tokenId,
-            name,
-            getNameRegistrationPricePerYear(name)
-        );
+        emit SoulboundIdentityAndNamePurchased(to, tokenId, name, yearsPeriod);
 
         return tokenId;
     }
@@ -408,12 +409,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
 
         uint256 tokenId = soulName.mint(to, name, identityId, yearsPeriod);
 
-        emit SoulNamePurchased(
-            to,
-            tokenId,
-            name,
-            getNameRegistrationPricePerYear(name)
-        );
+        emit SoulNamePurchased(to, tokenId, name, yearsPeriod);
 
         return tokenId;
     }
@@ -426,7 +422,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
         address indexed account,
         uint256 tokenId,
         string indexed name,
-        uint256 price
+        uint256 yearsPeriod
     );
 
     event SoulboundIdentityPurchased(address indexed account, uint256 tokenId);
@@ -435,6 +431,6 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
         address indexed account,
         uint256 tokenId,
         string indexed name,
-        uint256 price
+        uint256 yearsPeriod
     );
 }
