@@ -31,7 +31,11 @@ let owner: SignerWithAddress;
 let address1: SignerWithAddress;
 let address2: SignerWithAddress;
 
-const MINTING_NAME_PRICE = "10000000"; // 10 USDC, with 6 decimals
+const MINTING_NAME_PRICE_1LETTERS = 50000000000; // 50,000 USDC, with 6 decimals
+const MINTING_NAME_PRICE_2LETTERS = 5000000000; // 5,000 USDC, with 6 decimals
+const MINTING_NAME_PRICE_3LETTERS = 1500000000; // 1,500 USDC, with 6 decimals
+const MINTING_NAME_PRICE_4LETTERS = 500000000; // 500 USDC, with 6 decimals
+const MINTING_NAME_PRICE_5LETTERS = 10000000; // 10 USDC, with 6 decimals
 
 const SOUL_NAME = "soulNameTest";
 const YEAR = 1; // 1 year
@@ -213,13 +217,92 @@ describe("Soul Factory", () => {
   });
 
   describe("purchase info", () => {
-    it("we can get name purchase info", async () => {
-      const [priceInStableCoin, priceInETH, priceInUtilityToken] =
+    it("we can get name purchase info for 1 and 2 years", async () => {
+      const [priceInStableCoin1, priceInETH1, priceInUtilityToken1] =
         await soulFactory.purchaseNameInfo(SOUL_NAME, YEAR);
 
-      expect(priceInStableCoin).to.be.equal(MINTING_NAME_PRICE);
-      expect(priceInETH).not.to.be.equal("0");
-      expect(priceInUtilityToken).not.to.be.equal("0");
+      expect(priceInStableCoin1).to.be.equal(MINTING_NAME_PRICE_5LETTERS);
+      expect(priceInETH1).not.to.be.equal("0");
+      expect(priceInUtilityToken1).not.to.be.equal("0");
+
+      const [priceInStableCoin2, priceInETH2, priceInUtilityToken2] =
+        await soulFactory.purchaseNameInfo(SOUL_NAME, YEAR * 2);
+
+      expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_5LETTERS * 2);
+      expect(priceInETH2).not.to.be.equal(priceInETH1.mul(2));
+      expect(priceInUtilityToken2).not.to.be.equal(priceInUtilityToken1.mul(2));
+    });
+
+    it("we can get 1 letters name purchase info for 1 and 2 years", async () => {
+      const SOUL_NAME_1LETTERS = "a";
+
+      const [priceInStableCoin1, priceInETH1, priceInUtilityToken1] =
+        await soulFactory.purchaseNameInfo(SOUL_NAME_1LETTERS, YEAR);
+
+      expect(priceInStableCoin1).to.be.equal(MINTING_NAME_PRICE_1LETTERS);
+      expect(priceInETH1).not.to.be.equal("0");
+      expect(priceInUtilityToken1).not.to.be.equal("0");
+
+      const [priceInStableCoin2, priceInETH2, priceInUtilityToken2] =
+        await soulFactory.purchaseNameInfo(SOUL_NAME_1LETTERS, YEAR * 2);
+
+      expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_1LETTERS * 2);
+      expect(priceInETH2).not.to.be.equal(priceInETH1.mul(2));
+      expect(priceInUtilityToken2).not.to.be.equal(priceInUtilityToken1.mul(2));
+    });
+
+    it("we can get 2 letters name purchase info for 1 and 2 years", async () => {
+      const SOUL_NAME_2LETTERS = "aa";
+
+      const [priceInStableCoin1, priceInETH1, priceInUtilityToken1] =
+        await soulFactory.purchaseNameInfo(SOUL_NAME_2LETTERS, YEAR);
+
+      expect(priceInStableCoin1).to.be.equal(MINTING_NAME_PRICE_2LETTERS);
+      expect(priceInETH1).not.to.be.equal("0");
+      expect(priceInUtilityToken1).not.to.be.equal("0");
+
+      const [priceInStableCoin2, priceInETH2, priceInUtilityToken2] =
+        await soulFactory.purchaseNameInfo(SOUL_NAME_2LETTERS, YEAR * 2);
+
+      expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_2LETTERS * 2);
+      expect(priceInETH2).not.to.be.equal(priceInETH1.mul(2));
+      expect(priceInUtilityToken2).not.to.be.equal(priceInUtilityToken1.mul(2));
+    });
+
+    it("we can get 3 letters name purchase info for 1 and 2 years", async () => {
+      const SOUL_NAME_3LETTERS = "aaa";
+
+      const [priceInStableCoin1, priceInETH1, priceInUtilityToken1] =
+        await soulFactory.purchaseNameInfo(SOUL_NAME_3LETTERS, YEAR);
+
+      expect(priceInStableCoin1).to.be.equal(MINTING_NAME_PRICE_3LETTERS);
+      expect(priceInETH1).not.to.be.equal("0");
+      expect(priceInUtilityToken1).not.to.be.equal("0");
+
+      const [priceInStableCoin2, priceInETH2, priceInUtilityToken2] =
+        await soulFactory.purchaseNameInfo(SOUL_NAME_3LETTERS, YEAR * 2);
+
+      expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_3LETTERS * 2);
+      expect(priceInETH2).not.to.be.equal(priceInETH1.mul(2));
+      expect(priceInUtilityToken2).not.to.be.equal(priceInUtilityToken1.mul(2));
+    });
+
+    it("we can get 4 letters name purchase info for 1 and 2 years", async () => {
+      const SOUL_NAME_4LETTERS = "aaaa";
+
+      const [priceInStableCoin1, priceInETH1, priceInUtilityToken1] =
+        await soulFactory.purchaseNameInfo(SOUL_NAME_4LETTERS, YEAR);
+
+      expect(priceInStableCoin1).to.be.equal(MINTING_NAME_PRICE_4LETTERS);
+      expect(priceInETH1).not.to.be.equal("0");
+      expect(priceInUtilityToken1).not.to.be.equal("0");
+
+      const [priceInStableCoin2, priceInETH2, priceInUtilityToken2] =
+        await soulFactory.purchaseNameInfo(SOUL_NAME_4LETTERS, YEAR * 2);
+
+      expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_4LETTERS * 2);
+      expect(priceInETH2).not.to.be.equal(priceInETH1.mul(2));
+      expect(priceInUtilityToken2).not.to.be.equal(priceInUtilityToken1.mul(2));
     });
   });
 
