@@ -223,25 +223,6 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
 
     /* ========== VIEWS ========== */
 
-    /// @notice Returns the price of the identity and name minting
-    /// @dev Returns all current pricing and amount informations for a purchase
-    /// @return priceInStableCoin Current price of the identity and name minting in stable coin
-    /// @return priceInETH Current price of the identity and name minting in native token (ETH)
-    /// @return priceInUtilityToken Current price of the identity and nameminting in utility token ($CORN)
-    function purchaseIdentityAndNameInfo()
-        public
-        view
-        returns (
-            uint256 priceInStableCoin,
-            uint256 priceInETH,
-            uint256 priceInUtilityToken
-        )
-    {
-        (priceInStableCoin, priceInETH, priceInUtilityToken) = _getSwapAmounts(
-            mintingNamePrice
-        );
-    }
-
     /// @notice Returns the price of the name minting
     /// @dev Returns all current pricing and amount informations for a purchase
     /// @return priceInStableCoin Current price of the name minting in stable coin

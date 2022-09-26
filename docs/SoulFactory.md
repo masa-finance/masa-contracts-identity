@@ -240,25 +240,6 @@ Mints a new Soulbound Identity and Name purchasing it
 |---|---|---|
 | _0 | uint256 | TokenId of the new soulbound identity |
 
-### purchaseIdentityAndNameInfo
-
-```solidity
-function purchaseIdentityAndNameInfo() external view returns (uint256 priceInStableCoin, uint256 priceInETH, uint256 priceInUtilityToken)
-```
-
-Returns the price of the identity and name minting
-
-*Returns all current pricing and amount informations for a purchase*
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| priceInStableCoin | uint256 | Current price of the identity and name minting in stable coin |
-| priceInETH | uint256 | Current price of the identity and name minting in native token (ETH) |
-| priceInUtilityToken | uint256 | Current price of the identity and nameminting in utility token ($CORN) |
-
 ### purchaseName
 
 ```solidity
