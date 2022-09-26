@@ -256,10 +256,11 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
     /// @notice Returns the price of the name minting
     /// @dev Returns all current pricing and amount informations for a purchase
     /// @param name Name of the new soul name
+    /// @param yearsPeriod Years of validity of the name
     /// @return priceInStableCoin Current price of the name minting in stable coin
     /// @return priceInETH Current price of the name minting in native token (ETH)
     /// @return priceInUtilityToken Current price of the name minting in utility token ($CORN)
-    function purchaseNameInfo(string memory name)
+    function purchaseNameInfo(string memory name, uint256 yearsPeriod)
         public
         view
         returns (
@@ -269,7 +270,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
         )
     {
         (priceInStableCoin, priceInETH, priceInUtilityToken) = _getSwapAmounts(
-            getNameRegistrationPricePerYear(name)
+            getNameRegistrationPricePerYear(name).mul(yearsPeriod)
         );
     }
 

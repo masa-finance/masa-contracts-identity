@@ -294,7 +294,7 @@ Mints a new Soul Name purchasing it
 ### purchaseNameInfo
 
 ```solidity
-function purchaseNameInfo(string name) external view returns (uint256 priceInStableCoin, uint256 priceInETH, uint256 priceInUtilityToken)
+function purchaseNameInfo(string name, uint256 yearsPeriod) external view returns (uint256 priceInStableCoin, uint256 priceInETH, uint256 priceInUtilityToken)
 ```
 
 Returns the price of the name minting
@@ -306,6 +306,7 @@ Returns the price of the name minting
 | Name | Type | Description |
 |---|---|---|
 | name | string | Name of the new soul name |
+| yearsPeriod | uint256 | Years of validity of the name |
 
 #### Returns
 
@@ -674,7 +675,7 @@ event RoleRevoked(bytes32 indexed role, address indexed account, address indexed
 ### SoulNamePurchased
 
 ```solidity
-event SoulNamePurchased(address indexed account, uint256 tokenId, string indexed name, uint256 price)
+event SoulNamePurchased(address indexed account, uint256 tokenId, string indexed name, uint256 yearsPeriod)
 ```
 
 
@@ -688,12 +689,12 @@ event SoulNamePurchased(address indexed account, uint256 tokenId, string indexed
 | account `indexed` | address | undefined |
 | tokenId  | uint256 | undefined |
 | name `indexed` | string | undefined |
-| price  | uint256 | undefined |
+| yearsPeriod  | uint256 | undefined |
 
 ### SoulboundIdentityAndNamePurchased
 
 ```solidity
-event SoulboundIdentityAndNamePurchased(address indexed account, uint256 tokenId, string indexed name, uint256 price)
+event SoulboundIdentityAndNamePurchased(address indexed account, uint256 tokenId, string indexed name, uint256 yearsPeriod)
 ```
 
 
@@ -707,7 +708,7 @@ event SoulboundIdentityAndNamePurchased(address indexed account, uint256 tokenId
 | account `indexed` | address | undefined |
 | tokenId  | uint256 | undefined |
 | name `indexed` | string | undefined |
-| price  | uint256 | undefined |
+| yearsPeriod  | uint256 | undefined |
 
 ### SoulboundIdentityPurchased
 
