@@ -17,7 +17,7 @@ let someone: SignerWithAddress;
 
 const SOUL_NAME1 = "soulName1";
 const SOUL_NAME2 = "soulName2";
-const YEAR = 31536000; // 60 seconds * 60 minutes * 24 hours * 365 days
+const YEAR = 1; // 1 year
 
 let address1: SignerWithAddress;
 let address2: SignerWithAddress;
@@ -252,23 +252,21 @@ describe("Soulbound Identity", () => {
     });
 
     it("getTokenData with an existing name", async () => {
-      const [sbtName, identityId] = await soulboundIdentity.getTokenData(
-        SOUL_NAME1
-      );
+      const [sbtName, , ,] = await soulboundIdentity.getTokenData(SOUL_NAME1);
       const extension = await soulboundIdentity.getExtension();
 
       await expect(sbtName).to.be.equals(SOUL_NAME1 + extension);
     });
 
     it("getTokenData with an existing name - case insensitive", async () => {
-      let [sbtName, identityId] = await soulboundIdentity.getTokenData(
+      let [sbtName, identityId, ,] = await soulboundIdentity.getTokenData(
         SOUL_NAME1.toLowerCase()
       );
       const extension = await soulboundIdentity.getExtension();
 
       await expect(sbtName).to.be.equals(SOUL_NAME1 + extension);
 
-      [sbtName, identityId] = await soulboundIdentity.getTokenData(
+      [sbtName, identityId, ,] = await soulboundIdentity.getTokenData(
         SOUL_NAME1.toUpperCase()
       );
 

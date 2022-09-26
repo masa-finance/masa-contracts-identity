@@ -16,7 +16,8 @@ const expect = chai.expect;
 
 const SOUL_NAME1 = "soulNameTest1";
 const SOUL_NAME2 = "soulNameTest2";
-const YEAR = 31536000; // 60 seconds * 60 minutes * 24 hours * 365 days
+const YEAR = 1; // 1 year
+const YEAR_PERIOD = 31536000; // 60 seconds * 60 minutes * 24 hours * 365 days
 
 // contract instances
 let soulboundIdentity: SoulboundIdentity;
@@ -198,7 +199,7 @@ describe("Soul Name", () => {
     });
 
     it("getTokenData with an existing name", async () => {
-      const [sbtName, identityId] = await soulName.getTokenData(SOUL_NAME1);
+      const [sbtName, identityId, ,] = await soulName.getTokenData(SOUL_NAME1);
       const extension = await soulName.getExtension();
 
       await expect(sbtName).to.be.equals(SOUL_NAME1 + extension);
@@ -206,7 +207,7 @@ describe("Soul Name", () => {
     });
 
     it("getTokenData with an existing name - case insensitive", async () => {
-      let [sbtName, identityId] = await soulName.getTokenData(
+      let [sbtName, identityId, ,] = await soulName.getTokenData(
         SOUL_NAME1.toLowerCase()
       );
       const extension = await soulName.getExtension();
@@ -277,7 +278,7 @@ describe("Soul Name", () => {
       expect(await soulName.balanceOf(address1.address)).to.be.equal(0);
       expect(await soulName.balanceOf(address2.address)).to.be.equal(1);
 
-      const [, identityId] = await soulName.getTokenData(SOUL_NAME1);
+      const [, identityId, ,] = await soulName.getTokenData(SOUL_NAME1);
 
       await expect(identityId).to.be.equals(identityId1);
     });
@@ -345,7 +346,7 @@ describe("Soul Name", () => {
         SOUL_NAME1
       );
 
-      expect(expirationDate).to.be.above(YEAR);
+      expect(expirationDate).to.be.above(YEAR_PERIOD);
       expect(active).to.be.true;
       expect(
         await soulName["getSoulNames(uint256)"](identityId1)
@@ -354,14 +355,14 @@ describe("Soul Name", () => {
 
     it("should return an inactive registration period", async () => {
       // increase time to expire the registration period
-      await network.provider.send("evm_increaseTime", [YEAR + 1]);
+      await network.provider.send("evm_increaseTime", [YEAR_PERIOD + 1]);
       await network.provider.send("evm_mine");
 
       const [, , expirationDate, active] = await soulName.getTokenData(
         SOUL_NAME1
       );
 
-      expect(expirationDate).to.be.above(YEAR);
+      expect(expirationDate).to.be.above(YEAR_PERIOD);
       expect(active).to.be.false;
       expect(
         await soulName["getSoulNames(uint256)"](identityId1)
@@ -370,7 +371,7 @@ describe("Soul Name", () => {
 
     it("should renew period when period hasn't expired", async () => {
       // increase time to half the registration period
-      await network.provider.send("evm_increaseTime", [YEAR / 2]);
+      await network.provider.send("evm_increaseTime", [YEAR_PERIOD / 2]);
       await network.provider.send("evm_mine");
 
       const [, , expirationDateStart] = await soulName.getTokenData(SOUL_NAME1);
@@ -383,7 +384,7 @@ describe("Soul Name", () => {
 
       expect(
         expirationDateFinish.toNumber() - expirationDateStart.toNumber()
-      ).to.be.equal(YEAR);
+      ).to.be.equal(YEAR_PERIOD);
       expect(active).to.be.true;
       expect(
         await soulName["getSoulNames(uint256)"](identityId1)
@@ -392,7 +393,7 @@ describe("Soul Name", () => {
 
     it("should renew period when period has expired", async () => {
       // increase time to expire the registration period
-      await network.provider.send("evm_increaseTime", [YEAR + 1]);
+      await network.provider.send("evm_increaseTime", [YEAR_PERIOD + 1]);
       await network.provider.send("evm_mine");
 
       const [, , expirationDateStart] = await soulName.getTokenData(SOUL_NAME1);
@@ -405,7 +406,7 @@ describe("Soul Name", () => {
 
       expect(
         expirationDateFinish.toNumber() - expirationDateStart.toNumber()
-      ).to.be.above(YEAR);
+      ).to.be.above(YEAR_PERIOD);
       expect(active).to.be.true;
       expect(
         await soulName["getSoulNames(uint256)"](identityId1)
@@ -414,7 +415,7 @@ describe("Soul Name", () => {
 
     it("should allow mint same name if previous has expired", async () => {
       // increase time to expire the registration period
-      await network.provider.send("evm_increaseTime", [YEAR + 1]);
+      await network.provider.send("evm_increaseTime", [YEAR_PERIOD + 1]);
       await network.provider.send("evm_mine");
 
       // once expired, another user mints the same soul name
@@ -425,7 +426,7 @@ describe("Soul Name", () => {
 
     it("shouldn't renew period when period has expired and somebody has minted same name", async () => {
       // increase time to expire the registration period
-      await network.provider.send("evm_increaseTime", [YEAR + 1]);
+      await network.provider.send("evm_increaseTime", [YEAR_PERIOD + 1]);
       await network.provider.send("evm_mine");
 
       // once expired, another user mints the same soul name
