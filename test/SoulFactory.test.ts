@@ -31,7 +31,7 @@ let owner: SignerWithAddress;
 let address1: SignerWithAddress;
 let address2: SignerWithAddress;
 
-const MINTING_NAME_PRICE = "3000000"; // 3 USDC, with 6 decimals
+const MINTING_NAME_PRICE = "10000000"; // 10 USDC, with 6 decimals
 
 const SOUL_NAME = "soulNameTest";
 const YEAR = 31536000; // 60 seconds * 60 minutes * 24 hours * 365 days
