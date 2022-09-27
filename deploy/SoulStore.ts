@@ -58,7 +58,7 @@ const func: DeployFunction = async ({
     throw new Error("Network not supported");
   }
 
-  const soulFactoryDeploymentResult = await deploy("SoulFactory", {
+  const soulStoreDeploymentResult = await deploy("SoulStore", {
     from: deployer,
     args: [
       env.OWNER || owner.address,
@@ -79,7 +79,7 @@ const func: DeployFunction = async ({
   if (network.name == "mainnet" || network.name == "goerli") {
     try {
       await hre.run("verify:verify", {
-        address: soulFactoryDeploymentResult.address,
+        address: soulStoreDeploymentResult.address,
         constructorArguments: [
           env.OWNER || owner.address,
           soulboundIdentityDeployed.address,
@@ -118,36 +118,36 @@ const func: DeployFunction = async ({
     : owner;
 
   // we set the registration prices per year and length of name
-  const soulFactory = await ethers.getContractAt(
-    "SoulFactory",
-    soulFactoryDeploymentResult.address
+  const soulStore = await ethers.getContractAt(
+    "SoulStore",
+    soulStoreDeploymentResult.address
   );
-  await soulFactory
+  await soulStore
     .connect(signer)
     .setNameRegistrationPricePerYear(1, 50000000000); // 1 length, 50,000 USDC
-  await soulFactory
+  await soulStore
     .connect(signer)
     .setNameRegistrationPricePerYear(2, 5000000000); // 2 length, 5,000 USDC
-  await soulFactory
+  await soulStore
     .connect(signer)
     .setNameRegistrationPricePerYear(3, 1500000000); // 3 length, 1,500 USDC
-  await soulFactory
+  await soulStore
     .connect(signer)
     .setNameRegistrationPricePerYear(4, 500000000); // 4 length, 500 USDC
 
-  // we add soulFactory as soulboundIdentity and soulName minter
+  // we add soulStore as soulboundIdentity and soulName minter
 
   const IDENTITY_MINTER_ROLE = await soulboundIdentity.MINTER_ROLE();
   await soulboundIdentity
     .connect(signer)
-    .grantRole(IDENTITY_MINTER_ROLE, soulFactoryDeploymentResult.address);
+    .grantRole(IDENTITY_MINTER_ROLE, soulStoreDeploymentResult.address);
 
   const NAME_MINTER_ROLE = await soulName.MINTER_ROLE();
   await soulName
     .connect(signer)
-    .grantRole(NAME_MINTER_ROLE, soulFactoryDeploymentResult.address);
+    .grantRole(NAME_MINTER_ROLE, soulStoreDeploymentResult.address);
 };
 
-func.tags = ["SoulFactory"];
+func.tags = ["SoulStore"];
 func.dependencies = ["CORN", "SoulboundIdentity", "SoulName"];
 export default func;
