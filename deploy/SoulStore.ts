@@ -70,7 +70,7 @@ const func: DeployFunction = async ({
       stableCoin,
       wrappedNativeToken,
       swapRouter,
-      env.ADMIN || admin.address
+      env.RESERVE_WALLET || admin.address
     ],
     log: true
   });
@@ -88,7 +88,7 @@ const func: DeployFunction = async ({
           stableCoin,
           wrappedNativeToken,
           swapRouter,
-          env.ADMIN || admin.address
+          env.RESERVE_WALLET || admin.address
         ]
       });
     } catch (error) {
