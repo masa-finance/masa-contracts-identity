@@ -1,10 +1,10 @@
-# SoulFactory
+# SoulStore
 
 *Masa Finance*
 
-> Soul Factory
+> Soul Store
 
-Soul Factory, that can mint new Soulbound Identities and Soul Name NFTs, paying a fee
+Soul Store, that can mint new Soulbound Identities and Soul Name NFTs, paying a fee
 
 *From this smart contract we can mint new Soulbound Identities and Soul Name NFTs. This minting can be done paying a fee in ETH, USDC or CORN*
 
@@ -406,7 +406,7 @@ Set the reserve wallet
 function setSoulboundIdentity(contract ISoulboundIdentity _soulboundIdentity) external nonpayable
 ```
 
-Sets the SoulboundIdentity contract address linked to this factory
+Sets the SoulboundIdentity contract address linked to this store
 
 *The caller must have the admin role to call this function*
 
