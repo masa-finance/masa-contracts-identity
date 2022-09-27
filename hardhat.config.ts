@@ -33,7 +33,7 @@ const networks: NetworksUserConfig = {
     url: getInfuraURL("goerli"),
     accounts: [getPrivateKey("goerli")],
     gas: "auto", // 20000000
-    gasPrice: "auto"
+    gasPrice: 200000000000 //"auto"
   },
   alfajores: {
     url: "https://alfajores-forno.celo-testnet.org", // Localhost (default: none)
@@ -52,8 +52,8 @@ export default {
     version: "0.8.7",
     settings: {
       optimizer: {
-        enabled: false,
-        runs: 200,
+        enabled: true,
+        runs: 1,
         details: {
           yul: false
         }
