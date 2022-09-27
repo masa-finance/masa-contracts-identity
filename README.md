@@ -30,7 +30,7 @@ The base url for the Metadata url that is beeing generated from the contract
 - [Soulbound Credit Report Definition](docs/SoulboundCreditReport.md)
 - [Soul Name Definition](docs/SoulName.md)
 - [Soul Linker Definition](docs/SoulLinker.md)
-- [Soul Factory Definition](docs/SoulFactory.md)
+- [Soul Store Definition](docs/SoulStore.md)
 
 ## Deployment
 
