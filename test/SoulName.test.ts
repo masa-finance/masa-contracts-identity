@@ -23,7 +23,7 @@ const YEAR_PERIOD = 31536000; // 60 seconds * 60 minutes * 24 hours * 365 days
 let soulboundIdentity: SoulboundIdentity;
 let soulName: SoulName;
 
-let owner: SignerWithAddress;
+let admin: SignerWithAddress;
 let address1: SignerWithAddress;
 let address2: SignerWithAddress;
 
@@ -32,7 +32,7 @@ let identityId2: number;
 
 describe("Soul Name", () => {
   before(async () => {
-    [, owner, address1, address2] = await ethers.getSigners();
+    [, admin, address1, address2] = await ethers.getSigners();
   });
 
   beforeEach(async () => {
@@ -46,45 +46,45 @@ describe("Soul Name", () => {
 
     soulboundIdentity = SoulboundIdentity__factory.connect(
       soulboundIdentityAddress,
-      owner
+      admin
     );
-    soulName = SoulName__factory.connect(soulNameAddress, owner);
+    soulName = SoulName__factory.connect(soulNameAddress, admin);
 
     // we mint identity SBT for address1
-    let mintTx = await soulboundIdentity.connect(owner).mint(address1.address);
+    let mintTx = await soulboundIdentity.connect(admin).mint(address1.address);
     let mintReceipt = await mintTx.wait();
 
     identityId1 = mintReceipt.events![0].args![2].toNumber();
 
-    mintTx = await soulboundIdentity.connect(owner).mint(address2.address);
+    mintTx = await soulboundIdentity.connect(admin).mint(address2.address);
     mintReceipt = await mintTx.wait();
 
     identityId2 = mintReceipt.events![0].args![2].toNumber();
   });
 
   describe("pause", () => {
-    it("should pause from owner", async () => {
-      await soulName.connect(owner).pause();
+    it("should pause from admin", async () => {
+      await soulName.connect(admin).pause();
 
       expect(await soulName.paused()).to.be.true;
     });
 
-    it("should unpause from owner", async () => {
-      await soulName.connect(owner).pause();
+    it("should unpause from admin", async () => {
+      await soulName.connect(admin).pause();
 
       expect(await soulName.paused()).to.be.true;
 
-      await soulName.connect(owner).unpause();
+      await soulName.connect(admin).unpause();
 
       expect(await soulName.paused()).to.be.false;
     });
 
-    it("should fail to pause from non owner", async () => {
+    it("should fail to pause from non admin", async () => {
       await expect(soulName.connect(address1).pause()).to.be.rejected;
     });
 
-    it("should fail to unpause from non owner", async () => {
-      await soulName.connect(owner).pause();
+    it("should fail to unpause from non admin", async () => {
+      await soulName.connect(admin).pause();
 
       expect(await soulName.paused()).to.be.true;
 
@@ -106,7 +106,7 @@ describe("Soul Name", () => {
     });
 
     it("should success to set soulboundIdentity from admin user", async () => {
-      await soulName.connect(owner).setSoulboundIdentity(address2.address);
+      await soulName.connect(admin).setSoulboundIdentity(address2.address);
 
       expect(await soulName.soulboundIdentity()).to.be.equal(address2.address);
     });
@@ -119,16 +119,16 @@ describe("Soul Name", () => {
     });
 
     it("should success to set extension from admin user", async () => {
-      await soulName.connect(owner).setExtension(".other");
+      await soulName.connect(admin).setExtension(".other");
 
       expect(await soulName.getExtension()).to.be.equal(".other");
     });
   });
 
   describe("mint", () => {
-    it("should mint from owner", async () => {
+    it("should mint from admin", async () => {
       const mintTx = await soulName
-        .connect(owner)
+        .connect(admin)
         .mint(address1.address, SOUL_NAME1, identityId1, YEAR);
       const mintReceipt = await mintTx.wait();
 
@@ -140,27 +140,27 @@ describe("Soul Name", () => {
 
     it("should success to mint a name twice to the same idenity", async () => {
       await soulName
-        .connect(owner)
+        .connect(admin)
         .mint(address1.address, SOUL_NAME1, identityId1, YEAR);
 
       await soulName
-        .connect(owner)
+        .connect(admin)
         .mint(address1.address, SOUL_NAME2, identityId1, YEAR);
     });
 
     it("should fail to mint duplicated name", async () => {
       await soulName
-        .connect(owner)
+        .connect(admin)
         .mint(address1.address, SOUL_NAME1, identityId1, YEAR);
 
       await expect(
         soulName
-          .connect(owner)
+          .connect(admin)
           .mint(address1.address, SOUL_NAME1, identityId1, YEAR)
       ).to.be.rejected;
     });
 
-    it("should fail to mint from non-owner address", async () => {
+    it("should fail to mint from non-admin address", async () => {
       await expect(
         soulName
           .connect(address1)
@@ -174,7 +174,7 @@ describe("Soul Name", () => {
 
     beforeEach(async () => {
       const mintTx = await soulName
-        .connect(owner)
+        .connect(admin)
         .mint(address1.address, SOUL_NAME1, identityId1, YEAR);
       const mintReceipt = await mintTx.wait();
 
@@ -257,7 +257,7 @@ describe("Soul Name", () => {
 
     beforeEach(async () => {
       const mintTx = await soulName
-        .connect(owner)
+        .connect(admin)
         .mint(address1.address, SOUL_NAME1, identityId1, YEAR);
       const mintReceipt = await mintTx.wait();
 
@@ -310,7 +310,7 @@ describe("Soul Name", () => {
 
     beforeEach(async () => {
       const mintTx = await soulName
-        .connect(owner)
+        .connect(admin)
         .mint(address1.address, SOUL_NAME1, identityId1, YEAR);
       const mintReceipt = await mintTx.wait();
 
@@ -334,7 +334,7 @@ describe("Soul Name", () => {
 
     beforeEach(async () => {
       const mintTx = await soulName
-        .connect(owner)
+        .connect(admin)
         .mint(address1.address, SOUL_NAME1, identityId1, YEAR);
       const mintReceipt = await mintTx.wait();
 
@@ -420,7 +420,7 @@ describe("Soul Name", () => {
 
       // once expired, another user mints the same soul name
       await soulName
-        .connect(owner)
+        .connect(admin)
         .mint(address2.address, SOUL_NAME1, identityId2, YEAR);
     });
 
@@ -431,10 +431,10 @@ describe("Soul Name", () => {
 
       // once expired, another user mints the same soul name
       await soulName
-        .connect(owner)
+        .connect(admin)
         .mint(address2.address, SOUL_NAME1, identityId2, YEAR);
 
-      // the first owner of the soul name tries to renew the period and fails
+      // the first admin of the soul name tries to renew the period and fails
       await expect(
         soulName.connect(address1).renewYearsPeriod(nameId, YEAR)
       ).to.be.rejectedWith("CAN_NOT_RENEW");

@@ -27,7 +27,7 @@ const expect = chai.expect;
 // contract instances
 let soulStore: SoulStore;
 
-let owner: SignerWithAddress;
+let admin: SignerWithAddress;
 let address1: SignerWithAddress;
 let address2: SignerWithAddress;
 
@@ -42,7 +42,7 @@ const YEAR = 1; // 1 year
 
 describe("Soul Store", () => {
   before(async () => {
-    [, owner, address1, address2] = await ethers.getSigners();
+    [, admin, address1, address2] = await ethers.getSigners();
   });
 
   beforeEach(async () => {
@@ -53,14 +53,14 @@ describe("Soul Store", () => {
     const { address: cornAddress } = await deployments.get("CORN");
     const { address: soulStoreAddress } = await deployments.get("SoulStore");
 
-    soulStore = SoulStore__factory.connect(soulStoreAddress, owner);
+    soulStore = SoulStore__factory.connect(soulStoreAddress, admin);
     const uniswapRouter: IUniswapRouter = IUniswapRouter__factory.connect(
       SWAPROUTER_GOERLI,
-      owner
+      admin
     );
 
     // we get $CORN tokens for address1
-    const corn: CORN = CORN__factory.connect(cornAddress, owner);
+    const corn: CORN = CORN__factory.connect(cornAddress, admin);
     await corn.connect(address1).mint();
 
     // we get stable coins for address1
@@ -87,28 +87,28 @@ describe("Soul Store", () => {
   });
 
   describe("pause", () => {
-    it("should pause from owner", async () => {
-      await soulStore.connect(owner).pause();
+    it("should pause from admin", async () => {
+      await soulStore.connect(admin).pause();
 
       expect(await soulStore.paused()).to.be.true;
     });
 
-    it("should unpause from owner", async () => {
-      await soulStore.connect(owner).pause();
+    it("should unpause from admin", async () => {
+      await soulStore.connect(admin).pause();
 
       expect(await soulStore.paused()).to.be.true;
 
-      await soulStore.connect(owner).unpause();
+      await soulStore.connect(admin).unpause();
 
       expect(await soulStore.paused()).to.be.false;
     });
 
-    it("should fail to pause from non owner", async () => {
+    it("should fail to pause from non admin", async () => {
       await expect(soulStore.connect(address1).pause()).to.be.rejected;
     });
 
-    it("should fail to unpause from non owner", async () => {
-      await soulStore.connect(owner).pause();
+    it("should fail to unpause from non admin", async () => {
+      await soulStore.connect(admin).pause();
 
       expect(await soulStore.paused()).to.be.true;
 
@@ -118,7 +118,7 @@ describe("Soul Store", () => {
 
   describe("admin functions", () => {
     it("should set SoulboundIdentity from admin", async () => {
-      await soulStore.connect(owner).setSoulboundIdentity(address1.address);
+      await soulStore.connect(admin).setSoulboundIdentity(address1.address);
 
       expect(await soulStore.soulboundIdentity()).to.be.equal(address1.address);
     });
@@ -132,7 +132,7 @@ describe("Soul Store", () => {
     it("should set NameRegistrationPricePerYear from admin", async () => {
       const newPrice = 100;
       await soulStore
-        .connect(owner)
+        .connect(admin)
         .setNameRegistrationPricePerYear(0, newPrice);
 
       expect(
@@ -148,7 +148,7 @@ describe("Soul Store", () => {
     });
 
     it("should set StableCoin from admin", async () => {
-      await soulStore.connect(owner).setStableCoin(address1.address);
+      await soulStore.connect(admin).setStableCoin(address1.address);
 
       expect(await soulStore.stableCoin()).to.be.equal(address1.address);
     });
@@ -159,7 +159,7 @@ describe("Soul Store", () => {
     });
 
     it("should set UtilityToken from admin", async () => {
-      await soulStore.connect(owner).setUtilityToken(address1.address);
+      await soulStore.connect(admin).setUtilityToken(address1.address);
 
       expect(await soulStore.utilityToken()).to.be.equal(address1.address);
     });
@@ -171,7 +171,7 @@ describe("Soul Store", () => {
     });
 
     it("should set ReserveWallet from admin", async () => {
-      await soulStore.connect(owner).setReserveWallet(address1.address);
+      await soulStore.connect(admin).setReserveWallet(address1.address);
 
       expect(await soulStore.reserveWallet()).to.be.equal(address1.address);
     });
@@ -183,7 +183,7 @@ describe("Soul Store", () => {
     });
 
     it("should set SwapRouter from admin", async () => {
-      await soulStore.connect(owner).setSwapRouter(address1.address);
+      await soulStore.connect(admin).setSwapRouter(address1.address);
 
       expect(await soulStore.swapRouter()).to.be.equal(address1.address);
     });
@@ -194,7 +194,7 @@ describe("Soul Store", () => {
     });
 
     it("should set WrappedNativeToken from admin", async () => {
-      await soulStore.connect(owner).setWrappedNativeToken(address1.address);
+      await soulStore.connect(admin).setWrappedNativeToken(address1.address);
 
       expect(await soulStore.wrappedNativeToken()).to.be.equal(
         address1.address
@@ -317,7 +317,7 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, owner);
+      const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, admin);
       await usdc
         .connect(address1)
         .approve(soulStore.address, priceInStableCoin);
@@ -336,7 +336,7 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const usdc: ERC20 = ERC20__factory.connect(CORN_GOERLI, owner);
+      const usdc: ERC20 = ERC20__factory.connect(CORN_GOERLI, admin);
       await usdc
         .connect(address1)
         .approve(soulStore.address, priceInUtilityToken);
@@ -368,7 +368,7 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, owner);
+      const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, admin);
       await usdc
         .connect(address2)
         .approve(soulStore.address, priceInStableCoin);
@@ -389,7 +389,7 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const usdc: ERC20 = ERC20__factory.connect(CORN_GOERLI, owner);
+      const usdc: ERC20 = ERC20__factory.connect(CORN_GOERLI, admin);
       await usdc
         .connect(address2)
         .approve(soulStore.address, priceInUtilityToken);
@@ -457,7 +457,7 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, owner);
+      const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, admin);
       await usdc
         .connect(address1)
         .approve(soulStore.address, priceInStableCoin);
@@ -476,7 +476,7 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const usdc: ERC20 = ERC20__factory.connect(CORN_GOERLI, owner);
+      const usdc: ERC20 = ERC20__factory.connect(CORN_GOERLI, admin);
       await usdc
         .connect(address1)
         .approve(soulStore.address, priceInUtilityToken);
@@ -508,7 +508,7 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, owner);
+      const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, admin);
       await usdc
         .connect(address2)
         .approve(soulStore.address, priceInStableCoin);
@@ -529,7 +529,7 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const usdc: ERC20 = ERC20__factory.connect(CORN_GOERLI, owner);
+      const usdc: ERC20 = ERC20__factory.connect(CORN_GOERLI, admin);
       await usdc
         .connect(address2)
         .approve(soulStore.address, priceInUtilityToken);
