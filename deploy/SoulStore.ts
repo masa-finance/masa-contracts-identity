@@ -131,9 +131,7 @@ const func: DeployFunction = async ({
   await soulStore
     .connect(signer)
     .setNameRegistrationPricePerYear(3, 1500000000); // 3 length, 1,500 USDC
-  await soulStore
-    .connect(signer)
-    .setNameRegistrationPricePerYear(4, 500000000); // 4 length, 500 USDC
+  await soulStore.connect(signer).setNameRegistrationPricePerYear(4, 500000000); // 4 length, 500 USDC
 
   // we add soulStore as soulboundIdentity and soulName minter
 
