@@ -58,20 +58,22 @@ const func: DeployFunction = async ({
     throw new Error("Network not supported");
   }
 
+  const constructorArguments = [
+    env.OWNER || owner.address,
+    soulboundIdentityDeployed.address,
+    "10000000", // 10 USDC, with 6 decimals
+    network.name == "hardhat" || network.name == "goerli"
+      ? CORN_GOERLI // CORN
+      : corn.address,
+    stableCoin,
+    wrappedNativeToken,
+    swapRouter,
+    env.OWNER || owner.address
+  ];
+
   const soulStoreDeploymentResult = await deploy("SoulStore", {
     from: deployer,
-    args: [
-      env.OWNER || owner.address,
-      soulboundIdentityDeployed.address,
-      "10000000", // 10 USDC, with 6 decimals
-      network.name == "hardhat" || network.name == "goerli"
-        ? CORN_GOERLI // CORN
-        : corn.address,
-      stableCoin,
-      wrappedNativeToken,
-      swapRouter,
-      env.OWNER || owner.address
-    ],
+    args: constructorArguments,
     log: true
   });
 
@@ -80,16 +82,7 @@ const func: DeployFunction = async ({
     try {
       await hre.run("verify:verify", {
         address: soulStoreDeploymentResult.address,
-        constructorArguments: [
-          env.OWNER || owner.address,
-          soulboundIdentityDeployed.address,
-          "10000000", // 10 USDC, with 6 decimals
-          CORN_GOERLI, // CORN
-          stableCoin,
-          wrappedNativeToken,
-          swapRouter,
-          env.OWNER || owner.address
-        ]
+        constructorArguments
       });
     } catch (error) {
       if (
