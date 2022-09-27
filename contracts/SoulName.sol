@@ -50,7 +50,7 @@ contract SoulName is NFT, ISoulName {
         ISoulboundIdentity _soulboundIdentity,
         string memory _extension,
         string memory baseTokenURI
-    ) NFT(admin, "Masa Identity Name", "MIN", baseTokenURI) {
+    ) NFT(admin, "Masa Soul Name", "MSN", baseTokenURI) {
         require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
 
         soulboundIdentity = _soulboundIdentity;
