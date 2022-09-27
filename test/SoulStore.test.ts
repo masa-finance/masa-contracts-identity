@@ -51,9 +51,7 @@ describe("Soul Store", () => {
     await deployments.fixture("SoulStore", { fallbackToGlobal: false });
 
     const { address: cornAddress } = await deployments.get("CORN");
-    const { address: soulStoreAddress } = await deployments.get(
-      "SoulStore"
-    );
+    const { address: soulStoreAddress } = await deployments.get("SoulStore");
 
     soulStore = SoulStore__factory.connect(soulStoreAddress, owner);
     const uniswapRouter: IUniswapRouter = IUniswapRouter__factory.connect(
@@ -122,9 +120,7 @@ describe("Soul Store", () => {
     it("should set SoulboundIdentity from admin", async () => {
       await soulStore.connect(owner).setSoulboundIdentity(address1.address);
 
-      expect(await soulStore.soulboundIdentity()).to.be.equal(
-        address1.address
-      );
+      expect(await soulStore.soulboundIdentity()).to.be.equal(address1.address);
     });
 
     it("should fail to set SoulboundIdentity from non admin", async () => {
@@ -147,9 +143,7 @@ describe("Soul Store", () => {
     it("should fail to set MintingNamePrice from non admin", async () => {
       const newPrice = 100;
       await expect(
-        soulStore
-          .connect(address1)
-          .setNameRegistrationPricePerYear(0, newPrice)
+        soulStore.connect(address1).setNameRegistrationPricePerYear(0, newPrice)
       ).to.be.rejected;
     });
 
@@ -160,9 +154,8 @@ describe("Soul Store", () => {
     });
 
     it("should fail to set StableCoin from non admin", async () => {
-      await expect(
-        soulStore.connect(address1).setStableCoin(address1.address)
-      ).to.be.rejected;
+      await expect(soulStore.connect(address1).setStableCoin(address1.address))
+        .to.be.rejected;
     });
 
     it("should set UtilityToken from admin", async () => {
@@ -196,9 +189,8 @@ describe("Soul Store", () => {
     });
 
     it("should fail to set SwapRouter from non admin", async () => {
-      await expect(
-        soulStore.connect(address1).setSwapRouter(address1.address)
-      ).to.be.rejected;
+      await expect(soulStore.connect(address1).setSwapRouter(address1.address))
+        .to.be.rejected;
     });
 
     it("should set WrappedNativeToken from admin", async () => {
@@ -308,10 +300,7 @@ describe("Soul Store", () => {
 
   describe("purchase identity and name", () => {
     it("we can purchase an identity and name with ETH", async () => {
-      const [, priceInETH] = await soulStore.purchaseNameInfo(
-        SOUL_NAME,
-        YEAR
-      );
+      const [, priceInETH] = await soulStore.purchaseNameInfo(SOUL_NAME, YEAR);
 
       await soulStore.connect(address1).purchaseIdentityAndName(
         ethers.constants.AddressZero, // ETH
@@ -360,10 +349,7 @@ describe("Soul Store", () => {
     });
 
     it("we can't purchase an identity and name with ETH if we pay less", async () => {
-      const [, priceInETH] = await soulStore.purchaseNameInfo(
-        SOUL_NAME,
-        YEAR
-      );
+      const [, priceInETH] = await soulStore.purchaseNameInfo(SOUL_NAME, YEAR);
 
       await expect(
         soulStore.connect(address1).purchaseIdentityAndName(
@@ -418,10 +404,7 @@ describe("Soul Store", () => {
     });
 
     it("we can purchase an identity and name with more ETH receiving the refund", async () => {
-      const [, priceInETH] = await soulStore.purchaseNameInfo(
-        SOUL_NAME,
-        YEAR
-      );
+      const [, priceInETH] = await soulStore.purchaseNameInfo(SOUL_NAME, YEAR);
 
       const balance = await address1.getBalance();
 
@@ -457,10 +440,7 @@ describe("Soul Store", () => {
     });
 
     it("we can purchase a name with ETH", async () => {
-      const [, priceInETH] = await soulStore.purchaseNameInfo(
-        SOUL_NAME,
-        YEAR
-      );
+      const [, priceInETH] = await soulStore.purchaseNameInfo(SOUL_NAME, YEAR);
 
       await soulStore.connect(address1).purchaseName(
         ethers.constants.AddressZero, // ETH
@@ -509,10 +489,7 @@ describe("Soul Store", () => {
     });
 
     it("we can't purchase a name with ETH if we pay less", async () => {
-      const [, priceInETH] = await soulStore.purchaseNameInfo(
-        SOUL_NAME,
-        YEAR
-      );
+      const [, priceInETH] = await soulStore.purchaseNameInfo(SOUL_NAME, YEAR);
 
       await expect(
         soulStore.connect(address1).purchaseName(
