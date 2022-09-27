@@ -59,7 +59,7 @@ const func: DeployFunction = async ({
   }
 
   const constructorArguments = [
-    env.OWNER || owner.address,
+    env.ADMIN || admin.address,
     soulboundIdentityDeployed.address,
     "10000000", // 10 USDC, with 6 decimals
     network.name == "hardhat" || network.name == "goerli"
@@ -68,7 +68,7 @@ const func: DeployFunction = async ({
     stableCoin,
     wrappedNativeToken,
     swapRouter,
-    env.OWNER || owner.address
+    env.RESERVE_WALLET || admin.address
   ];
 
   const soulStoreDeploymentResult = await deploy("SoulStore", {

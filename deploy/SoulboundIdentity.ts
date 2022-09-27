@@ -27,7 +27,7 @@ const func: DeployFunction = async ({
   const soulLinker = await deployments.get("SoulLinker");
 
   const constructorArguments = [
-    env.OWNER || owner.address,
+    env.ADMIN || admin.address,
     soulLinker.address,
     baseUri
   ];

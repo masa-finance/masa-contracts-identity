@@ -23,7 +23,7 @@ const func: DeployFunction = async ({
   [, admin] = await ethers.getSigners();
   const env = getEnvParams(network.name);
 
-  const constructorArguments = [env.OWNER || owner.address];
+  const constructorArguments = [env.ADMIN || admin.address];
 
   const soulLinkerDeploymentResult = await deploy("SoulLinker", {
     from: deployer,
