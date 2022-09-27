@@ -23,9 +23,11 @@ const func: DeployFunction = async ({
   [, owner] = await ethers.getSigners();
   const env = getEnvParams(network.name);
 
+  const constructorArguments = [env.OWNER || owner.address];
+
   const soulLinkerDeploymentResult = await deploy("SoulLinker", {
     from: deployer,
-    args: [env.OWNER || owner.address],
+    args: constructorArguments,
     log: true
     // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
   });
@@ -35,7 +37,7 @@ const func: DeployFunction = async ({
     try {
       await hre.run("verify:verify", {
         address: soulLinkerDeploymentResult.address,
-        constructorArguments: [env.OWNER || owner.address]
+        constructorArguments
       });
     } catch (error) {
       if (
