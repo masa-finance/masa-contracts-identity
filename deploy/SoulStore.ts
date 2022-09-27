@@ -9,7 +9,7 @@ import {
   WETH_GOERLI
 } from "../src/constants";
 
-let owner: SignerWithAddress;
+let admin: SignerWithAddress;
 
 const func: DeployFunction = async ({
   // @ts-ignore
@@ -23,7 +23,7 @@ const func: DeployFunction = async ({
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  [, owner] = await ethers.getSigners();
+  [, admin] = await ethers.getSigners();
   const env = getEnvParams(network.name);
 
   const corn = await deployments.get("CORN");
@@ -61,7 +61,7 @@ const func: DeployFunction = async ({
   const soulStoreDeploymentResult = await deploy("SoulStore", {
     from: deployer,
     args: [
-      env.OWNER || owner.address,
+      env.ADMIN || admin.address,
       soulboundIdentityDeployed.address,
       "10000000", // 10 USDC, with 6 decimals
       network.name == "hardhat" || network.name == "goerli"
@@ -70,7 +70,7 @@ const func: DeployFunction = async ({
       stableCoin,
       wrappedNativeToken,
       swapRouter,
-      env.OWNER || owner.address
+      env.RESERVE_WALLET || admin.address
     ],
     log: true
   });
@@ -81,14 +81,14 @@ const func: DeployFunction = async ({
       await hre.run("verify:verify", {
         address: soulStoreDeploymentResult.address,
         constructorArguments: [
-          env.OWNER || owner.address,
+          env.ADMIN || admin.address,
           soulboundIdentityDeployed.address,
           "10000000", // 10 USDC, with 6 decimals
           CORN_GOERLI, // CORN
           stableCoin,
           wrappedNativeToken,
           swapRouter,
-          env.OWNER || owner.address
+          env.RESERVE_WALLET || admin.address
         ]
       });
     } catch (error) {
@@ -110,12 +110,12 @@ const func: DeployFunction = async ({
     soulNameDeployed.address
   );
 
-  const signer = env.OWNER
+  const signer = env.ADMIN
     ? new ethers.Wallet(
         getPrivateKey(network.name),
         ethers.getDefaultProvider(network.name)
       )
-    : owner;
+    : admin;
 
   // we set the registration prices per year and length of name
   const soulStore = await ethers.getContractAt(
@@ -131,9 +131,7 @@ const func: DeployFunction = async ({
   await soulStore
     .connect(signer)
     .setNameRegistrationPricePerYear(3, 1500000000); // 3 length, 1,500 USDC
-  await soulStore
-    .connect(signer)
-    .setNameRegistrationPricePerYear(4, 500000000); // 4 length, 500 USDC
+  await soulStore.connect(signer).setNameRegistrationPricePerYear(4, 500000000); // 4 length, 500 USDC
 
   // we add soulStore as soulboundIdentity and soulName minter
 

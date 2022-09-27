@@ -3,7 +3,7 @@ import { getEnvParams } from "../src/utils/EnvParams";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
 
-let owner: SignerWithAddress;
+let admin: SignerWithAddress;
 
 const func: DeployFunction = async ({
   // @ts-ignore
@@ -20,7 +20,7 @@ const func: DeployFunction = async ({
   // const currentNonce: number = await ethers.provider.getTransactionCount(deployer);
   // to solve REPLACEMENT_UNDERPRICED, when needed
 
-  [, owner] = await ethers.getSigners();
+  [, admin] = await ethers.getSigners();
   const env = getEnvParams(network.name);
   const baseUri = `${env.BASE_URI}/credit-report/`;
 
@@ -30,7 +30,7 @@ const func: DeployFunction = async ({
     "SoulboundCreditReport",
     {
       from: deployer,
-      args: [env.OWNER || owner.address, soulLinker.address, baseUri],
+      args: [env.ADMIN || admin.address, soulLinker.address, baseUri],
       log: true
       // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
     }
@@ -42,7 +42,7 @@ const func: DeployFunction = async ({
       await hre.run("verify:verify", {
         address: soulboundCreditReportDeploymentResult.address,
         constructorArguments: [
-          env.OWNER || owner.address,
+          env.ADMIN || admin.address,
           soulLinker.address,
           baseUri
         ]

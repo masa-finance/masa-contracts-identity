@@ -41,16 +41,16 @@ contract SoulName is NFT, ISoulName {
 
     /// @notice Creates a new SoulName NFT
     /// @dev Creates a new SoulName NFT, that points to a Soulbound identity, inheriting from the NFT contract.
-    /// @param owner Owner of the smart contract
+    /// @param admin Administrator of the smart contract
     /// @param _soulboundIdentity Address of the Soulbound identity contract
     /// @param _extension Extension of the soul name
     /// @param baseTokenURI Base URI of the token
     constructor(
-        address owner,
+        address admin,
         ISoulboundIdentity _soulboundIdentity,
         string memory _extension,
         string memory baseTokenURI
-    ) NFT(owner, "Masa Identity Name", "MIN", baseTokenURI) {
+    ) NFT(admin, "Masa Identity Name", "MIN", baseTokenURI) {
         require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
 
         soulboundIdentity = _soulboundIdentity;
