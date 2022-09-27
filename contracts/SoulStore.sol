@@ -11,12 +11,12 @@ import "./dex/DexAMM.sol";
 import "./interfaces/ISoulboundIdentity.sol";
 import "./interfaces/ISoulName.sol";
 
-/// @title Soul Factory
+/// @title Soul Store
 /// @author Masa Finance
-/// @notice Soul Factory, that can mint new Soulbound Identities and Soul Name NFTs, paying a fee
+/// @notice Soul Store, that can mint new Soulbound Identities and Soul Name NFTs, paying a fee
 /// @dev From this smart contract we can mint new Soulbound Identities and Soul Name NFTs.
 /// This minting can be done paying a fee in ETH, USDC or CORN
-contract SoulFactory is DexAMM, Pausable, AccessControl {
+contract SoulStore is DexAMM, Pausable, AccessControl {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
@@ -26,9 +26,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
 
     ISoulboundIdentity public soulboundIdentity;
 
-    uint256 public mintingIdentityAndNamePrice; // price in stable coin
-    uint256 public mintingIdentityPrice; // price in stable coin
-    uint256 public mintingNamePrice; // price in stable coin
+    mapping(uint256 => uint256) public nameRegistrationPricePerYear; // (length --> price in stable coin per year)
 
     address public stableCoin; // USDC
     address public utilityToken; // $CORN
@@ -37,14 +35,12 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
 
     /* ========== INITIALIZE ========== */
 
-    /// @notice Creates a new Soul Factory
-    /// @dev Creates a new Soul Factory, that has the role to minting new Soulbound Identities
+    /// @notice Creates a new Soul Store
+    /// @dev Creates a new Soul Store, that has the role to minting new Soulbound Identities
     /// and Soul Name NFTs, paying a fee
     /// @param owner Owner of the smart contract
     /// @param _soulBoundIdentity Address of the Soulbound identity contract
-    /// @param _mintingIdentityAndNamePrice Price of the identity and name minting in stable coin
-    /// @param _mintingIdentityPrice Price of the identity minting in stable coin
-    /// @param _mintingNamePrice Price of the name minting in stable coin
+    /// @param _nameRegistrationPricePerYear Price of the default name registering in stable coin per year
     /// @param _utilityToken Utility token to pay the fee in ($CORN)
     /// @param _stableCoin Stable coin to pay the fee in (USDC)
     /// @param _wrappedNativeToken Wrapped native token address
@@ -53,9 +49,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
     constructor(
         address owner,
         ISoulboundIdentity _soulBoundIdentity,
-        uint256 _mintingIdentityAndNamePrice,
-        uint256 _mintingIdentityPrice,
-        uint256 _mintingNamePrice,
+        uint256 _nameRegistrationPricePerYear,
         address _utilityToken,
         address _stableCoin,
         address _wrappedNativeToken,
@@ -70,9 +64,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
 
         soulboundIdentity = _soulBoundIdentity;
 
-        mintingIdentityAndNamePrice = _mintingIdentityAndNamePrice;
-        mintingIdentityPrice = _mintingIdentityPrice;
-        mintingNamePrice = _mintingNamePrice;
+        nameRegistrationPricePerYear[0] = _nameRegistrationPricePerYear; // name price for default length per year
         stableCoin = _stableCoin;
         utilityToken = _utilityToken;
 
@@ -93,7 +85,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
         _unpause();
     }
 
-    /// @notice Sets the SoulboundIdentity contract address linked to this factory
+    /// @notice Sets the SoulboundIdentity contract address linked to this store
     /// @dev The caller must have the admin role to call this function
     /// @param _soulboundIdentity New SoulboundIdentity contract address
     function setSoulboundIdentity(ISoulboundIdentity _soulboundIdentity)
@@ -105,39 +97,23 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
         soulboundIdentity = _soulboundIdentity;
     }
 
-    /// @notice Sets the price of the identity and name minting in stable coin
+    /// @notice Sets the price of the name registering per one year in stable coin
     /// @dev The caller must have the admin role to call this function
-    /// @param _mintingIdentityAndNamePrice New price of the identity and name minting in stable coin
-    function setMintingIdentityAndNamePrice(
-        uint256 _mintingIdentityAndNamePrice
+    /// @param _nameLength Length of the name
+    /// @param _nameRegistrationPricePerYear New price of the name registering per one
+    /// year in stable coin for that name length per year
+    function setNameRegistrationPricePerYear(
+        uint256 _nameLength,
+        uint256 _nameRegistrationPricePerYear
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         require(
-            mintingIdentityAndNamePrice != _mintingIdentityAndNamePrice,
+            nameRegistrationPricePerYear[_nameLength] !=
+                _nameRegistrationPricePerYear,
             "SAME_VALUE"
         );
-        mintingIdentityAndNamePrice = _mintingIdentityAndNamePrice;
-    }
-
-    /// @notice Sets the price of the identity minting in stable coin
-    /// @dev The caller must have the admin role to call this function
-    /// @param _mintingIdentityPrice New price of the identity minting in stable coin
-    function setMintingIdentityPrice(uint256 _mintingIdentityPrice)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
-        require(mintingIdentityPrice != _mintingIdentityPrice, "SAME_VALUE");
-        mintingIdentityPrice = _mintingIdentityPrice;
-    }
-
-    /// @notice Sets the price of the name minting in stable coin
-    /// @dev The caller must have the admin role to call this function
-    /// @param _mintingNamePrice New price of the name minting in stable coin
-    function setMintingNamePrice(uint256 _mintingNamePrice)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
-        require(mintingNamePrice != _mintingNamePrice, "SAME_VALUE");
-        mintingNamePrice = _mintingNamePrice;
+        nameRegistrationPricePerYear[
+            _nameLength
+        ] = _nameRegistrationPricePerYear;
     }
 
     /// @notice Sets the stable coin to pay the fee in (USDC)
@@ -207,32 +183,31 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
     /// stable coin (USDC), native token (ETH) or utility token ($CORN)
     /// @param paymentMethod Address of token that user want to pay
     /// @param name Name of the new soul name
+    /// @param yearsPeriod Years of validity of the name
     /// @return TokenId of the new soulbound identity
-    function purchaseIdentityAndName(address paymentMethod, string memory name)
-        external
-        payable
-        whenNotPaused
-        returns (uint256)
-    {
-        _payForMinting(paymentMethod, mintingIdentityAndNamePrice);
+    function purchaseIdentityAndName(
+        address paymentMethod,
+        string memory name,
+        uint256 yearsPeriod
+    ) external payable whenNotPaused returns (uint256) {
+        _payForMinting(
+            paymentMethod,
+            getNameRegistrationPricePerYear(name).mul(yearsPeriod)
+        );
 
         // finalize purchase
-        return _mintSoulboundIdentityAndName(_msgSender(), name);
+        return _mintSoulboundIdentityAndName(_msgSender(), name, yearsPeriod);
     }
 
     /// @notice Mints a new Soulbound Identity purchasing it
-    /// @dev This function allows the purchase of a soulbound identity using
-    /// stable coin (USDC), native token (ETH) or utility token ($CORN)
-    /// @param paymentMethod Address of token that user want to pay
+    /// @dev This function allows the purchase of a soulbound identity for free
     /// @return TokenId of the new soulbound identity
-    function purchaseIdentity(address paymentMethod)
+    function purchaseIdentity()
         external
         payable
         whenNotPaused
         returns (uint256)
     {
-        _payForMinting(paymentMethod, mintingIdentityPrice);
-
         // finalize purchase
         return _mintSoulboundIdentity(_msgSender());
     }
@@ -242,65 +217,50 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
     /// stable coin (USDC), native token (ETH) or utility token ($CORN)
     /// @param paymentMethod Address of token that user want to pay
     /// @param name Name of the new soul name
+    /// @param yearsPeriod Years of validity of the name
     /// @return TokenId of the new sou name
-    function purchaseName(address paymentMethod, string memory name)
-        external
-        payable
-        whenNotPaused
-        returns (uint256)
-    {
-        _payForMinting(paymentMethod, mintingNamePrice);
+    function purchaseName(
+        address paymentMethod,
+        string memory name,
+        uint256 yearsPeriod
+    ) external payable whenNotPaused returns (uint256) {
+        _payForMinting(
+            paymentMethod,
+            getNameRegistrationPricePerYear(name).mul(yearsPeriod)
+        );
 
         // finalize purchase
-        return _mintSoulName(_msgSender(), name);
+        return _mintSoulName(_msgSender(), name, yearsPeriod);
     }
 
     /* ========== VIEWS ========== */
 
-    /// @notice Returns the price of the identity and name minting
-    /// @dev Returns all current pricing and amount informations for a purchase
-    /// @return priceInStableCoin Current price of the identity and name minting in stable coin
-    /// @return priceInETH Current price of the identity and name minting in native token (ETH)
-    /// @return priceInUtilityToken Current price of the identity and nameminting in utility token ($CORN)
-    function purchaseIdentityAndNameInfo()
+    /// @notice Returns the price of register a name per year in stable coin for an specific length
+    /// @dev Returns the price for registering per year in USD for an specific name length
+    /// @param nameLength Length of the name
+    /// @return Price in stable coin for that name length
+    function getNameRegistrationPricePerYear(string memory nameLength)
         public
         view
-        returns (
-            uint256 priceInStableCoin,
-            uint256 priceInETH,
-            uint256 priceInUtilityToken
-        )
+        returns (uint256)
     {
-        (priceInStableCoin, priceInETH, priceInUtilityToken) = _getSwapAmounts(
-            mintingIdentityAndNamePrice
-        );
-    }
-
-    /// @notice Returns the price of the identity minting
-    /// @dev Returns all current pricing and amount informations for a purchase
-    /// @return priceInStableCoin Current price of the identity minting in stable coin
-    /// @return priceInETH Current price of the identity minting in native token (ETH)
-    /// @return priceInUtilityToken Current price of the identity minting in utility token ($CORN)
-    function purchaseIdentityInfo()
-        public
-        view
-        returns (
-            uint256 priceInStableCoin,
-            uint256 priceInETH,
-            uint256 priceInUtilityToken
-        )
-    {
-        (priceInStableCoin, priceInETH, priceInUtilityToken) = _getSwapAmounts(
-            mintingIdentityPrice
-        );
+        uint256 bytelength = bytes(nameLength).length;
+        uint256 price = nameRegistrationPricePerYear[bytelength];
+        if (price == 0) {
+            // if not found, return the default price
+            price = nameRegistrationPricePerYear[0];
+        }
+        return price;
     }
 
     /// @notice Returns the price of the name minting
     /// @dev Returns all current pricing and amount informations for a purchase
+    /// @param name Name of the new soul name
+    /// @param yearsPeriod Years of validity of the name
     /// @return priceInStableCoin Current price of the name minting in stable coin
     /// @return priceInETH Current price of the name minting in native token (ETH)
     /// @return priceInUtilityToken Current price of the name minting in utility token ($CORN)
-    function purchaseNameInfo()
+    function purchaseNameInfo(string memory name, uint256 yearsPeriod)
         public
         view
         returns (
@@ -310,7 +270,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
         )
     {
         (priceInStableCoin, priceInETH, priceInUtilityToken) = _getSwapAmounts(
-            mintingNamePrice
+            getNameRegistrationPricePerYear(name).mul(yearsPeriod)
         );
     }
 
@@ -399,20 +359,21 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
     /// new Soulbound Identity and a Soul Name NFT and emit the purchase event
     /// @param to Address of the owner of the new soul name
     /// @param name Name of the new soul name
+    /// @param yearsPeriod Years of validity of the name
     /// @return TokenId of the new soulbound identity
-    function _mintSoulboundIdentityAndName(address to, string memory name)
-        internal
-        returns (uint256)
-    {
+    function _mintSoulboundIdentityAndName(
+        address to,
+        string memory name,
+        uint256 yearsPeriod
+    ) internal returns (uint256) {
         // mint Soulbound identity token
-        uint256 tokenId = soulboundIdentity.mintIdentityWithName(to, name);
-
-        emit SoulboundIdentityAndNamePurchased(
+        uint256 tokenId = soulboundIdentity.mintIdentityWithName(
             to,
-            tokenId,
             name,
-            mintingIdentityPrice
+            yearsPeriod
         );
+
+        emit SoulboundIdentityAndNamePurchased(to, tokenId, name, yearsPeriod);
 
         return tokenId;
     }
@@ -426,7 +387,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
         // mint Soulbound identity token
         uint256 tokenId = soulboundIdentity.mint(to);
 
-        emit SoulboundIdentityPurchased(to, tokenId, mintingIdentityPrice);
+        emit SoulboundIdentityPurchased(to, tokenId);
 
         return tokenId;
     }
@@ -436,18 +397,20 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
     /// new Soul Name NFT and emit the purchase event
     /// @param to Address of the owner of the new soul name
     /// @param name Name of the new soul name
+    /// @param yearsPeriod Years of validity of the name
     /// @return TokenId of the new soul name
-    function _mintSoulName(address to, string memory name)
-        internal
-        returns (uint256)
-    {
+    function _mintSoulName(
+        address to,
+        string memory name,
+        uint256 yearsPeriod
+    ) internal returns (uint256) {
         // mint Soul Name token
         ISoulName soulName = soulboundIdentity.getSoulName();
         uint256 identityId = soulboundIdentity.tokenOfOwner(to);
 
-        uint256 tokenId = soulName.mint(to, name, identityId);
+        uint256 tokenId = soulName.mint(to, name, identityId, yearsPeriod);
 
-        emit SoulNamePurchased(to, tokenId, name, mintingNamePrice);
+        emit SoulNamePurchased(to, tokenId, name, yearsPeriod);
 
         return tokenId;
     }
@@ -460,19 +423,15 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
         address indexed account,
         uint256 tokenId,
         string indexed name,
-        uint256 price
+        uint256 yearsPeriod
     );
 
-    event SoulboundIdentityPurchased(
-        address indexed account,
-        uint256 tokenId,
-        uint256 price
-    );
+    event SoulboundIdentityPurchased(address indexed account, uint256 tokenId);
 
     event SoulNamePurchased(
         address indexed account,
         uint256 tokenId,
         string indexed name,
-        uint256 price
+        uint256 yearsPeriod
     );
 }

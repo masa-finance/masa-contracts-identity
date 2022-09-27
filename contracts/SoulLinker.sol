@@ -28,15 +28,8 @@ contract SoulLinker is Ownable, ISoulLinker {
     /* ========== VIEWS ===================================================== */
 
     /// @notice Query if the contract has links for the given token id
-    /// @param token Address of the token
-    /// @param tokenId Id of the token
     /// @return `true` if the contract has links, `false` otherwise
-    function hasLinks(address token, uint256 tokenId)
-        external
-        view
-        override
-        returns (bool)
-    {
+    function hasLinks(address, uint256) external pure override returns (bool) {
         return false;
     }
 

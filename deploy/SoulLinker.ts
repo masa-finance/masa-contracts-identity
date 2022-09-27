@@ -38,7 +38,10 @@ const func: DeployFunction = async ({
         constructorArguments: [env.OWNER || owner.address]
       });
     } catch (error) {
-      if (error.message != "Contract source code already verified") {
+      if (
+        !error.message.includes("Contract source code already verified") &&
+        !error.message.includes("Reason: Already Verified")
+      ) {
         throw error;
       }
     }

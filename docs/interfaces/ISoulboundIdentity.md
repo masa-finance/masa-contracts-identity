@@ -136,7 +136,7 @@ function mint(address to) external nonpayable returns (uint256)
 ### mintIdentityWithName
 
 ```solidity
-function mintIdentityWithName(address to, string name) external payable returns (uint256)
+function mintIdentityWithName(address to, string name, uint256 yearsPeriod) external payable returns (uint256)
 ```
 
 
@@ -149,6 +149,7 @@ function mintIdentityWithName(address to, string name) external payable returns 
 |---|---|---|
 | to | address | undefined |
 | name | string | undefined |
+| yearsPeriod | uint256 | undefined |
 
 #### Returns
 

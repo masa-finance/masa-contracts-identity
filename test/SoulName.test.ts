@@ -1,7 +1,7 @@
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 import { solidity } from "ethereum-waffle";
-import { ethers, deployments } from "hardhat";
+import { ethers, deployments, network } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
   SoulboundIdentity,
@@ -16,6 +16,8 @@ const expect = chai.expect;
 
 const SOUL_NAME1 = "soulNameTest1";
 const SOUL_NAME2 = "soulNameTest2";
+const YEAR = 1; // 1 year
+const YEAR_PERIOD = 31536000; // 60 seconds * 60 minutes * 24 hours * 365 days
 
 // contract instances
 let soulboundIdentity: SoulboundIdentity;
@@ -24,14 +26,13 @@ let soulName: SoulName;
 let owner: SignerWithAddress;
 let address1: SignerWithAddress;
 let address2: SignerWithAddress;
-let address3: SignerWithAddress;
 
 let identityId1: number;
 let identityId2: number;
 
 describe("Soul Name", () => {
   before(async () => {
-    [, owner, address1, address2, address3] = await ethers.getSigners();
+    [, owner, address1, address2] = await ethers.getSigners();
   });
 
   beforeEach(async () => {
@@ -128,7 +129,7 @@ describe("Soul Name", () => {
     it("should mint from owner", async () => {
       const mintTx = await soulName
         .connect(owner)
-        .mint(address1.address, SOUL_NAME1, identityId1);
+        .mint(address1.address, SOUL_NAME1, identityId1, YEAR);
       const mintReceipt = await mintTx.wait();
 
       const nameId = mintReceipt.events![0].args![2].toNumber();
@@ -138,21 +139,32 @@ describe("Soul Name", () => {
     });
 
     it("should success to mint a name twice to the same idenity", async () => {
-      await soulName.connect(owner).mint(address1.address, SOUL_NAME1, identityId1);
+      await soulName
+        .connect(owner)
+        .mint(address1.address, SOUL_NAME1, identityId1, YEAR);
 
-      await soulName.connect(owner).mint(address1.address, SOUL_NAME2, identityId1);
+      await soulName
+        .connect(owner)
+        .mint(address1.address, SOUL_NAME2, identityId1, YEAR);
     });
 
     it("should fail to mint duplicated name", async () => {
-      await soulName.connect(owner).mint(address1.address, SOUL_NAME1, identityId1);
+      await soulName
+        .connect(owner)
+        .mint(address1.address, SOUL_NAME1, identityId1, YEAR);
 
-      await expect(soulName.connect(owner).mint(address1.address, SOUL_NAME1, identityId1))
-        .to.be.rejected;
+      await expect(
+        soulName
+          .connect(owner)
+          .mint(address1.address, SOUL_NAME1, identityId1, YEAR)
+      ).to.be.rejected;
     });
 
     it("should fail to mint from non-owner address", async () => {
       await expect(
-        soulName.connect(address1).mint(address1.address, SOUL_NAME1, identityId1)
+        soulName
+          .connect(address1)
+          .mint(address1.address, SOUL_NAME1, identityId1, YEAR)
       ).to.be.rejected;
     });
   });
@@ -163,67 +175,69 @@ describe("Soul Name", () => {
     beforeEach(async () => {
       const mintTx = await soulName
         .connect(owner)
-        .mint(address1.address, SOUL_NAME1, identityId1);
+        .mint(address1.address, SOUL_NAME1, identityId1, YEAR);
       const mintReceipt = await mintTx.wait();
 
       nameId = mintReceipt.events![0].args![2].toNumber();
     });
 
-    it("soulNameExists true with an existing name", async () => {
-      await expect(await soulName.soulNameExists(SOUL_NAME1)).to.be.equals(
-        true
-      );
+    it("isAvailable true with an existing name", async () => {
+      await expect(await soulName.isAvailable(SOUL_NAME1)).to.be.equal(true);
     });
 
-    it("soulNameExists true with an existing name - case insensitive", async () => {
+    it("isAvailable true with an existing name - case insensitive", async () => {
       await expect(
-        await soulName.soulNameExists(SOUL_NAME1.toLowerCase())
-      ).to.be.equals(true);
+        await soulName.isAvailable(SOUL_NAME1.toLowerCase())
+      ).to.be.equal(true);
       await expect(
-        await soulName.soulNameExists(SOUL_NAME1.toUpperCase())
-      ).to.be.equals(true);
+        await soulName.isAvailable(SOUL_NAME1.toUpperCase())
+      ).to.be.equal(true);
     });
 
-    it("soulNameExists false with a non existing name", async () => {
-      await expect(await soulName.soulNameExists("fakeName")).to.be.equals(
-        false
-      );
+    it("isAvailable false with a non existing name", async () => {
+      await expect(await soulName.isAvailable("fakeName")).to.be.equal(false);
     });
 
-    it("getSoulNameData with an existing name", async () => {
-      const [sbtName, identityId] = await soulName.getSoulNameData(SOUL_NAME1);
+    it("getTokenData with an existing name", async () => {
+      const [sbtName, identityId, ,] = await soulName.getTokenData(SOUL_NAME1);
       const extension = await soulName.getExtension();
 
-      await expect(sbtName).to.be.equals(SOUL_NAME1 + extension);
-      await expect(identityId).to.be.equals(identityId1);
+      await expect(sbtName).to.be.equal(SOUL_NAME1 + extension);
+      await expect(identityId).to.be.equal(identityId1);
     });
 
-    it("getSoulNameData with an existing name - case insensitive", async () => {
-      let [sbtName, identityId] = await soulName.getSoulNameData(
+    it("getTokenData with an existing name - case insensitive", async () => {
+      let [sbtName, identityId, ,] = await soulName.getTokenData(
         SOUL_NAME1.toLowerCase()
       );
       const extension = await soulName.getExtension();
 
-      await expect(sbtName).to.be.equals(SOUL_NAME1 + extension);
-      await expect(identityId).to.be.equals(identityId1);
+      await expect(sbtName).to.be.equal(SOUL_NAME1 + extension);
+      await expect(identityId).to.be.equal(identityId1);
 
-      [sbtName, identityId] = await soulName.getSoulNameData(
+      [sbtName, identityId] = await soulName.getTokenData(
         SOUL_NAME1.toUpperCase()
       );
 
-      await expect(sbtName).to.be.equals(SOUL_NAME1 + extension);
-      await expect(identityId).to.be.equals(identityId1);
+      await expect(sbtName).to.be.equal(SOUL_NAME1 + extension);
+      await expect(identityId).to.be.equal(identityId1);
     });
 
-    it("getSoulNameData with a non existing name", async () => {
-      await expect(soulName.getSoulNameData("fakeName")).to.be.rejectedWith(
+    it("getTokenData with a non existing name", async () => {
+      await expect(soulName.getTokenData("fakeName")).to.be.rejectedWith(
         "NAME_NOT_FOUND"
       );
     });
 
-    it("getSoulNames returns array of SBT names in lower case", async () => {
+    it("getSoulNames(uint256) returns array of SBT names in lower case", async () => {
       expect(
         await soulName["getSoulNames(uint256)"](identityId1)
+      ).to.deep.equal([SOUL_NAME1.toLowerCase()]);
+    });
+
+    it("getSoulNames(address) returns array of SBT names in lower case", async () => {
+      expect(
+        await soulName["getSoulNames(address)"](address1.address)
       ).to.deep.equal([SOUL_NAME1.toLowerCase()]);
     });
 
@@ -244,7 +258,7 @@ describe("Soul Name", () => {
     beforeEach(async () => {
       const mintTx = await soulName
         .connect(owner)
-        .mint(address1.address, SOUL_NAME1, identityId1);
+        .mint(address1.address, SOUL_NAME1, identityId1, YEAR);
       const mintReceipt = await mintTx.wait();
 
       nameId = mintReceipt.events![0].args![2].toNumber();
@@ -264,16 +278,16 @@ describe("Soul Name", () => {
       expect(await soulName.balanceOf(address1.address)).to.be.equal(0);
       expect(await soulName.balanceOf(address2.address)).to.be.equal(1);
 
-      const [, identityId] = await soulName.getSoulNameData(SOUL_NAME1);
+      const [, identityId, ,] = await soulName.getTokenData(SOUL_NAME1);
 
-      await expect(identityId).to.be.equals(identityId1);
+      await expect(identityId).to.be.equal(identityId1);
     });
 
     it("should update identity Id", async () => {
       await soulName
         .connect(address1)
         .transferFrom(address1.address, address2.address, nameId);
-      
+
       await soulName.connect(address2).updateIdentityId(nameId, identityId2);
 
       expect(await soulboundIdentity.balanceOf(address1.address)).to.be.equal(
@@ -285,9 +299,9 @@ describe("Soul Name", () => {
       expect(await soulName.balanceOf(address1.address)).to.be.equal(0);
       expect(await soulName.balanceOf(address2.address)).to.be.equal(1);
 
-      const [, identityId] = await soulName.getSoulNameData(SOUL_NAME1);
+      const [, identityId] = await soulName.getTokenData(SOUL_NAME1);
 
-      await expect(identityId).to.be.equals(identityId2);
+      await expect(identityId).to.be.equal(identityId2);
     });
   });
 
@@ -297,7 +311,7 @@ describe("Soul Name", () => {
     beforeEach(async () => {
       const mintTx = await soulName
         .connect(owner)
-        .mint(address1.address, SOUL_NAME1, identityId1);
+        .mint(address1.address, SOUL_NAME1, identityId1, YEAR);
       const mintReceipt = await mintTx.wait();
 
       nameId = mintReceipt.events![0].args![2].toNumber();
@@ -306,14 +320,124 @@ describe("Soul Name", () => {
     it("should burn", async () => {
       await soulName.connect(address1).burn(nameId);
 
-      await expect(await soulName.soulNameExists(SOUL_NAME1)).to.be.equals(
-        false
+      await expect(await soulName.isAvailable(SOUL_NAME1)).to.be.equal(false);
+      await expect(soulName.getTokenData("soulNameTest1")).to.be.rejectedWith(
+        "NAME_NOT_FOUND"
       );
-      await expect(
-        soulName.getSoulNameData("soulNameTest1")
-      ).to.be.rejectedWith("NAME_NOT_FOUND");
       await expect(await soulName["getSoulNames(uint256)"](identityId1)).to.be
         .empty;
+    });
+  });
+
+  describe("expiration data", async () => {
+    let nameId: number;
+
+    beforeEach(async () => {
+      const mintTx = await soulName
+        .connect(owner)
+        .mint(address1.address, SOUL_NAME1, identityId1, YEAR);
+      const mintReceipt = await mintTx.wait();
+
+      nameId = mintReceipt.events![0].args![2].toNumber();
+    });
+
+    it("should return an active registration period", async () => {
+      const [, , expirationDate, active] = await soulName.getTokenData(
+        SOUL_NAME1
+      );
+
+      expect(expirationDate).to.be.above(YEAR_PERIOD);
+      expect(active).to.be.true;
+      expect(
+        await soulName["getSoulNames(uint256)"](identityId1)
+      ).to.deep.equal([SOUL_NAME1.toLowerCase()]);
+    });
+
+    it("should return an inactive registration period", async () => {
+      // increase time to expire the registration period
+      await network.provider.send("evm_increaseTime", [YEAR_PERIOD + 1]);
+      await network.provider.send("evm_mine");
+
+      const [, , expirationDate, active] = await soulName.getTokenData(
+        SOUL_NAME1
+      );
+
+      expect(expirationDate).to.be.above(YEAR_PERIOD);
+      expect(active).to.be.false;
+      expect(
+        await soulName["getSoulNames(uint256)"](identityId1)
+      ).to.deep.equal([]);
+    });
+
+    it("should renew period when period hasn't expired", async () => {
+      // increase time to half the registration period
+      await network.provider.send("evm_increaseTime", [YEAR_PERIOD / 2]);
+      await network.provider.send("evm_mine");
+
+      const [, , expirationDateStart] = await soulName.getTokenData(SOUL_NAME1);
+
+      await soulName.connect(address1).renewYearsPeriod(nameId, YEAR);
+
+      const [, , expirationDateFinish, active] = await soulName.getTokenData(
+        SOUL_NAME1
+      );
+
+      expect(
+        expirationDateFinish.toNumber() - expirationDateStart.toNumber()
+      ).to.be.equal(YEAR_PERIOD);
+      expect(active).to.be.true;
+      expect(
+        await soulName["getSoulNames(uint256)"](identityId1)
+      ).to.deep.equal([SOUL_NAME1.toLowerCase()]);
+    });
+
+    it("should renew period when period has expired", async () => {
+      // increase time to expire the registration period
+      await network.provider.send("evm_increaseTime", [YEAR_PERIOD + 1]);
+      await network.provider.send("evm_mine");
+
+      const [, , expirationDateStart] = await soulName.getTokenData(SOUL_NAME1);
+
+      await soulName.connect(address1).renewYearsPeriod(nameId, YEAR);
+
+      const [, , expirationDateFinish, active] = await soulName.getTokenData(
+        SOUL_NAME1
+      );
+
+      expect(
+        expirationDateFinish.toNumber() - expirationDateStart.toNumber()
+      ).to.be.above(YEAR_PERIOD);
+      expect(active).to.be.true;
+      expect(
+        await soulName["getSoulNames(uint256)"](identityId1)
+      ).to.deep.equal([SOUL_NAME1.toLowerCase()]);
+    });
+
+    it("should allow mint same name if previous has expired", async () => {
+      // increase time to expire the registration period
+      await network.provider.send("evm_increaseTime", [YEAR_PERIOD + 1]);
+      await network.provider.send("evm_mine");
+
+      // once expired, another user mints the same soul name
+      await soulName
+        .connect(owner)
+        .mint(address2.address, SOUL_NAME1, identityId2, YEAR);
+    });
+
+    it("shouldn't renew period when period has expired and somebody has minted same name", async () => {
+      // increase time to expire the registration period
+      await network.provider.send("evm_increaseTime", [YEAR_PERIOD + 1]);
+      await network.provider.send("evm_mine");
+
+      // once expired, another user mints the same soul name
+      await soulName
+        .connect(owner)
+        .mint(address2.address, SOUL_NAME1, identityId2, YEAR);
+
+      // the first owner of the soul name tries to renew the period and fails
+      await expect(
+        soulName.connect(address1).renewYearsPeriod(nameId, YEAR)
+      ).to.be.rejectedWith("CAN_NOT_RENEW");
     });
   });
 });

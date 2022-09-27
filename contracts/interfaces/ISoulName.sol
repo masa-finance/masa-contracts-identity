@@ -5,20 +5,26 @@ interface ISoulName {
     function mint(
         address to,
         string memory name,
-        uint256 identityId
+        uint256 identityId,
+        uint256 yearsPeriod
     ) external returns (uint256);
 
     function getExtension() external view returns (string memory);
 
-    function soulNameExists(string memory name)
+    function isAvailable(string memory name)
         external
         view
-        returns (bool exists);
+        returns (bool available);
 
-    function getSoulNameData(string memory name)
+    function getTokenData(string memory name)
         external
         view
-        returns (string memory sbtName, uint256 identityId);
+        returns (
+            string memory sbtName,
+            uint256 identityId,
+            uint256 expirationDate,
+            bool active
+        );
 
     function getSoulNames(address owner)
         external

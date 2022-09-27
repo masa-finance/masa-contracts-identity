@@ -62,15 +62,14 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
     /// @dev The caller can only mint one identity per address, and the name must be unique
     /// @param to Address of the owner of the new identity
     /// @param name Name of the new identity
-    function mintIdentityWithName(address to, string memory name)
-        public
-        payable
-        override
-        soulNameAlreadySet
-        returns (uint256)
-    {
+    /// @param yearsPeriod Years of validity of the name
+    function mintIdentityWithName(
+        address to,
+        string memory name,
+        uint256 yearsPeriod
+    ) public payable override soulNameAlreadySet returns (uint256) {
         uint256 identityId = mint(to);
-        soulName.mint(to, name, identityId);
+        soulName.mint(to, name, identityId, yearsPeriod);
 
         return identityId;
     }
@@ -114,7 +113,7 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
         soulNameAlreadySet
         returns (address)
     {
-        (, uint256 tokenId) = soulName.getSoulNameData(name);
+        (, uint256 tokenId, , ) = soulName.getTokenData(name);
         return super.ownerOf(tokenId);
     }
 
@@ -128,7 +127,7 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
         soulNameAlreadySet
         returns (string memory)
     {
-        (, uint256 tokenId) = soulName.getSoulNameData(name);
+        (, uint256 tokenId, , ) = soulName.getTokenData(name);
         return super.tokenURI(tokenId);
     }
 
@@ -154,17 +153,17 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
         return super.tokenOfOwnerByIndex(owner, 0);
     }
 
-    /// @notice Checks if a soul name already exists
-    /// @dev This function queries if a soul name already exists
+    /// @notice Checks if a soul name is available
+    /// @dev This function queries if a soul name already exists and is in the available state
     /// @param name Name of the soul name
-    /// @return exists `true` if the soul name exists, `false` otherwise
-    function soulNameExists(string memory name)
+    /// @return available `true` if the soul name is available, `false` otherwise
+    function isAvailable(string memory name)
         public
         view
         soulNameAlreadySet
-        returns (bool exists)
+        returns (bool available)
     {
-        return soulName.soulNameExists(name);
+        return soulName.isAvailable(name);
     }
 
     /// @notice Returns the information of a soul name
@@ -172,16 +171,23 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
     /// @param name Name of the soul name
     /// @return sbtName Soul name, in upper/lower case and extension
     /// @return identityId Identity id of the soul name
-    function getSoulNameData(string memory name)
+    /// @return expirationDate Expiration date of the soul name
+    /// @return active `true` if the soul name is active, `false` otherwise
+    function getTokenData(string memory name)
         external
         view
         soulNameAlreadySet
-        returns (string memory sbtName, uint256 identityId)
+        returns (
+            string memory sbtName,
+            uint256 identityId,
+            uint256 expirationDate,
+            bool active
+        )
     {
-        return soulName.getSoulNameData(name);
+        return soulName.getTokenData(name);
     }
 
-    /// @notice Returns all the identity names of an account
+    /// @notice Returns all the active soul names of an account
     /// @dev This function queries all the identity names of the specified account
     /// @param owner Address of the owner of the identities
     /// @return sbtNames Array of soul names associated to the account
@@ -191,11 +197,13 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
         soulNameAlreadySet
         returns (string[] memory sbtNames)
     {
-        uint256 tokenId = tokenOfOwner(owner);
-        return soulName.getSoulNames(tokenId);
+        return soulName.getSoulNames(owner);
     }
 
-    /// @notice Returns all the identity names of an identity
+    // SoulName -> SoulboundIdentity.tokenId
+    // SoulName -> account -> SoulboundIdentity.tokenId
+
+    /// @notice Returns all the active soul names of an account
     /// @dev This function queries all the identity names of the specified identity Id
     /// @param tokenId TokenId of the identity
     /// @return sbtNames Array of soul names associated to the identity Id
