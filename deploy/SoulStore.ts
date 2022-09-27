@@ -9,7 +9,7 @@ import {
   WETH_GOERLI
 } from "../src/constants";
 
-let owner: SignerWithAddress;
+let admin: SignerWithAddress;
 
 const func: DeployFunction = async ({
   // @ts-ignore
@@ -23,7 +23,7 @@ const func: DeployFunction = async ({
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  [, owner] = await ethers.getSigners();
+  [, admin] = await ethers.getSigners();
   const env = getEnvParams(network.name);
 
   const corn = await deployments.get("CORN");
@@ -103,12 +103,12 @@ const func: DeployFunction = async ({
     soulNameDeployed.address
   );
 
-  const signer = env.OWNER
+  const signer = env.ADMIN
     ? new ethers.Wallet(
         getPrivateKey(network.name),
         ethers.getDefaultProvider(network.name)
       )
-    : owner;
+    : admin;
 
   // we set the registration prices per year and length of name
   const soulStore = await ethers.getContractAt(

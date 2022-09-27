@@ -38,7 +38,7 @@ contract SoulStore is DexAMM, Pausable, AccessControl {
     /// @notice Creates a new Soul Store
     /// @dev Creates a new Soul Store, that has the role to minting new Soulbound Identities
     /// and Soul Name NFTs, paying a fee
-    /// @param owner Owner of the smart contract
+    /// @param admin Administrator of the smart contract
     /// @param _soulBoundIdentity Address of the Soulbound identity contract
     /// @param _nameRegistrationPricePerYear Price of the default name registering in stable coin per year
     /// @param _utilityToken Utility token to pay the fee in ($CORN)
@@ -47,7 +47,7 @@ contract SoulStore is DexAMM, Pausable, AccessControl {
     /// @param _swapRouter Swap router address
     /// @param _reserveWallet Wallet that will receive the fee
     constructor(
-        address owner,
+        address admin,
         ISoulboundIdentity _soulBoundIdentity,
         uint256 _nameRegistrationPricePerYear,
         address _utilityToken,
@@ -59,8 +59,8 @@ contract SoulStore is DexAMM, Pausable, AccessControl {
         require(_reserveWallet != address(0), "ZERO_ADDRESS");
         require(address(_soulBoundIdentity) != address(0), "ZERO_ADDRESS");
 
-        _grantRole(DEFAULT_ADMIN_ROLE, owner);
-        _grantRole(PAUSER_ROLE, owner);
+        _grantRole(DEFAULT_ADMIN_ROLE, admin);
+        _grantRole(PAUSER_ROLE, admin);
 
         soulboundIdentity = _soulBoundIdentity;
 
