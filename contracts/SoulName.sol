@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/utils/Base64.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
-import "./tokens/NFT.sol";
+import "./libraries/Utils.sol";
 import "./interfaces/ISoulboundIdentity.sol";
 import "./interfaces/ISoulName.sol";
+import "./tokens/NFT.sol";
 
 /// @title SoulName NFT
 /// @author Masa Finance
@@ -15,41 +15,61 @@ import "./interfaces/ISoulName.sol";
 /// It has an extension, and stores all the information about the identity names.
 contract SoulName is NFT, ISoulName {
     /* ========== STATE VARIABLES ========== */
-    using Strings for uint256;
+    using SafeMath for uint256;
+
+    uint256 constant YEAR = 31536000; // 60 seconds * 60 minutes * 24 hours * 365 days
 
     ISoulboundIdentity public soulboundIdentity;
     string public extension; // suffix of the names (.sol?)
 
-    mapping(uint256 => string) tokenIdToName; // used to sort through all names (name in lowercase)
-    mapping(string => SoulNameData) soulNames; // register of all soulbound names (name in lowercase)
-    mapping(uint256 => string[]) identityIdToNames; // register of all names associated to an identityId
+    mapping(uint256 => TokenData) public tokenData; // used to store the data of the token id
+    mapping(string => NameData) public nameData; // stores the token id of the current active soul name
+    mapping(uint256 => string[]) identityNames; // register of all names associated to an identityId
 
-    struct SoulNameData {
+    struct TokenData {
         string name; // Name with lowercase and uppercase
         uint256 identityId;
+        uint256 expirationDate;
+    }
+
+    struct NameData {
+        bool exists;
+        uint256 tokenId;
     }
 
     /* ========== INITIALIZE ========== */
 
     /// @notice Creates a new SoulName NFT
     /// @dev Creates a new SoulName NFT, that points to a Soulbound identity, inheriting from the NFT contract.
-    /// @param owner Owner of the smart contract
+    /// @param admin Administrator of the smart contract
     /// @param _soulboundIdentity Address of the Soulbound identity contract
     /// @param _extension Extension of the soul name
     /// @param baseTokenURI Base URI of the token
     constructor(
-        address owner,
+        address admin,
         ISoulboundIdentity _soulboundIdentity,
         string memory _extension,
         string memory baseTokenURI
-    ) NFT(owner, "Masa Soul Name", "MSN", baseTokenURI) {
+    ) NFT(admin, "Masa Soul Name", "MSN", baseTokenURI) {
         require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
 
         soulboundIdentity = _soulboundIdentity;
         extension = _extension;
     }
 
-    /* ========== RESTRICTED FUNCTIONS ========== */
+    /* ========== RESTRICTED FUNCTIONS ====================================== */
+
+    /// @notice Sets the SoulboundIdentity contract address linked to this soul name
+    /// @dev The caller must have the admin role to call this function
+    /// @param _soulboundIdentity Address of the SoulboundIdentity contract
+    function setSoulboundIdentity(ISoulboundIdentity _soulboundIdentity)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
+        require(soulboundIdentity != _soulboundIdentity, "SAME_VALUE");
+        soulboundIdentity = _soulboundIdentity;
+    }
 
     /// @notice Sets the extension of the soul name
     /// @dev The caller must have the admin role to call this function
@@ -73,13 +93,16 @@ contract SoulName is NFT, ISoulName {
     /// @param to Address of the owner of the new soul name
     /// @param name Name of the new soul name
     /// @param identityId TokenId of the soulbound identity that will be pointed from this soul name
+    /// @param yearsPeriod Years of validity of the name
     function mint(
         address to,
         string memory name,
-        uint256 identityId
+        uint256 identityId,
+        uint256 yearsPeriod
     ) public override returns (uint256) {
-        require(!nameExists(name), "NAME_ALREADY_EXISTS");
+        require(!isAvailable(name), "NAME_ALREADY_EXISTS");
         require(bytes(name).length > 0, "ZERO_LENGTH_NAME");
+        require(yearsPeriod > 0, "ZERO_YEARS_PERIOD");
         require(
             soulboundIdentity.ownerOf(identityId) != address(0),
             "IDENTITY_NOT_FOUND"
@@ -87,13 +110,17 @@ contract SoulName is NFT, ISoulName {
 
         uint256 tokenId = _mintWithCounter(to);
 
-        string memory lowercaseName = _toLowerCase(name);
-        tokenIdToName[tokenId] = lowercaseName;
+        tokenData[tokenId].name = name;
+        tokenData[tokenId].identityId = identityId;
+        tokenData[tokenId].expirationDate = block.timestamp.add(
+            YEAR.mul(yearsPeriod)
+        );
 
-        soulNames[lowercaseName].name = name;
-        soulNames[lowercaseName].identityId = identityId;
+        string memory lowercaseName = Utils.toLowerCase(name);
+        nameData[lowercaseName].tokenId = tokenId;
+        nameData[lowercaseName].exists = true;
 
-        identityIdToNames[identityId].push(lowercaseName);
+        identityNames[identityId].push(lowercaseName);
 
         return tokenId;
     }
@@ -113,17 +140,54 @@ contract SoulName is NFT, ISoulName {
             "IDENTITY_NOT_FOUND"
         );
 
-        string memory name = tokenIdToName[tokenId];
-        uint256 oldIdentityId = soulNames[name].identityId;
+        uint256 oldIdentityId = tokenData[tokenId].identityId;
+        require(identityId != oldIdentityId, "SAME_VALUE");
 
         // change value from soulNames
-        soulNames[name].identityId = identityId;
+        tokenData[tokenId].identityId = identityId;
 
-        // remove name from identityIdToNames[oldIdentityId]
-        _removeFromIdentityIdToNames(oldIdentityId, name);
+        string memory lowercaseName = Utils.toLowerCase(
+            tokenData[tokenId].name
+        );
+        // remove name from identityNames[oldIdentityId]
+        Utils.removeStringFromArray(
+            identityNames[oldIdentityId],
+            lowercaseName
+        );
 
-        // add name to identityIdToNames[identityId]
-        identityIdToNames[identityId].push(name);
+        // add name to identityNames[identityId]
+        identityNames[identityId].push(lowercaseName);
+    }
+
+    /// @notice Update the expiration date of a soul name
+    /// @dev The caller must be the owner or an approved address of the soul name.
+    /// @param tokenId TokenId of the soul name
+    /// @param yearsPeriod Years of validity of the name
+    function renewYearsPeriod(uint256 tokenId, uint256 yearsPeriod) public {
+        // ERC721: caller is not token owner nor approved
+        require(
+            _isApprovedOrOwner(_msgSender(), tokenId),
+            "ERC721_CALLER_NOT_OWNER"
+        );
+        require(yearsPeriod > 0, "ZERO_YEARS_PERIOD");
+
+        // check that the last registered tokenId for that name is the current token
+        string memory lowercaseName = Utils.toLowerCase(
+            tokenData[tokenId].name
+        );
+        require(nameData[lowercaseName].exists, "NAME_NOT_FOUND");
+        require(nameData[lowercaseName].tokenId == tokenId, "CAN_NOT_RENEW");
+
+        // check if the name is expired
+        if (tokenData[tokenId].expirationDate < block.timestamp) {
+            tokenData[tokenId].expirationDate = block.timestamp.add(
+                YEAR.mul(yearsPeriod)
+            );
+        } else {
+            tokenData[tokenId].expirationDate = tokenData[tokenId]
+                .expirationDate
+                .add(YEAR.mul(yearsPeriod));
+        }
     }
 
     /// @notice Burn a soul name
@@ -132,13 +196,19 @@ contract SoulName is NFT, ISoulName {
     function burn(uint256 tokenId) public override {
         require(_exists(tokenId), "TOKEN_NOT_FOUND");
 
-        string memory name = tokenIdToName[tokenId];
-        uint256 identityId = soulNames[name].identityId;
+        string memory lowercaseName = Utils.toLowerCase(
+            tokenData[tokenId].name
+        );
+        uint256 identityId = tokenData[tokenId].identityId;
 
-        // remove info from tokenIdToName, soulnames and identityIdToNames
-        delete tokenIdToName[tokenId];
-        delete soulNames[name];
-        _removeFromIdentityIdToNames(identityId, name);
+        // remove info from tokenIdName and tokenData
+        delete tokenData[tokenId];
+
+        // if the last owner of the name is burning it, remove the name from nameData
+        if (nameData[lowercaseName].tokenId == tokenId) {
+            delete nameData[lowercaseName];
+        }
+        Utils.removeStringFromArray(identityNames[identityId], lowercaseName);
 
         super.burn(tokenId);
     }
@@ -152,18 +222,23 @@ contract SoulName is NFT, ISoulName {
         return extension;
     }
 
-    /// @notice Checks if a soul name already exists
-    /// @dev This function queries if a soul name already exists
+    /// @notice Checks if a soul name is available
+    /// @dev This function queries if a soul name already exists and is in the available state
     /// @param name Name of the soul name
-    /// @return exists `true` if the soul name exists, `false` otherwise
-    function nameExists(string memory name)
+    /// @return available `true` if the soul name is available, `false` otherwise
+    function isAvailable(string memory name)
         public
         view
         override
-        returns (bool exists)
+        returns (bool available)
     {
-        string memory lowercaseName = _toLowerCase(name);
-        return (bytes(soulNames[lowercaseName].name).length > 0);
+        string memory lowercaseName = Utils.toLowerCase(name);
+        if (nameData[lowercaseName].exists) {
+            uint256 tokenId = nameData[lowercaseName].tokenId;
+            return tokenData[tokenId].expirationDate >= block.timestamp;
+        } else {
+            return false;
+        }
     }
 
     /// @notice Returns the information of a soul name
@@ -171,73 +246,92 @@ contract SoulName is NFT, ISoulName {
     /// @param name Name of the soul name
     /// @return sbtName Soul name, in upper/lower case and extension
     /// @return identityId Identity id of the soul name
-    function getIdentityData(string memory name)
+    /// @return expirationDate Expiration date of the soul name
+    /// @return active `true` if the soul name is active, `false` otherwise
+    function getTokenData(string memory name)
         external
         view
         override
-        returns (string memory sbtName, uint256 identityId)
+        returns (
+            string memory sbtName,
+            uint256 identityId,
+            uint256 expirationDate,
+            bool active
+        )
     {
-        string memory lowercaseName = _toLowerCase(name);
-        SoulNameData memory soulNameData = soulNames[lowercaseName];
-        require(bytes(soulNameData.name).length > 0, "NAME_NOT_FOUND");
+        string memory lowercaseName = Utils.toLowerCase(name);
 
-        return (_getName(soulNameData.name), soulNameData.identityId);
+        require(nameData[lowercaseName].exists, "NAME_NOT_FOUND");
+
+        uint256 tokenId = nameData[lowercaseName].tokenId;
+
+        TokenData memory _tokenData = tokenData[tokenId];
+        return (
+            _getName(_tokenData.name),
+            _tokenData.identityId,
+            _tokenData.expirationDate,
+            _tokenData.expirationDate >= block.timestamp
+        );
     }
 
-    /// @notice Returns all the identity names of an identity
-    /// @dev This function queries all the identity names of the specified identity Id
-    /// @param identityId TokenId of the identity
-    /// @return sbtNames Array of soul names associated to the identity Id
-    function getIdentityNames(uint256 identityId)
+    /// @notice Returns all the active soul names of an account
+    /// @dev This function queries all the identity names of the specified account
+    /// @param owner Address of the owner of the identities
+    /// @return sbtNames Array of soul names associated to the account
+    function getSoulNames(address owner)
         external
         view
         override
         returns (string[] memory sbtNames)
     {
-        // return identity names if exists
-        return identityIdToNames[identityId];
+        // return identity id if exists
+        uint256 identityId = soulboundIdentity.tokenOfOwner(owner);
+
+        return getSoulNames(identityId);
+    }
+
+    /// @notice Returns all the active soul names of an account
+    /// @dev This function queries all the identity names of the specified identity Id
+    /// @param identityId TokenId of the identity
+    /// @return sbtNames Array of soul names associated to the identity Id
+    function getSoulNames(uint256 identityId)
+        public
+        view
+        override
+        returns (string[] memory sbtNames)
+    {
+        uint256 results;
+        for (uint256 i = 0; i < identityNames[identityId].length; i++) {
+            string memory lowercaseName = identityNames[identityId][i];
+
+            if (nameData[lowercaseName].exists) {
+                uint256 tokenId = nameData[lowercaseName].tokenId;
+                if (tokenData[tokenId].expirationDate >= block.timestamp) {
+                    results = results.add(1);
+                }
+            }
+        }
+
+        string[] memory _sbtNames = new string[](results);
+        uint256 index;
+
+        for (uint256 i = 0; i < identityNames[identityId].length; i++) {
+            string memory lowercaseName = identityNames[identityId][i];
+
+            if (nameData[lowercaseName].exists) {
+                uint256 tokenId = nameData[lowercaseName].tokenId;
+                if (tokenData[tokenId].expirationDate >= block.timestamp) {
+                    _sbtNames[index] = lowercaseName;
+                    index = index.add(1);
+                }
+            }
+        }
+
+        // return identity names if exists and are active
+        return _sbtNames;
     }
 
     /* ========== PRIVATE FUNCTIONS ========== */
-
-    function _toLowerCase(string memory _str)
-        private
-        pure
-        returns (string memory)
-    {
-        bytes memory bStr = bytes(_str);
-        bytes memory bLower = new bytes(bStr.length);
-
-        for (uint256 i = 0; i < bStr.length; i++) {
-            // Uppercase character...
-            if ((bStr[i] >= 0x41) && (bStr[i] <= 0x5A)) {
-                // So we add 0x20 to make it lowercase
-                bLower[i] = bytes1(uint8(bStr[i]) + 0x20);
-            } else {
-                bLower[i] = bStr[i];
-            }
-        }
-        return string(bLower);
-    }
-
-    function _removeFromIdentityIdToNames(
-        uint256 identityId,
-        string memory name
-    ) private {
-        for (uint256 i = 0; i < identityIdToNames[identityId].length; i++) {
-            if (
-                keccak256(
-                    abi.encodePacked((identityIdToNames[identityId][i]))
-                ) == keccak256(abi.encodePacked((name)))
-            ) {
-                identityIdToNames[identityId][i] = identityIdToNames[
-                    identityId
-                ][identityIdToNames[identityId].length - 1];
-                identityIdToNames[identityId].pop();
-                break;
-            }
-        }
-    }
 
     function _getName(string memory name) private view returns (string memory) {
         return string(bytes.concat(bytes(name), bytes(extension)));

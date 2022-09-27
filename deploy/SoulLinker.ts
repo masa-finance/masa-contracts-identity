@@ -3,7 +3,7 @@ import { getEnvParams } from "../src/utils/EnvParams";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
 
-let owner: SignerWithAddress;
+let admin: SignerWithAddress;
 
 const func: DeployFunction = async ({
   // @ts-ignore
@@ -20,12 +20,12 @@ const func: DeployFunction = async ({
   // const currentNonce: number = await ethers.provider.getTransactionCount(deployer);
   // to solve REPLACEMENT_UNDERPRICED, when needed
 
-  [, owner] = await ethers.getSigners();
+  [, admin] = await ethers.getSigners();
   const env = getEnvParams(network.name);
 
   const soulLinkerDeploymentResult = await deploy("SoulLinker", {
     from: deployer,
-    args: [env.OWNER || owner.address],
+    args: [env.ADMIN || admin.address],
     log: true
     // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
   });
@@ -35,10 +35,13 @@ const func: DeployFunction = async ({
     try {
       await hre.run("verify:verify", {
         address: soulLinkerDeploymentResult.address,
-        constructorArguments: [env.OWNER || owner.address]
+        constructorArguments: [env.ADMIN || admin.address]
       });
     } catch (error) {
-      if (error.message != "Contract source code already verified") {
+      if (
+        !error.message.includes("Contract source code already verified") &&
+        !error.message.includes("Reason: Already Verified")
+      ) {
         throw error;
       }
     }

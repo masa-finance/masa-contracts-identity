@@ -17,18 +17,18 @@ abstract contract SBT is NFT {
 
     /// @notice Creates a new soulbound token
     /// @dev Creates a new soulbound token
-    /// @param owner Owner of the smart contract
+    /// @param admin Administrator of the smart contract
     /// @param _soulLinker Address of the SoulLinker contract
     /// @param name Name of the token
     /// @param symbol Symbol of the token
     /// @param baseTokenURI Base URI of the token
     constructor(
-        address owner,
+        address admin,
         ISoulLinker _soulLinker,
         string memory name,
         string memory symbol,
         string memory baseTokenURI
-    ) NFT(owner, name, symbol, baseTokenURI) {
+    ) NFT(admin, name, symbol, baseTokenURI) {
         soulLinker = _soulLinker;
     }
 
@@ -40,13 +40,10 @@ abstract contract SBT is NFT {
     ///  TO CONFIRM THAT `_to` IS CAPABLE OF RECEIVING NFTS OR ELSE
     ///  THEY MAY BE PERMANENTLY LOST
     /// @dev This will raise an exception because the token is not transferable.
-    /// @param from The current owner of the NFT
-    /// @param to The new owner
-    /// @param tokenId The NFT ID to transfer
     function transferFrom(
-        address from,
-        address to,
-        uint256 tokenId
+        address,
+        address,
+        uint256
     ) public pure override {
         // Transferring soulbound Tokens is not permitted!
         revert("SBT_TRANSFER_NOT_PERMITTED");
@@ -54,13 +51,10 @@ abstract contract SBT is NFT {
 
     /// @notice Transfers the ownership of an NFT from one address to another address
     /// @dev This will raise an exception because the token is not transferable.
-    /// @param from The current owner of the NFT
-    /// @param to The new owner
-    /// @param tokenId The NFT ID to transfer
     function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenId
+        address,
+        address,
+        uint256
     ) public pure override {
         // Transferring soulbound Tokens is not permitted!
         revert("SBT_TRANSFER_NOT_PERMITTED");
@@ -68,15 +62,11 @@ abstract contract SBT is NFT {
 
     /// @notice Transfer ownership of the token to another address safely
     /// @dev This will raise an exception because the token is not transferable.
-    /// @param from The current owner of the NFT
-    /// @param to The new owner
-    /// @param tokenId The NFT ID to transfer
-    /// @param data Additional data with no specified format, sent in call to `_to`
     function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenId,
-        bytes memory data
+        address,
+        address,
+        uint256,
+        bytes memory
     ) public pure override {
         // Transferring soulbound Tokens is not permitted!
         revert("SBT_TRANSFER_NOT_PERMITTED");

@@ -19,14 +19,14 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
 
     /// @notice Creates a new soulbound identity
     /// @dev Creates a new soulbound identity, inheriting from the SBT contract.
-    /// @param owner Owner of the smart contract
+    /// @param admin Administrator of the smart contract
     /// @param _soulLinker Address of the SoulLinker contract
     /// @param baseTokenURI Base URI of the token
     constructor(
-        address owner,
+        address admin,
         ISoulLinker _soulLinker,
         string memory baseTokenURI
-    ) SBT(owner, _soulLinker, "Masa Identity", "MID", baseTokenURI) {}
+    ) SBT(admin, _soulLinker, "Masa Identity", "MID", baseTokenURI) {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
@@ -62,15 +62,14 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
     /// @dev The caller can only mint one identity per address, and the name must be unique
     /// @param to Address of the owner of the new identity
     /// @param name Name of the new identity
-    function mintIdentityWithName(address to, string memory name)
-        public
-        payable
-        override
-        soulNameAlreadySet
-        returns (uint256)
-    {
+    /// @param yearsPeriod Years of validity of the name
+    function mintIdentityWithName(
+        address to,
+        string memory name,
+        uint256 yearsPeriod
+    ) public payable override soulNameAlreadySet returns (uint256) {
         uint256 identityId = mint(to);
-        soulName.mint(to, name, identityId);
+        soulName.mint(to, name, identityId, yearsPeriod);
 
         return identityId;
     }
@@ -98,7 +97,7 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
     function ownerOf(uint256 tokenId)
         public
         view
-        override(ERC721, ISoulboundIdentity)
+        override(ERC721, IERC721)
         returns (address)
     {
         return super.ownerOf(tokenId);
@@ -114,7 +113,7 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
         soulNameAlreadySet
         returns (address)
     {
-        (, uint256 tokenId) = soulName.getIdentityData(name);
+        (, uint256 tokenId, , ) = soulName.getTokenData(name);
         return super.ownerOf(tokenId);
     }
 
@@ -128,7 +127,7 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
         soulNameAlreadySet
         returns (string memory)
     {
-        (, uint256 tokenId) = soulName.getIdentityData(name);
+        (, uint256 tokenId, , ) = soulName.getTokenData(name);
         return super.tokenURI(tokenId);
     }
 
@@ -154,17 +153,17 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
         return super.tokenOfOwnerByIndex(owner, 0);
     }
 
-    /// @notice Checks if a soul name already exists
-    /// @dev This function queries if a soul name already exists
+    /// @notice Checks if a soul name is available
+    /// @dev This function queries if a soul name already exists and is in the available state
     /// @param name Name of the soul name
-    /// @return exists `true` if the soul name exists, `false` otherwise
-    function nameExists(string memory name)
+    /// @return available `true` if the soul name is available, `false` otherwise
+    function isAvailable(string memory name)
         public
         view
         soulNameAlreadySet
-        returns (bool exists)
+        returns (bool available)
     {
-        return soulName.nameExists(name);
+        return soulName.isAvailable(name);
     }
 
     /// @notice Returns the information of a soul name
@@ -172,40 +171,49 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
     /// @param name Name of the soul name
     /// @return sbtName Soul name, in upper/lower case and extension
     /// @return identityId Identity id of the soul name
-    function getIdentityData(string memory name)
+    /// @return expirationDate Expiration date of the soul name
+    /// @return active `true` if the soul name is active, `false` otherwise
+    function getTokenData(string memory name)
         external
         view
         soulNameAlreadySet
-        returns (string memory sbtName, uint256 identityId)
+        returns (
+            string memory sbtName,
+            uint256 identityId,
+            uint256 expirationDate,
+            bool active
+        )
     {
-        return soulName.getIdentityData(name);
+        return soulName.getTokenData(name);
     }
 
-    /// @notice Returns all the identity names of an account
+    /// @notice Returns all the active soul names of an account
     /// @dev This function queries all the identity names of the specified account
     /// @param owner Address of the owner of the identities
     /// @return sbtNames Array of soul names associated to the account
-    function getIdentityNames(address owner)
+    function getSoulNames(address owner)
         external
         view
         soulNameAlreadySet
         returns (string[] memory sbtNames)
     {
-        uint256 tokenId = tokenOfOwner(owner);
-        return soulName.getIdentityNames(tokenId);
+        return soulName.getSoulNames(owner);
     }
 
-    /// @notice Returns all the identity names of an identity
+    // SoulName -> SoulboundIdentity.tokenId
+    // SoulName -> account -> SoulboundIdentity.tokenId
+
+    /// @notice Returns all the active soul names of an account
     /// @dev This function queries all the identity names of the specified identity Id
     /// @param tokenId TokenId of the identity
     /// @return sbtNames Array of soul names associated to the identity Id
-    function getIdentityNames(uint256 tokenId)
+    function getSoulNames(uint256 tokenId)
         external
         view
         soulNameAlreadySet
         returns (string[] memory sbtNames)
     {
-        return soulName.getIdentityNames(tokenId);
+        return soulName.getSoulNames(tokenId);
     }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */

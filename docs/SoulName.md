@@ -172,51 +172,6 @@ Returns the extension of the soul name
 |---|---|---|
 | _0 | string | Extension of the soul name |
 
-### getIdentityData
-
-```solidity
-function getIdentityData(string name) external view returns (string sbtName, uint256 identityId)
-```
-
-Returns the information of a soul name
-
-*This function queries the information of a soul name*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| name | string | Name of the soul name |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| sbtName | string | Soul name, in upper/lower case and extension |
-| identityId | uint256 | Identity id of the soul name |
-
-### getIdentityNames
-
-```solidity
-function getIdentityNames(uint256 identityId) external view returns (string[] sbtNames)
-```
-
-Returns all the identity names of an identity
-
-*This function queries all the identity names of the specified identity Id*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| identityId | uint256 | TokenId of the identity |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| sbtNames | string[] | Array of soul names associated to the identity Id |
-
 ### getRoleAdmin
 
 ```solidity
@@ -238,6 +193,75 @@ function getRoleAdmin(bytes32 role) external view returns (bytes32)
 | Name | Type | Description |
 |---|---|---|
 | _0 | bytes32 | undefined |
+
+### getSoulNames
+
+```solidity
+function getSoulNames(uint256 identityId) external view returns (string[] sbtNames)
+```
+
+Returns all the active soul names of an account
+
+*This function queries all the identity names of the specified identity Id*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| identityId | uint256 | TokenId of the identity |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| sbtNames | string[] | Array of soul names associated to the identity Id |
+
+### getSoulNames
+
+```solidity
+function getSoulNames(address owner) external view returns (string[] sbtNames)
+```
+
+Returns all the active soul names of an account
+
+*This function queries all the identity names of the specified account*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| owner | address | Address of the owner of the identities |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| sbtNames | string[] | Array of soul names associated to the account |
+
+### getTokenData
+
+```solidity
+function getTokenData(string name) external view returns (string sbtName, uint256 identityId, uint256 expirationDate, bool active)
+```
+
+Returns the information of a soul name
+
+*This function queries the information of a soul name*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | Name of the soul name |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| sbtName | string | Soul name, in upper/lower case and extension |
+| identityId | uint256 | Identity id of the soul name |
+| expirationDate | uint256 | Expiration date of the soul name |
+| active | bool | `true` if the soul name is active, `false` otherwise |
 
 ### grantRole
 
@@ -302,10 +326,32 @@ function isApprovedForAll(address owner, address operator) external view returns
 |---|---|---|
 | _0 | bool | undefined |
 
+### isAvailable
+
+```solidity
+function isAvailable(string name) external view returns (bool available)
+```
+
+Checks if a soul name is available
+
+*This function queries if a soul name already exists and is in the available state*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | Name of the soul name |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| available | bool | `true` if the soul name is available, `false` otherwise |
+
 ### mint
 
 ```solidity
-function mint(address to, string name, uint256 identityId) external nonpayable returns (uint256)
+function mint(address to, string name, uint256 identityId, uint256 yearsPeriod) external nonpayable returns (uint256)
 ```
 
 Mints a new soul name
@@ -319,6 +365,7 @@ Mints a new soul name
 | to | address | Address of the owner of the new soul name |
 | name | string | Name of the new soul name |
 | identityId | uint256 | TokenId of the soulbound identity that will be pointed from this soul name |
+| yearsPeriod | uint256 | Years of validity of the name |
 
 #### Returns
 
@@ -343,27 +390,28 @@ function name() external view returns (string)
 |---|---|---|
 | _0 | string | undefined |
 
-### nameExists
+### nameData
 
 ```solidity
-function nameExists(string name) external view returns (bool exists)
+function nameData(string) external view returns (bool exists, uint256 tokenId)
 ```
 
-Checks if a soul name already exists
 
-*This function queries if a soul name already exists*
+
+
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| name | string | Name of the soul name |
+| _0 | string | undefined |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| exists | bool | `true` if the soul name exists, `false` otherwise |
+| exists | bool | undefined |
+| tokenId | uint256 | undefined |
 
 ### ownerOf
 
@@ -414,6 +462,23 @@ function paused() external view returns (bool)
 | Name | Type | Description |
 |---|---|---|
 | _0 | bool | undefined |
+
+### renewYearsPeriod
+
+```solidity
+function renewYearsPeriod(uint256 tokenId, uint256 yearsPeriod) external nonpayable
+```
+
+Update the expiration date of a soul name
+
+*The caller must be the owner or an approved address of the soul name.*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId | uint256 | TokenId of the soul name |
+| yearsPeriod | uint256 | Years of validity of the name |
 
 ### renounceRole
 
@@ -519,6 +584,22 @@ Sets the extension of the soul name
 |---|---|---|
 | _extension | string | Extension of the soul name |
 
+### setSoulboundIdentity
+
+```solidity
+function setSoulboundIdentity(contract ISoulboundIdentity _soulboundIdentity) external nonpayable
+```
+
+Sets the SoulboundIdentity contract address linked to this soul name
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _soulboundIdentity | contract ISoulboundIdentity | Address of the SoulboundIdentity contract |
+
 ### soulboundIdentity
 
 ```solidity
@@ -596,6 +677,30 @@ function tokenByIndex(uint256 index) external view returns (uint256)
 | Name | Type | Description |
 |---|---|---|
 | _0 | uint256 | undefined |
+
+### tokenData
+
+```solidity
+function tokenData(uint256) external view returns (string name, uint256 identityId, uint256 expirationDate)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | undefined |
+| identityId | uint256 | undefined |
+| expirationDate | uint256 | undefined |
 
 ### tokenOfOwnerByIndex
 

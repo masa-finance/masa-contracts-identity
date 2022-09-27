@@ -155,73 +155,6 @@ Returns the extension of the soul name
 |---|---|---|
 | _0 | string | Extension of the soul name |
 
-### getIdentityData
-
-```solidity
-function getIdentityData(string name) external view returns (string sbtName, uint256 identityId)
-```
-
-Returns the information of a soul name
-
-*This function queries the information of a soul name*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| name | string | Name of the soul name |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| sbtName | string | Soul name, in upper/lower case and extension |
-| identityId | uint256 | Identity id of the soul name |
-
-### getIdentityNames
-
-```solidity
-function getIdentityNames(uint256 tokenId) external view returns (string[] sbtNames)
-```
-
-Returns all the identity names of an identity
-
-*This function queries all the identity names of the specified identity Id*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| tokenId | uint256 | TokenId of the identity |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| sbtNames | string[] | Array of soul names associated to the identity Id |
-
-### getIdentityNames
-
-```solidity
-function getIdentityNames(address owner) external view returns (string[] sbtNames)
-```
-
-Returns all the identity names of an account
-
-*This function queries all the identity names of the specified account*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| owner | address | Address of the owner of the identities |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| sbtNames | string[] | Array of soul names associated to the account |
-
 ### getRoleAdmin
 
 ```solidity
@@ -260,6 +193,75 @@ Returns the address of the SoulName contract linked to this identity
 | Name | Type | Description |
 |---|---|---|
 | _0 | contract ISoulName | Address of the SoulName contract |
+
+### getSoulNames
+
+```solidity
+function getSoulNames(uint256 tokenId) external view returns (string[] sbtNames)
+```
+
+Returns all the active soul names of an account
+
+*This function queries all the identity names of the specified identity Id*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId | uint256 | TokenId of the identity |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| sbtNames | string[] | Array of soul names associated to the identity Id |
+
+### getSoulNames
+
+```solidity
+function getSoulNames(address owner) external view returns (string[] sbtNames)
+```
+
+Returns all the active soul names of an account
+
+*This function queries all the identity names of the specified account*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| owner | address | Address of the owner of the identities |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| sbtNames | string[] | Array of soul names associated to the account |
+
+### getTokenData
+
+```solidity
+function getTokenData(string name) external view returns (string sbtName, uint256 identityId, uint256 expirationDate, bool active)
+```
+
+Returns the information of a soul name
+
+*This function queries the information of a soul name*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | Name of the soul name |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| sbtName | string | Soul name, in upper/lower case and extension |
+| identityId | uint256 | Identity id of the soul name |
+| expirationDate | uint256 | Expiration date of the soul name |
+| active | bool | `true` if the soul name is active, `false` otherwise |
 
 ### grantRole
 
@@ -324,6 +326,28 @@ function isApprovedForAll(address owner, address operator) external view returns
 |---|---|---|
 | _0 | bool | undefined |
 
+### isAvailable
+
+```solidity
+function isAvailable(string name) external view returns (bool available)
+```
+
+Checks if a soul name is available
+
+*This function queries if a soul name already exists and is in the available state*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | Name of the soul name |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| available | bool | `true` if the soul name is available, `false` otherwise |
+
 ### mint
 
 ```solidity
@@ -349,7 +373,7 @@ Mints a new soulbound identity
 ### mintIdentityWithName
 
 ```solidity
-function mintIdentityWithName(address to, string name) external payable returns (uint256)
+function mintIdentityWithName(address to, string name, uint256 yearsPeriod) external payable returns (uint256)
 ```
 
 Mints a new soulbound identity with a SoulName associated to it
@@ -362,6 +386,7 @@ Mints a new soulbound identity with a SoulName associated to it
 |---|---|---|
 | to | address | Address of the owner of the new identity |
 | name | string | Name of the new identity |
+| yearsPeriod | uint256 | Years of validity of the name |
 
 #### Returns
 
@@ -385,28 +410,6 @@ function name() external view returns (string)
 | Name | Type | Description |
 |---|---|---|
 | _0 | string | undefined |
-
-### nameExists
-
-```solidity
-function nameExists(string name) external view returns (bool exists)
-```
-
-Checks if a soul name already exists
-
-*This function queries if a soul name already exists*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| name | string | Name of the soul name |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| exists | bool | `true` if the soul name exists, `false` otherwise |
 
 ### ownerOf
 
@@ -517,7 +520,7 @@ function revokeRole(bytes32 role, address account) external nonpayable
 ### safeTransferFrom
 
 ```solidity
-function safeTransferFrom(address from, address to, uint256 tokenId) external pure
+function safeTransferFrom(address, address, uint256) external pure
 ```
 
 Transfers the ownership of an NFT from one address to another address
@@ -528,14 +531,14 @@ Transfers the ownership of an NFT from one address to another address
 
 | Name | Type | Description |
 |---|---|---|
-| from | address | The current owner of the NFT |
-| to | address | The new owner |
-| tokenId | uint256 | The NFT ID to transfer |
+| _0 | address | undefined |
+| _1 | address | undefined |
+| _2 | uint256 | undefined |
 
 ### safeTransferFrom
 
 ```solidity
-function safeTransferFrom(address from, address to, uint256 tokenId, bytes data) external pure
+function safeTransferFrom(address, address, uint256, bytes) external pure
 ```
 
 Transfer ownership of the token to another address safely
@@ -546,10 +549,10 @@ Transfer ownership of the token to another address safely
 
 | Name | Type | Description |
 |---|---|---|
-| from | address | The current owner of the NFT |
-| to | address | The new owner |
-| tokenId | uint256 | The NFT ID to transfer |
-| data | bytes | Additional data with no specified format, sent in call to `_to` |
+| _0 | address | undefined |
+| _1 | address | undefined |
+| _2 | uint256 | undefined |
+| _3 | bytes | undefined |
 
 ### setApprovalForAll
 
@@ -810,7 +813,7 @@ function totalSupply() external view returns (uint256)
 ### transferFrom
 
 ```solidity
-function transferFrom(address from, address to, uint256 tokenId) external pure
+function transferFrom(address, address, uint256) external pure
 ```
 
 Transfer ownership of an NFT -- THE CALLER IS RESPONSIBLE  TO CONFIRM THAT `_to` IS CAPABLE OF RECEIVING NFTS OR ELSE  THEY MAY BE PERMANENTLY LOST
@@ -821,9 +824,9 @@ Transfer ownership of an NFT -- THE CALLER IS RESPONSIBLE  TO CONFIRM THAT `_to`
 
 | Name | Type | Description |
 |---|---|---|
-| from | address | The current owner of the NFT |
-| to | address | The new owner |
-| tokenId | uint256 | The NFT ID to transfer |
+| _0 | address | undefined |
+| _1 | address | undefined |
+| _2 | uint256 | undefined |
 
 ### unpause
 

@@ -9,7 +9,7 @@ import {
   WETH_GOERLI
 } from "../src/constants";
 
-let owner: SignerWithAddress;
+let admin: SignerWithAddress;
 
 const func: DeployFunction = async ({
   // @ts-ignore
@@ -23,7 +23,7 @@ const func: DeployFunction = async ({
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  [, owner] = await ethers.getSigners();
+  [, admin] = await ethers.getSigners();
   const env = getEnvParams(network.name);
 
   const corn = await deployments.get("CORN");
@@ -58,21 +58,19 @@ const func: DeployFunction = async ({
     throw new Error("Network not supported");
   }
 
-  const soulFactoryDeploymentResult = await deploy("SoulFactory", {
+  const soulStoreDeploymentResult = await deploy("SoulStore", {
     from: deployer,
     args: [
-      env.OWNER || owner.address,
+      env.ADMIN || admin.address,
       soulboundIdentityDeployed.address,
-      "5000000", // 5 USDC, with 6 decimals
-      "3000000", // 3 USDC, with 6 decimals
-      "3000000", // 3 USDC, with 6 decimals
+      "10000000", // 10 USDC, with 6 decimals
       network.name == "hardhat" || network.name == "goerli"
         ? CORN_GOERLI // CORN
         : corn.address,
       stableCoin,
       wrappedNativeToken,
       swapRouter,
-      env.OWNER || owner.address
+      env.RESERVE_WALLET || admin.address
     ],
     log: true
   });
@@ -81,22 +79,23 @@ const func: DeployFunction = async ({
   if (network.name == "mainnet" || network.name == "goerli") {
     try {
       await hre.run("verify:verify", {
-        address: soulFactoryDeploymentResult.address,
+        address: soulStoreDeploymentResult.address,
         constructorArguments: [
-          env.OWNER || owner.address,
+          env.ADMIN || admin.address,
           soulboundIdentityDeployed.address,
-          "5000000", // 5 USDC, with 6 decimals
-          "3000000", // 3 USDC, with 6 decimals
-          "3000000", // 3 USDC, with 6 decimals
+          "10000000", // 10 USDC, with 6 decimals
           CORN_GOERLI, // CORN
           stableCoin,
           wrappedNativeToken,
           swapRouter,
-          env.OWNER || owner.address
+          env.RESERVE_WALLET || admin.address
         ]
       });
     } catch (error) {
-      if (error.message != "Contract source code already verified") {
+      if (
+        !error.message.includes("Contract source code already verified") &&
+        !error.message.includes("Reason: Already Verified")
+      ) {
         throw error;
       }
     }
@@ -111,25 +110,42 @@ const func: DeployFunction = async ({
     soulNameDeployed.address
   );
 
-  // we add soulFactory as soulboundIdentity and soulName minter
-  const signer = env.OWNER
+  const signer = env.ADMIN
     ? new ethers.Wallet(
         getPrivateKey(network.name),
         ethers.getDefaultProvider(network.name)
       )
-    : owner;
+    : admin;
+
+  // we set the registration prices per year and length of name
+  const soulStore = await ethers.getContractAt(
+    "SoulStore",
+    soulStoreDeploymentResult.address
+  );
+  await soulStore
+    .connect(signer)
+    .setNameRegistrationPricePerYear(1, 50000000000); // 1 length, 50,000 USDC
+  await soulStore
+    .connect(signer)
+    .setNameRegistrationPricePerYear(2, 5000000000); // 2 length, 5,000 USDC
+  await soulStore
+    .connect(signer)
+    .setNameRegistrationPricePerYear(3, 1500000000); // 3 length, 1,500 USDC
+  await soulStore.connect(signer).setNameRegistrationPricePerYear(4, 500000000); // 4 length, 500 USDC
+
+  // we add soulStore as soulboundIdentity and soulName minter
 
   const IDENTITY_MINTER_ROLE = await soulboundIdentity.MINTER_ROLE();
   await soulboundIdentity
     .connect(signer)
-    .grantRole(IDENTITY_MINTER_ROLE, soulFactoryDeploymentResult.address);
+    .grantRole(IDENTITY_MINTER_ROLE, soulStoreDeploymentResult.address);
 
   const NAME_MINTER_ROLE = await soulName.MINTER_ROLE();
   await soulName
     .connect(signer)
-    .grantRole(NAME_MINTER_ROLE, soulFactoryDeploymentResult.address);
+    .grantRole(NAME_MINTER_ROLE, soulStoreDeploymentResult.address);
 };
 
-func.tags = ["SoulFactory"];
+func.tags = ["SoulStore"];
 func.dependencies = ["CORN", "SoulboundIdentity", "SoulName"];
 export default func;

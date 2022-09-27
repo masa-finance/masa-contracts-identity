@@ -3,7 +3,7 @@ import { getEnvParams, getPrivateKey } from "../src/utils/EnvParams";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
 
-let owner: SignerWithAddress;
+let admin: SignerWithAddress;
 
 const func: DeployFunction = async ({
   // @ts-ignore
@@ -17,7 +17,7 @@ const func: DeployFunction = async ({
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  [, owner] = await ethers.getSigners();
+  [, admin] = await ethers.getSigners();
   const env = getEnvParams(network.name);
   const baseUri = `${env.BASE_URI}/name/`;
 
@@ -26,7 +26,7 @@ const func: DeployFunction = async ({
   const soulNameDeploymentResult = await deploy("SoulName", {
     from: deployer,
     args: [
-      env.OWNER || owner.address,
+      env.ADMIN || admin.address,
       soulboundIdentityDeployed.address,
       ".soul",
       baseUri
@@ -40,14 +40,17 @@ const func: DeployFunction = async ({
       await hre.run("verify:verify", {
         address: soulNameDeploymentResult.address,
         constructorArguments: [
-          env.OWNER || owner.address,
+          env.ADMIN || admin.address,
           soulboundIdentityDeployed.address,
           ".soul",
           ""
         ]
       });
     } catch (error) {
-      if (error.message != "Contract source code already verified") {
+      if (
+        !error.message.includes("Contract source code already verified") &&
+        !error.message.includes("Reason: Already Verified")
+      ) {
         throw error;
       }
     }
@@ -63,12 +66,12 @@ const func: DeployFunction = async ({
   );
 
   // we set the soulName contract in soulboundIdentity and we add soulboundIdentity as soulName minter
-  const signer = env.OWNER
+  const signer = env.ADMIN
     ? new ethers.Wallet(
         getPrivateKey(network.name),
         ethers.getDefaultProvider(network.name)
       )
-    : owner;
+    : admin;
 
   const MINTER_ROLE = await soulName.MINTER_ROLE();
   await soulboundIdentity

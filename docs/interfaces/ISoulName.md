@@ -27,33 +27,10 @@ function getExtension() external view returns (string)
 |---|---|---|
 | _0 | string | undefined |
 
-### getIdentityData
+### getSoulNames
 
 ```solidity
-function getIdentityData(string name) external view returns (string sbtName, uint256 identityId)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| name | string | undefined |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| sbtName | string | undefined |
-| identityId | uint256 | undefined |
-
-### getIdentityNames
-
-```solidity
-function getIdentityNames(uint256 identityId) external view returns (string[] sbtNames)
+function getSoulNames(uint256 identityId) external view returns (string[] sbtNames)
 ```
 
 
@@ -72,10 +49,79 @@ function getIdentityNames(uint256 identityId) external view returns (string[] sb
 |---|---|---|
 | sbtNames | string[] | undefined |
 
+### getSoulNames
+
+```solidity
+function getSoulNames(address owner) external view returns (string[] sbtNames)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| owner | address | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| sbtNames | string[] | undefined |
+
+### getTokenData
+
+```solidity
+function getTokenData(string name) external view returns (string sbtName, uint256 identityId, uint256 expirationDate, bool active)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| sbtName | string | undefined |
+| identityId | uint256 | undefined |
+| expirationDate | uint256 | undefined |
+| active | bool | undefined |
+
+### isAvailable
+
+```solidity
+function isAvailable(string name) external view returns (bool available)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| available | bool | undefined |
+
 ### mint
 
 ```solidity
-function mint(address to, string name, uint256 identityId) external nonpayable returns (uint256)
+function mint(address to, string name, uint256 identityId, uint256 yearsPeriod) external nonpayable returns (uint256)
 ```
 
 
@@ -89,34 +135,13 @@ function mint(address to, string name, uint256 identityId) external nonpayable r
 | to | address | undefined |
 | name | string | undefined |
 | identityId | uint256 | undefined |
+| yearsPeriod | uint256 | undefined |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
 | _0 | uint256 | undefined |
-
-### nameExists
-
-```solidity
-function nameExists(string name) external view returns (bool exists)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| name | string | undefined |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| exists | bool | undefined |
 
 
 

@@ -12,18 +12,19 @@ const expect = chai.expect;
 // contract instances
 let soulboundIdentity: SoulboundIdentity;
 
-let owner: SignerWithAddress;
+let admin: SignerWithAddress;
 let someone: SignerWithAddress;
 
 const SOUL_NAME1 = "soulName1";
 const SOUL_NAME2 = "soulName2";
+const YEAR = 1; // 1 year
 
 let address1: SignerWithAddress;
 let address2: SignerWithAddress;
 
 describe("Soulbound Identity", () => {
   before(async () => {
-    [, owner, someone, address1, address2] = await ethers.getSigners();
+    [, admin, someone, address1, address2] = await ethers.getSigners();
   });
 
   beforeEach(async () => {
@@ -36,21 +37,35 @@ describe("Soulbound Identity", () => {
 
     soulboundIdentity = SoulboundIdentity__factory.connect(
       soulboundIdentityAddress,
-      owner
+      admin
     );
   });
 
+  describe("set soulName", () => {
+    it("should fail to set soulName from non admin user", async () => {
+      await expect(
+        soulboundIdentity.connect(address1).setSoulName(address2.address)
+      ).to.be.rejected;
+    });
+
+    it("should success to set soulName from admin user", async () => {
+      await soulboundIdentity.connect(admin).setSoulName(address2.address);
+
+      expect(await soulboundIdentity.soulName()).to.be.equal(address2.address);
+    });
+  });
+
   describe("mint", () => {
-    it("should mint from owner", async () => {
-      await soulboundIdentity.connect(owner).mint(someone.address);
+    it("should mint from admin", async () => {
+      await soulboundIdentity.connect(admin).mint(someone.address);
 
       expect(await soulboundIdentity.balanceOf(someone.address)).to.be.equal(1);
     });
 
     it("should fail to mint twice", async () => {
-      await soulboundIdentity.connect(owner).mint(someone.address);
+      await soulboundIdentity.connect(admin).mint(someone.address);
       await expect(
-        soulboundIdentity.connect(owner).mint(someone.address)
+        soulboundIdentity.connect(admin).mint(someone.address)
       ).to.be.rejectedWith("Soulbound identity already created!");
     });
 
@@ -61,10 +76,10 @@ describe("Soulbound Identity", () => {
   });
 
   describe("mintIdentityWithName", () => {
-    it("should mint from owner", async () => {
+    it("should mint from admin", async () => {
       await soulboundIdentity
-        .connect(owner)
-        .mintIdentityWithName(address1.address, SOUL_NAME1);
+        .connect(admin)
+        .mintIdentityWithName(address1.address, SOUL_NAME1, YEAR);
 
       expect(await soulboundIdentity.balanceOf(address1.address)).to.be.equal(
         1
@@ -78,29 +93,29 @@ describe("Soulbound Identity", () => {
       await expect(
         soulboundIdentity
           .connect(address1)
-          .mintIdentityWithName(address1.address, SOUL_NAME1)
+          .mintIdentityWithName(address1.address, SOUL_NAME1, YEAR)
       ).to.be.rejected;
     });
 
     it("should fail to mint twice", async () => {
       await soulboundIdentity
-        .connect(owner)
-        .mintIdentityWithName(address1.address, SOUL_NAME1);
+        .connect(admin)
+        .mintIdentityWithName(address1.address, SOUL_NAME1, YEAR);
       await expect(
         soulboundIdentity
-          .connect(owner)
-          .mintIdentityWithName(address1.address, SOUL_NAME2)
+          .connect(admin)
+          .mintIdentityWithName(address1.address, SOUL_NAME2, YEAR)
       ).to.be.rejectedWith("Soulbound identity already created!");
     });
 
     it("should fail to mint duplicated name", async () => {
       await soulboundIdentity
-        .connect(owner)
-        .mintIdentityWithName(address1.address, SOUL_NAME1);
+        .connect(admin)
+        .mintIdentityWithName(address1.address, SOUL_NAME1, YEAR);
       await expect(
         soulboundIdentity
-          .connect(owner)
-          .mintIdentityWithName(address2.address, SOUL_NAME1)
+          .connect(admin)
+          .mintIdentityWithName(address2.address, SOUL_NAME1, YEAR)
       ).to.be.rejectedWith("NAME_ALREADY_EXISTS");
     });
   });
@@ -108,7 +123,7 @@ describe("Soulbound Identity", () => {
   describe("burn", () => {
     it("should burn", async () => {
       const mintTx = await soulboundIdentity
-        .connect(owner)
+        .connect(admin)
         .mint(someone.address);
       const mintReceipt = await mintTx.wait();
 
@@ -127,7 +142,7 @@ describe("Soulbound Identity", () => {
 
   describe("transfer", () => {
     it("should fail to transfer because its soulbound", async () => {
-      await soulboundIdentity.connect(owner).mint(someone.address);
+      await soulboundIdentity.connect(admin).mint(someone.address);
 
       await expect(
         soulboundIdentity
@@ -163,8 +178,8 @@ describe("Soulbound Identity", () => {
 
     beforeEach(async () => {
       const mintTx = await soulboundIdentity
-        .connect(owner)
-        .mintIdentityWithName(someone.address, SOUL_NAME1);
+        .connect(admin)
+        .mintIdentityWithName(someone.address, SOUL_NAME1, YEAR);
 
       const mintReceipt = await mintTx.wait();
       tokenId = mintReceipt.events![0].args![2].toNumber();
@@ -208,73 +223,71 @@ describe("Soulbound Identity", () => {
 
     beforeEach(async () => {
       const mintTx = await soulboundIdentity
-        .connect(owner)
-        .mintIdentityWithName(address1.address, SOUL_NAME1);
+        .connect(admin)
+        .mintIdentityWithName(address1.address, SOUL_NAME1, YEAR);
       const mintReceipt = await mintTx.wait();
 
       identityId = mintReceipt.events![0].args![2].toNumber();
     });
 
-    it("nameExists true with an existing name", async () => {
-      await expect(await soulboundIdentity.nameExists(SOUL_NAME1)).to.be.equals(
+    it("isAvailable true with an existing name", async () => {
+      await expect(await soulboundIdentity.isAvailable(SOUL_NAME1)).to.be.equal(
         true
       );
     });
 
-    it("nameExists true with an existing name - case insensitive", async () => {
+    it("isAvailable true with an existing name - case insensitive", async () => {
       await expect(
-        await soulboundIdentity.nameExists(SOUL_NAME1.toLowerCase())
-      ).to.be.equals(true);
+        await soulboundIdentity.isAvailable(SOUL_NAME1.toLowerCase())
+      ).to.be.equal(true);
       await expect(
-        await soulboundIdentity.nameExists(SOUL_NAME1.toUpperCase())
-      ).to.be.equals(true);
+        await soulboundIdentity.isAvailable(SOUL_NAME1.toUpperCase())
+      ).to.be.equal(true);
     });
 
-    it("nameExists false with a non existing name", async () => {
-      await expect(await soulboundIdentity.nameExists("fakeName")).to.be.equals(
+    it("isAvailable false with a non existing name", async () => {
+      await expect(await soulboundIdentity.isAvailable("fakeName")).to.be.equal(
         false
       );
     });
 
-    it("getIdentityData with an existing name", async () => {
-      const [sbtName, identityId] = await soulboundIdentity.getIdentityData(
-        SOUL_NAME1
-      );
+    it("getTokenData with an existing name", async () => {
+      const [sbtName, , ,] = await soulboundIdentity.getTokenData(SOUL_NAME1);
       const extension = await soulboundIdentity.getExtension();
 
-      await expect(sbtName).to.be.equals(SOUL_NAME1 + extension);
+      await expect(sbtName).to.be.equal(SOUL_NAME1 + extension);
     });
 
-    it("getIdentityData with an existing name - case insensitive", async () => {
-      let [sbtName, identityId] = await soulboundIdentity.getIdentityData(
+    it("getTokenData with an existing name - case insensitive", async () => {
+      let [sbtName, identityId, ,] = await soulboundIdentity.getTokenData(
         SOUL_NAME1.toLowerCase()
       );
       const extension = await soulboundIdentity.getExtension();
 
-      await expect(sbtName).to.be.equals(SOUL_NAME1 + extension);
+      await expect(sbtName).to.be.equal(SOUL_NAME1 + extension);
 
-      [sbtName, identityId] = await soulboundIdentity.getIdentityData(
+      [sbtName, identityId, ,] = await soulboundIdentity.getTokenData(
         SOUL_NAME1.toUpperCase()
       );
 
-      await expect(sbtName).to.be.equals(SOUL_NAME1 + extension);
+      await expect(sbtName).to.be.equal(SOUL_NAME1 + extension);
     });
 
-    it("getIdentityData with a non existing name", async () => {
+    it("getTokenData with a non existing name", async () => {
       await expect(
-        soulboundIdentity.getIdentityData("fakeName")
+        soulboundIdentity.getTokenData("fakeName")
       ).to.be.rejectedWith("NAME_NOT_FOUND");
     });
 
-    it("getIdentityNames(uint256) returns array of SBT names in lower case", async () => {
+    it("getSoulNames(uint256) returns array of SBT names in lower case", async () => {
       expect(
-        await soulboundIdentity["getIdentityNames(uint256)"](identityId)
+        await soulboundIdentity["getSoulNames(uint256)"](identityId)
       ).to.deep.equal([SOUL_NAME1.toLowerCase()]);
     });
 
-    it("getIdentityNames(address) returns array of SBT names in lower case", async () => {
+    it("getSoulNames(address) returns array of SBT names in lower case", async () => {
       expect(
-        await soulboundIdentity["getIdentityNames(address)"](address1.address)
+        await soulboundIdentity["getSoulNames(address)"](address1.address)
       ).to.deep.equal([SOUL_NAME1.toLowerCase()]);
     });
   });
