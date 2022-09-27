@@ -11,12 +11,12 @@ import "./dex/DexAMM.sol";
 import "./interfaces/ISoulboundIdentity.sol";
 import "./interfaces/ISoulName.sol";
 
-/// @title Soul Factory
+/// @title Soul Store
 /// @author Masa Finance
-/// @notice Soul Factory, that can mint new Soulbound Identities and Soul Name NFTs, paying a fee
+/// @notice Soul Store, that can mint new Soulbound Identities and Soul Name NFTs, paying a fee
 /// @dev From this smart contract we can mint new Soulbound Identities and Soul Name NFTs.
 /// This minting can be done paying a fee in ETH, USDC or CORN
-contract SoulFactory is DexAMM, Pausable, AccessControl {
+contract SoulStore is DexAMM, Pausable, AccessControl {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
@@ -35,8 +35,8 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
 
     /* ========== INITIALIZE ========== */
 
-    /// @notice Creates a new Soul Factory
-    /// @dev Creates a new Soul Factory, that has the role to minting new Soulbound Identities
+    /// @notice Creates a new Soul Store
+    /// @dev Creates a new Soul Store, that has the role to minting new Soulbound Identities
     /// and Soul Name NFTs, paying a fee
     /// @param owner Owner of the smart contract
     /// @param _soulBoundIdentity Address of the Soulbound identity contract
@@ -85,7 +85,7 @@ contract SoulFactory is DexAMM, Pausable, AccessControl {
         _unpause();
     }
 
-    /// @notice Sets the SoulboundIdentity contract address linked to this factory
+    /// @notice Sets the SoulboundIdentity contract address linked to this store
     /// @dev The caller must have the admin role to call this function
     /// @param _soulboundIdentity New SoulboundIdentity contract address
     function setSoulboundIdentity(ISoulboundIdentity _soulboundIdentity)
