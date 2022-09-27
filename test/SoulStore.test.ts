@@ -10,8 +10,8 @@ import {
   ERC20__factory,
   IUniswapRouter,
   IUniswapRouter__factory,
-  SoulFactory,
-  SoulFactory__factory
+  SoulStore,
+  SoulStore__factory
 } from "../typechain";
 import {
   CORN_GOERLI,
@@ -25,7 +25,7 @@ chai.use(solidity);
 const expect = chai.expect;
 
 // contract instances
-let soulFactory: SoulFactory;
+let soulStore: SoulStore;
 
 let owner: SignerWithAddress;
 let address1: SignerWithAddress;
@@ -40,7 +40,7 @@ const MINTING_NAME_PRICE_5LETTERS = 10000000; // 10 USDC, with 6 decimals
 const SOUL_NAME = "soulNameTest";
 const YEAR = 1; // 1 year
 
-describe("Soul Factory", () => {
+describe("Soul Store", () => {
   before(async () => {
     [, owner, address1, address2] = await ethers.getSigners();
   });
@@ -48,14 +48,14 @@ describe("Soul Factory", () => {
   beforeEach(async () => {
     await deployments.fixture("SoulboundIdentity", { fallbackToGlobal: false });
     await deployments.fixture("SoulName", { fallbackToGlobal: false });
-    await deployments.fixture("SoulFactory", { fallbackToGlobal: false });
+    await deployments.fixture("SoulStore", { fallbackToGlobal: false });
 
     const { address: cornAddress } = await deployments.get("CORN");
-    const { address: soulFactoryAddress } = await deployments.get(
-      "SoulFactory"
+    const { address: soulStoreAddress } = await deployments.get(
+      "SoulStore"
     );
 
-    soulFactory = SoulFactory__factory.connect(soulFactoryAddress, owner);
+    soulStore = SoulStore__factory.connect(soulStoreAddress, owner);
     const uniswapRouter: IUniswapRouter = IUniswapRouter__factory.connect(
       SWAPROUTER_GOERLI,
       owner
@@ -90,128 +90,128 @@ describe("Soul Factory", () => {
 
   describe("pause", () => {
     it("should pause from owner", async () => {
-      await soulFactory.connect(owner).pause();
+      await soulStore.connect(owner).pause();
 
-      expect(await soulFactory.paused()).to.be.true;
+      expect(await soulStore.paused()).to.be.true;
     });
 
     it("should unpause from owner", async () => {
-      await soulFactory.connect(owner).pause();
+      await soulStore.connect(owner).pause();
 
-      expect(await soulFactory.paused()).to.be.true;
+      expect(await soulStore.paused()).to.be.true;
 
-      await soulFactory.connect(owner).unpause();
+      await soulStore.connect(owner).unpause();
 
-      expect(await soulFactory.paused()).to.be.false;
+      expect(await soulStore.paused()).to.be.false;
     });
 
     it("should fail to pause from non owner", async () => {
-      await expect(soulFactory.connect(address1).pause()).to.be.rejected;
+      await expect(soulStore.connect(address1).pause()).to.be.rejected;
     });
 
     it("should fail to unpause from non owner", async () => {
-      await soulFactory.connect(owner).pause();
+      await soulStore.connect(owner).pause();
 
-      expect(await soulFactory.paused()).to.be.true;
+      expect(await soulStore.paused()).to.be.true;
 
-      await expect(soulFactory.connect(address1).unpause()).to.be.rejected;
+      await expect(soulStore.connect(address1).unpause()).to.be.rejected;
     });
   });
 
   describe("admin functions", () => {
     it("should set SoulboundIdentity from admin", async () => {
-      await soulFactory.connect(owner).setSoulboundIdentity(address1.address);
+      await soulStore.connect(owner).setSoulboundIdentity(address1.address);
 
-      expect(await soulFactory.soulboundIdentity()).to.be.equal(
+      expect(await soulStore.soulboundIdentity()).to.be.equal(
         address1.address
       );
     });
 
     it("should fail to set SoulboundIdentity from non admin", async () => {
       await expect(
-        soulFactory.connect(address1).setSoulboundIdentity(address1.address)
+        soulStore.connect(address1).setSoulboundIdentity(address1.address)
       ).to.be.rejected;
     });
 
     it("should set NameRegistrationPricePerYear from admin", async () => {
       const newPrice = 100;
-      await soulFactory
+      await soulStore
         .connect(owner)
         .setNameRegistrationPricePerYear(0, newPrice);
 
       expect(
-        await soulFactory.getNameRegistrationPricePerYear(SOUL_NAME)
+        await soulStore.getNameRegistrationPricePerYear(SOUL_NAME)
       ).to.be.equal(newPrice);
     });
 
     it("should fail to set MintingNamePrice from non admin", async () => {
       const newPrice = 100;
       await expect(
-        soulFactory
+        soulStore
           .connect(address1)
           .setNameRegistrationPricePerYear(0, newPrice)
       ).to.be.rejected;
     });
 
     it("should set StableCoin from admin", async () => {
-      await soulFactory.connect(owner).setStableCoin(address1.address);
+      await soulStore.connect(owner).setStableCoin(address1.address);
 
-      expect(await soulFactory.stableCoin()).to.be.equal(address1.address);
+      expect(await soulStore.stableCoin()).to.be.equal(address1.address);
     });
 
     it("should fail to set StableCoin from non admin", async () => {
       await expect(
-        soulFactory.connect(address1).setStableCoin(address1.address)
+        soulStore.connect(address1).setStableCoin(address1.address)
       ).to.be.rejected;
     });
 
     it("should set UtilityToken from admin", async () => {
-      await soulFactory.connect(owner).setUtilityToken(address1.address);
+      await soulStore.connect(owner).setUtilityToken(address1.address);
 
-      expect(await soulFactory.utilityToken()).to.be.equal(address1.address);
+      expect(await soulStore.utilityToken()).to.be.equal(address1.address);
     });
 
     it("should fail to set UtilityToken from non admin", async () => {
       await expect(
-        soulFactory.connect(address1).setUtilityToken(address1.address)
+        soulStore.connect(address1).setUtilityToken(address1.address)
       ).to.be.rejected;
     });
 
     it("should set ReserveWallet from admin", async () => {
-      await soulFactory.connect(owner).setReserveWallet(address1.address);
+      await soulStore.connect(owner).setReserveWallet(address1.address);
 
-      expect(await soulFactory.reserveWallet()).to.be.equal(address1.address);
+      expect(await soulStore.reserveWallet()).to.be.equal(address1.address);
     });
 
     it("should fail to set ReserveWallet from non admin", async () => {
       await expect(
-        soulFactory.connect(address1).setReserveWallet(address1.address)
+        soulStore.connect(address1).setReserveWallet(address1.address)
       ).to.be.rejected;
     });
 
     it("should set SwapRouter from admin", async () => {
-      await soulFactory.connect(owner).setSwapRouter(address1.address);
+      await soulStore.connect(owner).setSwapRouter(address1.address);
 
-      expect(await soulFactory.swapRouter()).to.be.equal(address1.address);
+      expect(await soulStore.swapRouter()).to.be.equal(address1.address);
     });
 
     it("should fail to set SwapRouter from non admin", async () => {
       await expect(
-        soulFactory.connect(address1).setSwapRouter(address1.address)
+        soulStore.connect(address1).setSwapRouter(address1.address)
       ).to.be.rejected;
     });
 
     it("should set WrappedNativeToken from admin", async () => {
-      await soulFactory.connect(owner).setWrappedNativeToken(address1.address);
+      await soulStore.connect(owner).setWrappedNativeToken(address1.address);
 
-      expect(await soulFactory.wrappedNativeToken()).to.be.equal(
+      expect(await soulStore.wrappedNativeToken()).to.be.equal(
         address1.address
       );
     });
 
     it("should fail to set WrappedNativeToken from non admin", async () => {
       await expect(
-        soulFactory.connect(address1).setWrappedNativeToken(address1.address)
+        soulStore.connect(address1).setWrappedNativeToken(address1.address)
       ).to.be.rejected;
     });
   });
@@ -219,14 +219,14 @@ describe("Soul Factory", () => {
   describe("purchase info", () => {
     it("we can get name purchase info for 1 and 2 years", async () => {
       const [priceInStableCoin1, priceInETH1, priceInUtilityToken1] =
-        await soulFactory.purchaseNameInfo(SOUL_NAME, YEAR);
+        await soulStore.purchaseNameInfo(SOUL_NAME, YEAR);
 
       expect(priceInStableCoin1).to.be.equal(MINTING_NAME_PRICE_5LETTERS);
       expect(priceInETH1).not.to.be.equal("0");
       expect(priceInUtilityToken1).not.to.be.equal("0");
 
       const [priceInStableCoin2, priceInETH2, priceInUtilityToken2] =
-        await soulFactory.purchaseNameInfo(SOUL_NAME, YEAR * 2);
+        await soulStore.purchaseNameInfo(SOUL_NAME, YEAR * 2);
 
       expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_5LETTERS * 2);
       expect(priceInETH2).not.to.be.equal(priceInETH1.mul(2));
@@ -237,14 +237,14 @@ describe("Soul Factory", () => {
       const SOUL_NAME_1LETTERS = "a";
 
       const [priceInStableCoin1, priceInETH1, priceInUtilityToken1] =
-        await soulFactory.purchaseNameInfo(SOUL_NAME_1LETTERS, YEAR);
+        await soulStore.purchaseNameInfo(SOUL_NAME_1LETTERS, YEAR);
 
       expect(priceInStableCoin1).to.be.equal(MINTING_NAME_PRICE_1LETTERS);
       expect(priceInETH1).not.to.be.equal("0");
       expect(priceInUtilityToken1).not.to.be.equal("0");
 
       const [priceInStableCoin2, priceInETH2, priceInUtilityToken2] =
-        await soulFactory.purchaseNameInfo(SOUL_NAME_1LETTERS, YEAR * 2);
+        await soulStore.purchaseNameInfo(SOUL_NAME_1LETTERS, YEAR * 2);
 
       expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_1LETTERS * 2);
       expect(priceInETH2).not.to.be.equal(priceInETH1.mul(2));
@@ -255,14 +255,14 @@ describe("Soul Factory", () => {
       const SOUL_NAME_2LETTERS = "aa";
 
       const [priceInStableCoin1, priceInETH1, priceInUtilityToken1] =
-        await soulFactory.purchaseNameInfo(SOUL_NAME_2LETTERS, YEAR);
+        await soulStore.purchaseNameInfo(SOUL_NAME_2LETTERS, YEAR);
 
       expect(priceInStableCoin1).to.be.equal(MINTING_NAME_PRICE_2LETTERS);
       expect(priceInETH1).not.to.be.equal("0");
       expect(priceInUtilityToken1).not.to.be.equal("0");
 
       const [priceInStableCoin2, priceInETH2, priceInUtilityToken2] =
-        await soulFactory.purchaseNameInfo(SOUL_NAME_2LETTERS, YEAR * 2);
+        await soulStore.purchaseNameInfo(SOUL_NAME_2LETTERS, YEAR * 2);
 
       expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_2LETTERS * 2);
       expect(priceInETH2).not.to.be.equal(priceInETH1.mul(2));
@@ -273,14 +273,14 @@ describe("Soul Factory", () => {
       const SOUL_NAME_3LETTERS = "aaa";
 
       const [priceInStableCoin1, priceInETH1, priceInUtilityToken1] =
-        await soulFactory.purchaseNameInfo(SOUL_NAME_3LETTERS, YEAR);
+        await soulStore.purchaseNameInfo(SOUL_NAME_3LETTERS, YEAR);
 
       expect(priceInStableCoin1).to.be.equal(MINTING_NAME_PRICE_3LETTERS);
       expect(priceInETH1).not.to.be.equal("0");
       expect(priceInUtilityToken1).not.to.be.equal("0");
 
       const [priceInStableCoin2, priceInETH2, priceInUtilityToken2] =
-        await soulFactory.purchaseNameInfo(SOUL_NAME_3LETTERS, YEAR * 2);
+        await soulStore.purchaseNameInfo(SOUL_NAME_3LETTERS, YEAR * 2);
 
       expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_3LETTERS * 2);
       expect(priceInETH2).not.to.be.equal(priceInETH1.mul(2));
@@ -291,14 +291,14 @@ describe("Soul Factory", () => {
       const SOUL_NAME_4LETTERS = "aaaa";
 
       const [priceInStableCoin1, priceInETH1, priceInUtilityToken1] =
-        await soulFactory.purchaseNameInfo(SOUL_NAME_4LETTERS, YEAR);
+        await soulStore.purchaseNameInfo(SOUL_NAME_4LETTERS, YEAR);
 
       expect(priceInStableCoin1).to.be.equal(MINTING_NAME_PRICE_4LETTERS);
       expect(priceInETH1).not.to.be.equal("0");
       expect(priceInUtilityToken1).not.to.be.equal("0");
 
       const [priceInStableCoin2, priceInETH2, priceInUtilityToken2] =
-        await soulFactory.purchaseNameInfo(SOUL_NAME_4LETTERS, YEAR * 2);
+        await soulStore.purchaseNameInfo(SOUL_NAME_4LETTERS, YEAR * 2);
 
       expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_4LETTERS * 2);
       expect(priceInETH2).not.to.be.equal(priceInETH1.mul(2));
@@ -308,12 +308,12 @@ describe("Soul Factory", () => {
 
   describe("purchase identity and name", () => {
     it("we can purchase an identity and name with ETH", async () => {
-      const [, priceInETH] = await soulFactory.purchaseNameInfo(
+      const [, priceInETH] = await soulStore.purchaseNameInfo(
         SOUL_NAME,
         YEAR
       );
 
-      await soulFactory.connect(address1).purchaseIdentityAndName(
+      await soulStore.connect(address1).purchaseIdentityAndName(
         ethers.constants.AddressZero, // ETH
         SOUL_NAME,
         YEAR,
@@ -322,18 +322,18 @@ describe("Soul Factory", () => {
     });
 
     it("we can purchase an identity and name with stable coin", async () => {
-      const [priceInStableCoin, ,] = await soulFactory.purchaseNameInfo(
+      const [priceInStableCoin, ,] = await soulStore.purchaseNameInfo(
         SOUL_NAME,
         YEAR
       );
 
-      // set allowance for soul factory
+      // set allowance for soul store
       const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, owner);
       await usdc
         .connect(address1)
-        .approve(soulFactory.address, priceInStableCoin);
+        .approve(soulStore.address, priceInStableCoin);
 
-      await soulFactory.connect(address1).purchaseIdentityAndName(
+      await soulStore.connect(address1).purchaseIdentityAndName(
         USDC_GOERLI, // USDC
         SOUL_NAME,
         YEAR
@@ -341,18 +341,18 @@ describe("Soul Factory", () => {
     });
 
     it("we can purchase an identity and name with utility coin", async () => {
-      const [, , priceInUtilityToken] = await soulFactory.purchaseNameInfo(
+      const [, , priceInUtilityToken] = await soulStore.purchaseNameInfo(
         SOUL_NAME,
         YEAR
       );
 
-      // set allowance for soul factory
+      // set allowance for soul store
       const usdc: ERC20 = ERC20__factory.connect(CORN_GOERLI, owner);
       await usdc
         .connect(address1)
-        .approve(soulFactory.address, priceInUtilityToken);
+        .approve(soulStore.address, priceInUtilityToken);
 
-      await soulFactory.connect(address1).purchaseIdentityAndName(
+      await soulStore.connect(address1).purchaseIdentityAndName(
         CORN_GOERLI, // $CORN
         SOUL_NAME,
         YEAR
@@ -360,13 +360,13 @@ describe("Soul Factory", () => {
     });
 
     it("we can't purchase an identity and name with ETH if we pay less", async () => {
-      const [, priceInETH] = await soulFactory.purchaseNameInfo(
+      const [, priceInETH] = await soulStore.purchaseNameInfo(
         SOUL_NAME,
         YEAR
       );
 
       await expect(
-        soulFactory.connect(address1).purchaseIdentityAndName(
+        soulStore.connect(address1).purchaseIdentityAndName(
           ethers.constants.AddressZero, // ETH
           SOUL_NAME,
           YEAR,
@@ -376,19 +376,19 @@ describe("Soul Factory", () => {
     });
 
     it("we can't purchase an identity and name with stable coin if we don't have funds", async () => {
-      const [priceInStableCoin, ,] = await soulFactory.purchaseNameInfo(
+      const [priceInStableCoin, ,] = await soulStore.purchaseNameInfo(
         SOUL_NAME,
         YEAR
       );
 
-      // set allowance for soul factory
+      // set allowance for soul store
       const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, owner);
       await usdc
         .connect(address2)
-        .approve(soulFactory.address, priceInStableCoin);
+        .approve(soulStore.address, priceInStableCoin);
 
       await expect(
-        soulFactory.connect(address2).purchaseIdentityAndName(
+        soulStore.connect(address2).purchaseIdentityAndName(
           USDC_GOERLI, // USDC
           SOUL_NAME,
           YEAR
@@ -397,19 +397,19 @@ describe("Soul Factory", () => {
     });
 
     it("we can't purchase an identity and name with utility coin if we don't have funds", async () => {
-      const [, , priceInUtilityToken] = await soulFactory.purchaseNameInfo(
+      const [, , priceInUtilityToken] = await soulStore.purchaseNameInfo(
         SOUL_NAME,
         YEAR
       );
 
-      // set allowance for soul factory
+      // set allowance for soul store
       const usdc: ERC20 = ERC20__factory.connect(CORN_GOERLI, owner);
       await usdc
         .connect(address2)
-        .approve(soulFactory.address, priceInUtilityToken);
+        .approve(soulStore.address, priceInUtilityToken);
 
       await expect(
-        soulFactory.connect(address2).purchaseIdentityAndName(
+        soulStore.connect(address2).purchaseIdentityAndName(
           CORN_GOERLI, // $CORN
           SOUL_NAME,
           YEAR
@@ -418,14 +418,14 @@ describe("Soul Factory", () => {
     });
 
     it("we can purchase an identity and name with more ETH receiving the refund", async () => {
-      const [, priceInETH] = await soulFactory.purchaseNameInfo(
+      const [, priceInETH] = await soulStore.purchaseNameInfo(
         SOUL_NAME,
         YEAR
       );
 
       const balance = await address1.getBalance();
 
-      const tx = await soulFactory.connect(address1).purchaseIdentityAndName(
+      const tx = await soulStore.connect(address1).purchaseIdentityAndName(
         ethers.constants.AddressZero, // ETH
         SOUL_NAME,
         YEAR,
@@ -446,23 +446,23 @@ describe("Soul Factory", () => {
 
   describe("purchase identity", () => {
     it("we can purchase an identity", async () => {
-      await soulFactory.connect(address1).purchaseIdentity();
+      await soulStore.connect(address1).purchaseIdentity();
     });
   });
 
   describe("purchase name", () => {
     beforeEach(async () => {
       // first we need to purchase an identity
-      await soulFactory.connect(address1).purchaseIdentity();
+      await soulStore.connect(address1).purchaseIdentity();
     });
 
     it("we can purchase a name with ETH", async () => {
-      const [, priceInETH] = await soulFactory.purchaseNameInfo(
+      const [, priceInETH] = await soulStore.purchaseNameInfo(
         SOUL_NAME,
         YEAR
       );
 
-      await soulFactory.connect(address1).purchaseName(
+      await soulStore.connect(address1).purchaseName(
         ethers.constants.AddressZero, // ETH
         SOUL_NAME,
         YEAR,
@@ -471,18 +471,18 @@ describe("Soul Factory", () => {
     });
 
     it("we can purchase a name with stable coin", async () => {
-      const [priceInStableCoin, ,] = await soulFactory.purchaseNameInfo(
+      const [priceInStableCoin, ,] = await soulStore.purchaseNameInfo(
         SOUL_NAME,
         YEAR
       );
 
-      // set allowance for soul factory
+      // set allowance for soul store
       const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, owner);
       await usdc
         .connect(address1)
-        .approve(soulFactory.address, priceInStableCoin);
+        .approve(soulStore.address, priceInStableCoin);
 
-      await soulFactory.connect(address1).purchaseName(
+      await soulStore.connect(address1).purchaseName(
         USDC_GOERLI, // USDC
         SOUL_NAME,
         YEAR
@@ -490,18 +490,18 @@ describe("Soul Factory", () => {
     });
 
     it("we can purchase a name with utility coin", async () => {
-      const [, , priceInUtilityToken] = await soulFactory.purchaseNameInfo(
+      const [, , priceInUtilityToken] = await soulStore.purchaseNameInfo(
         SOUL_NAME,
         YEAR
       );
 
-      // set allowance for soul factory
+      // set allowance for soul store
       const usdc: ERC20 = ERC20__factory.connect(CORN_GOERLI, owner);
       await usdc
         .connect(address1)
-        .approve(soulFactory.address, priceInUtilityToken);
+        .approve(soulStore.address, priceInUtilityToken);
 
-      await soulFactory.connect(address1).purchaseName(
+      await soulStore.connect(address1).purchaseName(
         CORN_GOERLI, // $CORN
         SOUL_NAME,
         YEAR
@@ -509,13 +509,13 @@ describe("Soul Factory", () => {
     });
 
     it("we can't purchase a name with ETH if we pay less", async () => {
-      const [, priceInETH] = await soulFactory.purchaseNameInfo(
+      const [, priceInETH] = await soulStore.purchaseNameInfo(
         SOUL_NAME,
         YEAR
       );
 
       await expect(
-        soulFactory.connect(address1).purchaseName(
+        soulStore.connect(address1).purchaseName(
           ethers.constants.AddressZero, // ETH
           SOUL_NAME,
           YEAR,
@@ -525,19 +525,19 @@ describe("Soul Factory", () => {
     });
 
     it("we can't purchase a name with stable coin if we don't have funds", async () => {
-      const [priceInStableCoin, ,] = await soulFactory.purchaseNameInfo(
+      const [priceInStableCoin, ,] = await soulStore.purchaseNameInfo(
         SOUL_NAME,
         YEAR
       );
 
-      // set allowance for soul factory
+      // set allowance for soul store
       const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, owner);
       await usdc
         .connect(address2)
-        .approve(soulFactory.address, priceInStableCoin);
+        .approve(soulStore.address, priceInStableCoin);
 
       await expect(
-        soulFactory.connect(address2).purchaseName(
+        soulStore.connect(address2).purchaseName(
           USDC_GOERLI, // USDC
           SOUL_NAME,
           YEAR
@@ -546,19 +546,19 @@ describe("Soul Factory", () => {
     });
 
     it("we can't purchase a name with utility coin if we don't have funds", async () => {
-      const [, , priceInUtilityToken] = await soulFactory.purchaseNameInfo(
+      const [, , priceInUtilityToken] = await soulStore.purchaseNameInfo(
         SOUL_NAME,
         YEAR
       );
 
-      // set allowance for soul factory
+      // set allowance for soul store
       const usdc: ERC20 = ERC20__factory.connect(CORN_GOERLI, owner);
       await usdc
         .connect(address2)
-        .approve(soulFactory.address, priceInUtilityToken);
+        .approve(soulStore.address, priceInUtilityToken);
 
       await expect(
-        soulFactory.connect(address2).purchaseName(
+        soulStore.connect(address2).purchaseName(
           CORN_GOERLI, // $CORN
           SOUL_NAME,
           YEAR
@@ -570,7 +570,7 @@ describe("Soul Factory", () => {
   describe("use invalid payment method", () => {
     it("we can't use an invalid payment method", async () => {
       await expect(
-        soulFactory.connect(address1).purchaseIdentityAndName(
+        soulStore.connect(address1).purchaseIdentityAndName(
           address2.address, // invalid payment method
           SOUL_NAME,
           YEAR
