@@ -249,7 +249,7 @@ describe("Soul Name", () => {
       expect(() => new URL(tokenUri)).to.not.throw();
       // we expect that the token uri is already encoded
       expect(tokenUri).to.equal(encodeURI(tokenUri));
-      expect(tokenUri).to.contain("/name/");
+      expect(tokenUri).to.match(/ar:\/\/|ipfs:\/\//);
     });
   });
 
