@@ -95,11 +95,13 @@ contract SoulName is NFT, ISoulName {
     /// @param name Name of the new soul name
     /// @param identityId TokenId of the soulbound identity that will be pointed from this soul name
     /// @param yearsPeriod Years of validity of the name
+    /// @param _tokenURI URI of the NFT
     function mint(
         address to,
         string memory name,
         uint256 identityId,
-        uint256 yearsPeriod
+        uint256 yearsPeriod,
+        string memory _tokenURI
     ) public override returns (uint256) {
         require(!isAvailable(name), "NAME_ALREADY_EXISTS");
         require(bytes(name).length > 0, "ZERO_LENGTH_NAME");
@@ -110,6 +112,7 @@ contract SoulName is NFT, ISoulName {
         );
 
         uint256 tokenId = _mintWithCounter(to);
+        _setTokenURI(tokenId, _tokenURI);
 
         tokenData[tokenId].name = name;
         tokenData[tokenId].identityId = identityId;
@@ -342,7 +345,13 @@ contract SoulName is NFT, ISoulName {
     ///  Metadata JSON Schema".
     /// @param tokenId NFT to get the URI of
     /// @return URI of the NFT
-    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        virtual
+        override
+        returns (string memory)
+    {
         _requireMinted(tokenId);
 
         string memory _tokenURI = _tokenURIs[tokenId];
@@ -366,8 +375,14 @@ contract SoulName is NFT, ISoulName {
         return string(bytes.concat(bytes(name), bytes(extension)));
     }
 
-    function _setTokenURI(uint256 tokenId, string memory _tokenURI) internal virtual {
-        require(_exists(tokenId), "ERC721URIStorage: URI set of nonexistent token");
+    function _setTokenURI(uint256 tokenId, string memory _tokenURI)
+        internal
+        virtual
+    {
+        require(
+            _exists(tokenId),
+            "ERC721URIStorage: URI set of nonexistent token"
+        );
         _tokenURIs[tokenId] = _tokenURI;
     }
 
