@@ -22,6 +22,9 @@ contract SoulName is NFT, ISoulName {
     ISoulboundIdentity public soulboundIdentity;
     string public extension; // suffix of the names (.sol?)
 
+    // Optional mapping for token URIs
+    mapping(uint256 => string) private _tokenURIs;
+
     mapping(uint256 => TokenData) public tokenData; // used to store the data of the token id
     mapping(string => NameData) public nameData; // stores the token id of the current active soul name
     mapping(uint256 => string[]) identityNames; // register of all names associated to an identityId
@@ -208,6 +211,10 @@ contract SoulName is NFT, ISoulName {
         }
         Utils.removeStringFromArray(identityNames[identityId], lowercaseName);
 
+        if (bytes(_tokenURIs[tokenId]).length != 0) {
+            delete _tokenURIs[tokenId];
+        }
+
         super.burn(tokenId);
     }
 
@@ -329,10 +336,39 @@ contract SoulName is NFT, ISoulName {
         return _sbtNames;
     }
 
+    /// @notice A distinct Uniform Resource Identifier (URI) for a given asset.
+    /// @dev Throws if `_tokenId` is not a valid NFT. URIs are defined in RFC
+    ///  3986. The URI may point to a JSON file that conforms to the "ERC721
+    ///  Metadata JSON Schema".
+    /// @param tokenId NFT to get the URI of
+    /// @return URI of the NFT
+    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+        _requireMinted(tokenId);
+
+        string memory _tokenURI = _tokenURIs[tokenId];
+        string memory base = _baseURI();
+
+        // If there is no base URI, return the token URI.
+        if (bytes(base).length == 0) {
+            return _tokenURI;
+        }
+        // If both are set, concatenate the baseURI and tokenURI (via abi.encodePacked).
+        if (bytes(_tokenURI).length > 0) {
+            return string(abi.encodePacked(base, _tokenURI));
+        }
+
+        return super.tokenURI(tokenId);
+    }
+
     /* ========== PRIVATE FUNCTIONS ========== */
 
     function _getName(string memory name) private view returns (string memory) {
         return string(bytes.concat(bytes(name), bytes(extension)));
+    }
+
+    function _setTokenURI(uint256 tokenId, string memory _tokenURI) internal virtual {
+        require(_exists(tokenId), "ERC721URIStorage: URI set of nonexistent token");
+        _tokenURIs[tokenId] = _tokenURI;
     }
 
     /* ========== MODIFIERS ========== */
