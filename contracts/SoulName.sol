@@ -44,13 +44,11 @@ contract SoulName is NFT, ISoulName {
     /// @param admin Administrator of the smart contract
     /// @param _soulboundIdentity Address of the Soulbound identity contract
     /// @param _extension Extension of the soul name
-    /// @param baseTokenURI Base URI of the token
     constructor(
         address admin,
         ISoulboundIdentity _soulboundIdentity,
-        string memory _extension,
-        string memory baseTokenURI
-    ) NFT(admin, "Masa Soul Name", "MSN", baseTokenURI) {
+        string memory _extension
+    ) NFT(admin, "Masa Soul Name", "MSN", "") {
         require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
 
         soulboundIdentity = _soulboundIdentity;
