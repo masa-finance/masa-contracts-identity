@@ -198,7 +198,13 @@ contract SoulStore is DexAMM, Pausable, AccessControl {
         );
 
         // finalize purchase
-        return _mintSoulboundIdentityAndName(_msgSender(), name, yearsPeriod, _tokenURI);
+        return
+            _mintSoulboundIdentityAndName(
+                _msgSender(),
+                name,
+                yearsPeriod,
+                _tokenURI
+            );
     }
 
     /// @notice Mints a new Soulbound Identity purchasing it
