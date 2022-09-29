@@ -300,17 +300,6 @@ describe("Soul Store", () => {
 
   describe("purchase identity and name", () => {
     it("we can purchase an identity and name with ETH", async () => {
-      const [, priceInETH] = await soulStore.purchaseNameInfo(SOUL_NAME, YEAR);
-
-      await soulStore.connect(address1).purchaseIdentityAndName(
-        ethers.constants.AddressZero, // ETH
-        SOUL_NAME,
-        YEAR,
-        { value: priceInETH }
-      );
-    });
-
-    it("reserve wallet receives the fees paid in ETH when someone purchases an identity and name", async () => {
       const reserveWallet = await soulStore.reserveWallet();
       const [, priceInETH] = await soulStore.purchaseNameInfo(SOUL_NAME, YEAR);
       const reserveWalletBalanceBefore = await ethers.provider.getBalance(reserveWallet);
