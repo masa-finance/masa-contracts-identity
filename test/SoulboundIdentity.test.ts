@@ -18,6 +18,7 @@ let someone: SignerWithAddress;
 const SOUL_NAME1 = "soulName1";
 const SOUL_NAME2 = "soulName2";
 const YEAR = 1; // 1 year
+const ARWEAVE_LINK = "ar://jK9sR4OrYvODj7PD3czIAyNJalub0-vdV_JAg1NqQ-o";
 
 let address1: SignerWithAddress;
 let address2: SignerWithAddress;
@@ -79,7 +80,7 @@ describe("Soulbound Identity", () => {
     it("should mint from admin", async () => {
       await soulboundIdentity
         .connect(admin)
-        .mintIdentityWithName(address1.address, SOUL_NAME1, YEAR);
+        .mintIdentityWithName(address1.address, SOUL_NAME1, YEAR, ARWEAVE_LINK);
 
       expect(await soulboundIdentity.balanceOf(address1.address)).to.be.equal(
         1
@@ -93,29 +94,44 @@ describe("Soulbound Identity", () => {
       await expect(
         soulboundIdentity
           .connect(address1)
-          .mintIdentityWithName(address1.address, SOUL_NAME1, YEAR)
+          .mintIdentityWithName(
+            address1.address,
+            SOUL_NAME1,
+            YEAR,
+            ARWEAVE_LINK
+          )
       ).to.be.rejected;
     });
 
     it("should fail to mint twice", async () => {
       await soulboundIdentity
         .connect(admin)
-        .mintIdentityWithName(address1.address, SOUL_NAME1, YEAR);
+        .mintIdentityWithName(address1.address, SOUL_NAME1, YEAR, ARWEAVE_LINK);
       await expect(
         soulboundIdentity
           .connect(admin)
-          .mintIdentityWithName(address1.address, SOUL_NAME2, YEAR)
+          .mintIdentityWithName(
+            address1.address,
+            SOUL_NAME2,
+            YEAR,
+            ARWEAVE_LINK
+          )
       ).to.be.rejectedWith("Soulbound identity already created!");
     });
 
     it("should fail to mint duplicated name", async () => {
       await soulboundIdentity
         .connect(admin)
-        .mintIdentityWithName(address1.address, SOUL_NAME1, YEAR);
+        .mintIdentityWithName(address1.address, SOUL_NAME1, YEAR, ARWEAVE_LINK);
       await expect(
         soulboundIdentity
           .connect(admin)
-          .mintIdentityWithName(address2.address, SOUL_NAME1, YEAR)
+          .mintIdentityWithName(
+            address2.address,
+            SOUL_NAME1,
+            YEAR,
+            ARWEAVE_LINK
+          )
       ).to.be.rejectedWith("NAME_ALREADY_EXISTS");
     });
   });
@@ -179,7 +195,7 @@ describe("Soulbound Identity", () => {
     beforeEach(async () => {
       const mintTx = await soulboundIdentity
         .connect(admin)
-        .mintIdentityWithName(someone.address, SOUL_NAME1, YEAR);
+        .mintIdentityWithName(someone.address, SOUL_NAME1, YEAR, ARWEAVE_LINK);
 
       const mintReceipt = await mintTx.wait();
       tokenId = mintReceipt.events![0].args![2].toNumber();
@@ -224,7 +240,7 @@ describe("Soulbound Identity", () => {
     beforeEach(async () => {
       const mintTx = await soulboundIdentity
         .connect(admin)
-        .mintIdentityWithName(address1.address, SOUL_NAME1, YEAR);
+        .mintIdentityWithName(address1.address, SOUL_NAME1, YEAR, ARWEAVE_LINK);
       const mintReceipt = await mintTx.wait();
 
       identityId = mintReceipt.events![0].args![2].toNumber();

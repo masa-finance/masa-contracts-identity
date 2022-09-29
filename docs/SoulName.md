@@ -351,7 +351,7 @@ Checks if a soul name is available
 ### mint
 
 ```solidity
-function mint(address to, string name, uint256 identityId, uint256 yearsPeriod) external nonpayable returns (uint256)
+function mint(address to, string name, uint256 identityId, uint256 yearsPeriod, string _tokenURI) external nonpayable returns (uint256)
 ```
 
 Mints a new soul name
@@ -366,6 +366,7 @@ Mints a new soul name
 | name | string | Name of the new soul name |
 | identityId | uint256 | TokenId of the soulbound identity that will be pointed from this soul name |
 | yearsPeriod | uint256 | Years of validity of the name |
+| _tokenURI | string | URI of the NFT |
 
 #### Returns
 

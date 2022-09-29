@@ -19,18 +19,18 @@ const func: DeployFunction = async ({
 
   [, admin] = await ethers.getSigners();
   const env = getEnvParams(network.name);
-  const baseUri = `${env.BASE_URI}/name/`;
 
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
 
+  const constructorArguments = [
+    env.ADMIN || admin.address,
+    soulboundIdentityDeployed.address,
+    ".soul"
+  ];
+
   const soulNameDeploymentResult = await deploy("SoulName", {
     from: deployer,
-    args: [
-      env.ADMIN || admin.address,
-      soulboundIdentityDeployed.address,
-      ".soul",
-      baseUri
-    ],
+    args: constructorArguments,
     log: true
   });
 
@@ -39,12 +39,7 @@ const func: DeployFunction = async ({
     try {
       await hre.run("verify:verify", {
         address: soulNameDeploymentResult.address,
-        constructorArguments: [
-          env.ADMIN || admin.address,
-          soulboundIdentityDeployed.address,
-          ".soul",
-          ""
-        ]
+        constructorArguments
       });
     } catch (error) {
       if (

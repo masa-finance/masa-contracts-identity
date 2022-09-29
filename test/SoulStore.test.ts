@@ -39,6 +39,7 @@ const MINTING_NAME_PRICE_5LETTERS = 10000000; // 10 USDC, with 6 decimals
 
 const SOUL_NAME = "soulNameTest";
 const YEAR = 1; // 1 year
+const ARWEAVE_LINK = "ar://jK9sR4OrYvODj7PD3czIAyNJalub0-vdV_JAg1NqQ-o";
 
 describe("Soul Store", () => {
   before(async () => {
@@ -310,6 +311,7 @@ describe("Soul Store", () => {
         ethers.constants.AddressZero, // ETH
         SOUL_NAME,
         YEAR,
+        ARWEAVE_LINK,
         { value: priceInETH }
       );
 
@@ -340,7 +342,8 @@ describe("Soul Store", () => {
       await soulStore.connect(address1).purchaseIdentityAndName(
         USDC_GOERLI, // USDC
         SOUL_NAME,
-        YEAR
+        YEAR,
+        ARWEAVE_LINK
       );
 
       const reserveWalletBalanceAfter = await usdc.balanceOf(reserveWallet);
@@ -368,7 +371,8 @@ describe("Soul Store", () => {
       await soulStore.connect(address1).purchaseIdentityAndName(
         CORN_GOERLI, // $CORN
         SOUL_NAME,
-        YEAR
+        YEAR,
+        ARWEAVE_LINK
       );
 
       const reserveWalletBalanceAfter = await corn.balanceOf(reserveWallet);
@@ -387,6 +391,7 @@ describe("Soul Store", () => {
           ethers.constants.AddressZero, // ETH
           SOUL_NAME,
           YEAR,
+          ARWEAVE_LINK,
           { value: priceInETH.div(2) }
         )
       ).to.be.rejectedWith("INVALID_PAYMENT_AMOUNT");
@@ -408,7 +413,8 @@ describe("Soul Store", () => {
         soulStore.connect(address2).purchaseIdentityAndName(
           USDC_GOERLI, // USDC
           SOUL_NAME,
-          YEAR
+          YEAR,
+          ARWEAVE_LINK
         )
       ).to.be.rejected;
     });
@@ -429,7 +435,8 @@ describe("Soul Store", () => {
         soulStore.connect(address2).purchaseIdentityAndName(
           CORN_GOERLI, // $CORN
           SOUL_NAME,
-          YEAR
+          YEAR,
+          ARWEAVE_LINK
         )
       ).to.be.rejected;
     });
@@ -443,6 +450,7 @@ describe("Soul Store", () => {
         ethers.constants.AddressZero, // ETH
         SOUL_NAME,
         YEAR,
+        ARWEAVE_LINK,
         { value: priceInETH.mul(2) }
       );
       const receipt = await tx.wait();
@@ -477,6 +485,7 @@ describe("Soul Store", () => {
         ethers.constants.AddressZero, // ETH
         SOUL_NAME,
         YEAR,
+        ARWEAVE_LINK,
         { value: priceInETH }
       );
     });
@@ -496,7 +505,8 @@ describe("Soul Store", () => {
       await soulStore.connect(address1).purchaseName(
         USDC_GOERLI, // USDC
         SOUL_NAME,
-        YEAR
+        YEAR,
+        ARWEAVE_LINK
       );
     });
 
@@ -515,7 +525,8 @@ describe("Soul Store", () => {
       await soulStore.connect(address1).purchaseName(
         CORN_GOERLI, // $CORN
         SOUL_NAME,
-        YEAR
+        YEAR,
+        ARWEAVE_LINK
       );
     });
 
@@ -527,6 +538,7 @@ describe("Soul Store", () => {
           ethers.constants.AddressZero, // ETH
           SOUL_NAME,
           YEAR,
+          ARWEAVE_LINK,
           { value: priceInETH.div(2) }
         )
       ).to.be.rejectedWith("INVALID_PAYMENT_AMOUNT");
@@ -548,7 +560,8 @@ describe("Soul Store", () => {
         soulStore.connect(address2).purchaseName(
           USDC_GOERLI, // USDC
           SOUL_NAME,
-          YEAR
+          YEAR,
+          ARWEAVE_LINK
         )
       ).to.be.rejected;
     });
@@ -569,7 +582,8 @@ describe("Soul Store", () => {
         soulStore.connect(address2).purchaseName(
           CORN_GOERLI, // $CORN
           SOUL_NAME,
-          YEAR
+          YEAR,
+          ARWEAVE_LINK
         )
       ).to.be.rejected;
     });
@@ -581,7 +595,8 @@ describe("Soul Store", () => {
         soulStore.connect(address1).purchaseIdentityAndName(
           address2.address, // invalid payment method
           SOUL_NAME,
-          YEAR
+          YEAR,
+          ARWEAVE_LINK
         )
       ).to.be.rejectedWith("INVALID_PAYMENT_METHOD");
     });

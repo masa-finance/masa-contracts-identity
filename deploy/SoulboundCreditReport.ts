@@ -26,11 +26,17 @@ const func: DeployFunction = async ({
 
   const soulLinker = await deployments.get("SoulLinker");
 
+  const constructorArguments = [
+    env.ADMIN || admin.address,
+    soulLinker.address,
+    baseUri
+  ];
+
   const soulboundCreditReportDeploymentResult = await deploy(
     "SoulboundCreditReport",
     {
       from: deployer,
-      args: [env.ADMIN || admin.address, soulLinker.address, baseUri],
+      args: constructorArguments,
       log: true
       // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
     }
@@ -41,11 +47,7 @@ const func: DeployFunction = async ({
     try {
       await hre.run("verify:verify", {
         address: soulboundCreditReportDeploymentResult.address,
-        constructorArguments: [
-          env.ADMIN || admin.address,
-          soulLinker.address,
-          baseUri
-        ]
+        constructorArguments
       });
     } catch (error) {
       if (
