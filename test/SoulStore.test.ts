@@ -352,22 +352,31 @@ describe("Soul Store", () => {
     });
 
     it("we can purchase an identity and name with utility coin", async () => {
+      const reserveWallet = await soulStore.reserveWallet();
       const [, , priceInUtilityToken] = await soulStore.purchaseNameInfo(
         SOUL_NAME,
         YEAR
       );
 
       // set allowance for soul store
-      const usdc: ERC20 = ERC20__factory.connect(CORN_GOERLI, admin);
-      await usdc
+      const corn: ERC20 = ERC20__factory.connect(CORN_GOERLI, admin);
+      await corn
         .connect(address1)
         .approve(soulStore.address, priceInUtilityToken);
+      const reserveWalletBalanceBefore = await corn.balanceOf(reserveWallet);
 
       await soulStore.connect(address1).purchaseIdentityAndName(
         CORN_GOERLI, // $CORN
         SOUL_NAME,
         YEAR
       );
+
+      const reserveWalletBalanceAfter = await corn.balanceOf(reserveWallet);
+
+      // we check that the reserve wallet received the stable coin
+      expect(
+        reserveWalletBalanceAfter.sub(reserveWalletBalanceBefore)
+      ).to.be.equal(priceInUtilityToken);
     });
 
     it("we can't purchase an identity and name with ETH if we pay less", async () => {
@@ -411,8 +420,8 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const usdc: ERC20 = ERC20__factory.connect(CORN_GOERLI, admin);
-      await usdc
+      const corn: ERC20 = ERC20__factory.connect(CORN_GOERLI, admin);
+      await corn
         .connect(address2)
         .approve(soulStore.address, priceInUtilityToken);
 
@@ -498,8 +507,8 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const usdc: ERC20 = ERC20__factory.connect(CORN_GOERLI, admin);
-      await usdc
+      const corn: ERC20 = ERC20__factory.connect(CORN_GOERLI, admin);
+      await corn
         .connect(address1)
         .approve(soulStore.address, priceInUtilityToken);
 
@@ -551,8 +560,8 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const usdc: ERC20 = ERC20__factory.connect(CORN_GOERLI, admin);
-      await usdc
+      const corn: ERC20 = ERC20__factory.connect(CORN_GOERLI, admin);
+      await corn
         .connect(address2)
         .approve(soulStore.address, priceInUtilityToken);
 
