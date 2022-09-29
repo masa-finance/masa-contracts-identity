@@ -302,7 +302,9 @@ describe("Soul Store", () => {
     it("we can purchase an identity and name with ETH", async () => {
       const reserveWallet = await soulStore.reserveWallet();
       const [, priceInETH] = await soulStore.purchaseNameInfo(SOUL_NAME, YEAR);
-      const reserveWalletBalanceBefore = await ethers.provider.getBalance(reserveWallet);
+      const reserveWalletBalanceBefore = await ethers.provider.getBalance(
+        reserveWallet
+      );
 
       await soulStore.connect(address1).purchaseIdentityAndName(
         ethers.constants.AddressZero, // ETH
@@ -311,12 +313,18 @@ describe("Soul Store", () => {
         { value: priceInETH }
       );
 
-      const reserveWalletBalanceAfter = await ethers.provider.getBalance(reserveWallet);
+      const reserveWalletBalanceAfter = await ethers.provider.getBalance(
+        reserveWallet
+      );
 
-      expect(reserveWalletBalanceAfter.sub(reserveWalletBalanceBefore)).to.be.equal(priceInETH);
+      // we check that the reserve wallet received the ETH
+      expect(
+        reserveWalletBalanceAfter.sub(reserveWalletBalanceBefore)
+      ).to.be.equal(priceInETH);
     });
 
     it("we can purchase an identity and name with stable coin", async () => {
+      const reserveWallet = await soulStore.reserveWallet();
       const [priceInStableCoin, ,] = await soulStore.purchaseNameInfo(
         SOUL_NAME,
         YEAR
@@ -327,12 +335,20 @@ describe("Soul Store", () => {
       await usdc
         .connect(address1)
         .approve(soulStore.address, priceInStableCoin);
+      const reserveWalletBalanceBefore = await usdc.balanceOf(reserveWallet);
 
       await soulStore.connect(address1).purchaseIdentityAndName(
         USDC_GOERLI, // USDC
         SOUL_NAME,
         YEAR
       );
+
+      const reserveWalletBalanceAfter = await usdc.balanceOf(reserveWallet);
+
+      // we check that the reserve wallet received the stable coin
+      expect(
+        reserveWalletBalanceAfter.sub(reserveWalletBalanceBefore)
+      ).to.be.equal(priceInStableCoin);
     });
 
     it("we can purchase an identity and name with utility coin", async () => {
