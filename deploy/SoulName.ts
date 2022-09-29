@@ -19,15 +19,13 @@ const func: DeployFunction = async ({
 
   [, admin] = await ethers.getSigners();
   const env = getEnvParams(network.name);
-  const baseUri = `${env.BASE_URI}/name/`;
 
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
 
   const constructorArguments = [
     env.ADMIN || admin.address,
     soulboundIdentityDeployed.address,
-    ".soul",
-    baseUri
+    ".soul"
   ];
 
   const soulNameDeploymentResult = await deploy("SoulName", {

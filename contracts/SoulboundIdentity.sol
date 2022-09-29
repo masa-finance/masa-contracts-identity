@@ -63,13 +63,15 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
     /// @param to Address of the owner of the new identity
     /// @param name Name of the new identity
     /// @param yearsPeriod Years of validity of the name
+    /// @param _tokenURI URI of the NFT
     function mintIdentityWithName(
         address to,
         string memory name,
-        uint256 yearsPeriod
+        uint256 yearsPeriod,
+        string memory _tokenURI
     ) public payable override soulNameAlreadySet returns (uint256) {
         uint256 identityId = mint(to);
-        soulName.mint(to, name, identityId, yearsPeriod);
+        soulName.mint(to, name, identityId, yearsPeriod, _tokenURI);
 
         return identityId;
     }

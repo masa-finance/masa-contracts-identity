@@ -121,7 +121,7 @@ function isAvailable(string name) external view returns (bool available)
 ### mint
 
 ```solidity
-function mint(address to, string name, uint256 identityId, uint256 yearsPeriod) external nonpayable returns (uint256)
+function mint(address to, string name, uint256 identityId, uint256 yearsPeriod, string _tokenURI) external nonpayable returns (uint256)
 ```
 
 
@@ -136,6 +136,7 @@ function mint(address to, string name, uint256 identityId, uint256 yearsPeriod) 
 | name | string | undefined |
 | identityId | uint256 | undefined |
 | yearsPeriod | uint256 | undefined |
+| _tokenURI | string | undefined |
 
 #### Returns
 
