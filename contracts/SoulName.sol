@@ -162,7 +162,7 @@ contract SoulName is NFT, ISoulName {
         // add name to identityNames[identityId]
         identityNames[identityId].push(lowercaseName);
 
-        emit IdentityIdUpdated(tokenId, identityId);
+        emit IdentityIdUpdated(tokenId, oldIdentityId, identityId);
     }
 
     /// @notice Update the expiration date of a soul name
@@ -392,5 +392,9 @@ contract SoulName is NFT, ISoulName {
 
     /* ========== EVENTS ========== */
 
-    event IdentityIdUpdated(uint256 tokenId, uint256 identityId);
+    event IdentityIdUpdated(
+        uint256 tokenId,
+        uint256 oldIdentityId,
+        uint256 identityId
+    );
 }
