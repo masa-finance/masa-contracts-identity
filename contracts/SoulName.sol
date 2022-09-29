@@ -194,6 +194,12 @@ contract SoulName is NFT, ISoulName {
                 .expirationDate
                 .add(YEAR.mul(yearsPeriod));
         }
+
+        emit YearsPeriodRenewed(
+            tokenId,
+            yearsPeriod,
+            tokenData[tokenId].expirationDate
+        );
     }
 
     /// @notice Burn a soul name
@@ -396,5 +402,11 @@ contract SoulName is NFT, ISoulName {
         uint256 tokenId,
         uint256 oldIdentityId,
         uint256 identityId
+    );
+
+    event YearsPeriodRenewed(
+        uint256 tokenId,
+        uint256 yearsPeriod,
+        uint256 newExpirationDate
     );
 }
