@@ -457,4 +457,16 @@ describe("Soul Name", () => {
       ).to.be.rejectedWith("CAN_NOT_RENEW");
     });
   });
+
+  describe("contract URI", () => {
+    it("should get a valid contract URI", async () => {
+      const contractURI = await soulName.contractURI();
+
+      // check if it's a valid url
+      expect(() => new URL(contractURI)).to.not.throw();
+      // we expect that the token uri is already encoded
+      expect(contractURI).to.equal(encodeURI(contractURI));
+      expect(contractURI).to.match(/https:\/\/|ar:\/\/|ipfs:\/\//);
+    });
+  });
 });
