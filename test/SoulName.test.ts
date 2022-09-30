@@ -126,6 +126,22 @@ describe("Soul Name", () => {
     });
   });
 
+  describe("set contract URI", () => {
+    it("should fail to set contract URI from non admin user", async () => {
+      await expect(
+        soulName.connect(address1).setContractURI("http://other.contract.uri")
+      ).to.be.rejected;
+    });
+
+    it("should success to set contract URI from admin user", async () => {
+      await soulName.connect(admin).setContractURI("http://other.contract.uri");
+
+      expect(await soulName.contractURI()).to.be.equal(
+        "http://other.contract.uri"
+      );
+    });
+  });
+
   describe("mint", () => {
     it("should mint from admin", async () => {
       const mintTx = await soulName
