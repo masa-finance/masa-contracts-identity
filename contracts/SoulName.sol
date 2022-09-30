@@ -21,10 +21,10 @@ contract SoulName is NFT, ISoulName {
 
     ISoulboundIdentity public soulboundIdentity;
     string public extension; // suffix of the names (.sol?)
-    
+
     // contractURI() points to the smart contract metadata
     // see https://docs.opensea.io/docs/contract-level-metadata
-    string public contractURI; 
+    string public contractURI;
 
     // Optional mapping for token URIs
     mapping(uint256 => string) private _tokenURIs;
@@ -92,6 +92,21 @@ contract SoulName is NFT, ISoulName {
             "SAME_VALUE"
         );
         extension = _extension;
+    }
+
+    /// @notice Sets the URI of the smart contract metadata
+    /// @dev The caller must have the admin role to call this function
+    /// @param _contractURI URI of the smart contract metadata
+    function setContractURI(string memory _contractURI)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        require(
+            keccak256(abi.encodePacked((contractURI))) !=
+                keccak256(abi.encodePacked((_contractURI))),
+            "SAME_VALUE"
+        );
+        contractURI = _contractURI;
     }
 
     /* ========== MUTATIVE FUNCTIONS ========== */
