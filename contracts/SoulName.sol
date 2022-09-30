@@ -21,6 +21,10 @@ contract SoulName is NFT, ISoulName {
 
     ISoulboundIdentity public soulboundIdentity;
     string public extension; // suffix of the names (.sol?)
+    
+    // contractURI() points to the smart contract metadata
+    // see https://docs.opensea.io/docs/contract-level-metadata
+    string public contractURI; 
 
     // Optional mapping for token URIs
     mapping(uint256 => string) private _tokenURIs;
@@ -47,15 +51,18 @@ contract SoulName is NFT, ISoulName {
     /// @param admin Administrator of the smart contract
     /// @param _soulboundIdentity Address of the Soulbound identity contract
     /// @param _extension Extension of the soul name
+    /// @param _contractURI URI of the smart contract metadata
     constructor(
         address admin,
         ISoulboundIdentity _soulboundIdentity,
-        string memory _extension
+        string memory _extension,
+        string memory _contractURI
     ) NFT(admin, "Masa Soul Name", "MSN", "") {
         require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
 
         soulboundIdentity = _soulboundIdentity;
         extension = _extension;
+        contractURI = _contractURI;
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
