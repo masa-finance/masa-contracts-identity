@@ -116,6 +116,23 @@ Burn a soul name
 |---|---|---|
 | tokenId | uint256 | TokenId of the soul name to burn |
 
+### contractURI
+
+```solidity
+function contractURI() external view returns (string)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string | undefined |
+
 ### extension
 
 ```solidity
@@ -568,6 +585,22 @@ function setApprovalForAll(address operator, bool approved) external nonpayable
 |---|---|---|
 | operator | address | undefined |
 | approved | bool | undefined |
+
+### setContractURI
+
+```solidity
+function setContractURI(string _contractURI) external nonpayable
+```
+
+Sets the URI of the smart contract metadata
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _contractURI | string | URI of the smart contract metadata |
 
 ### setExtension
 
