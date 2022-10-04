@@ -11,6 +11,12 @@ import "./interfaces/ISoulLinker.sol";
 contract SoulLinker is AccessControl, ISoulLinker {
     /* ========== STATE VARIABLES =========================================== */
 
+    // Identity.tokenId => NFT/SBT address => tokenId
+    mapping(uint256 => mapping(address => uint256)) public soulLinks;
+
+    // NFT/SBT address => Identity.tokenId => tokenId
+    mapping(address => mapping(uint256 => uint256)) public linksToSoul;
+
     mapping(uint256 => Link) private links;
 
     /* ========== INITIALIZE ================================================ */
