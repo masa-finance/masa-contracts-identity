@@ -3,6 +3,7 @@ pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
+import "./interfaces/ISoulboundIdentity.sol";
 import "./interfaces/ISoulLinker.sol";
 
 /// @title Soul linker
@@ -10,6 +11,8 @@ import "./interfaces/ISoulLinker.sol";
 /// @notice Soul linker smart contract that let add links to a Soulbound token.
 contract SoulLinker is AccessControl, ISoulLinker {
     /* ========== STATE VARIABLES =========================================== */
+
+    ISoulboundIdentity public soulboundIdentity;
 
     // Identity.tokenId => NFT/SBT address => tokenId
     mapping(uint256 => mapping(address => uint256)) public soulLinks;
@@ -28,6 +31,18 @@ contract SoulLinker is AccessControl, ISoulLinker {
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
+
+    /// @notice Sets the SoulboundIdentity contract address linked to this soul name
+    /// @dev The caller must have the admin role to call this function
+    /// @param _soulboundIdentity Address of the SoulboundIdentity contract
+    function setSoulboundIdentity(ISoulboundIdentity _soulboundIdentity)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
+        require(soulboundIdentity != _soulboundIdentity, "SAME_VALUE");
+        soulboundIdentity = _soulboundIdentity;
+    }
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
