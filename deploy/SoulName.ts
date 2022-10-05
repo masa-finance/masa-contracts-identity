@@ -25,7 +25,8 @@ const func: DeployFunction = async ({
   const constructorArguments = [
     env.ADMIN || admin.address,
     soulboundIdentityDeployed.address,
-    ".soul"
+    ".soul",
+    env.SOUL_NAME_CONTRACT_URI
   ];
 
   const soulNameDeploymentResult = await deploy("SoulName", {
