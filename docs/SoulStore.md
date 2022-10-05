@@ -6,7 +6,7 @@
 
 Soul Store, that can mint new Soulbound Identities and Soul Name NFTs, paying a fee
 
-*From this smart contract we can mint new Soulbound Identities and Soul Name NFTs. This minting can be done paying a fee in ETH, USDC or CORN*
+*From this smart contract we can mint new Soulbound Identities and Soul Name NFTs. This minting can be done paying a fee in ETH, USDC or $MASA*
 
 ## Methods
 
@@ -66,7 +66,7 @@ Returns the price of minting
 |---|---|---|
 | priceInStableCoin | uint256 | Current price in stable coin |
 | priceInETH | uint256 | Current pric in native token (ETH) |
-| priceInUtilityToken | uint256 | Current price in utility token ($CORN) |
+| priceInUtilityToken | uint256 | Current price in utility token ($MASA) |
 
 ### estimateSwapAmount
 
@@ -251,7 +251,7 @@ function purchaseIdentityAndName(address paymentMethod, string name, uint256 yea
 
 Mints a new Soulbound Identity and Name purchasing it
 
-*This function allows the purchase of a soulbound identity and name using stable coin (USDC), native token (ETH) or utility token ($CORN)*
+*This function allows the purchase of a soulbound identity and name using stable coin (USDC), native token (ETH) or utility token ($MASA)*
 
 #### Parameters
 
@@ -276,7 +276,7 @@ function purchaseName(address paymentMethod, string name, uint256 yearsPeriod, s
 
 Mints a new Soul Name purchasing it
 
-*This function allows the purchase of a soul name using stable coin (USDC), native token (ETH) or utility token ($CORN)*
+*This function allows the purchase of a soul name using stable coin (USDC), native token (ETH) or utility token ($MASA)*
 
 #### Parameters
 
@@ -316,7 +316,7 @@ Returns the price of the name minting
 |---|---|---|
 | priceInStableCoin | uint256 | Current price of the name minting in stable coin |
 | priceInETH | uint256 | Current price of the name minting in native token (ETH) |
-| priceInUtilityToken | uint256 | Current price of the name minting in utility token ($CORN) |
+| priceInUtilityToken | uint256 | Current price of the name minting in utility token ($MASA) |
 
 ### renounceRole
 
@@ -456,7 +456,7 @@ Sets the swap router address
 function setUtilityToken(address _utilityToken) external nonpayable
 ```
 
-Sets the utility token to pay the fee in ($CORN)
+Sets the utility token to pay the fee in ($MASA)
 
 *The caller must have the admin role to call this function*
 
