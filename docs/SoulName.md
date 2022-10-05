@@ -884,6 +884,24 @@ event ApprovalForAll(address indexed owner, address indexed operator, bool appro
 | operator `indexed` | address | undefined |
 | approved  | bool | undefined |
 
+### IdentityIdUpdated
+
+```solidity
+event IdentityIdUpdated(uint256 tokenId, uint256 oldIdentityId, uint256 identityId)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId  | uint256 | undefined |
+| oldIdentityId  | uint256 | undefined |
+| identityId  | uint256 | undefined |
+
 ### Paused
 
 ```solidity
@@ -987,6 +1005,24 @@ event Unpaused(address account)
 | Name | Type | Description |
 |---|---|---|
 | account  | address | undefined |
+
+### YearsPeriodRenewed
+
+```solidity
+event YearsPeriodRenewed(uint256 tokenId, uint256 yearsPeriod, uint256 newExpirationDate)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId  | uint256 | undefined |
+| yearsPeriod  | uint256 | undefined |
+| newExpirationDate  | uint256 | undefined |
 
 
 
