@@ -61,7 +61,7 @@ describe("Soul Store", () => {
     );
 
     // we get $MASA tokens for address1
-    const masa: MASA = MASA_factory.connect(masaAddress, admin);
+    const masa: MASA = MASA__factory.connect(masaAddress, admin);
     await masa.connect(address1).mint();
 
     // we get stable coins for address1
