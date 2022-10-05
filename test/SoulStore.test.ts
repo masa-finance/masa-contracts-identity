@@ -4,8 +4,8 @@ import { solidity } from "ethereum-waffle";
 import { ethers, deployments } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
-  CORN,
-  CORN__factory,
+  MASA,
+  MASA_factory,
   ERC20,
   ERC20__factory,
   IUniswapRouter,
@@ -14,7 +14,7 @@ import {
   SoulStore__factory
 } from "../typechain";
 import {
-  CORN_GOERLI,
+  MASA_GOERLI,
   USDC_GOERLI,
   SWAPROUTER_GOERLI,
   WETH_GOERLI
@@ -51,7 +51,7 @@ describe("Soul Store", () => {
     await deployments.fixture("SoulName", { fallbackToGlobal: false });
     await deployments.fixture("SoulStore", { fallbackToGlobal: false });
 
-    const { address: cornAddress } = await deployments.get("CORN");
+    const { address: masaAddress } = await deployments.get("MASA");
     const { address: soulStoreAddress } = await deployments.get("SoulStore");
 
     soulStore = SoulStore__factory.connect(soulStoreAddress, admin);
@@ -61,8 +61,8 @@ describe("Soul Store", () => {
     );
 
     // we get $MASA tokens for address1
-    const corn: CORN = CORN__factory.connect(cornAddress, admin);
-    await corn.connect(address1).mint();
+    const masa: MASA = MASA_factory.connect(masaAddress, admin);
+    await masa.connect(address1).mint();
 
     // we get stable coins for address1
     await uniswapRouter.swapExactETHForTokens(
@@ -78,7 +78,7 @@ describe("Soul Store", () => {
     // we get utility tokens for address1
     await uniswapRouter.swapExactETHForTokens(
       0,
-      [WETH_GOERLI, CORN_GOERLI],
+      [WETH_GOERLI, MASA_GOERLI],
       address1.address,
       Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
       {
@@ -362,20 +362,20 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const corn: ERC20 = ERC20__factory.connect(CORN_GOERLI, admin);
-      await corn
+      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, admin);
+      await masa
         .connect(address1)
         .approve(soulStore.address, priceInUtilityToken);
-      const reserveWalletBalanceBefore = await corn.balanceOf(reserveWallet);
+      const reserveWalletBalanceBefore = await masa.balanceOf(reserveWallet);
 
       await soulStore.connect(address1).purchaseIdentityAndName(
-        CORN_GOERLI, // $MASA
+        MASA_GOERLI, // $MASA
         SOUL_NAME,
         YEAR,
         ARWEAVE_LINK
       );
 
-      const reserveWalletBalanceAfter = await corn.balanceOf(reserveWallet);
+      const reserveWalletBalanceAfter = await masa.balanceOf(reserveWallet);
 
       // we check that the reserve wallet received the stable coin
       expect(
@@ -426,14 +426,14 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const corn: ERC20 = ERC20__factory.connect(CORN_GOERLI, admin);
-      await corn
+      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, admin);
+      await masa
         .connect(address2)
         .approve(soulStore.address, priceInUtilityToken);
 
       await expect(
         soulStore.connect(address2).purchaseIdentityAndName(
-          CORN_GOERLI, // $MASA
+          MASA_GOERLI, // $MASA
           SOUL_NAME,
           YEAR,
           ARWEAVE_LINK
@@ -517,13 +517,13 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const corn: ERC20 = ERC20__factory.connect(CORN_GOERLI, admin);
-      await corn
+      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, admin);
+      await masa
         .connect(address1)
         .approve(soulStore.address, priceInUtilityToken);
 
       await soulStore.connect(address1).purchaseName(
-        CORN_GOERLI, // $MASA
+        MASA_GOERLI, // $MASA
         SOUL_NAME,
         YEAR,
         ARWEAVE_LINK
@@ -573,14 +573,14 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const corn: ERC20 = ERC20__factory.connect(CORN_GOERLI, admin);
-      await corn
+      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, admin);
+      await masa
         .connect(address2)
         .approve(soulStore.address, priceInUtilityToken);
 
       await expect(
         soulStore.connect(address2).purchaseName(
-          CORN_GOERLI, // $MASA
+          MASA_GOERLI, // $MASA
           SOUL_NAME,
           YEAR,
           ARWEAVE_LINK
