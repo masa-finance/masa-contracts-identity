@@ -15,7 +15,7 @@ import "./interfaces/ISoulName.sol";
 /// @author Masa Finance
 /// @notice Soul Store, that can mint new Soulbound Identities and Soul Name NFTs, paying a fee
 /// @dev From this smart contract we can mint new Soulbound Identities and Soul Name NFTs.
-/// This minting can be done paying a fee in ETH, USDC or CORN
+/// This minting can be done paying a fee in ETH, USDC or $MASA
 contract SoulStore is DexAMM, Pausable, AccessControl {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
