@@ -29,7 +29,7 @@ contract SoulStore is DexAMM, Pausable, AccessControl {
     mapping(uint256 => uint256) public nameRegistrationPricePerYear; // (length --> price in stable coin per year)
 
     address public stableCoin; // USDC
-    address public utilityToken; // $CORN
+    address public utilityToken; // $MASA
 
     address public reserveWallet;
 
@@ -41,7 +41,7 @@ contract SoulStore is DexAMM, Pausable, AccessControl {
     /// @param admin Administrator of the smart contract
     /// @param _soulBoundIdentity Address of the Soulbound identity contract
     /// @param _nameRegistrationPricePerYear Price of the default name registering in stable coin per year
-    /// @param _utilityToken Utility token to pay the fee in ($CORN)
+    /// @param _utilityToken Utility token to pay the fee in ($MASA)
     /// @param _stableCoin Stable coin to pay the fee in (USDC)
     /// @param _wrappedNativeToken Wrapped native token address
     /// @param _swapRouter Swap router address
@@ -128,7 +128,7 @@ contract SoulStore is DexAMM, Pausable, AccessControl {
         stableCoin = _stableCoin;
     }
 
-    /// @notice Sets the utility token to pay the fee in ($CORN)
+    /// @notice Sets the utility token to pay the fee in ($MASA)
     /// @dev The caller must have the admin role to call this function
     /// @param _utilityToken New utility token to pay the fee in
     function setUtilityToken(address _utilityToken)
@@ -180,7 +180,7 @@ contract SoulStore is DexAMM, Pausable, AccessControl {
 
     /// @notice Mints a new Soulbound Identity and Name purchasing it
     /// @dev This function allows the purchase of a soulbound identity and name using
-    /// stable coin (USDC), native token (ETH) or utility token ($CORN)
+    /// stable coin (USDC), native token (ETH) or utility token ($MASA)
     /// @param paymentMethod Address of token that user want to pay
     /// @param name Name of the new soul name
     /// @param yearsPeriod Years of validity of the name
@@ -222,7 +222,7 @@ contract SoulStore is DexAMM, Pausable, AccessControl {
 
     /// @notice Mints a new Soul Name purchasing it
     /// @dev This function allows the purchase of a soul name using
-    /// stable coin (USDC), native token (ETH) or utility token ($CORN)
+    /// stable coin (USDC), native token (ETH) or utility token ($MASA)
     /// @param paymentMethod Address of token that user want to pay
     /// @param name Name of the new soul name
     /// @param yearsPeriod Years of validity of the name
@@ -269,7 +269,7 @@ contract SoulStore is DexAMM, Pausable, AccessControl {
     /// @param yearsPeriod Years of validity of the name
     /// @return priceInStableCoin Current price of the name minting in stable coin
     /// @return priceInETH Current price of the name minting in native token (ETH)
-    /// @return priceInUtilityToken Current price of the name minting in utility token ($CORN)
+    /// @return priceInUtilityToken Current price of the name minting in utility token ($MASA)
     function purchaseNameInfo(string memory name, uint256 yearsPeriod)
         public
         view
@@ -290,7 +290,7 @@ contract SoulStore is DexAMM, Pausable, AccessControl {
     /// @dev Returns all current pricing and amount informations for a purchase
     /// @return priceInStableCoin Current price in stable coin
     /// @return priceInETH Current pric in native token (ETH)
-    /// @return priceInUtilityToken Current price in utility token ($CORN)
+    /// @return priceInUtilityToken Current price in utility token ($MASA)
     function _getSwapAmounts(uint256 mintingPrice)
         public
         view
@@ -301,7 +301,7 @@ contract SoulStore is DexAMM, Pausable, AccessControl {
         )
     {
         priceInStableCoin = mintingPrice;
-        // get swapped price in ETH and $CORN
+        // get swapped price in ETH and $MASA
         priceInETH = estimateSwapAmount(
             wrappedNativeToken,
             stableCoin,
@@ -348,7 +348,7 @@ contract SoulStore is DexAMM, Pausable, AccessControl {
                 require(success);
             }
         } else if (paymentMethod == utilityToken) {
-            // $CORN
+            // $MASA
             uint256 swapAmout = estimateSwapAmount(
                 paymentMethod,
                 stableCoin,
