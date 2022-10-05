@@ -60,7 +60,7 @@ describe("Soul Store", () => {
       admin
     );
 
-    // we get $CORN tokens for address1
+    // we get $MASA tokens for address1
     const corn: CORN = CORN__factory.connect(cornAddress, admin);
     await corn.connect(address1).mint();
 
@@ -369,7 +369,7 @@ describe("Soul Store", () => {
       const reserveWalletBalanceBefore = await corn.balanceOf(reserveWallet);
 
       await soulStore.connect(address1).purchaseIdentityAndName(
-        CORN_GOERLI, // $CORN
+        CORN_GOERLI, // $MASA
         SOUL_NAME,
         YEAR,
         ARWEAVE_LINK
@@ -433,7 +433,7 @@ describe("Soul Store", () => {
 
       await expect(
         soulStore.connect(address2).purchaseIdentityAndName(
-          CORN_GOERLI, // $CORN
+          CORN_GOERLI, // $MASA
           SOUL_NAME,
           YEAR,
           ARWEAVE_LINK
@@ -523,7 +523,7 @@ describe("Soul Store", () => {
         .approve(soulStore.address, priceInUtilityToken);
 
       await soulStore.connect(address1).purchaseName(
-        CORN_GOERLI, // $CORN
+        CORN_GOERLI, // $MASA
         SOUL_NAME,
         YEAR,
         ARWEAVE_LINK
@@ -580,7 +580,7 @@ describe("Soul Store", () => {
 
       await expect(
         soulStore.connect(address2).purchaseName(
-          CORN_GOERLI, // $CORN
+          CORN_GOERLI, // $MASA
           SOUL_NAME,
           YEAR,
           ARWEAVE_LINK
