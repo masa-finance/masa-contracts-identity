@@ -126,6 +126,22 @@ describe("Soul Name", () => {
     });
   });
 
+  describe("set contract URI", () => {
+    it("should fail to set contract URI from non admin user", async () => {
+      await expect(
+        soulName.connect(address1).setContractURI("http://other.contract.uri")
+      ).to.be.rejected;
+    });
+
+    it("should success to set contract URI from admin user", async () => {
+      await soulName.connect(admin).setContractURI("http://other.contract.uri");
+
+      expect(await soulName.contractURI()).to.be.equal(
+        "http://other.contract.uri"
+      );
+    });
+  });
+
   describe("mint", () => {
     it("should mint from admin", async () => {
       const mintTx = await soulName
@@ -439,6 +455,18 @@ describe("Soul Name", () => {
       await expect(
         soulName.connect(address1).renewYearsPeriod(nameId, YEAR)
       ).to.be.rejectedWith("CAN_NOT_RENEW");
+    });
+  });
+
+  describe("contract URI", () => {
+    it("should get a valid contract URI", async () => {
+      const contractURI = await soulName.contractURI();
+
+      // check if it's a valid url
+      expect(() => new URL(contractURI)).to.not.throw();
+      // we expect that the token uri is already encoded
+      expect(contractURI).to.equal(encodeURI(contractURI));
+      expect(contractURI).to.match(/https:\/\/|ar:\/\/|ipfs:\/\//);
     });
   });
 });

@@ -116,6 +116,23 @@ Burn a soul name
 |---|---|---|
 | tokenId | uint256 | TokenId of the soul name to burn |
 
+### contractURI
+
+```solidity
+function contractURI() external view returns (string)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string | undefined |
+
 ### extension
 
 ```solidity
@@ -569,6 +586,22 @@ function setApprovalForAll(address operator, bool approved) external nonpayable
 | operator | address | undefined |
 | approved | bool | undefined |
 
+### setContractURI
+
+```solidity
+function setContractURI(string _contractURI) external nonpayable
+```
+
+Sets the URI of the smart contract metadata
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _contractURI | string | URI of the smart contract metadata |
+
 ### setExtension
 
 ```solidity
@@ -851,6 +884,24 @@ event ApprovalForAll(address indexed owner, address indexed operator, bool appro
 | operator `indexed` | address | undefined |
 | approved  | bool | undefined |
 
+### IdentityIdUpdated
+
+```solidity
+event IdentityIdUpdated(uint256 tokenId, uint256 oldIdentityId, uint256 identityId)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId  | uint256 | undefined |
+| oldIdentityId  | uint256 | undefined |
+| identityId  | uint256 | undefined |
+
 ### Paused
 
 ```solidity
@@ -954,6 +1005,24 @@ event Unpaused(address account)
 | Name | Type | Description |
 |---|---|---|
 | account  | address | undefined |
+
+### YearsPeriodRenewed
+
+```solidity
+event YearsPeriodRenewed(uint256 tokenId, uint256 yearsPeriod, uint256 newExpirationDate)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId  | uint256 | undefined |
+| yearsPeriod  | uint256 | undefined |
+| newExpirationDate  | uint256 | undefined |
 
 
 
