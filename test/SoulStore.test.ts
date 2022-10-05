@@ -5,7 +5,7 @@ import { ethers, deployments } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
   MASA,
-  MASA_factory,
+  MASA__factory,
   ERC20,
   ERC20__factory,
   IUniswapRouter,
