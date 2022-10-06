@@ -25,7 +25,7 @@ const func: DeployFunction = async ({
 
   const constructorArguments = [];
 
-  const cornDeploymentResult = await deploy("CORN", {
+  const masaDeploymentResult = await deploy("MASA", {
     from: deployer,
     args: constructorArguments,
     log: true
@@ -36,7 +36,7 @@ const func: DeployFunction = async ({
   if (network.name == "mainnet" || network.name == "goerli") {
     try {
       await hre.run("verify:verify", {
-        address: cornDeploymentResult.address,
+        address: masaDeploymentResult.address,
         constructorArguments
       });
     } catch (error) {
@@ -49,12 +49,12 @@ const func: DeployFunction = async ({
     }
   }
 
-  const corn = await ethers.getContractAt("CORN", cornDeploymentResult.address);
-  await corn.transfer(
+  const masa = await ethers.getContractAt("MASA", masaDeploymentResult.address);
+  await masa.transfer(
     env.ADMIN || admin.address,
     ethers.utils.parseEther("1000")
   );
 };
 
-func.tags = ["CORN"];
+func.tags = ["MASA"];
 export default func;
