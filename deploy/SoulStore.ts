@@ -3,7 +3,7 @@ import { getEnvParams, getPrivateKey } from "../src/utils/EnvParams";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
 import {
-  CORN_GOERLI,
+  MASA_GOERLI,
   SWAPROUTER_GOERLI,
   USDC_GOERLI,
   WETH_GOERLI
@@ -26,7 +26,7 @@ const func: DeployFunction = async ({
   [, admin] = await ethers.getSigners();
   const env = getEnvParams(network.name);
 
-  const corn = await deployments.get("CORN");
+  const masa = await deployments.get("MASA");
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
   const soulNameDeployed = await deployments.get("SoulName");
 
@@ -63,8 +63,8 @@ const func: DeployFunction = async ({
     soulboundIdentityDeployed.address,
     "10000000", // 10 USDC, with 6 decimals
     network.name == "hardhat" || network.name == "goerli"
-      ? CORN_GOERLI // CORN
-      : corn.address,
+      ? MASA_GOERLI // MASA
+      : masa.address,
     stableCoin,
     wrappedNativeToken,
     swapRouter,
@@ -140,5 +140,5 @@ const func: DeployFunction = async ({
 };
 
 func.tags = ["SoulStore"];
-func.dependencies = ["CORN", "SoulboundIdentity", "SoulName"];
+func.dependencies = ["MASA", "SoulboundIdentity", "SoulName"];
 export default func;
