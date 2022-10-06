@@ -15,12 +15,10 @@ contract SoulLinker is AccessControl, ISoulLinker {
     ISoulboundIdentity public soulboundIdentity;
 
     // Identity.tokenId => NFT/SBT address => tokenId
-    mapping(uint256 => mapping(address => uint256)) public soulLinks;
+    mapping(uint256 => mapping(address => Link)) private soulLinks;
 
     // NFT/SBT address => Identity.tokenId => tokenId
-    mapping(address => mapping(uint256 => uint256)) public linksToSoul;
-
-    mapping(uint256 => Link) private links;
+    mapping(address => mapping(uint256 => uint256)) private linksToSoul;
 
     /* ========== INITIALIZE ================================================ */
 
