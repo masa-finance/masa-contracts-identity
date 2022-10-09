@@ -2,12 +2,18 @@
 pragma solidity ^0.8.7;
 
 interface ISoulLinker {
-    struct Link {
+    struct SoulLink {
         // address sourceContract;
         // uint256 sourceId;
         // address targetContract;
+        bool exists;
         uint256 targetId;
         uint256 expirationDate; // if 0, no expiration date
+    }
+
+    struct LinkToSoul {
+        bool exists;
+        uint256 soulId;
     }
 
     function hasLinks(address token, uint256 tokenId)

@@ -69,7 +69,7 @@ function grantRole(bytes32 role, address account) external nonpayable
 ### hasLinks
 
 ```solidity
-function hasLinks(address, uint256) external pure returns (bool)
+function hasLinks(address token, uint256 tokenId) external view returns (bool)
 ```
 
 Query if the contract has links for the given token id
@@ -80,8 +80,8 @@ Query if the contract has links for the given token id
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | address | undefined |
-| _1 | uint256 | undefined |
+| token | address | Address of the token linked to the soul |
+| tokenId | uint256 | Id of the token linked to the soul |
 
 #### Returns
 

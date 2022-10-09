@@ -15,10 +15,10 @@ contract SoulLinker is AccessControl, ISoulLinker {
     ISoulboundIdentity public soulboundIdentity;
 
     // Identity.tokenId => NFT/SBT address => tokenId
-    mapping(uint256 => mapping(address => Link)) private soulLinks;
+    mapping(uint256 => mapping(address => SoulLink)) private soulLinks;
 
-    // NFT/SBT address => Identity.tokenId => tokenId
-    mapping(address => mapping(uint256 => uint256)) private linksToSoul;
+    // NFT/SBT address => tokenId = Identity.tokenId
+    mapping(address => mapping(uint256 => LinkToSoul)) private linksToSoul;
 
     /* ========== INITIALIZE ================================================ */
 
@@ -47,9 +47,11 @@ contract SoulLinker is AccessControl, ISoulLinker {
     /* ========== VIEWS ===================================================== */
 
     /// @notice Query if the contract has links for the given token id
+    /// @param token Address of the token linked to the soul
+    /// @param tokenId Id of the token linked to the soul
     /// @return `true` if the contract has links, `false` otherwise
-    function hasLinks(address, uint256) external pure override returns (bool) {
-        return false;
+    function hasLinks(address token, uint256 tokenId) external view override returns (bool) {
+        return linksToSoul[token][tokenId].exists;
     }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
