@@ -7,13 +7,13 @@ interface ISoulLinker {
         // uint256 sourceId;
         // address targetContract;
         bool exists;
-        uint256 targetId;
+        uint256 tokenId; // targetId
         uint256 expirationDate; // if 0, no expiration date
     }
 
     struct LinkToSoul {
         bool exists;
-        uint256 soulId;
+        uint256 identityId;
     }
 
     function hasLinks(address token, uint256 tokenId)

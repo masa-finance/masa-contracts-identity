@@ -2,6 +2,7 @@
 pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 import "./interfaces/ISoulboundIdentity.sol";
 import "./interfaces/ISoulLinker.sol";
@@ -44,17 +45,50 @@ contract SoulLinker is AccessControl, ISoulLinker {
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
+    function createLink(
+        uint256 identityId,
+        address token,
+        uint256 tokenId,
+        uint256 expirationDate
+    ) external {
+        require(
+            _isIdentityApprovedOrOwner(_msgSender(), identityId),
+            "CALLER_NOT_IDENTITY_OWNER"
+        );
+        require(!soulLinks[identityId][token].exists, "LINK_EXISTS");
+        require(!linksToSoul[token][tokenId].exists, "LINK_EXISTS");
+        soulLinks[identityId][token] = SoulLink(true, tokenId, expirationDate);
+        linksToSoul[token][tokenId] = LinkToSoul(true, identityId);
+    }
+
     /* ========== VIEWS ===================================================== */
 
     /// @notice Query if the contract has links for the given token id
     /// @param token Address of the token linked to the soul
     /// @param tokenId Id of the token linked to the soul
     /// @return `true` if the contract has links, `false` otherwise
-    function hasLinks(address token, uint256 tokenId) external view override returns (bool) {
+    function hasLinks(address token, uint256 tokenId)
+        external
+        view
+        override
+        returns (bool)
+    {
         return linksToSoul[token][tokenId].exists;
     }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
+
+    function _isIdentityApprovedOrOwner(address caller, uint256 identityId)
+        internal
+        view
+        virtual
+        returns (bool)
+    {
+        address owner = IERC721(soulboundIdentity).ownerOf(identityId);
+        return (caller == owner ||
+            IERC721(soulboundIdentity).isApprovedForAll(owner, caller) ||
+            IERC721(soulboundIdentity).getApproved(identityId) == caller);
+    }
 
     /* ========== MODIFIERS ================================================= */
 
