@@ -107,6 +107,7 @@ contract SoulLinker is AccessControl, EIP712, ISoulLinker {
         require(linksToSoul[token][tokenId].exists, "LINK_NOT_EXISTS");
         address owner = IERC721(soulboundIdentity).ownerOf(identityId);
 
+        require(expirationDate <= block.timestamp, "VALID_PERIOD_EXPIRED");
         require(
             _verify(
                 _hash(reader, identityId, token, tokenId, expirationDate),
