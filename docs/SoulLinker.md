@@ -27,6 +27,24 @@ function DEFAULT_ADMIN_ROLE() external view returns (bytes32)
 |---|---|---|
 | _0 | bytes32 | undefined |
 
+### breakLink
+
+```solidity
+function breakLink(uint256 identityId, address token, uint256 tokenId) external nonpayable
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| identityId | uint256 | undefined |
+| token | address | undefined |
+| tokenId | uint256 | undefined |
+
 ### createLink
 
 ```solidity
@@ -45,6 +63,32 @@ function createLink(uint256 identityId, address token, uint256 tokenId, uint256 
 | token | address | undefined |
 | tokenId | uint256 | undefined |
 | expirationDate | uint256 | undefined |
+
+### getLinkData
+
+```solidity
+function getLinkData(uint256 identityId, address token, uint256 tokenId, uint256 expirationDate, bytes signature) external view returns (string)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| identityId | uint256 | undefined |
+| token | address | undefined |
+| tokenId | uint256 | undefined |
+| expirationDate | uint256 | undefined |
+| signature | bytes | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string | undefined |
 
 ### getRoleAdmin
 
