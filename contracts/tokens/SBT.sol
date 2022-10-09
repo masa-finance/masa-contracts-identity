@@ -96,6 +96,14 @@ abstract contract SBT is NFT {
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
 
+    function _afterTokenTransfer(
+        address,
+        address,
+        uint256 tokenId
+    ) internal override {
+        soulLinker.createLink(address(this), tokenId, 0);
+    }
+
     /* ========== MODIFIERS ================================================= */
 
     /* ========== EVENTS ==================================================== */
