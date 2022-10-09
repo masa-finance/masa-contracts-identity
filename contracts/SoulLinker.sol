@@ -21,7 +21,7 @@ contract SoulLinker is AccessControl, EIP712, ISoulLinker {
     mapping(address => mapping(uint256 => LinkToSoul)) private linksToSoul;
 
     // Identity.tokenId => NFT/SBT address => tokenId
-    mapping(uint256 => mapping(address => SoulLink)) private soulLinks;
+    mapping(uint256 => mapping(address => uint256[])) private soulLinks;
 
     /* ========== INITIALIZE ================================================ */
 
@@ -59,10 +59,13 @@ contract SoulLinker is AccessControl, EIP712, ISoulLinker {
             "CALLER_NOT_IDENTITY_OWNER"
         );
 
-        require(!soulLinks[identityId][token].exists, "LINK_EXISTS");
         require(!linksToSoul[token][tokenId].exists, "LINK_EXISTS");
-        soulLinks[identityId][token] = SoulLink(true, tokenId, expirationDate);
-        linksToSoul[token][tokenId] = LinkToSoul(true, identityId);
+        linksToSoul[token][tokenId] = LinkToSoul(
+            true,
+            identityId,
+            expirationDate
+        );
+        soulLinks[identityId][token].push(tokenId);
     }
 
     function removeLink(address token, uint256 tokenId) external override {
@@ -73,10 +76,9 @@ contract SoulLinker is AccessControl, EIP712, ISoulLinker {
             "CALLER_NOT_IDENTITY_OWNER"
         );
 
-        require(soulLinks[identityId][token].exists, "LINK_NOT_EXISTS");
         require(linksToSoul[token][tokenId].exists, "LINK_NOT_EXISTS");
-        soulLinks[identityId][token].exists = false;
         linksToSoul[token][tokenId].exists = false;
+        _removeSoulLink(identityId, token, tokenId);
     }
 
     /* ========== VIEWS ===================================================== */
@@ -101,7 +103,7 @@ contract SoulLinker is AccessControl, EIP712, ISoulLinker {
         uint256 expirationDate,
         bytes calldata signature
     ) external view returns (string memory) {
-        require(soulLinks[identityId][token].exists, "LINK_NOT_EXISTS");
+        require(linksToSoul[token][tokenId].exists, "LINK_NOT_EXISTS");
         address owner = IERC721(soulboundIdentity).ownerOf(identityId);
 
         require(
@@ -137,6 +139,22 @@ contract SoulLinker is AccessControl, EIP712, ISoulLinker {
         return (caller == owner ||
             IERC721(soulboundIdentity).isApprovedForAll(owner, caller) ||
             IERC721(soulboundIdentity).getApproved(identityId) == caller);
+    }
+
+    function _removeSoulLink(
+        uint256 identityId,
+        address token,
+        uint256 tokenId
+    ) internal {
+        for (uint256 i = 0; i < soulLinks[identityId][token].length; i++) {
+            if (soulLinks[identityId][token][i] == tokenId) {
+                soulLinks[identityId][token][i] = soulLinks[identityId][token][
+                    soulLinks[identityId][token].length - 1
+                ];
+                soulLinks[identityId][token].pop();
+                break;
+            }
+        }
     }
 
     function _hash(
