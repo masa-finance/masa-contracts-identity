@@ -97,6 +97,7 @@ contract SoulLinker is AccessControl, EIP712, ISoulLinker {
     }
 
     function getLinkData(
+        address reader,
         uint256 identityId,
         address token,
         uint256 tokenId,
@@ -108,7 +109,7 @@ contract SoulLinker is AccessControl, EIP712, ISoulLinker {
 
         require(
             _verify(
-                _hash(identityId, token, tokenId, expirationDate),
+                _hash(reader, identityId, token, tokenId, expirationDate),
                 signature,
                 owner
             ),
@@ -158,6 +159,7 @@ contract SoulLinker is AccessControl, EIP712, ISoulLinker {
     }
 
     function _hash(
+        address reader,
         uint256 identityId,
         address token,
         uint256 tokenId,
@@ -168,8 +170,9 @@ contract SoulLinker is AccessControl, EIP712, ISoulLinker {
                 keccak256(
                     abi.encode(
                         keccak256(
-                            "getLinkData(uint256 identityId,address token,uint256 tokenId,uint256 expirationDate)"
+                            "getLinkData(address reader,uint256 identityId,address token,uint256 tokenId,uint256 expirationDate)"
                         ),
+                        reader,
                         identityId,
                         token,
                         tokenId,

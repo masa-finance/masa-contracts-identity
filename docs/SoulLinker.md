@@ -48,7 +48,7 @@ function createLink(address token, uint256 tokenId, uint256 expirationDate) exte
 ### getLinkData
 
 ```solidity
-function getLinkData(uint256 identityId, address token, uint256 tokenId, uint256 expirationDate, bytes signature) external view returns (string)
+function getLinkData(address reader, uint256 identityId, address token, uint256 tokenId, uint256 expirationDate, bytes signature) external view returns (string)
 ```
 
 
@@ -59,6 +59,7 @@ function getLinkData(uint256 identityId, address token, uint256 tokenId, uint256
 
 | Name | Type | Description |
 |---|---|---|
+| reader | address | undefined |
 | identityId | uint256 | undefined |
 | token | address | undefined |
 | tokenId | uint256 | undefined |
