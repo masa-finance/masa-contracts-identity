@@ -61,6 +61,21 @@ contract SoulLinker is AccessControl, ISoulLinker {
         linksToSoul[token][tokenId] = LinkToSoul(true, identityId);
     }
 
+    function breakLink(
+        uint256 identityId,
+        address token,
+        uint256 tokenId
+    ) external override {
+        require(
+            _isIdentityApprovedOrOwner(_msgSender(), identityId),
+            "CALLER_NOT_IDENTITY_OWNER"
+        );
+        require(soulLinks[identityId][token].exists, "LINK_NOT_EXISTS");
+        require(linksToSoul[token][tokenId].exists, "LINK_NOT_EXISTS");
+        soulLinks[identityId][token].exists = false;
+        linksToSoul[token][tokenId].exists = false;
+    }
+
     /* ========== VIEWS ===================================================== */
 
     /// @notice Query if the contract has links for the given token id
