@@ -20,4 +20,11 @@ interface ISoulLinker {
         external
         view
         returns (bool);
+
+    function createLink(
+        uint256 identityId,
+        address token,
+        uint256 tokenId,
+        uint256 expirationDate
+    ) external;
 }

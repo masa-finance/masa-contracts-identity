@@ -50,7 +50,7 @@ contract SoulLinker is AccessControl, ISoulLinker {
         address token,
         uint256 tokenId,
         uint256 expirationDate
-    ) external {
+    ) external override {
         require(
             _isIdentityApprovedOrOwner(_msgSender(), identityId),
             "CALLER_NOT_IDENTITY_OWNER"
