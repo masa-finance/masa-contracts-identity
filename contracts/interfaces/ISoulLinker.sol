@@ -22,15 +22,10 @@ interface ISoulLinker {
         returns (bool);
 
     function createLink(
-        uint256 identityId,
         address token,
         uint256 tokenId,
         uint256 expirationDate
     ) external;
 
-    function breakLink(
-        uint256 identityId,
-        address token,
-        uint256 tokenId
-    ) external;
+    function removeLink(address token, uint256 tokenId) external;
 }

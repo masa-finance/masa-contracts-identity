@@ -27,28 +27,10 @@ function DEFAULT_ADMIN_ROLE() external view returns (bytes32)
 |---|---|---|
 | _0 | bytes32 | undefined |
 
-### breakLink
-
-```solidity
-function breakLink(uint256 identityId, address token, uint256 tokenId) external nonpayable
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| identityId | uint256 | undefined |
-| token | address | undefined |
-| tokenId | uint256 | undefined |
-
 ### createLink
 
 ```solidity
-function createLink(uint256 identityId, address token, uint256 tokenId, uint256 expirationDate) external nonpayable
+function createLink(address token, uint256 tokenId, uint256 expirationDate) external nonpayable
 ```
 
 
@@ -59,7 +41,6 @@ function createLink(uint256 identityId, address token, uint256 tokenId, uint256 
 
 | Name | Type | Description |
 |---|---|---|
-| identityId | uint256 | undefined |
 | token | address | undefined |
 | tokenId | uint256 | undefined |
 | expirationDate | uint256 | undefined |
@@ -174,6 +155,23 @@ function hasRole(bytes32 role, address account) external view returns (bool)
 | Name | Type | Description |
 |---|---|---|
 | _0 | bool | undefined |
+
+### removeLink
+
+```solidity
+function removeLink(address token, uint256 tokenId) external nonpayable
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| token | address | undefined |
+| tokenId | uint256 | undefined |
 
 ### renounceRole
 

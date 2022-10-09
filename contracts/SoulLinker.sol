@@ -17,11 +17,11 @@ contract SoulLinker is AccessControl, EIP712, ISoulLinker {
 
     ISoulboundIdentity public soulboundIdentity;
 
-    // Identity.tokenId => NFT/SBT address => tokenId
-    mapping(uint256 => mapping(address => SoulLink)) private soulLinks;
-
     // NFT/SBT address => tokenId = Identity.tokenId
     mapping(address => mapping(uint256 => LinkToSoul)) private linksToSoul;
+
+    // Identity.tokenId => NFT/SBT address => tokenId
+    mapping(uint256 => mapping(address => SoulLink)) private soulLinks;
 
     /* ========== INITIALIZE ================================================ */
 
@@ -48,30 +48,31 @@ contract SoulLinker is AccessControl, EIP712, ISoulLinker {
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
     function createLink(
-        uint256 identityId,
         address token,
         uint256 tokenId,
         uint256 expirationDate
     ) external override {
+        uint256 identityId = _getIdentityId(token, tokenId);
+
         require(
             _isIdentityApprovedOrOwner(_msgSender(), identityId),
             "CALLER_NOT_IDENTITY_OWNER"
         );
+
         require(!soulLinks[identityId][token].exists, "LINK_EXISTS");
         require(!linksToSoul[token][tokenId].exists, "LINK_EXISTS");
         soulLinks[identityId][token] = SoulLink(true, tokenId, expirationDate);
         linksToSoul[token][tokenId] = LinkToSoul(true, identityId);
     }
 
-    function breakLink(
-        uint256 identityId,
-        address token,
-        uint256 tokenId
-    ) external override {
+    function removeLink(address token, uint256 tokenId) external override {
+        uint256 identityId = _getIdentityId(token, tokenId);
+
         require(
             _isIdentityApprovedOrOwner(_msgSender(), identityId),
             "CALLER_NOT_IDENTITY_OWNER"
         );
+
         require(soulLinks[identityId][token].exists, "LINK_NOT_EXISTS");
         require(linksToSoul[token][tokenId].exists, "LINK_NOT_EXISTS");
         soulLinks[identityId][token].exists = false;
@@ -116,6 +117,15 @@ contract SoulLinker is AccessControl, EIP712, ISoulLinker {
     }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
+
+    function _getIdentityId(address token, uint256 tokenId)
+        internal
+        view
+        returns (uint256)
+    {
+        address owner = IERC721(token).ownerOf(tokenId);
+        return soulboundIdentity.tokenOfOwner(owner);
+    }
 
     function _isIdentityApprovedOrOwner(address caller, uint256 identityId)
         internal
