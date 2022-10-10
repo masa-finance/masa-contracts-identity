@@ -174,7 +174,7 @@ contract SoulLinker is AccessControl, EIP712, ISoulLinker {
                 keccak256(
                     abi.encode(
                         keccak256(
-                            "getLinkData(address reader,uint256 identityId,address token,uint256 tokenId,uint256 expirationDate)"
+                            "Link(address reader,uint256 identityId,address token,uint256 tokenId,uint256 expirationDate)"
                         ),
                         reader,
                         identityId,
