@@ -2,13 +2,13 @@
 pragma solidity ^0.8.7;
 
 import "./interfaces/ISoulLinker.sol";
-import "./tokens/SBT.sol";
+import "./tokens/SBTLinked.sol";
 
 /// @title Soulbound Credit Report
 /// @author Masa Finance
 /// @notice Soulbound token that represents a credit report.
 /// @dev Soulbound credit report, that inherits from the SBT contract.
-contract SoulboundCreditReport is SBT {
+contract SoulboundCreditReport is SBTLinked {
     /* ========== STATE VARIABLES =========================================== */
 
     /* ========== INITIALIZE ================================================ */
@@ -22,7 +22,9 @@ contract SoulboundCreditReport is SBT {
         address admin,
         ISoulLinker _soulLinker,
         string memory baseTokenURI
-    ) SBT(admin, _soulLinker, "Masa Credit Report", "MCR", baseTokenURI) {}
+    )
+        SBTLinked(admin, _soulLinker, "Masa Credit Report", "MCR", baseTokenURI)
+    {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 

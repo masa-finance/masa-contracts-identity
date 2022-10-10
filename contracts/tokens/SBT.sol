@@ -96,25 +96,6 @@ abstract contract SBT is NFT {
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
 
-    function _beforeTokenTransfer(
-        address from,
-        address,
-        uint256 tokenId
-    ) internal virtual override {
-        if (from != address(0)) {
-            // if its not newly minted, remove the soul links
-            soulLinker.removeLink(address(this), tokenId);
-        }
-    }
-
-    function _afterTokenTransfer(
-        address,
-        address,
-        uint256 tokenId
-    ) internal virtual override {
-        soulLinker.createLink(address(this), tokenId, 0);
-    }
-
     /* ========== MODIFIERS ================================================= */
 
     /* ========== EVENTS ==================================================== */
