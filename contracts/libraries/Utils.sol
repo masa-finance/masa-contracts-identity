@@ -5,6 +5,11 @@ pragma solidity ^0.8.7;
 /// @author Masa Finance
 /// @notice Library of utilities for Masa Contracts Identity repository
 library Utils {
+    struct slice {
+        uint256 _len;
+        uint256 _ptr;
+    }
+
     function toLowerCase(string memory _str)
         internal
         pure
@@ -38,5 +43,42 @@ library Utils {
                 break;
             }
         }
+    }
+
+    function toSlice(string memory self) internal pure returns (slice memory) {
+        uint256 ptr;
+        assembly {
+            ptr := add(self, 0x20)
+        }
+        return slice(bytes(self).length, ptr);
+    }
+
+    function startsWith(string memory str, string memory needle)
+        internal
+        pure
+        returns (bool)
+    {
+        slice memory s_str = toSlice(str);
+        slice memory s_needle = toSlice(needle);
+
+        if (s_str._len < s_needle._len) {
+            return false;
+        }
+
+        if (s_str._ptr == s_needle._ptr) {
+            return true;
+        }
+
+        bool equal;
+        assembly {
+            let length := mload(s_needle)
+            let selfptr := mload(add(s_str, 0x20))
+            let needleptr := mload(add(s_needle, 0x20))
+            equal := eq(
+                keccak256(selfptr, length),
+                keccak256(needleptr, length)
+            )
+        }
+        return equal;
     }
 }

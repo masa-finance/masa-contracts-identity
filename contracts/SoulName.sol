@@ -133,6 +133,11 @@ contract SoulName is NFT, ISoulName {
             soulboundIdentity.ownerOf(identityId) != address(0),
             "IDENTITY_NOT_FOUND"
         );
+        require(
+            Utils.startsWith(_tokenURI, "ar://") ||
+                Utils.startsWith(_tokenURI, "ipfs://"),
+            "INVALID_TOKEN_URI"
+        );
 
         uint256 tokenId = _mintWithCounter(to);
         _setTokenURI(tokenId, _tokenURI);
