@@ -451,7 +451,7 @@ describe("Soul Name", () => {
       // once expired, another user mints the same soul name
       await soulName
         .connect(admin)
-        .mint(address2.address, SOUL_NAME1, identityId2, YEAR, ARWEAVE_LINK1);
+        .mint(address2.address, SOUL_NAME1, identityId2, YEAR, ARWEAVE_LINK2);
     });
 
     it("shouldn't renew period when period has expired and somebody has minted same name", async () => {
@@ -462,7 +462,7 @@ describe("Soul Name", () => {
       // once expired, another user mints the same soul name
       await soulName
         .connect(admin)
-        .mint(address2.address, SOUL_NAME1, identityId2, YEAR, ARWEAVE_LINK1);
+        .mint(address2.address, SOUL_NAME1, identityId2, YEAR, ARWEAVE_LINK2);
 
       // the first admin of the soul name tries to renew the period and fails
       await expect(
