@@ -28,17 +28,17 @@ let address2: SignerWithAddress;
 let identityId1: number;
 let creditReport1: number;
 
-describe("Soulbound Credit Report", () => {
+describe("Soul Linker", () => {
   before(async () => {
     [, admin, address1, address2] = await ethers.getSigners();
   });
 
   beforeEach(async () => {
-    await deployments.fixture("SoulLinker", { fallbackToGlobal: false });
     await deployments.fixture("SoulboundIdentity", { fallbackToGlobal: false });
     await deployments.fixture("SoulboundCreditReport", {
       fallbackToGlobal: false
     });
+    await deployments.fixture("SoulLinker", { fallbackToGlobal: false });
 
     const { address: soulboundIdentityAddress } = await deployments.get(
       "SoulboundIdentity"
@@ -103,7 +103,7 @@ describe("Soulbound Credit Report", () => {
         }
       );
 
-      await soulLinker.connect(address2).getLinkData(
+      const isValid = await soulLinker.connect(address2).validateLinkData(
         address2.address,
         identityId1,
         soulboundCreditReport.address,
@@ -111,6 +111,8 @@ describe("Soulbound Credit Report", () => {
         Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
         signature
       );
+
+      expect(isValid).to.be.true;
     });
   });
 });
