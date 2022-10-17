@@ -24,10 +24,7 @@ const func: DeployFunction = async ({
   const env = getEnvParams(network.name);
   const baseUri = `${env.BASE_URI}/credit-report/`;
 
-  const constructorArguments = [
-    env.OWNER || owner.address,
-    baseUri
-  ];
+  const constructorArguments = [env.OWNER || owner.address, baseUri];
 
   const soulboundCreditReportDeploymentResult = await deploy(
     "SoulboundCreditReport",

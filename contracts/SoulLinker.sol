@@ -41,7 +41,7 @@ contract SoulLinker is Ownable, EIP712 {
     /// @param _soulboundIdentity Address of the SoulboundIdentity contract
     function setSoulboundIdentity(ISoulboundIdentity _soulboundIdentity)
         external
-        onlyRole(DEFAULT_ADMIN_ROLE)
+        onlyOwner
     {
         require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
         require(soulboundIdentity != _soulboundIdentity, "SAME_VALUE");
@@ -51,7 +51,7 @@ contract SoulLinker is Ownable, EIP712 {
     /// @notice Adds an SBT to the list of linked SBTs
     /// @dev The caller must have the admin role to call this function
     /// @param token Address of the SBT contract
-    function addLinkedSBT(address token) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function addLinkedSBT(address token) external onlyOwner {
         require(address(token) != address(0), "ZERO_ADDRESS");
         require(!linkedSBT[token], "SBT_ALREADY_LINKED");
 
@@ -62,10 +62,7 @@ contract SoulLinker is Ownable, EIP712 {
     /// @notice Removes an SBT from the list of linked SBTs
     /// @dev The caller must have the admin role to call this function
     /// @param token Address of the SBT contract
-    function removeLinkedSBT(address token)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function removeLinkedSBT(address token) external onlyOwner {
         require(linkedSBT[token], "SBT_NOT_LINKED");
 
         linkedSBT[token] = false;

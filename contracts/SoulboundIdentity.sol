@@ -20,10 +20,9 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
     /// @dev Creates a new soulbound identity, inheriting from the SBT contract.
     /// @param owner Owner of the smart contract
     /// @param baseTokenURI Base URI of the token
-    constructor(
-        address owner,
-        string memory baseTokenURI
-    ) SBT(owner, "Masa Identity", "MID", baseTokenURI) {}
+    constructor(address owner, string memory baseTokenURI)
+        SBT(owner, "Masa Identity", "MID", baseTokenURI)
+    {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
