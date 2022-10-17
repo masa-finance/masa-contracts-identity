@@ -6,7 +6,7 @@
 
 Non-fungible token is a token that is not fungible.
 
-*Implementation of https://eips.ethereum.org/EIPS/eip-721[ERC721] Non-Fungible Token Standard, that inherits from {ERC721Enumerable}, {AccessControl} and {ERC721Burnable}.*
+*Implementation of https://eips.ethereum.org/EIPS/eip-721[ERC721] Non-Fungible Token Standard, that inherits from {ERC721Enumerable}, {Ownable}, {AccessControl} and {ERC721Burnable}.*
 
 ## Methods
 
