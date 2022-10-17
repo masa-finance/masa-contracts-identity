@@ -17,11 +17,9 @@ contract SoulLinker is AccessControl, EIP712, ISoulLinker {
 
     ISoulboundIdentity public soulboundIdentity;
 
-    // NFT/SBT address => tokenId = Identity.tokenId
-    mapping(address => mapping(uint256 => LinkToSoul)) private linksToSoul;
-
-    // Identity.tokenId => NFT/SBT address => tokenId
-    mapping(uint256 => mapping(address => uint256[])) private soulLinks;
+    // linked SBTs
+    mapping(address => bool) public linkedSBT;
+    address[] public linkedSBTs;
 
     /* ========== INITIALIZE ================================================ */
 
@@ -45,41 +43,31 @@ contract SoulLinker is AccessControl, EIP712, ISoulLinker {
         soulboundIdentity = _soulboundIdentity;
     }
 
+    /// @notice Adds an SBT to the list of linked SBTs
+    /// @dev The caller must have the admin role to call this function
+    /// @param _sbt Address of the SBT contract
+    function addLinkedSBT(address _sbt) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        require(address(_sbt) != address(0), "ZERO_ADDRESS");
+        require(!linkedSBT[_sbt], "SBT_ALREADY_LINKED");
+
+        linkedSBT[_sbt] = true;
+        linkedSBTs.push(_sbt);
+    }
+
+    /// @notice Removes an SBT from the list of linked SBTs
+    /// @dev The caller must have the admin role to call this function
+    /// @param _sbt Address of the SBT contract
+    function removeLinkedSBT(address _sbt)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        require(linkedSBT[_sbt], "SBT_NOT_LINKED");
+
+        linkedSBT[_sbt] = false;
+        _removeLinkedSBT(_sbt);
+    }
+
     /* ========== MUTATIVE FUNCTIONS ======================================== */
-
-    function createLink(
-        address token,
-        uint256 tokenId,
-        uint256 expirationDate
-    ) external override {
-        uint256 identityId = _getIdentityId(token, tokenId);
-
-        require(
-            _isIdentityApprovedOrOwner(_msgSender(), identityId),
-            "CALLER_NOT_IDENTITY_OWNER"
-        );
-
-        require(!linksToSoul[token][tokenId].exists, "LINK_EXISTS");
-        linksToSoul[token][tokenId] = LinkToSoul(
-            true,
-            identityId,
-            expirationDate
-        );
-        soulLinks[identityId][token].push(tokenId);
-    }
-
-    function removeLink(address token, uint256 tokenId) external override {
-        uint256 identityId = _getIdentityId(token, tokenId);
-
-        require(
-            _isIdentityApprovedOrOwner(_msgSender(), identityId),
-            "CALLER_NOT_IDENTITY_OWNER"
-        );
-
-        require(linksToSoul[token][tokenId].exists, "LINK_NOT_EXISTS");
-        linksToSoul[token][tokenId].exists = false;
-        _removeSoulLink(identityId, token, tokenId);
-    }
 
     /* ========== VIEWS ===================================================== */
 
@@ -93,7 +81,7 @@ contract SoulLinker is AccessControl, EIP712, ISoulLinker {
         override
         returns (bool)
     {
-        return linksToSoul[token][tokenId].exists;
+        return false; // linksToSoul[token][tokenId].exists;
     }
 
     function getLinkData(
@@ -132,31 +120,11 @@ contract SoulLinker is AccessControl, EIP712, ISoulLinker {
         return soulboundIdentity.tokenOfOwner(owner);
     }
 
-    function _isIdentityApprovedOrOwner(address caller, uint256 identityId)
-        internal
-        view
-        virtual
-        returns (bool)
-    {
-        // TODO: check if the caller is the owner or approved
-        /* address owner = IERC721(soulboundIdentity).ownerOf(identityId);
-        return (caller == owner ||
-            IERC721(soulboundIdentity).isApprovedForAll(owner, caller) ||
-            IERC721(soulboundIdentity).getApproved(identityId) == caller); */
-        return true;
-    }
-
-    function _removeSoulLink(
-        uint256 identityId,
-        address token,
-        uint256 tokenId
-    ) internal {
-        for (uint256 i = 0; i < soulLinks[identityId][token].length; i++) {
-            if (soulLinks[identityId][token][i] == tokenId) {
-                soulLinks[identityId][token][i] = soulLinks[identityId][token][
-                    soulLinks[identityId][token].length - 1
-                ];
-                soulLinks[identityId][token].pop();
+    function _removeLinkedSBT(address _sbt) internal {
+        for (uint256 i = 0; i < linkedSBTs.length; i++) {
+            if (linkedSBTs[i] == _sbt) {
+                linkedSBTs[i] = linkedSBTs[linkedSBTs.length - 1];
+                linkedSBTs.pop();
                 break;
             }
         }
