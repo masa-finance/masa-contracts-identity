@@ -12,7 +12,7 @@ const expect = chai.expect;
 // contract instances
 let soulboundIdentity: SoulboundIdentity;
 
-let admin: SignerWithAddress;
+let owner: SignerWithAddress;
 let someone: SignerWithAddress;
 
 const SOUL_NAME1 = "soulName1";
@@ -25,7 +25,7 @@ let address2: SignerWithAddress;
 
 describe("Soulbound Identity", () => {
   before(async () => {
-    [, admin, someone, address1, address2] = await ethers.getSigners();
+    [, owner, someone, address1, address2] = await ethers.getSigners();
   });
 
   beforeEach(async () => {
@@ -38,35 +38,35 @@ describe("Soulbound Identity", () => {
 
     soulboundIdentity = SoulboundIdentity__factory.connect(
       soulboundIdentityAddress,
-      admin
+      owner
     );
   });
 
   describe("set soulName", () => {
-    it("should fail to set soulName from non admin user", async () => {
+    it("should fail to set soulName from non owner user", async () => {
       await expect(
         soulboundIdentity.connect(address1).setSoulName(address2.address)
       ).to.be.rejected;
     });
 
-    it("should success to set soulName from admin user", async () => {
-      await soulboundIdentity.connect(admin).setSoulName(address2.address);
+    it("should success to set soulName from owner user", async () => {
+      await soulboundIdentity.connect(owner).setSoulName(address2.address);
 
       expect(await soulboundIdentity.soulName()).to.be.equal(address2.address);
     });
   });
 
   describe("mint", () => {
-    it("should mint from admin", async () => {
-      await soulboundIdentity.connect(admin).mint(someone.address);
+    it("should mint from owner", async () => {
+      await soulboundIdentity.connect(owner).mint(someone.address);
 
       expect(await soulboundIdentity.balanceOf(someone.address)).to.be.equal(1);
     });
 
     it("should fail to mint twice", async () => {
-      await soulboundIdentity.connect(admin).mint(someone.address);
+      await soulboundIdentity.connect(owner).mint(someone.address);
       await expect(
-        soulboundIdentity.connect(admin).mint(someone.address)
+        soulboundIdentity.connect(owner).mint(someone.address)
       ).to.be.rejectedWith("Soulbound identity already created!");
     });
 
@@ -77,9 +77,9 @@ describe("Soulbound Identity", () => {
   });
 
   describe("mintIdentityWithName", () => {
-    it("should mint from admin", async () => {
+    it("should mint from owner", async () => {
       await soulboundIdentity
-        .connect(admin)
+        .connect(owner)
         .mintIdentityWithName(address1.address, SOUL_NAME1, YEAR, ARWEAVE_LINK);
 
       expect(await soulboundIdentity.balanceOf(address1.address)).to.be.equal(
@@ -105,11 +105,11 @@ describe("Soulbound Identity", () => {
 
     it("should fail to mint twice", async () => {
       await soulboundIdentity
-        .connect(admin)
+        .connect(owner)
         .mintIdentityWithName(address1.address, SOUL_NAME1, YEAR, ARWEAVE_LINK);
       await expect(
         soulboundIdentity
-          .connect(admin)
+          .connect(owner)
           .mintIdentityWithName(
             address1.address,
             SOUL_NAME2,
@@ -121,11 +121,11 @@ describe("Soulbound Identity", () => {
 
     it("should fail to mint duplicated name", async () => {
       await soulboundIdentity
-        .connect(admin)
+        .connect(owner)
         .mintIdentityWithName(address1.address, SOUL_NAME1, YEAR, ARWEAVE_LINK);
       await expect(
         soulboundIdentity
-          .connect(admin)
+          .connect(owner)
           .mintIdentityWithName(
             address2.address,
             SOUL_NAME1,
@@ -139,7 +139,7 @@ describe("Soulbound Identity", () => {
   describe("burn", () => {
     it("should burn", async () => {
       const mintTx = await soulboundIdentity
-        .connect(admin)
+        .connect(owner)
         .mint(someone.address);
       const mintReceipt = await mintTx.wait();
 
@@ -158,7 +158,7 @@ describe("Soulbound Identity", () => {
 
   describe("transfer", () => {
     it("should fail to transfer because its soulbound", async () => {
-      await soulboundIdentity.connect(admin).mint(someone.address);
+      await soulboundIdentity.connect(owner).mint(someone.address);
 
       await expect(
         soulboundIdentity
@@ -194,7 +194,7 @@ describe("Soulbound Identity", () => {
 
     beforeEach(async () => {
       const mintTx = await soulboundIdentity
-        .connect(admin)
+        .connect(owner)
         .mintIdentityWithName(someone.address, SOUL_NAME1, YEAR, ARWEAVE_LINK);
 
       const mintReceipt = await mintTx.wait();
@@ -239,7 +239,7 @@ describe("Soulbound Identity", () => {
 
     beforeEach(async () => {
       const mintTx = await soulboundIdentity
-        .connect(admin)
+        .connect(owner)
         .mintIdentityWithName(address1.address, SOUL_NAME1, YEAR, ARWEAVE_LINK);
       const mintReceipt = await mintTx.wait();
 

@@ -15,12 +15,12 @@ const expect = chai.expect;
 // contract instances
 let soulboundCreditReport: SoulboundCreditReport;
 
-let admin: SignerWithAddress;
+let owner: SignerWithAddress;
 let someone: SignerWithAddress;
 
 describe("Soulbound Credit Report", () => {
   before(async () => {
-    [, admin, someone] = await ethers.getSigners();
+    [, owner, someone] = await ethers.getSigners();
   });
 
   beforeEach(async () => {
@@ -33,18 +33,18 @@ describe("Soulbound Credit Report", () => {
     );
     soulboundCreditReport = SoulboundCreditReport__factory.connect(
       soulboundCreditReportAddress,
-      admin
+      owner
     );
   });
 
   describe("mint", () => {
-    it("should mint from admin", async () => {
-      await soulboundCreditReport.connect(admin).mint(someone.address);
+    it("should mint from owner", async () => {
+      await soulboundCreditReport.connect(owner).mint(someone.address);
     });
 
     it("should mint twice", async () => {
-      await soulboundCreditReport.connect(admin).mint(someone.address);
-      await soulboundCreditReport.connect(admin).mint(someone.address);
+      await soulboundCreditReport.connect(owner).mint(someone.address);
+      await soulboundCreditReport.connect(owner).mint(someone.address);
     });
 
     it("should fail to mint from someone", async () => {
@@ -55,7 +55,7 @@ describe("Soulbound Credit Report", () => {
 
   describe("transfer", () => {
     it("should fail to transfer because its soulbound", async () => {
-      await soulboundCreditReport.connect(admin).mint(someone.address);
+      await soulboundCreditReport.connect(owner).mint(someone.address);
 
       await expect(
         soulboundCreditReport
@@ -89,7 +89,7 @@ describe("Soulbound Credit Report", () => {
   describe("tokenUri", () => {
     it("should fail to transfer because its soulbound", async () => {
       const mintTx = await soulboundCreditReport
-        .connect(admin)
+        .connect(owner)
         .mint(someone.address);
 
       const mintReceipt = await mintTx.wait();
