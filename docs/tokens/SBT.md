@@ -106,15 +106,15 @@ function balanceOf(address owner) external view returns (uint256)
 function burn(uint256 tokenId) external nonpayable
 ```
 
-Burns the token
 
-*The caller must own `tokenId` or be an approved operator*
+
+*Burns `tokenId`. See {ERC721-_burn}. Requirements: - The caller must own `tokenId` or be an approved operator.*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| tokenId | uint256 | The NFT ID to burn |
+| tokenId | uint256 | undefined |
 
 ### getApproved
 
@@ -399,23 +399,6 @@ function setApprovalForAll(address operator, bool approved) external nonpayable
 |---|---|---|
 | operator | address | undefined |
 | approved | bool | undefined |
-
-### soulLinker
-
-```solidity
-function soulLinker() external view returns (contract ISoulLinker)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | contract ISoulLinker | undefined |
 
 ### supportsInterface
 

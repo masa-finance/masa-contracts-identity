@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
-import "./interfaces/ISoulLinker.sol";
 import "./tokens/SBT.sol";
 
 /// @title Soulbound Credit Report
@@ -16,13 +15,11 @@ contract SoulboundCreditReport is SBT {
     /// @notice Creates a new soulbound credit report
     /// @dev Creates a new soulbound credit report, inheriting from the SBT contract.
     /// @param admin Administrator of the smart contract
-    /// @param _soulLinker Address of the SoulLinker contract
     /// @param baseTokenURI Base URI of the token
     constructor(
         address admin,
-        ISoulLinker _soulLinker,
         string memory baseTokenURI
-    ) SBT(admin, _soulLinker, "Masa Credit Report", "MCR", baseTokenURI) {}
+    ) SBT(admin, "Masa Credit Report", "MCR", baseTokenURI) {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 

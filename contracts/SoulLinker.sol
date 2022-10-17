@@ -7,12 +7,11 @@ import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 import "./interfaces/ISoulboundIdentity.sol";
-import "./interfaces/ISoulLinker.sol";
 
 /// @title Soul linker
 /// @author Masa Finance
 /// @notice Soul linker smart contract that let add links to a Soulbound token.
-contract SoulLinker is AccessControl, EIP712, ISoulLinker {
+contract SoulLinker is AccessControl, EIP712 {
     /* ========== STATE VARIABLES =========================================== */
 
     ISoulboundIdentity public soulboundIdentity;
@@ -123,20 +122,6 @@ contract SoulLinker is AccessControl, EIP712, ISoulLinker {
         }
 
         return sbtLinks;
-    }
-
-    /// @notice Query if the contract has links for the given token id
-    /// @param token Address of the token linked to the soul
-    /// @param tokenId Id of the token linked to the soul
-    /// @return `true` if the contract has links, `false` otherwise
-    function hasLinks(address token, uint256 tokenId)
-        external
-        pure
-        override
-        returns (bool)
-    {
-        // TODO: check if the token is linked to the soul
-        return false;
     }
 
     /// @notice Validates the signature of the given read link request
