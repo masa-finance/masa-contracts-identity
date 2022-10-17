@@ -71,6 +71,25 @@ contract SoulLinker is AccessControl, EIP712, ISoulLinker {
 
     /* ========== VIEWS ===================================================== */
 
+    /// @notice Returns the identityId owned by the given token
+    /// @dev The token must be linked to this soul linker
+    /// @param token Address of the SBT contract
+    /// @param tokenId Id of the token
+    /// @return Id of the identity
+    function getIdentityId(address token, uint256 tokenId)
+        external
+        view
+        returns (uint256)
+    {
+        address owner = IERC721Enumerable(token).ownerOf(tokenId);
+        return soulboundIdentity.tokenOfOwner(owner);
+    }
+
+    /// @notice Returns the list of linked SBTs by a given SBT token
+    /// @dev The token must be linked to this soul linker
+    /// @param identityId Id of the identity
+    /// @param token Address of the SBT contract
+    /// @return List of linked SBTs
     function getSBTLinks(uint256 identityId, address token)
         external
         view
@@ -82,6 +101,11 @@ contract SoulLinker is AccessControl, EIP712, ISoulLinker {
         return getSBTLinks(owner, token);
     }
 
+    /// @notice Returns the list of linked SBTs by a given SBT token
+    /// @dev The token must be linked to this soul linker
+    /// @param owner Address of the owner of the identity
+    /// @param token Address of the SBT contract
+    /// @return List of linked SBTs
     function getSBTLinks(address owner, address token)
         public
         view
@@ -115,6 +139,15 @@ contract SoulLinker is AccessControl, EIP712, ISoulLinker {
         return false;
     }
 
+    /// @notice Validates the signature of the given read link request
+    /// @dev The token must be linked to this soul linker
+    /// @param reader Address of the reader
+    /// @param identityId Id of the identity
+    /// @param token Address of the SBT contract
+    /// @param tokenId Id of the token
+    /// @param expirationDate Expiration date of the signature
+    /// @param signature Signature of the read link request made by the owner
+    /// @return `true` if the signature is valid, `false` otherwise
     function validateLinkData(
         address reader,
         uint256 identityId,
