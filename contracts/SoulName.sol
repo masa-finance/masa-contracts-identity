@@ -28,6 +28,7 @@ contract SoulName is NFT, ISoulName {
 
     // Optional mapping for token URIs
     mapping(uint256 => string) private _tokenURIs;
+    mapping(string => bool) private _URIs; // used to check if a uri is already used
 
     mapping(uint256 => TokenData) public tokenData; // used to store the data of the token id
     mapping(string => NameData) public nameData; // stores the token id of the current active soul name
@@ -131,6 +132,11 @@ contract SoulName is NFT, ISoulName {
         require(
             soulboundIdentity.ownerOf(identityId) != address(0),
             "IDENTITY_NOT_FOUND"
+        );
+        require(
+            Utils.startsWith(_tokenURI, "ar://") ||
+                Utils.startsWith(_tokenURI, "ipfs://"),
+            "INVALID_TOKEN_URI"
         );
 
         uint256 tokenId = _mintWithCounter(to);
@@ -246,6 +252,7 @@ contract SoulName is NFT, ISoulName {
 
         if (bytes(_tokenURIs[tokenId]).length != 0) {
             delete _tokenURIs[tokenId];
+            _URIs[_tokenURIs[tokenId]] = false;
         }
 
         super.burn(tokenId);
@@ -413,7 +420,10 @@ contract SoulName is NFT, ISoulName {
             _exists(tokenId),
             "ERC721URIStorage: URI set of nonexistent token"
         );
+        require(_URIs[_tokenURI] == false, "URI_ALREADY_EXISTS");
+
         _tokenURIs[tokenId] = _tokenURI;
+        _URIs[_tokenURI] = true;
     }
 
     /* ========== MODIFIERS ========== */
