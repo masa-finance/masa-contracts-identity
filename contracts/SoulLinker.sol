@@ -45,31 +45,58 @@ contract SoulLinker is AccessControl, EIP712, ISoulLinker {
 
     /// @notice Adds an SBT to the list of linked SBTs
     /// @dev The caller must have the admin role to call this function
-    /// @param _sbt Address of the SBT contract
-    function addLinkedSBT(address _sbt) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        require(address(_sbt) != address(0), "ZERO_ADDRESS");
-        require(!linkedSBT[_sbt], "SBT_ALREADY_LINKED");
+    /// @param token Address of the SBT contract
+    function addLinkedSBT(address token) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        require(address(token) != address(0), "ZERO_ADDRESS");
+        require(!linkedSBT[token], "SBT_ALREADY_LINKED");
 
-        linkedSBT[_sbt] = true;
-        linkedSBTs.push(_sbt);
+        linkedSBT[token] = true;
+        linkedSBTs.push(token);
     }
 
     /// @notice Removes an SBT from the list of linked SBTs
     /// @dev The caller must have the admin role to call this function
-    /// @param _sbt Address of the SBT contract
-    function removeLinkedSBT(address _sbt)
+    /// @param token Address of the SBT contract
+    function removeLinkedSBT(address token)
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
-        require(linkedSBT[_sbt], "SBT_NOT_LINKED");
+        require(linkedSBT[token], "SBT_NOT_LINKED");
 
-        linkedSBT[_sbt] = false;
-        _removeLinkedSBT(_sbt);
+        linkedSBT[token] = false;
+        _removeLinkedSBT(token);
     }
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
     /* ========== VIEWS ===================================================== */
+
+    function getSBTLinks(uint256 identityId, address token)
+        external
+        view
+        returns (uint256[] memory)
+    {
+        require(linkedSBT[token], "SBT_NOT_LINKED");
+        address owner = soulboundIdentity.ownerOf(identityId);
+
+        return getSBTLinks(owner, token);
+    }
+
+    function getSBTLinks(address owner, address token)
+        public
+        view
+        returns (uint256[] memory)
+    {
+        require(linkedSBT[token], "SBT_NOT_LINKED");
+
+        uint256 links = IERC721(token).balanceOf(owner);
+        uint256[] memory sbtLinks = new uint256[](links);
+        for (uint256 i = 0; i < links; i++) {
+            sbtLinks[i] = IERC721(token).tokenOfOwnerByIndex(owner, i);
+        }
+
+        return sbtLinks;
+    }
 
     /// @notice Query if the contract has links for the given token id
     /// @param token Address of the token linked to the soul
@@ -81,7 +108,8 @@ contract SoulLinker is AccessControl, EIP712, ISoulLinker {
         override
         returns (bool)
     {
-        return false; // linksToSoul[token][tokenId].exists;
+        // TODO: check if the token is linked to the soul
+        return false;
     }
 
     function getLinkData(
@@ -120,9 +148,9 @@ contract SoulLinker is AccessControl, EIP712, ISoulLinker {
         return soulboundIdentity.tokenOfOwner(owner);
     }
 
-    function _removeLinkedSBT(address _sbt) internal {
+    function _removeLinkedSBT(address token) internal {
         for (uint256 i = 0; i < linkedSBTs.length; i++) {
-            if (linkedSBTs[i] == _sbt) {
+            if (linkedSBTs[i] == token) {
                 linkedSBTs[i] = linkedSBTs[linkedSBTs.length - 1];
                 linkedSBTs.pop();
                 break;
