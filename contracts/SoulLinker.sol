@@ -24,8 +24,14 @@ contract SoulLinker is AccessControl, EIP712 {
 
     /// @notice Creates a new soul linker
     /// @param admin Administrator of the smart contract
-    constructor(address admin) EIP712("SoulLinker", "1.0.0") {
+    constructor(address admin, ISoulboundIdentity _soulboundIdentity)
+        EIP712("SoulLinker", "1.0.0")
+    {
+        require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
+
         _grantRole(DEFAULT_ADMIN_ROLE, admin);
+
+        soulboundIdentity = _soulboundIdentity;
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */

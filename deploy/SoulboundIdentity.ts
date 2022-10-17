@@ -24,13 +24,7 @@ const func: DeployFunction = async ({
   const env = getEnvParams(network.name);
   const baseUri = `${env.BASE_URI}/identity/`;
 
-  const soulLinkerDeployed = await deployments.get("SoulLinker");
-
-  const constructorArguments = [
-    env.ADMIN || admin.address,
-    soulLinkerDeployed.address,
-    baseUri
-  ];
+  const constructorArguments = [env.ADMIN || admin.address, baseUri];
 
   const soulboundIdentityDeploymentResult = await deploy("SoulboundIdentity", {
     from: deployer,
@@ -56,11 +50,6 @@ const func: DeployFunction = async ({
     }
   }
 
-  const soulLinker = await ethers.getContractAt(
-    "SoulLinker",
-    soulLinkerDeployed.address
-  );
-
   // we set the soulName contract in soulboundIdentity and we add soulboundIdentity as soulName minter
   const signer = env.ADMIN
     ? new ethers.Wallet(
@@ -68,12 +57,7 @@ const func: DeployFunction = async ({
         ethers.getDefaultProvider(network.name)
       )
     : admin;
-
-  await soulLinker
-    .connect(signer)
-    .setSoulboundIdentity(soulboundIdentityDeploymentResult.address);
 };
 
 func.tags = ["SoulboundIdentity"];
-func.dependencies = ["SoulLinker"];
 export default func;

@@ -23,8 +23,7 @@ abstract contract SBT is NFT {
         string memory name,
         string memory symbol,
         string memory baseTokenURI
-    ) NFT(admin, name, symbol, baseTokenURI) {
-    }
+    ) NFT(admin, name, symbol, baseTokenURI) {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
