@@ -2,7 +2,6 @@
 pragma solidity ^0.8.7;
 
 import "./interfaces/ISoulboundIdentity.sol";
-import "./interfaces/ISoulLinker.sol";
 import "./interfaces/ISoulName.sol";
 import "./tokens/SBT.sol";
 
@@ -20,13 +19,11 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
     /// @notice Creates a new soulbound identity
     /// @dev Creates a new soulbound identity, inheriting from the SBT contract.
     /// @param owner Owner of the smart contract
-    /// @param _soulLinker Address of the SoulLinker contract
     /// @param baseTokenURI Base URI of the token
     constructor(
         address owner,
-        ISoulLinker _soulLinker,
         string memory baseTokenURI
-    ) SBT(owner, _soulLinker, "Masa Identity", "MID", baseTokenURI) {}
+    ) SBT(owner, "Masa Identity", "MID", baseTokenURI) {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 

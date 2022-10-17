@@ -5,7 +5,9 @@ import { ethers, deployments } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
   SoulboundCreditReport,
-  SoulboundCreditReport__factory
+  SoulboundCreditReport__factory,
+  SoulboundIdentity,
+  SoulboundIdentity__factory
 } from "../typechain";
 
 chai.use(chaiAsPromised);
@@ -13,6 +15,7 @@ chai.use(solidity);
 const expect = chai.expect;
 
 // contract instances
+let soulboundIdentity: SoulboundIdentity;
 let soulboundCreditReport: SoulboundCreditReport;
 
 let owner: SignerWithAddress;
@@ -24,17 +27,29 @@ describe("Soulbound Credit Report", () => {
   });
 
   beforeEach(async () => {
+    await deployments.fixture("SoulboundIdentity", { fallbackToGlobal: false });
     await deployments.fixture("SoulboundCreditReport", {
       fallbackToGlobal: false
     });
 
+    const { address: soulboundIdentityAddress } = await deployments.get(
+      "SoulboundIdentity"
+    );
     const { address: soulboundCreditReportAddress } = await deployments.get(
       "SoulboundCreditReport"
+    );
+
+    soulboundIdentity = SoulboundIdentity__factory.connect(
+      soulboundIdentityAddress,
+      admin
     );
     soulboundCreditReport = SoulboundCreditReport__factory.connect(
       soulboundCreditReportAddress,
       owner
     );
+
+    // we mint identity SBT
+    await soulboundIdentity.connect(admin).mint(someone.address);
   });
 
   describe("mint", () => {

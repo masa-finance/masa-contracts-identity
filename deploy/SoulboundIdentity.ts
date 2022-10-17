@@ -1,5 +1,5 @@
 import hre from "hardhat";
-import { getEnvParams } from "../src/utils/EnvParams";
+import { getEnvParams, getPrivateKey } from "../src/utils/EnvParams";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
 
@@ -24,13 +24,7 @@ const func: DeployFunction = async ({
   const env = getEnvParams(network.name);
   const baseUri = `${env.BASE_URI}/identity/`;
 
-  const soulLinker = await deployments.get("SoulLinker");
-
-  const constructorArguments = [
-    env.OWNER || owner.address,
-    soulLinker.address,
-    baseUri
-  ];
+  const constructorArguments = [env.OWNER || owner.address, baseUri];
 
   const soulboundIdentityDeploymentResult = await deploy("SoulboundIdentity", {
     from: deployer,
@@ -55,8 +49,15 @@ const func: DeployFunction = async ({
       }
     }
   }
+
+  // we set the soulName contract in soulboundIdentity and we add soulboundIdentity as soulName minter
+  const signer = env.ADMIN
+    ? new ethers.Wallet(
+        getPrivateKey(network.name),
+        ethers.getDefaultProvider(network.name)
+      )
+    : admin;
 };
 
 func.tags = ["SoulboundIdentity"];
-func.dependencies = ["SoulLinker"];
 export default func;

@@ -1,5 +1,5 @@
 import hre from "hardhat";
-import { getEnvParams } from "../src/utils/EnvParams";
+import { getEnvParams, getPrivateKey } from "../src/utils/EnvParams";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
 
@@ -23,7 +23,15 @@ const func: DeployFunction = async ({
   [, owner] = await ethers.getSigners();
   const env = getEnvParams(network.name);
 
-  const constructorArguments = [env.OWNER || owner.address];
+  const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
+  const soulboundCreditReportDeployed = await deployments.get(
+    "SoulboundCreditReport"
+  );
+
+  const constructorArguments = [
+    env.OWNER || owner.address,
+    soulboundIdentityDeployed.address
+  ];
 
   const soulLinkerDeploymentResult = await deploy("SoulLinker", {
     from: deployer,
@@ -48,7 +56,24 @@ const func: DeployFunction = async ({
       }
     }
   }
+
+  const signer = env.ADMIN
+    ? new ethers.Wallet(
+        getPrivateKey(network.name),
+        ethers.getDefaultProvider(network.name)
+      )
+    : admin;
+
+  const soulLinker = await ethers.getContractAt(
+    "SoulLinker",
+    soulLinkerDeploymentResult.address
+  );
+
+  await soulLinker
+    .connect(signer)
+    .addLinkedSBT(soulboundCreditReportDeployed.address);
 };
 
 func.tags = ["SoulLinker"];
+func.dependencies = ["SoulboundIdentity", "SoulboundCreditReport"];
 export default func;
