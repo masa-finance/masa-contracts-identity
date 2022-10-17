@@ -11,6 +11,7 @@ import {
   SoulLinker,
   SoulLinker__factory
 } from "../typechain";
+import { BigNumber } from "ethers";
 
 chai.use(chaiAsPromised);
 chai.use(solidity);
@@ -75,7 +76,9 @@ describe("Soul Linker", () => {
     it("should set SoulboundIdentity from admin", async () => {
       await soulLinker.connect(admin).setSoulboundIdentity(address1.address);
 
-      expect(await soulLinker.soulboundIdentity()).to.be.equal(address1.address);
+      expect(await soulLinker.soulboundIdentity()).to.be.equal(
+        address1.address
+      );
     });
 
     it("should fail to set SoulboundIdentity from non admin", async () => {
@@ -91,9 +94,8 @@ describe("Soul Linker", () => {
     });
 
     it("should fail to add linked SBT from non admin", async () => {
-      await expect(
-        soulLinker.connect(address1).addLinkedSBT(address1.address)
-      ).to.be.rejected;
+      await expect(soulLinker.connect(address1).addLinkedSBT(address1.address))
+        .to.be.rejected;
     });
 
     it("should fail to add already existing linked SBT from admin", async () => {
@@ -103,26 +105,59 @@ describe("Soul Linker", () => {
     });
 
     it("should remove linked SBT from admin", async () => {
-      await soulLinker.connect(admin).removeLinkedSBT(soulboundCreditReport.address);
+      await soulLinker
+        .connect(admin)
+        .removeLinkedSBT(soulboundCreditReport.address);
 
-      expect(await soulLinker.linkedSBT(soulboundCreditReport.address)).to.be.false;
+      expect(await soulLinker.linkedSBT(soulboundCreditReport.address)).to.be
+        .false;
     });
 
     it("should fail to remove linked SBT from non admin", async () => {
       await expect(
-        soulLinker.connect(address1).removeLinkedSBT(soulboundCreditReport.address)
+        soulLinker
+          .connect(address1)
+          .removeLinkedSBT(soulboundCreditReport.address)
       ).to.be.rejected;
     });
 
     it("should fail to remove non existing linked SBT from admin", async () => {
-      await expect(
-        soulLinker.connect(admin).removeLinkedSBT(address1.address)
-      ).to.be.rejected;
+      await expect(soulLinker.connect(admin).removeLinkedSBT(address1.address))
+        .to.be.rejected;
     });
   });
 
-  describe("getLinkData", () => {
-    it("getLinkData must work with a valid signature", async () => {
+  describe("read link information", () => {
+    it("should get identity id", async () => {
+      expect(
+        await soulLinker.getIdentityId(
+          soulboundCreditReport.address,
+          creditReport1
+        )
+      ).to.be.equal(identityId1);
+    });
+
+    it("should get SBT links by identityId", async () => {
+      expect(
+        await soulLinker["getSBTLinks(uint256,address)"](
+          identityId1,
+          soulboundCreditReport.address
+        )
+      ).to.deep.equal([BigNumber.from(creditReport1)]);
+    });
+
+    it("should get SBT links by owner address", async () => {
+      expect(
+        await soulLinker["getSBTLinks(address,address)"](
+          address1.address,
+          soulboundCreditReport.address
+        )
+      ).to.deep.equal([BigNumber.from(creditReport1)]);
+    });
+  });
+
+  describe("validateLinkData", () => {
+    it("validateLinkData must work with a valid signature", async () => {
       const chainId = await getChainId();
 
       const signature = await address1._signTypedData(
