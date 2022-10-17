@@ -199,5 +199,48 @@ describe("Soul Linker", () => {
 
       expect(isValid).to.be.true;
     });
+
+    it("validateLinkData won't work with an invalid signature", async () => {
+      const chainId = await getChainId();
+
+      const signature = await address1._signTypedData(
+        // Domain
+        {
+          name: "SoulLinker",
+          version: "1.0.0",
+          chainId: chainId,
+          verifyingContract: soulLinker.address
+        },
+        // Types
+        {
+          Link: [
+            { name: "reader", type: "address" },
+            { name: "identityId", type: "uint256" },
+            { name: "token", type: "address" },
+            { name: "tokenId", type: "uint256" },
+            { name: "expirationDate", type: "uint256" }
+          ]
+        },
+        // Value
+        {
+          reader: address1.address,
+          identityId: identityId1,
+          token: soulboundCreditReport.address,
+          tokenId: creditReport1,
+          expirationDate: Math.floor(Date.now() / 1000) + 60 * 15
+        }
+      );
+
+      await expect(
+        soulLinker.connect(address2).validateLinkData(
+          address2.address,
+          identityId1,
+          soulboundCreditReport.address,
+          creditReport1,
+          Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
+          signature
+        )
+      ).to.be.rejected;
+    });
   });
 });
