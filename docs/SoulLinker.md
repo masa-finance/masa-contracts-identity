@@ -18,7 +18,7 @@ function addLinkedSBT(address token) external nonpayable
 
 Adds an SBT to the list of linked SBTs
 
-*The caller must have the admin role to call this function*
+*The caller must be the owner to call this function*
 
 #### Parameters
 
@@ -164,7 +164,7 @@ function removeLinkedSBT(address token) external nonpayable
 
 Removes an SBT from the list of linked SBTs
 
-*The caller must have the admin role to call this function*
+*The caller must be the owner to call this function*
 
 #### Parameters
 
@@ -191,7 +191,7 @@ function setSoulboundIdentity(contract ISoulboundIdentity _soulboundIdentity) ex
 
 Sets the SoulboundIdentity contract address linked to this soul name
 
-*The caller must have the admin role to call this function*
+*The caller must be the owner to call this function*
 
 #### Parameters
 

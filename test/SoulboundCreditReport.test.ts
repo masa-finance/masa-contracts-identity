@@ -41,7 +41,7 @@ describe("Soulbound Credit Report", () => {
 
     soulboundIdentity = SoulboundIdentity__factory.connect(
       soulboundIdentityAddress,
-      admin
+      owner
     );
     soulboundCreditReport = SoulboundCreditReport__factory.connect(
       soulboundCreditReportAddress,
@@ -49,7 +49,7 @@ describe("Soulbound Credit Report", () => {
     );
 
     // we mint identity SBT
-    await soulboundIdentity.connect(admin).mint(someone.address);
+    await soulboundIdentity.connect(owner).mint(someone.address);
   });
 
   describe("mint", () => {

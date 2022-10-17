@@ -57,12 +57,12 @@ const func: DeployFunction = async ({
     }
   }
 
-  const signer = env.ADMIN
+  const signer = env.OWNER
     ? new ethers.Wallet(
         getPrivateKey(network.name),
         ethers.getDefaultProvider(network.name)
       )
-    : admin;
+    : owner;
 
   const soulLinker = await ethers.getContractAt(
     "SoulLinker",

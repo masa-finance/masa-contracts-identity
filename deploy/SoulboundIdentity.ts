@@ -51,12 +51,12 @@ const func: DeployFunction = async ({
   }
 
   // we set the soulName contract in soulboundIdentity and we add soulboundIdentity as soulName minter
-  const signer = env.ADMIN
+  const signer = env.OWNER
     ? new ethers.Wallet(
         getPrivateKey(network.name),
         ethers.getDefaultProvider(network.name)
       )
-    : admin;
+    : owner;
 };
 
 func.tags = ["SoulboundIdentity"];

@@ -37,7 +37,7 @@ contract SoulLinker is Ownable, EIP712 {
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
     /// @notice Sets the SoulboundIdentity contract address linked to this soul name
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must be the owner to call this function
     /// @param _soulboundIdentity Address of the SoulboundIdentity contract
     function setSoulboundIdentity(ISoulboundIdentity _soulboundIdentity)
         external
@@ -49,7 +49,7 @@ contract SoulLinker is Ownable, EIP712 {
     }
 
     /// @notice Adds an SBT to the list of linked SBTs
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must be the owner to call this function
     /// @param token Address of the SBT contract
     function addLinkedSBT(address token) external onlyOwner {
         require(address(token) != address(0), "ZERO_ADDRESS");
@@ -60,7 +60,7 @@ contract SoulLinker is Ownable, EIP712 {
     }
 
     /// @notice Removes an SBT from the list of linked SBTs
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must be the owner to call this function
     /// @param token Address of the SBT contract
     function removeLinkedSBT(address token) external onlyOwner {
         require(linkedSBT[token], "SBT_NOT_LINKED");
