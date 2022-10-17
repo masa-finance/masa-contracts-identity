@@ -87,36 +87,6 @@ describe("Soul Store", () => {
     );
   });
 
-  describe("pause", () => {
-    it("should pause from admin", async () => {
-      await soulStore.connect(admin).pause();
-
-      expect(await soulStore.paused()).to.be.true;
-    });
-
-    it("should unpause from admin", async () => {
-      await soulStore.connect(admin).pause();
-
-      expect(await soulStore.paused()).to.be.true;
-
-      await soulStore.connect(admin).unpause();
-
-      expect(await soulStore.paused()).to.be.false;
-    });
-
-    it("should fail to pause from non admin", async () => {
-      await expect(soulStore.connect(address1).pause()).to.be.rejected;
-    });
-
-    it("should fail to unpause from non admin", async () => {
-      await soulStore.connect(admin).pause();
-
-      expect(await soulStore.paused()).to.be.true;
-
-      await expect(soulStore.connect(address1).unpause()).to.be.rejected;
-    });
-  });
-
   describe("admin functions", () => {
     it("should set SoulboundIdentity from admin", async () => {
       await soulStore.connect(admin).setSoulboundIdentity(address1.address);
