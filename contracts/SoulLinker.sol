@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 import "./interfaces/ISoulLinker.sol";
 
 /// @title Soul linker
 /// @author Masa Finance
 /// @notice Soul linker smart contract that let add links to a Soulbound token.
-contract SoulLinker is AccessControl, ISoulLinker {
+contract SoulLinker is Ownable, ISoulLinker {
     /* ========== STATE VARIABLES =========================================== */
 
     mapping(uint256 => Link) private links;
@@ -16,9 +16,9 @@ contract SoulLinker is AccessControl, ISoulLinker {
     /* ========== INITIALIZE ================================================ */
 
     /// @notice Creates a new soul linker
-    /// @param admin Administrator of the smart contract
-    constructor(address admin) {
-        _grantRole(DEFAULT_ADMIN_ROLE, admin);
+    /// @param owner Owner of the smart contract
+    constructor(address owner) {
+        Ownable.transferOwnership(owner);
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */

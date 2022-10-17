@@ -4,6 +4,7 @@ pragma solidity ^0.8.7;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
@@ -16,6 +17,7 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 abstract contract NFT is
     ERC721,
     ERC721Enumerable,
+    Ownable,
     AccessControl,
     ERC721Burnable
 {
@@ -33,18 +35,19 @@ abstract contract NFT is
 
     /// @notice Creates a new NFT
     /// @dev Creates a new Non-fungible token
-    /// @param admin Administrator of the smart contract
+    /// @param owner Owner of the smart contract
     /// @param name Name of the token
     /// @param symbol Symbol of the token
     /// @param baseTokenURI Base URI of the token
     constructor(
-        address admin,
+        address owner,
         string memory name,
         string memory symbol,
         string memory baseTokenURI
     ) ERC721(name, symbol) {
-        _grantRole(DEFAULT_ADMIN_ROLE, admin);
-        _grantRole(MINTER_ROLE, admin);
+        Ownable.transferOwnership(owner);
+        _grantRole(DEFAULT_ADMIN_ROLE, owner);
+        _grantRole(MINTER_ROLE, owner);
 
         _baseTokenURI = baseTokenURI;
     }

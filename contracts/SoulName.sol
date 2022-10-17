@@ -49,16 +49,16 @@ contract SoulName is NFT, ISoulName {
 
     /// @notice Creates a new SoulName NFT
     /// @dev Creates a new SoulName NFT, that points to a Soulbound identity, inheriting from the NFT contract.
-    /// @param admin Administrator of the smart contract
+    /// @param owner Owner of the smart contract
     /// @param _soulboundIdentity Address of the Soulbound identity contract
     /// @param _extension Extension of the soul name
     /// @param _contractURI URI of the smart contract metadata
     constructor(
-        address admin,
+        address owner,
         ISoulboundIdentity _soulboundIdentity,
         string memory _extension,
         string memory _contractURI
-    ) NFT(admin, "Masa Soul Name", "MSN", "") {
+    ) NFT(owner, "Masa Soul Name", "MSN", "") {
         require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
 
         soulboundIdentity = _soulboundIdentity;
@@ -69,11 +69,11 @@ contract SoulName is NFT, ISoulName {
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
     /// @notice Sets the SoulboundIdentity contract address linked to this soul name
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the owner to call this function
     /// @param _soulboundIdentity Address of the SoulboundIdentity contract
     function setSoulboundIdentity(ISoulboundIdentity _soulboundIdentity)
         external
-        onlyRole(DEFAULT_ADMIN_ROLE)
+        onlyOwner
     {
         require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
         require(soulboundIdentity != _soulboundIdentity, "SAME_VALUE");
@@ -81,12 +81,9 @@ contract SoulName is NFT, ISoulName {
     }
 
     /// @notice Sets the extension of the soul name
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the owner to call this function
     /// @param _extension Extension of the soul name
-    function setExtension(string memory _extension)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setExtension(string memory _extension) external onlyOwner {
         require(
             keccak256(abi.encodePacked((extension))) !=
                 keccak256(abi.encodePacked((_extension))),
@@ -96,12 +93,9 @@ contract SoulName is NFT, ISoulName {
     }
 
     /// @notice Sets the URI of the smart contract metadata
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the owner to call this function
     /// @param _contractURI URI of the smart contract metadata
-    function setContractURI(string memory _contractURI)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setContractURI(string memory _contractURI) external onlyOwner {
         require(
             keccak256(abi.encodePacked((contractURI))) !=
                 keccak256(abi.encodePacked((_contractURI))),

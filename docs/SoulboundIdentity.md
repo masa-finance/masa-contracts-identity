@@ -395,6 +395,23 @@ function name() external view returns (string)
 |---|---|---|
 | _0 | string | undefined |
 
+### owner
+
+```solidity
+function owner() external view returns (address)
+```
+
+
+
+*Returns the address of the current owner.*
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
 ### ownerOf
 
 ```solidity
@@ -438,6 +455,17 @@ Returns the owner address of a soul name
 | Name | Type | Description |
 |---|---|---|
 | _0 | address | Address of the owner of the identity |
+
+### renounceOwnership
+
+```solidity
+function renounceOwnership() external nonpayable
+```
+
+
+
+*Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.*
+
 
 ### renounceRole
 
@@ -535,7 +563,7 @@ function setSoulName(contract ISoulName _soulName) external nonpayable
 
 Sets the SoulName contract address linked to this identity
 
-*The caller must have the admin role to call this function*
+*The caller must have the owner to call this function*
 
 #### Parameters
 
@@ -784,6 +812,22 @@ Transfer ownership of an NFT -- THE CALLER IS RESPONSIBLE  TO CONFIRM THAT `_to`
 | _1 | address | undefined |
 | _2 | uint256 | undefined |
 
+### transferOwnership
+
+```solidity
+function transferOwnership(address newOwner) external nonpayable
+```
+
+
+
+*Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| newOwner | address | undefined |
+
 
 
 ## Events
@@ -823,6 +867,23 @@ event ApprovalForAll(address indexed owner, address indexed operator, bool appro
 | owner `indexed` | address | undefined |
 | operator `indexed` | address | undefined |
 | approved  | bool | undefined |
+
+### OwnershipTransferred
+
+```solidity
+event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| previousOwner `indexed` | address | undefined |
+| newOwner `indexed` | address | undefined |
 
 ### RoleAdminChanged
 
