@@ -71,6 +71,56 @@ describe("Soul Linker", () => {
     creditReport1 = mintReceipt.events![0].args![2].toNumber();
   });
 
+  describe("admin functions", () => {
+    it("should set SoulboundIdentity from admin", async () => {
+      await soulLinker.connect(admin).setSoulboundIdentity(address1.address);
+
+      expect(await soulLinker.soulboundIdentity()).to.be.equal(address1.address);
+    });
+
+    it("should fail to set SoulboundIdentity from non admin", async () => {
+      await expect(
+        soulLinker.connect(address1).setSoulboundIdentity(address1.address)
+      ).to.be.rejected;
+    });
+
+    it("should add linked SBT from admin", async () => {
+      await soulLinker.connect(admin).addLinkedSBT(address1.address);
+
+      expect(await soulLinker.linkedSBT(address1.address)).to.be.true;
+    });
+
+    it("should fail to add linked SBT from non admin", async () => {
+      await expect(
+        soulLinker.connect(address1).addLinkedSBT(address1.address)
+      ).to.be.rejected;
+    });
+
+    it("should fail to add already existing linked SBT from admin", async () => {
+      await expect(
+        soulLinker.connect(admin).addLinkedSBT(soulboundCreditReport.address)
+      ).to.be.rejected;
+    });
+
+    it("should remove linked SBT from admin", async () => {
+      await soulLinker.connect(admin).removeLinkedSBT(soulboundCreditReport.address);
+
+      expect(await soulLinker.linkedSBT(soulboundCreditReport.address)).to.be.false;
+    });
+
+    it("should fail to remove linked SBT from non admin", async () => {
+      await expect(
+        soulLinker.connect(address1).removeLinkedSBT(soulboundCreditReport.address)
+      ).to.be.rejected;
+    });
+
+    it("should fail to remove non existing linked SBT from admin", async () => {
+      await expect(
+        soulLinker.connect(admin).removeLinkedSBT(address1.address)
+      ).to.be.rejected;
+    });
+  });
+
   describe("getLinkData", () => {
     it("getLinkData must work with a valid signature", async () => {
       const chainId = await getChainId();
