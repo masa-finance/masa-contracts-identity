@@ -2,7 +2,7 @@
 pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
@@ -89,10 +89,13 @@ contract SoulLinker is AccessControl, EIP712, ISoulLinker {
     {
         require(linkedSBT[token], "SBT_NOT_LINKED");
 
-        uint256 links = IERC721(token).balanceOf(owner);
+        uint256 links = IERC721Enumerable(token).balanceOf(owner);
         uint256[] memory sbtLinks = new uint256[](links);
         for (uint256 i = 0; i < links; i++) {
-            sbtLinks[i] = IERC721(token).tokenOfOwnerByIndex(owner, i);
+            sbtLinks[i] = IERC721Enumerable(token).tokenOfOwnerByIndex(
+                owner,
+                i
+            );
         }
 
         return sbtLinks;
@@ -104,7 +107,7 @@ contract SoulLinker is AccessControl, EIP712, ISoulLinker {
     /// @return `true` if the contract has links, `false` otherwise
     function hasLinks(address token, uint256 tokenId)
         external
-        view
+        pure
         override
         returns (bool)
     {
@@ -112,41 +115,35 @@ contract SoulLinker is AccessControl, EIP712, ISoulLinker {
         return false;
     }
 
-    function getLinkData(
+    function validateLinkData(
         address reader,
         uint256 identityId,
         address token,
         uint256 tokenId,
         uint256 expirationDate,
         bytes calldata signature
-    ) external view returns (string memory) {
-        require(linksToSoul[token][tokenId].exists, "LINK_NOT_EXISTS");
-        address owner = IERC721(soulboundIdentity).ownerOf(identityId);
+    ) external view returns (bool) {
+        require(linkedSBT[token], "SBT_NOT_LINKED");
 
+        address identityOwner = soulboundIdentity.ownerOf(identityId);
+        address tokenOwner = IERC721Enumerable(token).ownerOf(tokenId);
+
+        require(identityOwner == tokenOwner, "IDENTITY_OWNER_NOT_TOKEN_OWNER");
         require(reader == _msgSender(), "CALLER_NOT_READER");
         require(expirationDate >= block.timestamp, "VALID_PERIOD_EXPIRED");
         require(
             _verify(
                 _hash(reader, identityId, token, tokenId, expirationDate),
                 signature,
-                owner
+                identityOwner
             ),
             "INVALID_SIGNATURE"
         );
 
-        return "data";
+        return true;
     }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
-
-    function _getIdentityId(address token, uint256 tokenId)
-        internal
-        view
-        returns (uint256)
-    {
-        address owner = IERC721(token).ownerOf(tokenId);
-        return soulboundIdentity.tokenOfOwner(owner);
-    }
 
     function _removeLinkedSBT(address token) internal {
         for (uint256 i = 0; i < linkedSBTs.length; i++) {
