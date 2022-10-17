@@ -4,7 +4,6 @@ pragma solidity ^0.8.7;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
-import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
@@ -13,11 +12,10 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 /// @author Masa Finance
 /// @notice Non-fungible token is a token that is not fungible.
 /// @dev Implementation of https://eips.ethereum.org/EIPS/eip-721[ERC721] Non-Fungible Token Standard,
-/// that inherits from {ERC721Enumerable}, {Pausable}, {AccessControl} and {ERC721Burnable}.
+/// that inherits from {ERC721Enumerable}, {AccessControl} and {ERC721Burnable}.
 abstract contract NFT is
     ERC721,
     ERC721Enumerable,
-    Pausable,
     AccessControl,
     ERC721Burnable
 {
@@ -26,7 +24,6 @@ abstract contract NFT is
     using Strings for uint256;
     using Counters for Counters.Counter;
 
-    bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     Counters.Counter private _tokenIdCounter;
 
@@ -47,25 +44,12 @@ abstract contract NFT is
         string memory baseTokenURI
     ) ERC721(name, symbol) {
         _grantRole(DEFAULT_ADMIN_ROLE, admin);
-        _grantRole(PAUSER_ROLE, admin);
         _grantRole(MINTER_ROLE, admin);
 
         _baseTokenURI = baseTokenURI;
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
-
-    /// @notice Pauses the operations in the smart contract
-    /// @dev Sets an emergency stop mechanism that can be triggered by an authorized account.
-    function pause() public onlyRole(PAUSER_ROLE) {
-        _pause();
-    }
-
-    /// @notice Unpauses the operations in the smart contract
-    /// @dev Unsets an emergency stop mechanism. It can be triggered by an authorized account.
-    function unpause() public onlyRole(PAUSER_ROLE) {
-        _unpause();
-    }
 
     function _mintWithCounter(address to)
         internal
@@ -129,7 +113,7 @@ abstract contract NFT is
         address from,
         address to,
         uint256 tokenId
-    ) internal override(ERC721, ERC721Enumerable) whenNotPaused {
+    ) internal override(ERC721, ERC721Enumerable) {
         super._beforeTokenTransfer(from, to, tokenId);
     }
 

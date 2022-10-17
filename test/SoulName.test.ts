@@ -20,7 +20,8 @@ const YEAR = 1; // 1 year
 const YEAR_PERIOD = 31536000; // 60 seconds * 60 minutes * 24 hours * 365 days
 const ARWEAVE_LINK1 = "ar://jK9sR4OrYvODj7PD3czIAyNJalub0-vdV_JAg1NqQ-o";
 const ARWEAVE_LINK2 = "ar://2Ohog_ya_61nTJlKox43L4ZQzZ9DGRao8NU6WZRxs8";
-const ARWEAVE_LINK_INVALID = "https://arweave.net/jK9sR4OrYvODj7PD3czIAyNJalub0-vdV_JAg1NqQ-o";
+const ARWEAVE_LINK_INVALID =
+  "https://arweave.net/jK9sR4OrYvODj7PD3czIAyNJalub0-vdV_JAg1NqQ-o";
 
 // contract instances
 let soulboundIdentity: SoulboundIdentity;
@@ -63,36 +64,6 @@ describe("Soul Name", () => {
     mintReceipt = await mintTx.wait();
 
     identityId2 = mintReceipt.events![0].args![2].toNumber();
-  });
-
-  describe("pause", () => {
-    it("should pause from admin", async () => {
-      await soulName.connect(admin).pause();
-
-      expect(await soulName.paused()).to.be.true;
-    });
-
-    it("should unpause from admin", async () => {
-      await soulName.connect(admin).pause();
-
-      expect(await soulName.paused()).to.be.true;
-
-      await soulName.connect(admin).unpause();
-
-      expect(await soulName.paused()).to.be.false;
-    });
-
-    it("should fail to pause from non admin", async () => {
-      await expect(soulName.connect(address1).pause()).to.be.rejected;
-    });
-
-    it("should fail to unpause from non admin", async () => {
-      await soulName.connect(admin).pause();
-
-      expect(await soulName.paused()).to.be.true;
-
-      await expect(soulName.connect(address1).unpause()).to.be.rejected;
-    });
   });
 
   describe("supportsInterface", () => {
@@ -195,11 +166,15 @@ describe("Soul Name", () => {
       await expect(
         soulName
           .connect(admin)
-          .mint(address1.address, SOUL_NAME1, identityId1, YEAR, ARWEAVE_LINK_INVALID)
+          .mint(
+            address1.address,
+            SOUL_NAME1,
+            identityId1,
+            YEAR,
+            ARWEAVE_LINK_INVALID
+          )
       ).to.be.rejected;
     });
-
-
 
     it("should fail to mint from non-admin address", async () => {
       await expect(

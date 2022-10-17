@@ -6,7 +6,7 @@
 
 Non-fungible token is a token that is not fungible.
 
-*Implementation of https://eips.ethereum.org/EIPS/eip-721[ERC721] Non-Fungible Token Standard, that inherits from {ERC721Enumerable}, {Pausable}, {AccessControl} and {ERC721Burnable}.*
+*Implementation of https://eips.ethereum.org/EIPS/eip-721[ERC721] Non-Fungible Token Standard, that inherits from {ERC721Enumerable}, {AccessControl} and {ERC721Burnable}.*
 
 ## Methods
 
@@ -31,23 +31,6 @@ function DEFAULT_ADMIN_ROLE() external view returns (bytes32)
 
 ```solidity
 function MINTER_ROLE() external view returns (bytes32)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | bytes32 | undefined |
-
-### PAUSER_ROLE
-
-```solidity
-function PAUSER_ROLE() external view returns (bytes32)
 ```
 
 
@@ -261,34 +244,6 @@ function ownerOf(uint256 tokenId) external view returns (address)
 | Name | Type | Description |
 |---|---|---|
 | _0 | address | undefined |
-
-### pause
-
-```solidity
-function pause() external nonpayable
-```
-
-Pauses the operations in the smart contract
-
-*Sets an emergency stop mechanism that can be triggered by an authorized account.*
-
-
-### paused
-
-```solidity
-function paused() external view returns (bool)
-```
-
-
-
-*Returns true if the contract is paused, and false otherwise.*
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | bool | undefined |
 
 ### renounceRole
 
@@ -519,17 +474,6 @@ function transferFrom(address from, address to, uint256 tokenId) external nonpay
 | to | address | undefined |
 | tokenId | uint256 | undefined |
 
-### unpause
-
-```solidity
-function unpause() external nonpayable
-```
-
-Unpauses the operations in the smart contract
-
-*Unsets an emergency stop mechanism. It can be triggered by an authorized account.*
-
-
 
 
 ## Events
@@ -569,22 +513,6 @@ event ApprovalForAll(address indexed owner, address indexed operator, bool appro
 | owner `indexed` | address | undefined |
 | operator `indexed` | address | undefined |
 | approved  | bool | undefined |
-
-### Paused
-
-```solidity
-event Paused(address account)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| account  | address | undefined |
 
 ### RoleAdminChanged
 
@@ -657,22 +585,6 @@ event Transfer(address indexed from, address indexed to, uint256 indexed tokenId
 | from `indexed` | address | undefined |
 | to `indexed` | address | undefined |
 | tokenId `indexed` | uint256 | undefined |
-
-### Unpaused
-
-```solidity
-event Unpaused(address account)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| account  | address | undefined |
 
 
 
