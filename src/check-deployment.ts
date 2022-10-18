@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import "@nomiclabs/hardhat-ethers";
 import { deployments, ethers } from "hardhat";
+import { ERC20, ERC20__factory } from "../typechain";
 
 /**
  * main function
@@ -34,6 +35,13 @@ async function main() {
   console.log(`SoulName address:              ${soulNameAddress}`);
   console.log(`SoulStore address:             ${soulStoreAddress}`);
   console.log(`SoulLinker address:            ${soulLinkerAddress}`);
+
+  console.log("");
+
+  const masa: ERC20 = ERC20__factory.connect(masaAddress, owner);
+  console.log(`MASA balance: ${await masa.balanceOf(owner.address)}`);
+
+  console.log("");
 
   console.log(
     "=============================================================================="
