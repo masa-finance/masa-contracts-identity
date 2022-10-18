@@ -53,8 +53,14 @@ async function main() {
   const soulboundIdentity: SoulboundIdentity =
     SoulboundIdentity__factory.connect(soulboundIdentityAddress, owner);
   const soulName: SoulName = SoulName__factory.connect(soulNameAddress, owner);
-  const soulLinker: SoulLinker = SoulLinker__factory.connect(soulNameAddress, owner);
-  const soulStore: SoulStore = SoulStore__factory.connect(soulNameAddress, owner);
+  const soulLinker: SoulLinker = SoulLinker__factory.connect(
+    soulLinkerAddress,
+    owner
+  );
+  const soulStore: SoulStore = SoulStore__factory.connect(
+    soulStoreAddress,
+    owner
+  );
 
   console.log(`MASA balance: ${await masa.balanceOf(owner.address)}`);
   console.log("");
@@ -85,34 +91,56 @@ async function main() {
     )}`
   );
   console.log(
-    `SoulName.SoulboundIdentity: ${await soulName.soulboundIdentity(
+    `SoulName.SoulboundIdentity: ${await soulName.soulboundIdentity()}`
+  );
+  console.log(`SoulName.extension: ${await soulName.extension()}`);
+  console.log("");
+
+  console.log(
+    `SoulLinker.SoulboundIdentity: ${await soulLinker.soulboundIdentity()}`
+  );
+  console.log(
+    `SoulLinker.linkedSBT(SoulboundCreditReport): ${await soulLinker.linkedSBT(
+      soulboundCreditReportAddress
+    )}`
+  );
+  console.log("");
+
+  console.log(
+    `SoulStore.SoulboundIdentity: ${await soulStore.soulboundIdentity()}`
+  );
+  console.log(`SoulStore.utilityToken: ${await soulStore.utilityToken()}`);
+  console.log(`SoulStore.stableCoin: ${await soulStore.stableCoin()}`);
+  console.log(
+    `SoulStore.wrappedNativeToken: ${await soulStore.wrappedNativeToken()}`
+  );
+  console.log(`SoulStore.swapRouter: ${await soulStore.swapRouter()}`);
+  console.log(`SoulStore.reserveWallet: ${await soulStore.reserveWallet()}`);
+  console.log(
+    `SoulStore.getNameRegistrationPricePerYear(1): ${await soulStore.getNameRegistrationPricePerYear(
+      "1"
     )}`
   );
   console.log(
-    `SoulName.extension: ${await soulName.extension(
+    `SoulStore.getNameRegistrationPricePerYear(2): ${await soulStore.getNameRegistrationPricePerYear(
+      "22"
     )}`
   );
-  console.log("");
-
-  console.log(`SoulLinker.SoulboundIdentity: ${await soulLinker.soulboundIdentity()}`);
-  try {
-    console.log(`SoulLinker.linkedSBT: ${await soulLinker.linkedSBTs(0)}`);
-  } catch(e) {
-    console.log(`SoulLinker.linkedSBT: ${e}`);
-  }
-  console.log("");
-
-  console.log(`SoulStore.SoulboundIdentity: ${await soulStore.soulboundIdentity()}`);
-  console.log(`SoulStore.utilityToken: ${await soulStore.utilityToken()}`);
-  console.log(`SoulStore.stableCoin: ${await soulStore.stableCoin()}`);
-  console.log(`SoulStore.wrappedNativeToken: ${await soulStore.wrappedNativeToken()}`);
-  console.log(`SoulStore.swapRouter: ${await soulStore.swapRouter()}`);
-  console.log(`SoulStore.reserveWallet: ${await soulStore.reserveWallet()}`);
-  console.log(`SoulStore.getNameRegistrationPricePerYear(1): ${await soulStore.getNameRegistrationPricePerYear('1')}`);
-  console.log(`SoulStore.getNameRegistrationPricePerYear(2): ${await soulStore.getNameRegistrationPricePerYear('22')}`);
-  console.log(`SoulStore.getNameRegistrationPricePerYear(3): ${await soulStore.getNameRegistrationPricePerYear('333')}`);
-  console.log(`SoulStore.getNameRegistrationPricePerYear(4): ${await soulStore.getNameRegistrationPricePerYear('4444')}`);
-  console.log(`SoulStore.getNameRegistrationPricePerYear(5): ${await soulStore.getNameRegistrationPricePerYear('55555')}`);
+  console.log(
+    `SoulStore.getNameRegistrationPricePerYear(3): ${await soulStore.getNameRegistrationPricePerYear(
+      "333"
+    )}`
+  );
+  console.log(
+    `SoulStore.getNameRegistrationPricePerYear(4): ${await soulStore.getNameRegistrationPricePerYear(
+      "4444"
+    )}`
+  );
+  console.log(
+    `SoulStore.getNameRegistrationPricePerYear(5): ${await soulStore.getNameRegistrationPricePerYear(
+      "55555"
+    )}`
+  );
 
   console.log(
     "=============================================================================="
