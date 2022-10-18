@@ -95,7 +95,11 @@ async function main() {
   console.log("");
 
   console.log(`SoulLinker.SoulboundIdentity: ${await soulLinker.soulboundIdentity()}`);
-  console.log(`SoulLinker.linkedSBT: ${await soulLinker.linkedSBTs(0)}`);
+  try {
+    console.log(`SoulLinker.linkedSBT: ${await soulLinker.linkedSBTs(0)}`);
+  } catch(e) {
+    console.log(`SoulLinker.linkedSBT: ${e}`);
+  }
   console.log("");
 
   console.log(`SoulStore.SoulboundIdentity: ${await soulStore.soulboundIdentity()}`);
