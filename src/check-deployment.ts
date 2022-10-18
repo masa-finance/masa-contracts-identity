@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
-import '@nomiclabs/hardhat-ethers';
-import { deployments, ethers } from 'hardhat';
+import "@nomiclabs/hardhat-ethers";
+import { deployments, ethers } from "hardhat";
 
 /**
  * main function
@@ -9,32 +9,40 @@ async function main() {
   const [owner] = await ethers.getSigners();
   const chainId = await owner.getChainId();
 
-  const masaDeployed = await deployments.get("MASA");
-  const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
-  const soulboundCreditReportDeployed = await deployments.get("SoulboundCreditReport");
-  const soulNameDeployed = await deployments.get("SoulName");
-  const soulStoreDeployed = await deployments.get("SoulStore");
-  const soulLinkerDeployed = await deployments.get("SoulLinker");
+  const { address: masaAddress } = await deployments.get("MASA");
+  const { address: soulboundIdentityAddress } = await deployments.get(
+    "SoulboundIdentity"
+  );
+  const { address: soulboundCreditReportAddress } = await deployments.get(
+    "SoulboundCreditReport"
+  );
+  const { address: soulNameAddress } = await deployments.get("SoulName");
+  const { address: soulStoreAddress } = await deployments.get("SoulStore");
+  const { address: soulLinkerAddress } = await deployments.get("SoulLinker");
 
-  console.log('==============================================================================');
+  console.log(
+    "=============================================================================="
+  );
   console.log(`Account address: ${owner.address}`);
   console.log(`ChainId: ${chainId}`);
 
-  console.log('');
+  console.log("");
 
-  console.log(`MASA address:                  ${masaDeployed.address}`);
-  console.log(`SoulboundIdentity address:     ${soulboundIdentityDeployed.address}`);
-  console.log(`SoulboundCreditReport address: ${soulboundCreditReportDeployed.address}`);
-  console.log(`SoulName address:              ${soulNameDeployed.address}`);
-  console.log(`SoulStore address:             ${soulStoreDeployed.address}`);
-  console.log(`SoulLinker address:            ${soulLinkerDeployed.address}`);
+  console.log(`MASA address:                  ${masaAddress}`);
+  console.log(`SoulboundIdentity address:     ${soulboundIdentityAddress}`);
+  console.log(`SoulboundCreditReport address: ${soulboundCreditReportAddress}`);
+  console.log(`SoulName address:              ${soulNameAddress}`);
+  console.log(`SoulStore address:             ${soulStoreAddress}`);
+  console.log(`SoulLinker address:            ${soulLinkerAddress}`);
 
-  console.log('==============================================================================');
+  console.log(
+    "=============================================================================="
+  );
 }
 
 main()
   .then(() => process.exit(0))
-  .catch(error => {
+  .catch((error) => {
     console.error(error);
     process.exit(1);
   });
