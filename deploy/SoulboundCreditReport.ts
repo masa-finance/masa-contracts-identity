@@ -24,13 +24,7 @@ const func: DeployFunction = async ({
   const env = getEnvParams(network.name);
   const baseUri = `${env.BASE_URI}/credit-report/`;
 
-  const soulLinker = await deployments.get("SoulLinker");
-
-  const constructorArguments = [
-    env.ADMIN || admin.address,
-    soulLinker.address,
-    baseUri
-  ];
+  const constructorArguments = [env.ADMIN || admin.address, baseUri];
 
   const soulboundCreditReportDeploymentResult = await deploy(
     "SoulboundCreditReport",
@@ -61,5 +55,5 @@ const func: DeployFunction = async ({
 };
 
 func.tags = ["SoulboundCreditReport"];
-func.dependencies = ["SoulLinker"];
+func.dependencies = ["SoulboundIdentity"];
 export default func;

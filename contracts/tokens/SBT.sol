@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
-import "../interfaces/ISoulLinker.sol";
 import "./NFT.sol";
 
 /// @title SBT
@@ -11,26 +10,20 @@ import "./NFT.sol";
 abstract contract SBT is NFT {
     /* ========== STATE VARIABLES =========================================== */
 
-    ISoulLinker public soulLinker;
-
     /* ========== INITIALIZE ================================================ */
 
     /// @notice Creates a new soulbound token
     /// @dev Creates a new soulbound token
     /// @param admin Administrator of the smart contract
-    /// @param _soulLinker Address of the SoulLinker contract
     /// @param name Name of the token
     /// @param symbol Symbol of the token
     /// @param baseTokenURI Base URI of the token
     constructor(
         address admin,
-        ISoulLinker _soulLinker,
         string memory name,
         string memory symbol,
         string memory baseTokenURI
-    ) NFT(admin, name, symbol, baseTokenURI) {
-        soulLinker = _soulLinker;
-    }
+    ) NFT(admin, name, symbol, baseTokenURI) {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
@@ -70,18 +63,6 @@ abstract contract SBT is NFT {
     ) public pure override {
         // Transferring soulbound Tokens is not permitted!
         revert("SBT_TRANSFER_NOT_PERMITTED");
-    }
-
-    /// @notice Burns the token
-    /// @dev The caller must own `tokenId` or be an approved operator
-    /// @param tokenId The NFT ID to burn
-    function burn(uint256 tokenId) public override {
-        // A Soulbound Token can't be burned as long as it has active links!
-        require(
-            !soulLinker.hasLinks(address(this), tokenId),
-            "SBT_WITH_LINKS_NOT_BURNABLE"
-        );
-        super.burn(tokenId);
     }
 
     /// @notice Mints a new NFT
