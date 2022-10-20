@@ -285,6 +285,7 @@ contract SoulName is NFT, ISoulName {
     /// @param name Name of the soul name
     /// @return sbtName Soul name, in upper/lower case and extension
     /// @return identityId Identity id of the soul name
+    /// @return tokenId SoulName id of the soul name
     /// @return expirationDate Expiration date of the soul name
     /// @return active `true` if the soul name is active, `false` otherwise
     function getTokenData(string memory name)
@@ -294,6 +295,7 @@ contract SoulName is NFT, ISoulName {
         returns (
             string memory sbtName,
             uint256 identityId,
+            uint256 tokenId,
             uint256 expirationDate,
             bool active
         )
@@ -302,12 +304,13 @@ contract SoulName is NFT, ISoulName {
 
         require(nameData[lowercaseName].exists, "NAME_NOT_FOUND");
 
-        uint256 tokenId = nameData[lowercaseName].tokenId;
+        tokenId = nameData[lowercaseName].tokenId;
 
         TokenData memory _tokenData = tokenData[tokenId];
         return (
             _getName(_tokenData.name),
             _tokenData.identityId,
+            tokenId,
             _tokenData.expirationDate,
             _tokenData.expirationDate >= block.timestamp
         );
