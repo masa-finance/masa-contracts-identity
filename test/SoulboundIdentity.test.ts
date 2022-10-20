@@ -268,21 +268,21 @@ describe("Soulbound Identity", () => {
     });
 
     it("getTokenData with an existing name", async () => {
-      const [sbtName, , ,] = await soulboundIdentity.getTokenData(SOUL_NAME1);
+      const [sbtName, , , ,] = await soulboundIdentity.getTokenData(SOUL_NAME1);
       const extension = await soulboundIdentity.getExtension();
 
       await expect(sbtName).to.be.equal(SOUL_NAME1 + extension);
     });
 
     it("getTokenData with an existing name - case insensitive", async () => {
-      let [sbtName, identityId, ,] = await soulboundIdentity.getTokenData(
+      let [sbtName, identityId, , ,] = await soulboundIdentity.getTokenData(
         SOUL_NAME1.toLowerCase()
       );
       const extension = await soulboundIdentity.getExtension();
 
       await expect(sbtName).to.be.equal(SOUL_NAME1 + extension);
 
-      [sbtName, identityId, ,] = await soulboundIdentity.getTokenData(
+      [sbtName, identityId, , ,] = await soulboundIdentity.getTokenData(
         SOUL_NAME1.toUpperCase()
       );
 

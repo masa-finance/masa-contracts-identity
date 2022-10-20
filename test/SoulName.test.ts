@@ -215,7 +215,9 @@ describe("Soul Name", () => {
     });
 
     it("getTokenData with an existing name", async () => {
-      const [sbtName, identityId, ,] = await soulName.getTokenData(SOUL_NAME1);
+      const [sbtName, identityId, , ,] = await soulName.getTokenData(
+        SOUL_NAME1
+      );
       const extension = await soulName.getExtension();
 
       await expect(sbtName).to.be.equal(SOUL_NAME1 + extension);
@@ -223,7 +225,7 @@ describe("Soul Name", () => {
     });
 
     it("getTokenData with an existing name - case insensitive", async () => {
-      let [sbtName, identityId, ,] = await soulName.getTokenData(
+      let [sbtName, identityId, , ,] = await soulName.getTokenData(
         SOUL_NAME1.toLowerCase()
       );
       const extension = await soulName.getExtension();
@@ -231,7 +233,7 @@ describe("Soul Name", () => {
       await expect(sbtName).to.be.equal(SOUL_NAME1 + extension);
       await expect(identityId).to.be.equal(identityId1);
 
-      [sbtName, identityId] = await soulName.getTokenData(
+      [sbtName, identityId, , ,] = await soulName.getTokenData(
         SOUL_NAME1.toUpperCase()
       );
 
@@ -294,7 +296,7 @@ describe("Soul Name", () => {
       expect(await soulName.balanceOf(address1.address)).to.be.equal(0);
       expect(await soulName.balanceOf(address2.address)).to.be.equal(1);
 
-      const [, identityId, ,] = await soulName.getTokenData(SOUL_NAME1);
+      const [, identityId, , ,] = await soulName.getTokenData(SOUL_NAME1);
 
       await expect(identityId).to.be.equal(identityId1);
     });
@@ -315,7 +317,7 @@ describe("Soul Name", () => {
       expect(await soulName.balanceOf(address1.address)).to.be.equal(0);
       expect(await soulName.balanceOf(address2.address)).to.be.equal(1);
 
-      const [, identityId] = await soulName.getTokenData(SOUL_NAME1);
+      const [, identityId, , ,] = await soulName.getTokenData(SOUL_NAME1);
 
       await expect(identityId).to.be.equal(identityId2);
     });
@@ -358,7 +360,7 @@ describe("Soul Name", () => {
     });
 
     it("should return an active registration period", async () => {
-      const [, , expirationDate, active] = await soulName.getTokenData(
+      const [, , , expirationDate, active] = await soulName.getTokenData(
         SOUL_NAME1
       );
 
@@ -374,7 +376,7 @@ describe("Soul Name", () => {
       await network.provider.send("evm_increaseTime", [YEAR_PERIOD + 1]);
       await network.provider.send("evm_mine");
 
-      const [, , expirationDate, active] = await soulName.getTokenData(
+      const [, , , expirationDate, active] = await soulName.getTokenData(
         SOUL_NAME1
       );
 
@@ -394,7 +396,7 @@ describe("Soul Name", () => {
 
       await soulName.connect(address1).renewYearsPeriod(nameId, YEAR);
 
-      const [, , expirationDateFinish, active] = await soulName.getTokenData(
+      const [, , , expirationDateFinish, active] = await soulName.getTokenData(
         SOUL_NAME1
       );
 
@@ -416,7 +418,7 @@ describe("Soul Name", () => {
 
       await soulName.connect(address1).renewYearsPeriod(nameId, YEAR);
 
-      const [, , expirationDateFinish, active] = await soulName.getTokenData(
+      const [, , , expirationDateFinish, active] = await soulName.getTokenData(
         SOUL_NAME1
       );
 
