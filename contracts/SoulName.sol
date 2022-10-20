@@ -126,7 +126,7 @@ contract SoulName is NFT, ISoulName {
         uint256 yearsPeriod,
         string memory _tokenURI
     ) public override returns (uint256) {
-        require(!isAvailable(name), "NAME_ALREADY_EXISTS");
+        require(isAvailable(name), "NAME_ALREADY_EXISTS");
         require(bytes(name).length > 0, "ZERO_LENGTH_NAME");
         require(yearsPeriod > 0, "ZERO_YEARS_PERIOD");
         require(
@@ -280,9 +280,9 @@ contract SoulName is NFT, ISoulName {
         string memory lowercaseName = Utils.toLowerCase(name);
         if (nameData[lowercaseName].exists) {
             uint256 tokenId = nameData[lowercaseName].tokenId;
-            return tokenData[tokenId].expirationDate >= block.timestamp;
+            return tokenData[tokenId].expirationDate < block.timestamp;
         } else {
-            return false;
+            return true;
         }
     }
 
