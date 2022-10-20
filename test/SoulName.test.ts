@@ -284,8 +284,18 @@ describe("Soul Name", () => {
       ).to.deep.equal([SOUL_NAME1.toLowerCase()]);
     });
 
-    it("should get a valid token URI", async () => {
-      const tokenUri = await soulName.tokenURI(nameId);
+    it("should get a valid token URI from the soul name token id", async () => {
+      const tokenUri = await soulName["tokenURI(string)"](SOUL_NAME1);
+
+      // check if it's a valid url
+      expect(() => new URL(tokenUri)).to.not.throw();
+      // we expect that the token uri is already encoded
+      expect(tokenUri).to.equal(encodeURI(tokenUri));
+      expect(tokenUri).to.match(/ar:\/\/|ipfs:\/\//);
+    });
+
+    it("should get a valid token URI from the soul name", async () => {
+      const tokenUri = await soulName["tokenURI(uint256)"](nameId);
 
       // check if it's a valid url
       expect(() => new URL(tokenUri)).to.not.throw();
