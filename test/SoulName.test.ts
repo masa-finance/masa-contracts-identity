@@ -222,21 +222,21 @@ describe("Soul Name", () => {
       nameId = mintReceipt.events![0].args![2].toNumber();
     });
 
-    it("isAvailable true with an existing name", async () => {
-      await expect(await soulName.isAvailable(SOUL_NAME1)).to.be.equal(true);
+    it("isAvailable false with an existing name", async () => {
+      await expect(await soulName.isAvailable(SOUL_NAME1)).to.be.equal(false);
     });
 
-    it("isAvailable true with an existing name - case insensitive", async () => {
+    it("isAvailable false with an existing name - case insensitive", async () => {
       await expect(
         await soulName.isAvailable(SOUL_NAME1.toLowerCase())
-      ).to.be.equal(true);
+      ).to.be.equal(false);
       await expect(
         await soulName.isAvailable(SOUL_NAME1.toUpperCase())
-      ).to.be.equal(true);
+      ).to.be.equal(false);
     });
 
-    it("isAvailable false with a non existing name", async () => {
-      await expect(await soulName.isAvailable("fakeName")).to.be.equal(false);
+    it("isAvailable true with a non existing name", async () => {
+      await expect(await soulName.isAvailable("fakeName")).to.be.equal(true);
     });
 
     it("getTokenData with an existing name", async () => {
@@ -361,7 +361,7 @@ describe("Soul Name", () => {
     it("should burn", async () => {
       await soulName.connect(address1).burn(nameId);
 
-      await expect(await soulName.isAvailable(SOUL_NAME1)).to.be.equal(false);
+      await expect(await soulName.isAvailable(SOUL_NAME1)).to.be.equal(true);
       await expect(soulName.getTokenData("soulNameTest1")).to.be.rejectedWith(
         "NAME_NOT_FOUND"
       );
