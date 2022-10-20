@@ -300,11 +300,7 @@ contract SoulName is NFT, ISoulName {
             bool active
         )
     {
-        string memory lowercaseName = Utils.toLowerCase(name);
-
-        require(nameData[lowercaseName].exists, "NAME_NOT_FOUND");
-
-        tokenId = nameData[lowercaseName].tokenId;
+        tokenId = _getTokenId(name);
 
         TokenData memory _tokenData = tokenData[tokenId];
         return (
@@ -314,6 +310,19 @@ contract SoulName is NFT, ISoulName {
             _tokenData.expirationDate,
             _tokenData.expirationDate >= block.timestamp
         );
+    }
+
+    /// @notice Returns the token id of a soul name
+    /// @dev This function queries the token id of a soul name
+    /// @param name Name of the soul name
+    /// @return SoulName id of the soul name
+    function getTokenId(string memory name)
+        external
+        view
+        override
+        returns (uint256)
+    {
+        return _getTokenId(name);
     }
 
     /// @notice Returns all the active soul names of an account
@@ -407,6 +416,13 @@ contract SoulName is NFT, ISoulName {
 
     function _getName(string memory name) private view returns (string memory) {
         return string(bytes.concat(bytes(name), bytes(extension)));
+    }
+
+    function _getTokenId(string memory name) private view returns (uint256) {
+        string memory lowercaseName = Utils.toLowerCase(name);
+        require(nameData[lowercaseName].exists, "NAME_NOT_FOUND");
+
+        return nameData[lowercaseName].tokenId;
     }
 
     function _setTokenURI(uint256 tokenId, string memory _tokenURI)

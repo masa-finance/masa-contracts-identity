@@ -28,6 +28,8 @@ interface ISoulName {
             bool active
         );
 
+    function getTokenId(string memory name) external view returns (uint256);
+
     function getSoulNames(address owner)
         external
         view

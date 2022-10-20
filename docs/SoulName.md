@@ -264,6 +264,28 @@ Returns the information of a soul name
 | expirationDate | uint256 | Expiration date of the soul name |
 | active | bool | `true` if the soul name is active, `false` otherwise |
 
+### getTokenId
+
+```solidity
+function getTokenId(string name) external view returns (uint256)
+```
+
+Returns the token id of a soul name
+
+*This function queries the token id of a soul name*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | Name of the soul name |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | SoulName id of the soul name |
+
 ### grantRole
 
 ```solidity

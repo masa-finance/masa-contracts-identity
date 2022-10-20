@@ -97,6 +97,28 @@ function getTokenData(string name) external view returns (string sbtName, uint25
 | expirationDate | uint256 | undefined |
 | active | bool | undefined |
 
+### getTokenId
+
+```solidity
+function getTokenId(string name) external view returns (uint256)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
 ### isAvailable
 
 ```solidity
