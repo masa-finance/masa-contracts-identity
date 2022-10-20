@@ -14,16 +14,16 @@ abstract contract SBT is NFT {
 
     /// @notice Creates a new soulbound token
     /// @dev Creates a new soulbound token
-    /// @param admin Administrator of the smart contract
+    /// @param owner Owner of the smart contract
     /// @param name Name of the token
     /// @param symbol Symbol of the token
     /// @param baseTokenURI Base URI of the token
     constructor(
-        address admin,
+        address owner,
         string memory name,
         string memory symbol,
         string memory baseTokenURI
-    ) NFT(admin, name, symbol, baseTokenURI) {}
+    ) NFT(owner, name, symbol, baseTokenURI) {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 

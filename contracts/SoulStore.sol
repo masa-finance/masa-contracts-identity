@@ -3,8 +3,7 @@ pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts/security/Pausable.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 import "./dex/DexAMM.sol";
@@ -16,13 +15,11 @@ import "./interfaces/ISoulName.sol";
 /// @notice Soul Store, that can mint new Soulbound Identities and Soul Name NFTs, paying a fee
 /// @dev From this smart contract we can mint new Soulbound Identities and Soul Name NFTs.
 /// This minting can be done paying a fee in ETH, USDC or $MASA
-contract SoulStore is DexAMM, Pausable, AccessControl {
+contract SoulStore is DexAMM, Ownable {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
     /* ========== STATE VARIABLES ========== */
-
-    bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
 
     ISoulboundIdentity public soulboundIdentity;
 
@@ -38,7 +35,7 @@ contract SoulStore is DexAMM, Pausable, AccessControl {
     /// @notice Creates a new Soul Store
     /// @dev Creates a new Soul Store, that has the role to minting new Soulbound Identities
     /// and Soul Name NFTs, paying a fee
-    /// @param admin Administrator of the smart contract
+    /// @param owner Owner of the smart contract
     /// @param _soulBoundIdentity Address of the Soulbound identity contract
     /// @param _nameRegistrationPricePerYear Price of the default name registering in stable coin per year
     /// @param _utilityToken Utility token to pay the fee in ($MASA)
@@ -47,7 +44,7 @@ contract SoulStore is DexAMM, Pausable, AccessControl {
     /// @param _swapRouter Swap router address
     /// @param _reserveWallet Wallet that will receive the fee
     constructor(
-        address admin,
+        address owner,
         ISoulboundIdentity _soulBoundIdentity,
         uint256 _nameRegistrationPricePerYear,
         address _utilityToken,
@@ -59,8 +56,7 @@ contract SoulStore is DexAMM, Pausable, AccessControl {
         require(_reserveWallet != address(0), "ZERO_ADDRESS");
         require(address(_soulBoundIdentity) != address(0), "ZERO_ADDRESS");
 
-        _grantRole(DEFAULT_ADMIN_ROLE, admin);
-        _grantRole(PAUSER_ROLE, admin);
+        Ownable.transferOwnership(owner);
 
         soulboundIdentity = _soulBoundIdentity;
 
@@ -73,24 +69,12 @@ contract SoulStore is DexAMM, Pausable, AccessControl {
 
     /* ========== RESTRICTED FUNCTIONS ========== */
 
-    /// @notice Pauses the operations in the smart contract
-    /// @dev Sets an emergency stop mechanism that can be triggered by an authorized account.
-    function pause() public onlyRole(PAUSER_ROLE) {
-        _pause();
-    }
-
-    /// @notice Unpauses the operations in the smart contract
-    /// @dev Unsets an emergency stop mechanism. It can be triggered by an authorized account.
-    function unpause() public onlyRole(PAUSER_ROLE) {
-        _unpause();
-    }
-
     /// @notice Sets the SoulboundIdentity contract address linked to this store
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the owner to call this function
     /// @param _soulboundIdentity New SoulboundIdentity contract address
     function setSoulboundIdentity(ISoulboundIdentity _soulboundIdentity)
         external
-        onlyRole(DEFAULT_ADMIN_ROLE)
+        onlyOwner
     {
         require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
         require(soulboundIdentity != _soulboundIdentity, "SAME_VALUE");
@@ -98,14 +82,14 @@ contract SoulStore is DexAMM, Pausable, AccessControl {
     }
 
     /// @notice Sets the price of the name registering per one year in stable coin
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the owner to call this function
     /// @param _nameLength Length of the name
     /// @param _nameRegistrationPricePerYear New price of the name registering per one
     /// year in stable coin for that name length per year
     function setNameRegistrationPricePerYear(
         uint256 _nameLength,
         uint256 _nameRegistrationPricePerYear
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    ) external onlyOwner {
         require(
             nameRegistrationPricePerYear[_nameLength] !=
                 _nameRegistrationPricePerYear,
@@ -117,24 +101,18 @@ contract SoulStore is DexAMM, Pausable, AccessControl {
     }
 
     /// @notice Sets the stable coin to pay the fee in (USDC)
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the owner to call this function
     /// @param _stableCoin New stable coin to pay the fee in
-    function setStableCoin(address _stableCoin)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setStableCoin(address _stableCoin) external onlyOwner {
         require(_stableCoin != address(0), "ZERO_ADDRESS");
         require(stableCoin != _stableCoin, "SAME_VALUE");
         stableCoin = _stableCoin;
     }
 
     /// @notice Sets the utility token to pay the fee in ($MASA)
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the owner to call this function
     /// @param _utilityToken New utility token to pay the fee in
-    function setUtilityToken(address _utilityToken)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setUtilityToken(address _utilityToken) external onlyOwner {
         require(_utilityToken != address(0), "ZERO_ADDRESS");
         require(utilityToken != _utilityToken, "SAME_VALUE");
         utilityToken = _utilityToken;
@@ -143,33 +121,27 @@ contract SoulStore is DexAMM, Pausable, AccessControl {
     /// @notice Set the reserve wallet
     /// @dev Let change the reserve walled. It can be triggered by an authorized account.
     /// @param _reserveWallet New reserve wallet
-    function setReserveWallet(address _reserveWallet)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setReserveWallet(address _reserveWallet) external onlyOwner {
         require(_reserveWallet != address(0), "ZERO_ADDRESS");
         require(_reserveWallet != reserveWallet, "SAME_VALUE");
         reserveWallet = _reserveWallet;
     }
 
     /// @notice Sets the swap router address
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the owner to call this function
     /// @param _swapRouter New swap router address
-    function setSwapRouter(address _swapRouter)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setSwapRouter(address _swapRouter) external onlyOwner {
         require(_swapRouter != address(0), "ZERO_ADDRESS");
         require(swapRouter != _swapRouter, "SAME_VALUE");
         swapRouter = _swapRouter;
     }
 
     /// @notice Sets the wrapped native token address
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the owner to call this function
     /// @param _wrappedNativeToken New wrapped native token address
     function setWrappedNativeToken(address _wrappedNativeToken)
         external
-        onlyRole(DEFAULT_ADMIN_ROLE)
+        onlyOwner
     {
         require(_wrappedNativeToken != address(0), "ZERO_ADDRESS");
         require(wrappedNativeToken != _wrappedNativeToken, "SAME_VALUE");
@@ -191,7 +163,7 @@ contract SoulStore is DexAMM, Pausable, AccessControl {
         string memory name,
         uint256 yearsPeriod,
         string memory _tokenURI
-    ) external payable whenNotPaused returns (uint256) {
+    ) external payable returns (uint256) {
         _payForMinting(
             paymentMethod,
             getNameRegistrationPricePerYear(name).mul(yearsPeriod)
@@ -210,12 +182,7 @@ contract SoulStore is DexAMM, Pausable, AccessControl {
     /// @notice Mints a new Soulbound Identity purchasing it
     /// @dev This function allows the purchase of a soulbound identity for free
     /// @return TokenId of the new soulbound identity
-    function purchaseIdentity()
-        external
-        payable
-        whenNotPaused
-        returns (uint256)
-    {
+    function purchaseIdentity() external payable returns (uint256) {
         // finalize purchase
         return _mintSoulboundIdentity(_msgSender());
     }
@@ -233,7 +200,7 @@ contract SoulStore is DexAMM, Pausable, AccessControl {
         string memory name,
         uint256 yearsPeriod,
         string memory _tokenURI
-    ) external payable whenNotPaused returns (uint256) {
+    ) external payable returns (uint256) {
         _payForMinting(
             paymentMethod,
             getNameRegistrationPricePerYear(name).mul(yearsPeriod)

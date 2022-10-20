@@ -18,21 +18,18 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
 
     /// @notice Creates a new soulbound identity
     /// @dev Creates a new soulbound identity, inheriting from the SBT contract.
-    /// @param admin Administrator of the smart contract
+    /// @param owner Owner of the smart contract
     /// @param baseTokenURI Base URI of the token
-    constructor(address admin, string memory baseTokenURI)
-        SBT(admin, "Masa Identity", "MID", baseTokenURI)
+    constructor(address owner, string memory baseTokenURI)
+        SBT(owner, "Masa Identity", "MID", baseTokenURI)
     {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
     /// @notice Sets the SoulName contract address linked to this identity
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the owner to call this function
     /// @param _soulName Address of the SoulName contract
-    function setSoulName(ISoulName _soulName)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setSoulName(ISoulName _soulName) external onlyOwner {
         require(address(_soulName) != address(0), "ZERO_ADDRESS");
         require(soulName != _soulName, "SAME_VALUE");
         soulName = _soulName;

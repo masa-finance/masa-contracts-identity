@@ -3,7 +3,7 @@ import { getEnvParams, getPrivateKey } from "../src/utils/EnvParams";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
 
-let admin: SignerWithAddress;
+let owner: SignerWithAddress;
 
 const func: DeployFunction = async ({
   // @ts-ignore
@@ -20,11 +20,11 @@ const func: DeployFunction = async ({
   // const currentNonce: number = await ethers.provider.getTransactionCount(deployer);
   // to solve REPLACEMENT_UNDERPRICED, when needed
 
-  [, admin] = await ethers.getSigners();
+  [, owner] = await ethers.getSigners();
   const env = getEnvParams(network.name);
   const baseUri = `${env.BASE_URI}/identity/`;
 
-  const constructorArguments = [env.ADMIN || admin.address, baseUri];
+  const constructorArguments = [env.OWNER || owner.address, baseUri];
 
   const soulboundIdentityDeploymentResult = await deploy("SoulboundIdentity", {
     from: deployer,
@@ -51,12 +51,12 @@ const func: DeployFunction = async ({
   }
 
   // we set the soulName contract in soulboundIdentity and we add soulboundIdentity as soulName minter
-  const signer = env.ADMIN
+  const signer = env.OWNER
     ? new ethers.Wallet(
         getPrivateKey(network.name),
         ethers.getDefaultProvider(network.name)
       )
-    : admin;
+    : owner;
 };
 
 func.tags = ["SoulboundIdentity"];

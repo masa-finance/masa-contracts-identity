@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
@@ -11,7 +11,7 @@ import "./interfaces/ISoulboundIdentity.sol";
 /// @title Soul linker
 /// @author Masa Finance
 /// @notice Soul linker smart contract that let add links to a Soulbound token.
-contract SoulLinker is AccessControl, EIP712 {
+contract SoulLinker is Ownable, EIP712 {
     /* ========== STATE VARIABLES =========================================== */
 
     ISoulboundIdentity public soulboundIdentity;
@@ -23,13 +23,13 @@ contract SoulLinker is AccessControl, EIP712 {
     /* ========== INITIALIZE ================================================ */
 
     /// @notice Creates a new soul linker
-    /// @param admin Administrator of the smart contract
-    constructor(address admin, ISoulboundIdentity _soulboundIdentity)
+    /// @param owner Owner of the smart contract
+    constructor(address owner, ISoulboundIdentity _soulboundIdentity)
         EIP712("SoulLinker", "1.0.0")
     {
         require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
 
-        _grantRole(DEFAULT_ADMIN_ROLE, admin);
+        Ownable.transferOwnership(owner);
 
         soulboundIdentity = _soulboundIdentity;
     }
@@ -37,11 +37,11 @@ contract SoulLinker is AccessControl, EIP712 {
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
     /// @notice Sets the SoulboundIdentity contract address linked to this soul name
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must be the owner to call this function
     /// @param _soulboundIdentity Address of the SoulboundIdentity contract
     function setSoulboundIdentity(ISoulboundIdentity _soulboundIdentity)
         external
-        onlyRole(DEFAULT_ADMIN_ROLE)
+        onlyOwner
     {
         require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
         require(soulboundIdentity != _soulboundIdentity, "SAME_VALUE");
@@ -49,9 +49,9 @@ contract SoulLinker is AccessControl, EIP712 {
     }
 
     /// @notice Adds an SBT to the list of linked SBTs
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must be the owner to call this function
     /// @param token Address of the SBT contract
-    function addLinkedSBT(address token) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function addLinkedSBT(address token) external onlyOwner {
         require(address(token) != address(0), "ZERO_ADDRESS");
         require(!linkedSBT[token], "SBT_ALREADY_LINKED");
 
@@ -60,12 +60,9 @@ contract SoulLinker is AccessControl, EIP712 {
     }
 
     /// @notice Removes an SBT from the list of linked SBTs
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must be the owner to call this function
     /// @param token Address of the SBT contract
-    function removeLinkedSBT(address token)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function removeLinkedSBT(address token) external onlyOwner {
         require(linkedSBT[token], "SBT_NOT_LINKED");
 
         linkedSBT[token] = false;

@@ -22,7 +22,7 @@ let soulboundIdentity: SoulboundIdentity;
 let soulboundCreditReport: SoulboundCreditReport;
 let soulLinker: SoulLinker;
 
-let admin: SignerWithAddress;
+let owner: SignerWithAddress;
 let address1: SignerWithAddress;
 let address2: SignerWithAddress;
 
@@ -31,7 +31,7 @@ let creditReport1: number;
 
 describe("Soul Linker", () => {
   before(async () => {
-    [, admin, address1, address2] = await ethers.getSigners();
+    [, owner, address1, address2] = await ethers.getSigners();
   });
 
   beforeEach(async () => {
@@ -51,69 +51,69 @@ describe("Soul Linker", () => {
 
     soulboundIdentity = SoulboundIdentity__factory.connect(
       soulboundIdentityAddress,
-      admin
+      owner
     );
     soulboundCreditReport = SoulboundCreditReport__factory.connect(
       soulboundCreditReportAddress,
-      admin
+      owner
     );
-    soulLinker = SoulLinker__factory.connect(soulLinkerAddress, admin);
+    soulLinker = SoulLinker__factory.connect(soulLinkerAddress, owner);
 
     // we mint identity SBT for address1
-    let mintTx = await soulboundIdentity.connect(admin).mint(address1.address);
+    let mintTx = await soulboundIdentity.connect(owner).mint(address1.address);
     let mintReceipt = await mintTx.wait();
 
     identityId1 = mintReceipt.events![0].args![2].toNumber();
 
     // we mint credit report SBT for address1
-    mintTx = await soulboundCreditReport.connect(admin).mint(address1.address);
+    mintTx = await soulboundCreditReport.connect(owner).mint(address1.address);
     mintReceipt = await mintTx.wait();
 
     creditReport1 = mintReceipt.events![0].args![2].toNumber();
   });
 
-  describe("admin functions", () => {
-    it("should set SoulboundIdentity from admin", async () => {
-      await soulLinker.connect(admin).setSoulboundIdentity(address1.address);
+  describe("owner functions", () => {
+    it("should set SoulboundIdentity from owner", async () => {
+      await soulLinker.connect(owner).setSoulboundIdentity(address1.address);
 
       expect(await soulLinker.soulboundIdentity()).to.be.equal(
         address1.address
       );
     });
 
-    it("should fail to set SoulboundIdentity from non admin", async () => {
+    it("should fail to set SoulboundIdentity from non owner", async () => {
       await expect(
         soulLinker.connect(address1).setSoulboundIdentity(address1.address)
       ).to.be.rejected;
     });
 
-    it("should add linked SBT from admin", async () => {
-      await soulLinker.connect(admin).addLinkedSBT(address1.address);
+    it("should add linked SBT from owner", async () => {
+      await soulLinker.connect(owner).addLinkedSBT(address1.address);
 
       expect(await soulLinker.linkedSBT(address1.address)).to.be.true;
     });
 
-    it("should fail to add linked SBT from non admin", async () => {
+    it("should fail to add linked SBT from non owner", async () => {
       await expect(soulLinker.connect(address1).addLinkedSBT(address1.address))
         .to.be.rejected;
     });
 
-    it("should fail to add already existing linked SBT from admin", async () => {
+    it("should fail to add already existing linked SBT from owner", async () => {
       await expect(
-        soulLinker.connect(admin).addLinkedSBT(soulboundCreditReport.address)
+        soulLinker.connect(owner).addLinkedSBT(soulboundCreditReport.address)
       ).to.be.rejected;
     });
 
-    it("should remove linked SBT from admin", async () => {
+    it("should remove linked SBT from owner", async () => {
       await soulLinker
-        .connect(admin)
+        .connect(owner)
         .removeLinkedSBT(soulboundCreditReport.address);
 
       expect(await soulLinker.linkedSBT(soulboundCreditReport.address)).to.be
         .false;
     });
 
-    it("should fail to remove linked SBT from non admin", async () => {
+    it("should fail to remove linked SBT from non owner", async () => {
       await expect(
         soulLinker
           .connect(address1)
@@ -121,8 +121,8 @@ describe("Soul Linker", () => {
       ).to.be.rejected;
     });
 
-    it("should fail to remove non existing linked SBT from admin", async () => {
-      await expect(soulLinker.connect(admin).removeLinkedSBT(address1.address))
+    it("should fail to remove non existing linked SBT from owner", async () => {
+      await expect(soulLinker.connect(owner).removeLinkedSBT(address1.address))
         .to.be.rejected;
     });
   });

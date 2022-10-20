@@ -14,10 +14,10 @@ contract SoulboundCreditReport is SBT {
 
     /// @notice Creates a new soulbound credit report
     /// @dev Creates a new soulbound credit report, inheriting from the SBT contract.
-    /// @param admin Administrator of the smart contract
+    /// @param owner Owner of the smart contract
     /// @param baseTokenURI Base URI of the token
-    constructor(address admin, string memory baseTokenURI)
-        SBT(admin, "Masa Credit Report", "MCR", baseTokenURI)
+    constructor(address owner, string memory baseTokenURI)
+        SBT(owner, "Masa Credit Report", "MCR", baseTokenURI)
     {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */

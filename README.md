@@ -8,9 +8,9 @@ You can see the deployment address of the smart contracts in the [deployments/go
 
 #### Configuration
 
-- `Admin`: [`0x3c8D9f130970358b7E8cbc1DbD0a1EbA6EBE368F`](https://alfajores-blockscout.celo-testnet.org/address/0x3c8D9f130970358b7E8cbc1DbD0a1EbA6EBE368F/transactions)
+- `Owner`: [`0x3c8D9f130970358b7E8cbc1DbD0a1EbA6EBE368F`](https://alfajores-blockscout.celo-testnet.org/address/0x3c8D9f130970358b7E8cbc1DbD0a1EbA6EBE368F/transactions)
 
-The `admin` is allowed to mint SBTs.
+The `owner` is allowed to mint SBTs.
 
 - `BASE_URI`: https://beta.metadata.masa.finance/v1.0
 
@@ -19,7 +19,7 @@ The base url for the Metadata url that is beeing generated from the contract
 ## Roles
 
 - `deployer`: Deploys the contract, has no rights after everything has properlty handed over to other roles
-- `admin`: Delegated to the Masa Service account inside the Masa API. It has the rights to administrate the smart contracts
+- `owner`: Delegated to the Masa Service account inside the Masa API. It has the rights to administrate the smart contracts
 - `minter`: Minter role. It has the rights to mint tokens to customers wallets.
 
 ## Interface

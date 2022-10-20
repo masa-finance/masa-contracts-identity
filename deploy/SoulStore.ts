@@ -9,7 +9,7 @@ import {
   WETH_GOERLI
 } from "../src/constants";
 
-let admin: SignerWithAddress;
+let owner: SignerWithAddress;
 
 const func: DeployFunction = async ({
   // @ts-ignore
@@ -23,7 +23,7 @@ const func: DeployFunction = async ({
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  [, admin] = await ethers.getSigners();
+  [, owner] = await ethers.getSigners();
   const env = getEnvParams(network.name);
 
   const masa = await deployments.get("MASA");
@@ -59,7 +59,7 @@ const func: DeployFunction = async ({
   }
 
   const constructorArguments = [
-    env.ADMIN || admin.address,
+    env.OWNER || owner.address,
     soulboundIdentityDeployed.address,
     "10000000", // 10 USDC, with 6 decimals
     network.name == "hardhat" || network.name == "goerli"
@@ -68,7 +68,7 @@ const func: DeployFunction = async ({
     stableCoin,
     wrappedNativeToken,
     swapRouter,
-    env.RESERVE_WALLET || admin.address
+    env.RESERVE_WALLET || owner.address
   ];
 
   const soulStoreDeploymentResult = await deploy("SoulStore", {
@@ -103,12 +103,12 @@ const func: DeployFunction = async ({
     soulNameDeployed.address
   );
 
-  const signer = env.ADMIN
+  const signer = env.OWNER
     ? new ethers.Wallet(
         getPrivateKey(network.name),
         ethers.getDefaultProvider(network.name)
       )
-    : admin;
+    : owner;
 
   // we set the registration prices per year and length of name
   const soulStore = await ethers.getContractAt(

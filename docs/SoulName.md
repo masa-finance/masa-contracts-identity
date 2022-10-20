@@ -44,23 +44,6 @@ function MINTER_ROLE() external view returns (bytes32)
 |---|---|---|
 | _0 | bytes32 | undefined |
 
-### PAUSER_ROLE
-
-```solidity
-function PAUSER_ROLE() external view returns (bytes32)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | bytes32 | undefined |
-
 ### approve
 
 ```solidity
@@ -431,6 +414,23 @@ function nameData(string) external view returns (bool exists, uint256 tokenId)
 | exists | bool | undefined |
 | tokenId | uint256 | undefined |
 
+### owner
+
+```solidity
+function owner() external view returns (address)
+```
+
+
+
+*Returns the address of the current owner.*
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
 ### ownerOf
 
 ```solidity
@@ -453,34 +453,6 @@ function ownerOf(uint256 tokenId) external view returns (address)
 |---|---|---|
 | _0 | address | undefined |
 
-### pause
-
-```solidity
-function pause() external nonpayable
-```
-
-Pauses the operations in the smart contract
-
-*Sets an emergency stop mechanism that can be triggered by an authorized account.*
-
-
-### paused
-
-```solidity
-function paused() external view returns (bool)
-```
-
-
-
-*Returns true if the contract is paused, and false otherwise.*
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | bool | undefined |
-
 ### renewYearsPeriod
 
 ```solidity
@@ -497,6 +469,17 @@ Update the expiration date of a soul name
 |---|---|---|
 | tokenId | uint256 | TokenId of the soul name |
 | yearsPeriod | uint256 | Years of validity of the name |
+
+### renounceOwnership
+
+```solidity
+function renounceOwnership() external nonpayable
+```
+
+
+
+*Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.*
+
 
 ### renounceRole
 
@@ -594,7 +577,7 @@ function setContractURI(string _contractURI) external nonpayable
 
 Sets the URI of the smart contract metadata
 
-*The caller must have the admin role to call this function*
+*The caller must have the owner to call this function*
 
 #### Parameters
 
@@ -610,7 +593,7 @@ function setExtension(string _extension) external nonpayable
 
 Sets the extension of the soul name
 
-*The caller must have the admin role to call this function*
+*The caller must have the owner to call this function*
 
 #### Parameters
 
@@ -626,7 +609,7 @@ function setSoulboundIdentity(contract ISoulboundIdentity _soulboundIdentity) ex
 
 Sets the SoulboundIdentity contract address linked to this soul name
 
-*The caller must have the admin role to call this function*
+*The caller must have the owner to call this function*
 
 #### Parameters
 
@@ -816,16 +799,21 @@ function transferFrom(address from, address to, uint256 tokenId) external nonpay
 | to | address | undefined |
 | tokenId | uint256 | undefined |
 
-### unpause
+### transferOwnership
 
 ```solidity
-function unpause() external nonpayable
+function transferOwnership(address newOwner) external nonpayable
 ```
 
-Unpauses the operations in the smart contract
 
-*Unsets an emergency stop mechanism. It can be triggered by an authorized account.*
 
+*Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| newOwner | address | undefined |
 
 ### updateIdentityId
 
@@ -902,10 +890,10 @@ event IdentityIdUpdated(uint256 tokenId, uint256 oldIdentityId, uint256 identity
 | oldIdentityId  | uint256 | undefined |
 | identityId  | uint256 | undefined |
 
-### Paused
+### OwnershipTransferred
 
 ```solidity
-event Paused(address account)
+event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)
 ```
 
 
@@ -916,7 +904,8 @@ event Paused(address account)
 
 | Name | Type | Description |
 |---|---|---|
-| account  | address | undefined |
+| previousOwner `indexed` | address | undefined |
+| newOwner `indexed` | address | undefined |
 
 ### RoleAdminChanged
 
@@ -989,22 +978,6 @@ event Transfer(address indexed from, address indexed to, uint256 indexed tokenId
 | from `indexed` | address | undefined |
 | to `indexed` | address | undefined |
 | tokenId `indexed` | uint256 | undefined |
-
-### Unpaused
-
-```solidity
-event Unpaused(address account)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| account  | address | undefined |
 
 ### YearsPeriodRenewed
 
