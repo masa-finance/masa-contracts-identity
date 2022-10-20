@@ -214,8 +214,30 @@ describe("Soul Name", () => {
       await expect(await soulName.isAvailable("fakeName")).to.be.equal(true);
     });
 
+    it("getTokenId with an existing name", async () => {
+      const tokenId = await soulName.getTokenId(SOUL_NAME1);
+
+      await expect(tokenId).to.be.equal(nameId);
+    });
+
+    it("getTokenId with an existing name - case insensitive", async () => {
+      let tokenId = await soulName.getTokenId(SOUL_NAME1.toLowerCase());
+
+      await expect(tokenId).to.be.equal(nameId);
+
+      tokenId = await soulName.getTokenId(SOUL_NAME1.toUpperCase());
+
+      await expect(tokenId).to.be.equal(nameId);
+    });
+
+    it("getTokenId with a non existing name", async () => {
+      await expect(soulName.getTokenId("fakeName")).to.be.rejectedWith(
+        "NAME_NOT_FOUND"
+      );
+    });
+
     it("getTokenData with an existing name", async () => {
-      const [sbtName, identityId, tokenId , ,] = await soulName.getTokenData(
+      const [sbtName, identityId, tokenId, ,] = await soulName.getTokenData(
         SOUL_NAME1
       );
       const extension = await soulName.getExtension();
@@ -226,7 +248,7 @@ describe("Soul Name", () => {
     });
 
     it("getTokenData with an existing name - case insensitive", async () => {
-      let [sbtName, identityId,tokenId , ,] = await soulName.getTokenData(
+      let [sbtName, identityId, tokenId, ,] = await soulName.getTokenData(
         SOUL_NAME1.toLowerCase()
       );
       const extension = await soulName.getExtension();
@@ -299,7 +321,9 @@ describe("Soul Name", () => {
       expect(await soulName.balanceOf(address1.address)).to.be.equal(0);
       expect(await soulName.balanceOf(address2.address)).to.be.equal(1);
 
-      const [, identityId, tokenId, ,] = await soulName.getTokenData(SOUL_NAME1);
+      const [, identityId, tokenId, ,] = await soulName.getTokenData(
+        SOUL_NAME1
+      );
 
       await expect(identityId).to.be.equal(identityId1);
       await expect(tokenId).to.be.equal(nameId);
@@ -321,7 +345,9 @@ describe("Soul Name", () => {
       expect(await soulName.balanceOf(address1.address)).to.be.equal(0);
       expect(await soulName.balanceOf(address2.address)).to.be.equal(1);
 
-      const [, identityId, tokenId, ,] = await soulName.getTokenData(SOUL_NAME1);
+      const [, identityId, tokenId, ,] = await soulName.getTokenData(
+        SOUL_NAME1
+      );
 
       await expect(identityId).to.be.equal(identityId2);
       await expect(tokenId).to.be.equal(nameId);
