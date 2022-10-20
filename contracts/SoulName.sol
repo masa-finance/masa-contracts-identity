@@ -383,6 +383,20 @@ contract SoulName is NFT, ISoulName {
     }
 
     /// @notice A distinct Uniform Resource Identifier (URI) for a given asset.
+    /// @dev This function returns the token URI of the soul name specified by the name
+    /// @param name Name of the soul name
+    /// @return URI of the soulname associated to a name
+    function tokenURI(string memory name)
+        public
+        view
+        virtual
+        returns (string memory)
+    {
+        uint256 tokenId = _getTokenId(name);
+        return tokenURI(tokenId);
+    }
+
+    /// @notice A distinct Uniform Resource Identifier (URI) for a given asset.
     /// @dev Throws if `_tokenId` is not a valid NFT. URIs are defined in RFC
     ///  3986. The URI may point to a JSON file that conforms to the "ERC721
     ///  Metadata JSON Schema".

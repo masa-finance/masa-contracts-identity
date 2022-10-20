@@ -768,6 +768,28 @@ function tokenOfOwnerByIndex(address owner, uint256 index) external view returns
 ### tokenURI
 
 ```solidity
+function tokenURI(string name) external view returns (string)
+```
+
+A distinct Uniform Resource Identifier (URI) for a given asset.
+
+*This function returns the token URI of the soul name specified by the name*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | Name of the soul name |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string | URI of the soulname associated to a name |
+
+### tokenURI
+
+```solidity
 function tokenURI(uint256 tokenId) external view returns (string)
 ```
 
