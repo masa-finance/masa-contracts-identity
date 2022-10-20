@@ -392,7 +392,9 @@ describe("Soul Name", () => {
       await network.provider.send("evm_increaseTime", [YEAR_PERIOD / 2]);
       await network.provider.send("evm_mine");
 
-      const [, , expirationDateStart] = await soulName.getTokenData(SOUL_NAME1);
+      const [, , , expirationDateStart] = await soulName.getTokenData(
+        SOUL_NAME1
+      );
 
       await soulName.connect(address1).renewYearsPeriod(nameId, YEAR);
 
