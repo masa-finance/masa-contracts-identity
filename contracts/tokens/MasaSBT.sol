@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
-import "./NFT.sol";
+import "./MasaNFT.sol";
 
 /// @title SBT
 /// @author Masa Finance
 /// @notice Soulbound token. Non-fungible token that is not transferable.
 /// @dev Implementation of https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763 Soulbound token.
-abstract contract SBT is NFT {
+abstract contract MasaSBT is MasaNFT {
     /* ========== STATE VARIABLES =========================================== */
 
     /* ========== INITIALIZE ================================================ */
@@ -23,7 +23,7 @@ abstract contract SBT is NFT {
         string memory name,
         string memory symbol,
         string memory baseTokenURI
-    ) NFT(owner, name, symbol, baseTokenURI) {}
+    ) MasaNFT(owner, name, symbol, baseTokenURI) {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 

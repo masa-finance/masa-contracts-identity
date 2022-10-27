@@ -1,4 +1,4 @@
-# SBT
+# MasaSBT
 
 *Masa Finance*
 

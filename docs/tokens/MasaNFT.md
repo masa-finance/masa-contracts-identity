@@ -1,8 +1,8 @@
-# NFT
+# MasaNFT
 
 *Masa Finance*
 
-> NFT
+> MasaNFT
 
 Non-fungible token is a token that is not fungible.
 
