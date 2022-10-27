@@ -58,12 +58,12 @@ describe("Soul Name", () => {
     let mintTx = await soulboundIdentity.connect(owner).mint(address1.address);
     let mintReceipt = await mintTx.wait();
 
-    identityId1 = mintReceipt.events![0].args![2].toNumber();
+    identityId1 = mintReceipt.events![0].args![1].toNumber();
 
     mintTx = await soulboundIdentity.connect(owner).mint(address2.address);
     mintReceipt = await mintTx.wait();
 
-    identityId2 = mintReceipt.events![0].args![2].toNumber();
+    identityId2 = mintReceipt.events![0].args![1].toNumber();
   });
 
   describe("supportsInterface", () => {

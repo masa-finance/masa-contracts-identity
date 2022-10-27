@@ -92,7 +92,7 @@ contract SoulboundIdentity is MasaSBT, ISoulboundIdentity {
     function ownerOf(uint256 tokenId)
         public
         view
-        override(ERC721, IERC721)
+        override(SBT, ISBT)
         returns (address)
     {
         return super.ownerOf(tokenId);
