@@ -23,9 +23,12 @@ interface ISoulName {
         returns (
             string memory sbtName,
             uint256 identityId,
+            uint256 tokenId,
             uint256 expirationDate,
             bool active
         );
+
+    function getTokenId(string memory name) external view returns (uint256);
 
     function getSoulNames(address owner)
         external

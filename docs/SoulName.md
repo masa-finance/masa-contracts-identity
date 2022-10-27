@@ -241,7 +241,7 @@ Returns all the active soul names of an account
 ### getTokenData
 
 ```solidity
-function getTokenData(string name) external view returns (string sbtName, uint256 identityId, uint256 expirationDate, bool active)
+function getTokenData(string name) external view returns (string sbtName, uint256 identityId, uint256 tokenId, uint256 expirationDate, bool active)
 ```
 
 Returns the information of a soul name
@@ -260,8 +260,31 @@ Returns the information of a soul name
 |---|---|---|
 | sbtName | string | Soul name, in upper/lower case and extension |
 | identityId | uint256 | Identity id of the soul name |
+| tokenId | uint256 | SoulName id of the soul name |
 | expirationDate | uint256 | Expiration date of the soul name |
 | active | bool | `true` if the soul name is active, `false` otherwise |
+
+### getTokenId
+
+```solidity
+function getTokenId(string name) external view returns (uint256)
+```
+
+Returns the token id of a soul name
+
+*This function queries the token id of a soul name*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | Name of the soul name |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | SoulName id of the soul name |
 
 ### grantRole
 
@@ -741,6 +764,28 @@ function tokenOfOwnerByIndex(address owner, uint256 index) external view returns
 | Name | Type | Description |
 |---|---|---|
 | _0 | uint256 | undefined |
+
+### tokenURI
+
+```solidity
+function tokenURI(string name) external view returns (string)
+```
+
+A distinct Uniform Resource Identifier (URI) for a given asset.
+
+*This function returns the token URI of the soul name specified by the name*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | Name of the soul name |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string | URI of the soulname associated to a name |
 
 ### tokenURI
 
