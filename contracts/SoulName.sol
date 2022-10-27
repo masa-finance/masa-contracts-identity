@@ -285,6 +285,7 @@ contract SoulName is MasaNFT, ISoulName {
     /// @param name Name of the soul name
     /// @return sbtName Soul name, in upper/lower case and extension
     /// @return identityId Identity id of the soul name
+    /// @return tokenId SoulName id of the soul name
     /// @return expirationDate Expiration date of the soul name
     /// @return active `true` if the soul name is active, `false` otherwise
     function getTokenData(string memory name)
@@ -294,23 +295,34 @@ contract SoulName is MasaNFT, ISoulName {
         returns (
             string memory sbtName,
             uint256 identityId,
+            uint256 tokenId,
             uint256 expirationDate,
             bool active
         )
     {
-        string memory lowercaseName = Utils.toLowerCase(name);
-
-        require(nameData[lowercaseName].exists, "NAME_NOT_FOUND");
-
-        uint256 tokenId = nameData[lowercaseName].tokenId;
+        tokenId = _getTokenId(name);
 
         TokenData memory _tokenData = tokenData[tokenId];
         return (
             _getName(_tokenData.name),
             _tokenData.identityId,
+            tokenId,
             _tokenData.expirationDate,
             _tokenData.expirationDate >= block.timestamp
         );
+    }
+
+    /// @notice Returns the token id of a soul name
+    /// @dev This function queries the token id of a soul name
+    /// @param name Name of the soul name
+    /// @return SoulName id of the soul name
+    function getTokenId(string memory name)
+        external
+        view
+        override
+        returns (uint256)
+    {
+        return _getTokenId(name);
     }
 
     /// @notice Returns all the active soul names of an account
@@ -371,6 +383,20 @@ contract SoulName is MasaNFT, ISoulName {
     }
 
     /// @notice A distinct Uniform Resource Identifier (URI) for a given asset.
+    /// @dev This function returns the token URI of the soul name specified by the name
+    /// @param name Name of the soul name
+    /// @return URI of the soulname associated to a name
+    function tokenURI(string memory name)
+        public
+        view
+        virtual
+        returns (string memory)
+    {
+        uint256 tokenId = _getTokenId(name);
+        return tokenURI(tokenId);
+    }
+
+    /// @notice A distinct Uniform Resource Identifier (URI) for a given asset.
     /// @dev Throws if `_tokenId` is not a valid NFT. URIs are defined in RFC
     ///  3986. The URI may point to a JSON file that conforms to the "ERC721
     ///  Metadata JSON Schema".
@@ -404,6 +430,13 @@ contract SoulName is MasaNFT, ISoulName {
 
     function _getName(string memory name) private view returns (string memory) {
         return string(bytes.concat(bytes(name), bytes(extension)));
+    }
+
+    function _getTokenId(string memory name) private view returns (uint256) {
+        string memory lowercaseName = Utils.toLowerCase(name);
+        require(nameData[lowercaseName].exists, "NAME_NOT_FOUND");
+
+        return nameData[lowercaseName].tokenId;
     }
 
     function _setTokenURI(uint256 tokenId, string memory _tokenURI)

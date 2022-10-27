@@ -74,7 +74,7 @@ function getSoulNames(address owner) external view returns (string[] sbtNames)
 ### getTokenData
 
 ```solidity
-function getTokenData(string name) external view returns (string sbtName, uint256 identityId, uint256 expirationDate, bool active)
+function getTokenData(string name) external view returns (string sbtName, uint256 identityId, uint256 tokenId, uint256 expirationDate, bool active)
 ```
 
 
@@ -93,8 +93,31 @@ function getTokenData(string name) external view returns (string sbtName, uint25
 |---|---|---|
 | sbtName | string | undefined |
 | identityId | uint256 | undefined |
+| tokenId | uint256 | undefined |
 | expirationDate | uint256 | undefined |
 | active | bool | undefined |
+
+### getTokenId
+
+```solidity
+function getTokenId(string name) external view returns (uint256)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
 
 ### isAvailable
 

@@ -108,8 +108,8 @@ contract SoulboundIdentity is MasaSBT, ISoulboundIdentity {
         soulNameAlreadySet
         returns (address)
     {
-        (, uint256 tokenId, , ) = soulName.getTokenData(name);
-        return super.ownerOf(tokenId);
+        (, uint256 identityId, , , ) = soulName.getTokenData(name);
+        return super.ownerOf(identityId);
     }
 
     /// @notice Returns the URI of a soul name
@@ -122,8 +122,8 @@ contract SoulboundIdentity is MasaSBT, ISoulboundIdentity {
         soulNameAlreadySet
         returns (string memory)
     {
-        (, uint256 tokenId, , ) = soulName.getTokenData(name);
-        return super.tokenURI(tokenId);
+        (, uint256 identityId, , , ) = soulName.getTokenData(name);
+        return super.tokenURI(identityId);
     }
 
     /// @notice Returns the URI of the owner of an identity
@@ -166,6 +166,7 @@ contract SoulboundIdentity is MasaSBT, ISoulboundIdentity {
     /// @param name Name of the soul name
     /// @return sbtName Soul name, in upper/lower case and extension
     /// @return identityId Identity id of the soul name
+    /// @return tokenId SoulName id id of the soul name
     /// @return expirationDate Expiration date of the soul name
     /// @return active `true` if the soul name is active, `false` otherwise
     function getTokenData(string memory name)
@@ -175,6 +176,7 @@ contract SoulboundIdentity is MasaSBT, ISoulboundIdentity {
         returns (
             string memory sbtName,
             uint256 identityId,
+            uint256 tokenId,
             uint256 expirationDate,
             bool active
         )
