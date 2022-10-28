@@ -237,7 +237,7 @@ describe("Soul Name", () => {
     });
 
     it("getTokenData with an existing name", async () => {
-      const [sbtName, identityId, tokenId, ,] = await soulName.getTokenData(
+      const { sbtName, identityId, tokenId } = await soulName.getTokenData(
         SOUL_NAME1
       );
       const extension = await soulName.getExtension();
@@ -248,22 +248,26 @@ describe("Soul Name", () => {
     });
 
     it("getTokenData with an existing name - case insensitive", async () => {
-      let [sbtName, identityId, tokenId, ,] = await soulName.getTokenData(
-        SOUL_NAME1.toLowerCase()
-      );
+      const {
+        sbtName: sbtName1,
+        identityId: identityId1,
+        tokenId: tokenId1
+      } = await soulName.getTokenData(SOUL_NAME1.toLowerCase());
       const extension = await soulName.getExtension();
 
-      await expect(sbtName).to.be.equal(SOUL_NAME1 + extension);
-      await expect(identityId).to.be.equal(identityId1);
-      await expect(tokenId).to.be.equal(nameId);
+      await expect(sbtName1).to.be.equal(SOUL_NAME1 + extension);
+      await expect(identityId1).to.be.equal(identityId1);
+      await expect(tokenId1).to.be.equal(nameId);
 
-      [sbtName, identityId, tokenId, ,] = await soulName.getTokenData(
-        SOUL_NAME1.toUpperCase()
-      );
+      const {
+        sbtName: sbtName2,
+        identityId: identityId2,
+        tokenId: tokenId2
+      } = await soulName.getTokenData(SOUL_NAME1.toUpperCase());
 
-      await expect(sbtName).to.be.equal(SOUL_NAME1 + extension);
-      await expect(identityId).to.be.equal(identityId1);
-      await expect(tokenId).to.be.equal(nameId);
+      await expect(sbtName2).to.be.equal(SOUL_NAME1 + extension);
+      await expect(identityId2).to.be.equal(identityId1);
+      await expect(tokenId2).to.be.equal(nameId);
     });
 
     it("getTokenData with a non existing name", async () => {
@@ -331,9 +335,7 @@ describe("Soul Name", () => {
       expect(await soulName.balanceOf(address1.address)).to.be.equal(0);
       expect(await soulName.balanceOf(address2.address)).to.be.equal(1);
 
-      const [, identityId, tokenId, ,] = await soulName.getTokenData(
-        SOUL_NAME1
-      );
+      const { identityId, tokenId } = await soulName.getTokenData(SOUL_NAME1);
 
       await expect(identityId).to.be.equal(identityId1);
       await expect(tokenId).to.be.equal(nameId);
@@ -355,9 +357,7 @@ describe("Soul Name", () => {
       expect(await soulName.balanceOf(address1.address)).to.be.equal(0);
       expect(await soulName.balanceOf(address2.address)).to.be.equal(1);
 
-      const [, identityId, tokenId, ,] = await soulName.getTokenData(
-        SOUL_NAME1
-      );
+      const { identityId, tokenId } = await soulName.getTokenData(SOUL_NAME1);
 
       await expect(identityId).to.be.equal(identityId2);
       await expect(tokenId).to.be.equal(nameId);
@@ -401,7 +401,7 @@ describe("Soul Name", () => {
     });
 
     it("should return an active registration period", async () => {
-      const [, , , expirationDate, active] = await soulName.getTokenData(
+      const { expirationDate, active } = await soulName.getTokenData(
         SOUL_NAME1
       );
 
@@ -417,7 +417,7 @@ describe("Soul Name", () => {
       await network.provider.send("evm_increaseTime", [YEAR_PERIOD + 1]);
       await network.provider.send("evm_mine");
 
-      const [, , , expirationDate, active] = await soulName.getTokenData(
+      const { expirationDate, active } = await soulName.getTokenData(
         SOUL_NAME1
       );
 
@@ -433,15 +433,13 @@ describe("Soul Name", () => {
       await network.provider.send("evm_increaseTime", [YEAR_PERIOD / 2]);
       await network.provider.send("evm_mine");
 
-      const [, , , expirationDateStart] = await soulName.getTokenData(
-        SOUL_NAME1
-      );
+      const { expirationDate: expirationDateStart } =
+        await soulName.getTokenData(SOUL_NAME1);
 
       await soulName.connect(address1).renewYearsPeriod(nameId, YEAR);
 
-      const [, , , expirationDateFinish, active] = await soulName.getTokenData(
-        SOUL_NAME1
-      );
+      const { expirationDate: expirationDateFinish, active } =
+        await soulName.getTokenData(SOUL_NAME1);
 
       expect(
         expirationDateFinish.toNumber() - expirationDateStart.toNumber()
@@ -457,13 +455,13 @@ describe("Soul Name", () => {
       await network.provider.send("evm_increaseTime", [YEAR_PERIOD + 1]);
       await network.provider.send("evm_mine");
 
-      const [, , expirationDateStart] = await soulName.getTokenData(SOUL_NAME1);
+      const { expirationDate: expirationDateStart } =
+        await soulName.getTokenData(SOUL_NAME1);
 
       await soulName.connect(address1).renewYearsPeriod(nameId, YEAR);
 
-      const [, , , expirationDateFinish, active] = await soulName.getTokenData(
-        SOUL_NAME1
-      );
+      const { expirationDate: expirationDateFinish, active } =
+        await soulName.getTokenData(SOUL_NAME1);
 
       expect(
         expirationDateFinish.toNumber() - expirationDateStart.toNumber()
