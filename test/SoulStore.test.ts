@@ -181,15 +181,21 @@ describe("Soul Store", () => {
 
   describe("purchase info", () => {
     it("we can get name purchase info for 1 and 2 years", async () => {
-      const [priceInStableCoin1, priceInETH1, priceInUtilityToken1] =
-        await soulStore.purchaseNameInfo(SOUL_NAME, YEAR);
+      const {
+        priceInStableCoin: priceInStableCoin1,
+        priceInETH: priceInETH1,
+        priceInUtilityToken: priceInUtilityToken1
+      } = await soulStore.purchaseNameInfo(SOUL_NAME, YEAR);
 
       expect(priceInStableCoin1).to.be.equal(MINTING_NAME_PRICE_5LETTERS);
       expect(priceInETH1).not.to.be.equal("0");
       expect(priceInUtilityToken1).not.to.be.equal("0");
 
-      const [priceInStableCoin2, priceInETH2, priceInUtilityToken2] =
-        await soulStore.purchaseNameInfo(SOUL_NAME, YEAR * 2);
+      const {
+        priceInStableCoin: priceInStableCoin2,
+        priceInETH: priceInETH2,
+        priceInUtilityToken: priceInUtilityToken2
+      } = await soulStore.purchaseNameInfo(SOUL_NAME, YEAR * 2);
 
       expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_5LETTERS * 2);
       expect(priceInETH2).not.to.be.equal(priceInETH1.mul(2));
@@ -199,15 +205,21 @@ describe("Soul Store", () => {
     it("we can get 1 letters name purchase info for 1 and 2 years", async () => {
       const SOUL_NAME_1LETTERS = "a";
 
-      const [priceInStableCoin1, priceInETH1, priceInUtilityToken1] =
-        await soulStore.purchaseNameInfo(SOUL_NAME_1LETTERS, YEAR);
+      const {
+        priceInStableCoin: priceInStableCoin1,
+        priceInETH: priceInETH1,
+        priceInUtilityToken: priceInUtilityToken1
+      } = await soulStore.purchaseNameInfo(SOUL_NAME_1LETTERS, YEAR);
 
       expect(priceInStableCoin1).to.be.equal(MINTING_NAME_PRICE_1LETTERS);
       expect(priceInETH1).not.to.be.equal("0");
       expect(priceInUtilityToken1).not.to.be.equal("0");
 
-      const [priceInStableCoin2, priceInETH2, priceInUtilityToken2] =
-        await soulStore.purchaseNameInfo(SOUL_NAME_1LETTERS, YEAR * 2);
+      const {
+        priceInStableCoin: priceInStableCoin2,
+        priceInETH: priceInETH2,
+        priceInUtilityToken: priceInUtilityToken2
+      } = await soulStore.purchaseNameInfo(SOUL_NAME_1LETTERS, YEAR * 2);
 
       expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_1LETTERS * 2);
       expect(priceInETH2).not.to.be.equal(priceInETH1.mul(2));
@@ -217,15 +229,21 @@ describe("Soul Store", () => {
     it("we can get 2 letters name purchase info for 1 and 2 years", async () => {
       const SOUL_NAME_2LETTERS = "aa";
 
-      const [priceInStableCoin1, priceInETH1, priceInUtilityToken1] =
-        await soulStore.purchaseNameInfo(SOUL_NAME_2LETTERS, YEAR);
+      const {
+        priceInStableCoin: priceInStableCoin1,
+        priceInETH: priceInETH1,
+        priceInUtilityToken: priceInUtilityToken1
+      } = await soulStore.purchaseNameInfo(SOUL_NAME_2LETTERS, YEAR);
 
       expect(priceInStableCoin1).to.be.equal(MINTING_NAME_PRICE_2LETTERS);
       expect(priceInETH1).not.to.be.equal("0");
       expect(priceInUtilityToken1).not.to.be.equal("0");
 
-      const [priceInStableCoin2, priceInETH2, priceInUtilityToken2] =
-        await soulStore.purchaseNameInfo(SOUL_NAME_2LETTERS, YEAR * 2);
+      const {
+        priceInStableCoin: priceInStableCoin2,
+        priceInETH: priceInETH2,
+        priceInUtilityToken: priceInUtilityToken2
+      } = await soulStore.purchaseNameInfo(SOUL_NAME_2LETTERS, YEAR * 2);
 
       expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_2LETTERS * 2);
       expect(priceInETH2).not.to.be.equal(priceInETH1.mul(2));
@@ -235,15 +253,21 @@ describe("Soul Store", () => {
     it("we can get 3 letters name purchase info for 1 and 2 years", async () => {
       const SOUL_NAME_3LETTERS = "aaa";
 
-      const [priceInStableCoin1, priceInETH1, priceInUtilityToken1] =
-        await soulStore.purchaseNameInfo(SOUL_NAME_3LETTERS, YEAR);
+      const {
+        priceInStableCoin: priceInStableCoin1,
+        priceInETH: priceInETH1,
+        priceInUtilityToken: priceInUtilityToken1
+      } = await soulStore.purchaseNameInfo(SOUL_NAME_3LETTERS, YEAR);
 
       expect(priceInStableCoin1).to.be.equal(MINTING_NAME_PRICE_3LETTERS);
       expect(priceInETH1).not.to.be.equal("0");
       expect(priceInUtilityToken1).not.to.be.equal("0");
 
-      const [priceInStableCoin2, priceInETH2, priceInUtilityToken2] =
-        await soulStore.purchaseNameInfo(SOUL_NAME_3LETTERS, YEAR * 2);
+      const {
+        priceInStableCoin: priceInStableCoin2,
+        priceInETH: priceInETH2,
+        priceInUtilityToken: priceInUtilityToken2
+      } = await soulStore.purchaseNameInfo(SOUL_NAME_3LETTERS, YEAR * 2);
 
       expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_3LETTERS * 2);
       expect(priceInETH2).not.to.be.equal(priceInETH1.mul(2));
@@ -253,15 +277,21 @@ describe("Soul Store", () => {
     it("we can get 4 letters name purchase info for 1 and 2 years", async () => {
       const SOUL_NAME_4LETTERS = "aaaa";
 
-      const [priceInStableCoin1, priceInETH1, priceInUtilityToken1] =
-        await soulStore.purchaseNameInfo(SOUL_NAME_4LETTERS, YEAR);
+      const {
+        priceInStableCoin: priceInStableCoin1,
+        priceInETH: priceInETH1,
+        priceInUtilityToken: priceInUtilityToken1
+      } = await soulStore.purchaseNameInfo(SOUL_NAME_4LETTERS, YEAR);
 
       expect(priceInStableCoin1).to.be.equal(MINTING_NAME_PRICE_4LETTERS);
       expect(priceInETH1).not.to.be.equal("0");
       expect(priceInUtilityToken1).not.to.be.equal("0");
 
-      const [priceInStableCoin2, priceInETH2, priceInUtilityToken2] =
-        await soulStore.purchaseNameInfo(SOUL_NAME_4LETTERS, YEAR * 2);
+      const {
+        priceInStableCoin: priceInStableCoin2,
+        priceInETH: priceInETH2,
+        priceInUtilityToken: priceInUtilityToken2
+      } = await soulStore.purchaseNameInfo(SOUL_NAME_4LETTERS, YEAR * 2);
 
       expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_4LETTERS * 2);
       expect(priceInETH2).not.to.be.equal(priceInETH1.mul(2));
@@ -272,7 +302,7 @@ describe("Soul Store", () => {
   describe("purchase identity and name", () => {
     it("we can purchase an identity and name with ETH", async () => {
       const reserveWallet = await soulStore.reserveWallet();
-      const [, priceInETH] = await soulStore.purchaseNameInfo(SOUL_NAME, YEAR);
+      const { priceInETH } = await soulStore.purchaseNameInfo(SOUL_NAME, YEAR);
       const reserveWalletBalanceBefore = await ethers.provider.getBalance(
         reserveWallet
       );
@@ -297,7 +327,7 @@ describe("Soul Store", () => {
 
     it("we can purchase an identity and name with stable coin", async () => {
       const reserveWallet = await soulStore.reserveWallet();
-      const [priceInStableCoin, ,] = await soulStore.purchaseNameInfo(
+      const { priceInStableCoin } = await soulStore.purchaseNameInfo(
         SOUL_NAME,
         YEAR
       );
@@ -326,7 +356,7 @@ describe("Soul Store", () => {
 
     it("we can purchase an identity and name with utility coin", async () => {
       const reserveWallet = await soulStore.reserveWallet();
-      const [, , priceInUtilityToken] = await soulStore.purchaseNameInfo(
+      const { priceInUtilityToken } = await soulStore.purchaseNameInfo(
         SOUL_NAME,
         YEAR
       );
@@ -354,7 +384,7 @@ describe("Soul Store", () => {
     });
 
     it("we can't purchase an identity and name with ETH if we pay less", async () => {
-      const [, priceInETH] = await soulStore.purchaseNameInfo(SOUL_NAME, YEAR);
+      const { priceInETH } = await soulStore.purchaseNameInfo(SOUL_NAME, YEAR);
 
       await expect(
         soulStore.connect(address1).purchaseIdentityAndName(
@@ -368,7 +398,7 @@ describe("Soul Store", () => {
     });
 
     it("we can't purchase an identity and name with stable coin if we don't have funds", async () => {
-      const [priceInStableCoin, ,] = await soulStore.purchaseNameInfo(
+      const { priceInStableCoin } = await soulStore.purchaseNameInfo(
         SOUL_NAME,
         YEAR
       );
@@ -390,7 +420,7 @@ describe("Soul Store", () => {
     });
 
     it("we can't purchase an identity and name with utility coin if we don't have funds", async () => {
-      const [, , priceInUtilityToken] = await soulStore.purchaseNameInfo(
+      const { priceInUtilityToken } = await soulStore.purchaseNameInfo(
         SOUL_NAME,
         YEAR
       );
@@ -412,7 +442,7 @@ describe("Soul Store", () => {
     });
 
     it("we can purchase an identity and name with more ETH receiving the refund", async () => {
-      const [, priceInETH] = await soulStore.purchaseNameInfo(SOUL_NAME, YEAR);
+      const { priceInETH } = await soulStore.purchaseNameInfo(SOUL_NAME, YEAR);
 
       const balance = await address1.getBalance();
 
@@ -449,7 +479,7 @@ describe("Soul Store", () => {
     });
 
     it("we can purchase a name with ETH", async () => {
-      const [, priceInETH] = await soulStore.purchaseNameInfo(SOUL_NAME, YEAR);
+      const { priceInETH } = await soulStore.purchaseNameInfo(SOUL_NAME, YEAR);
 
       await soulStore.connect(address1).purchaseName(
         ethers.constants.AddressZero, // ETH
@@ -461,7 +491,7 @@ describe("Soul Store", () => {
     });
 
     it("we can purchase a name with stable coin", async () => {
-      const [priceInStableCoin, ,] = await soulStore.purchaseNameInfo(
+      const { priceInStableCoin } = await soulStore.purchaseNameInfo(
         SOUL_NAME,
         YEAR
       );
@@ -481,7 +511,7 @@ describe("Soul Store", () => {
     });
 
     it("we can purchase a name with utility coin", async () => {
-      const [, , priceInUtilityToken] = await soulStore.purchaseNameInfo(
+      const { priceInUtilityToken } = await soulStore.purchaseNameInfo(
         SOUL_NAME,
         YEAR
       );
@@ -501,7 +531,7 @@ describe("Soul Store", () => {
     });
 
     it("we can't purchase a name with ETH if we pay less", async () => {
-      const [, priceInETH] = await soulStore.purchaseNameInfo(SOUL_NAME, YEAR);
+      const { priceInETH } = await soulStore.purchaseNameInfo(SOUL_NAME, YEAR);
 
       await expect(
         soulStore.connect(address1).purchaseName(
@@ -515,7 +545,7 @@ describe("Soul Store", () => {
     });
 
     it("we can't purchase a name with stable coin if we don't have funds", async () => {
-      const [priceInStableCoin, ,] = await soulStore.purchaseNameInfo(
+      const { priceInStableCoin } = await soulStore.purchaseNameInfo(
         SOUL_NAME,
         YEAR
       );
@@ -537,7 +567,7 @@ describe("Soul Store", () => {
     });
 
     it("we can't purchase a name with utility coin if we don't have funds", async () => {
-      const [, , priceInUtilityToken] = await soulStore.purchaseNameInfo(
+      const { priceInUtilityToken } = await soulStore.purchaseNameInfo(
         SOUL_NAME,
         YEAR
       );
