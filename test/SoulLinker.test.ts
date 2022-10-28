@@ -65,12 +65,14 @@ describe("Soul Linker", () => {
     let mintReceipt = await mintTx.wait();
 
     ownerIdentityId = mintReceipt.events![0].args![2].toNumber();
+    console.log(`ownerIdentityId: ${ownerIdentityId}`);
 
     // we mint identity SBT for address2
     mintTx = await soulboundIdentity.connect(owner).mint(address2.address);
     mintReceipt = await mintTx.wait();
 
     readerIdentityId = mintReceipt.events![0].args![2].toNumber();
+    console.log(`readerIdentityId: ${readerIdentityId}`);
 
     // we mint credit report SBT for address1
     mintTx = await soulboundCreditReport.connect(owner).mint(address1.address);
