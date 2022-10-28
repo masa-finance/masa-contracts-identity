@@ -26,7 +26,8 @@ let owner: SignerWithAddress;
 let address1: SignerWithAddress;
 let address2: SignerWithAddress;
 
-let identityId1: number;
+let ownerIdentityId: number;
+let readerIdentityId: number;
 let creditReport1: number;
 
 describe("Soul Linker", () => {
@@ -63,7 +64,13 @@ describe("Soul Linker", () => {
     let mintTx = await soulboundIdentity.connect(owner).mint(address1.address);
     let mintReceipt = await mintTx.wait();
 
-    identityId1 = mintReceipt.events![0].args![2].toNumber();
+    ownerIdentityId = mintReceipt.events![0].args![2].toNumber();
+
+    // we mint identity SBT for address2
+    mintTx = await soulboundIdentity.connect(owner).mint(address2.address);
+    mintReceipt = await mintTx.wait();
+
+    readerIdentityId = mintReceipt.events![0].args![2].toNumber();
 
     // we mint credit report SBT for address1
     mintTx = await soulboundCreditReport.connect(owner).mint(address1.address);
@@ -134,13 +141,13 @@ describe("Soul Linker", () => {
           soulboundCreditReport.address,
           creditReport1
         )
-      ).to.be.equal(identityId1);
+      ).to.be.equal(ownerIdentityId);
     });
 
     it("should get SBT links by identityId", async () => {
       expect(
         await soulLinker["getSBTLinks(uint256,address)"](
-          identityId1,
+          ownerIdentityId,
           soulboundCreditReport.address
         )
       ).to.deep.equal([BigNumber.from(creditReport1)]);
@@ -171,8 +178,8 @@ describe("Soul Linker", () => {
         // Types
         {
           Link: [
-            { name: "reader", type: "address" },
-            { name: "identityId", type: "uint256" },
+            { name: "readerIdentityId", type: "uint256" },
+            { name: "ownerIdentityId", type: "uint256" },
             { name: "token", type: "address" },
             { name: "tokenId", type: "uint256" },
             { name: "expirationDate", type: "uint256" }
@@ -180,8 +187,8 @@ describe("Soul Linker", () => {
         },
         // Value
         {
-          reader: address2.address,
-          identityId: identityId1,
+          readerIdentityId: readerIdentityId,
+          ownerIdentityId: ownerIdentityId,
           token: soulboundCreditReport.address,
           tokenId: creditReport1,
           expirationDate: Math.floor(Date.now() / 1000) + 60 * 15
@@ -189,8 +196,8 @@ describe("Soul Linker", () => {
       );
 
       const isValid = await soulLinker.connect(address2).validateLinkData(
-        address2.address,
-        identityId1,
+        readerIdentityId,
+        ownerIdentityId,
         soulboundCreditReport.address,
         creditReport1,
         Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
@@ -214,8 +221,8 @@ describe("Soul Linker", () => {
         // Types
         {
           Link: [
-            { name: "reader", type: "address" },
-            { name: "identityId", type: "uint256" },
+            { name: "readerIdentityId", type: "uint256" },
+            { name: "ownerIdentityId", type: "uint256" },
             { name: "token", type: "address" },
             { name: "tokenId", type: "uint256" },
             { name: "expirationDate", type: "uint256" }
@@ -223,8 +230,8 @@ describe("Soul Linker", () => {
         },
         // Value
         {
-          reader: address1.address,
-          identityId: identityId1,
+          readerIdentityId: ownerIdentityId,
+          ownerIdentityId: ownerIdentityId,
           token: soulboundCreditReport.address,
           tokenId: creditReport1,
           expirationDate: Math.floor(Date.now() / 1000) + 60 * 15
@@ -233,8 +240,8 @@ describe("Soul Linker", () => {
 
       await expect(
         soulLinker.connect(address2).validateLinkData(
-          address2.address,
-          identityId1,
+          readerIdentityId,
+          ownerIdentityId,
           soulboundCreditReport.address,
           creditReport1,
           Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
