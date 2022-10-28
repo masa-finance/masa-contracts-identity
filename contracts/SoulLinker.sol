@@ -129,16 +129,16 @@ contract SoulLinker is Ownable, EIP712 {
 
     /// @notice Validates the signature of the given read link request
     /// @dev The token must be linked to this soul linker
-    /// @param reader Address of the reader
-    /// @param identityId Id of the identity
+    /// @param readerIdentityId Id of the identity of the reader
+    /// @param ownerIdentityId Id of the identity of the owner of the SBT
     /// @param token Address of the SBT contract
     /// @param tokenId Id of the token
     /// @param expirationDate Expiration date of the signature
     /// @param signature Signature of the read link request made by the owner
     /// @return `true` if the signature is valid, `false` otherwise
     function validateLinkData(
-        address reader,
-        uint256 identityId,
+        uint256 readerIdentityId,
+        uint256 ownerIdentityId,
         address token,
         uint256 tokenId,
         uint256 expirationDate,
@@ -146,15 +146,22 @@ contract SoulLinker is Ownable, EIP712 {
     ) external view returns (bool) {
         require(linkedSBT[token], "SBT_NOT_LINKED");
 
-        address identityOwner = soulboundIdentity.ownerOf(identityId);
+        address identityReader = soulboundIdentity.ownerOf(readerIdentityId);
+        address identityOwner = soulboundIdentity.ownerOf(ownerIdentityId);
         address tokenOwner = IERC721Enumerable(token).ownerOf(tokenId);
 
         require(identityOwner == tokenOwner, "IDENTITY_OWNER_NOT_TOKEN_OWNER");
-        require(reader == _msgSender(), "CALLER_NOT_READER");
+        require(identityReader == _msgSender(), "CALLER_NOT_READER");
         require(expirationDate >= block.timestamp, "VALID_PERIOD_EXPIRED");
         require(
             _verify(
-                _hash(reader, identityId, token, tokenId, expirationDate),
+                _hash(
+                    readerIdentityId,
+                    ownerIdentityId,
+                    token,
+                    tokenId,
+                    expirationDate
+                ),
                 signature,
                 identityOwner
             ),
@@ -177,8 +184,8 @@ contract SoulLinker is Ownable, EIP712 {
     }
 
     function _hash(
-        address reader,
-        uint256 identityId,
+        uint256 readerIdentityId,
+        uint256 ownerIdentityId,
         address token,
         uint256 tokenId,
         uint256 expirationDate
@@ -188,10 +195,10 @@ contract SoulLinker is Ownable, EIP712 {
                 keccak256(
                     abi.encode(
                         keccak256(
-                            "Link(address reader,uint256 identityId,address token,uint256 tokenId,uint256 expirationDate)"
+                            "Link(uint256 readerIdentityId,uint256 ownerIdentityId,address token,uint256 tokenId,uint256 expirationDate)"
                         ),
-                        reader,
-                        identityId,
+                        readerIdentityId,
+                        ownerIdentityId,
                         token,
                         tokenId,
                         expirationDate
