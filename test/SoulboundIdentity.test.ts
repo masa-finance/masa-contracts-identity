@@ -268,7 +268,7 @@ describe("Soulbound Identity", () => {
     });
 
     it("getTokenData with an existing name", async () => {
-      const [sbtName, , , ,] = await soulboundIdentity.getTokenData(SOUL_NAME1);
+      const { sbtName } = await soulboundIdentity.getTokenData(SOUL_NAME1);
       const extension = await soulboundIdentity.getExtension();
 
       await expect(sbtName).to.be.equal(SOUL_NAME1 + extension);
