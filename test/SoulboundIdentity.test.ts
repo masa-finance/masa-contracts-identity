@@ -275,18 +275,18 @@ describe("Soulbound Identity", () => {
     });
 
     it("getTokenData with an existing name - case insensitive", async () => {
-      let [sbtName, identityId, , ,] = await soulboundIdentity.getTokenData(
+      const { sbtName: sbtName1 } = await soulboundIdentity.getTokenData(
         SOUL_NAME1.toLowerCase()
       );
       const extension = await soulboundIdentity.getExtension();
 
-      await expect(sbtName).to.be.equal(SOUL_NAME1 + extension);
+      await expect(sbtName1).to.be.equal(SOUL_NAME1 + extension);
 
-      [sbtName, identityId, , ,] = await soulboundIdentity.getTokenData(
+      const { sbtName: sbtName2 } = await soulboundIdentity.getTokenData(
         SOUL_NAME1.toUpperCase()
       );
 
-      await expect(sbtName).to.be.equal(SOUL_NAME1 + extension);
+      await expect(sbtName2).to.be.equal(SOUL_NAME1 + extension);
     });
 
     it("getTokenData with a non existing name", async () => {
