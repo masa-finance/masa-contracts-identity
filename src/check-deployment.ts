@@ -28,6 +28,9 @@ async function main() {
   const { address: soulboundCreditReportAddress } = await deployments.get(
     "SoulboundCreditReport"
   );
+  const { address: soulbound2FAAddress } = await deployments.get(
+    "Soulbound2FA"
+  );
   const { address: soulNameAddress } = await deployments.get("SoulName");
   const { address: soulStoreAddress } = await deployments.get("SoulStore");
   const { address: soulLinkerAddress } = await deployments.get("SoulLinker");
@@ -43,6 +46,7 @@ async function main() {
   console.log(`MASA address:                  ${masaAddress}`);
   console.log(`SoulboundIdentity address:     ${soulboundIdentityAddress}`);
   console.log(`SoulboundCreditReport address: ${soulboundCreditReportAddress}`);
+  console.log(`Soulbound2FA address:          ${soulbound2FAAddress}`);
   console.log(`SoulName address:              ${soulNameAddress}`);
   console.log(`SoulStore address:             ${soulStoreAddress}`);
   console.log(`SoulLinker address:            ${soulLinkerAddress}`);
@@ -102,6 +106,11 @@ async function main() {
   console.log(
     `SoulLinker.linkedSBT(SoulboundCreditReport): ${await soulLinker.linkedSBT(
       soulboundCreditReportAddress
+    )}`
+  );
+  console.log(
+    `SoulLinker.linkedSBT(Soulbound2FA): ${await soulLinker.linkedSBT(
+      soulbound2FAAddress
     )}`
   );
   console.log("");
