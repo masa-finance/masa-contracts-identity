@@ -51,6 +51,6 @@ const func: DeployFunction = async ({
   }
 };
 
-func.tags = ["Soulbound2FAReport"];
+func.tags = ["Soulbound2FA"];
 func.dependencies = ["SoulboundIdentity"];
 export default func;
