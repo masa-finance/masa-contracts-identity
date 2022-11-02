@@ -27,6 +27,7 @@ const func: DeployFunction = async ({
   const soulboundCreditReportDeployed = await deployments.get(
     "SoulboundCreditReport"
   );
+  const soulbound2FADeployed = await deployments.get("Soulbound2FA");
 
   const constructorArguments = [
     env.OWNER || owner.address,
@@ -72,8 +73,14 @@ const func: DeployFunction = async ({
   await soulLinker
     .connect(signer)
     .addLinkedSBT(soulboundCreditReportDeployed.address);
+
+  await soulLinker.connect(signer).addLinkedSBT(soulbound2FADeployed.address);
 };
 
 func.tags = ["SoulLinker"];
-func.dependencies = ["SoulboundIdentity", "SoulboundCreditReport"];
+func.dependencies = [
+  "SoulboundIdentity",
+  "SoulboundCreditReport",
+  "Soulbound2FA"
+];
 export default func;
