@@ -15,7 +15,13 @@ import "./SBT/extensions/SBTBurnable.sol";
 /// @author Masa Finance
 /// @notice Soulbound token. Non-fungible token that is not transferable.
 /// @dev Implementation of https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763 Soulbound token.
-abstract contract MasaSBT is SBT, SBTEnumerable, Ownable, AccessControl, SBTBurnable {
+abstract contract MasaSBT is
+    SBT,
+    SBTEnumerable,
+    Ownable,
+    AccessControl,
+    SBTBurnable
+{
     /* ========== STATE VARIABLES =========================================== */
 
     using Strings for uint256;
