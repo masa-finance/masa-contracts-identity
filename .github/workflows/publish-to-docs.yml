@@ -12,9 +12,10 @@ jobs:
     container: pandoc/latex
     steps:
       - uses: actions/checkout@v2
-      - name: Copy readme
+      - name: Copy Readme and Changelog
         run: |
           cp README.md docs
+          cp CHANGELOG.md docs
       - name: Pushes to another repository
         uses: cpina/github-action-push-to-another-repository@main
         env:
