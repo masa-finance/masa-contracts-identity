@@ -143,7 +143,7 @@ describe("Soulbound Identity", () => {
         .mint(someone.address);
       const mintReceipt = await mintTx.wait();
 
-      const tokenId = mintReceipt.events![0].args![2].toNumber();
+      const tokenId = mintReceipt.events![0].args![1].toNumber();
 
       expect(await soulboundIdentity.balanceOf(someone.address)).to.be.equal(1);
       expect(await soulboundIdentity["ownerOf(uint256)"](tokenId)).to.be.equal(
@@ -156,39 +156,6 @@ describe("Soulbound Identity", () => {
     });
   });
 
-  describe("transfer", () => {
-    it("should fail to transfer because its soulbound", async () => {
-      await soulboundIdentity.connect(owner).mint(someone.address);
-
-      await expect(
-        soulboundIdentity
-          .connect(someone)
-          .transferFrom(someone.address, someone.address, 1)
-      ).to.be.rejectedWith("SBT_TRANSFER_NOT_PERMITTED");
-
-      await expect(
-        soulboundIdentity
-          .connect(someone)
-          ["safeTransferFrom(address,address,uint256)"](
-            someone.address,
-            someone.address,
-            1
-          )
-      ).to.be.rejectedWith("SBT_TRANSFER_NOT_PERMITTED");
-
-      await expect(
-        soulboundIdentity
-          .connect(someone)
-          ["safeTransferFrom(address,address,uint256,bytes)"](
-            someone.address,
-            someone.address,
-            1,
-            []
-          )
-      ).to.be.rejectedWith("SBT_TRANSFER_NOT_PERMITTED");
-    });
-  });
-
   describe("tokenURI", () => {
     let tokenId;
 
@@ -198,7 +165,7 @@ describe("Soulbound Identity", () => {
         .mintIdentityWithName(someone.address, SOUL_NAME1, YEAR, ARWEAVE_LINK);
 
       const mintReceipt = await mintTx.wait();
-      tokenId = mintReceipt.events![0].args![2].toNumber();
+      tokenId = mintReceipt.events![0].args![1].toNumber();
     });
 
     it("should get a valid token URI from its tokenId", async () => {
@@ -243,7 +210,7 @@ describe("Soulbound Identity", () => {
         .mintIdentityWithName(address1.address, SOUL_NAME1, YEAR, ARWEAVE_LINK);
       const mintReceipt = await mintTx.wait();
 
-      identityId = mintReceipt.events![0].args![2].toNumber();
+      identityId = mintReceipt.events![0].args![1].toNumber();
     });
 
     it("isAvailable false with an existing name", async () => {

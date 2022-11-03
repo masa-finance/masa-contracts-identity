@@ -1,26 +1,21 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-/// @title NFT
+import "./SBT/SBT.sol";
+import "./SBT/extensions/SBTEnumerable.sol";
+import "./SBT/extensions/SBTBurnable.sol";
+
+/// @title MasaSBT
 /// @author Masa Finance
-/// @notice Non-fungible token is a token that is not fungible.
-/// @dev Implementation of https://eips.ethereum.org/EIPS/eip-721[ERC721] Non-Fungible Token Standard,
-/// that inherits from {ERC721Enumerable}, {Ownable}, {AccessControl} and {ERC721Burnable}.
-abstract contract NFT is
-    ERC721,
-    ERC721Enumerable,
-    Ownable,
-    AccessControl,
-    ERC721Burnable
-{
+/// @notice Soulbound token. Non-fungible token that is not transferable.
+/// @dev Implementation of https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763 Soulbound token.
+abstract contract MasaSBT is SBT, SBTEnumerable, Ownable, AccessControl, SBTBurnable {
     /* ========== STATE VARIABLES =========================================== */
 
     using Strings for uint256;
@@ -33,8 +28,8 @@ abstract contract NFT is
 
     /* ========== INITIALIZE ================================================ */
 
-    /// @notice Creates a new NFT
-    /// @dev Creates a new Non-fungible token
+    /// @notice Creates a new soulbound token
+    /// @dev Creates a new soulbound token
     /// @param owner Owner of the smart contract
     /// @param name Name of the token
     /// @param symbol Symbol of the token
@@ -44,7 +39,7 @@ abstract contract NFT is
         string memory name,
         string memory symbol,
         string memory baseTokenURI
-    ) ERC721(name, symbol) {
+    ) SBT(name, symbol) {
         Ownable.transferOwnership(owner);
         _grantRole(DEFAULT_ADMIN_ROLE, owner);
         _grantRole(MINTER_ROLE, owner);
@@ -61,12 +56,20 @@ abstract contract NFT is
     {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
-        _safeMint(to, tokenId);
+        _mint(to, tokenId);
 
         return tokenId;
     }
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
+
+    /// @notice Mints a new SBT
+    /// @dev The caller must have the MINTER role
+    /// @param to The address to mint the NFT to
+    /// @return The NFT ID of the newly minted NFT
+    function mint(address to) public virtual returns (uint256) {
+        return _mintWithCounter(to);
+    }
 
     /* ========== VIEWS ===================================================== */
 
@@ -100,7 +103,7 @@ abstract contract NFT is
     function supportsInterface(bytes4 interfaceId)
         public
         view
-        override(ERC721, ERC721Enumerable, AccessControl)
+        override(SBT, SBTEnumerable, AccessControl)
         returns (bool)
     {
         return super.supportsInterface(interfaceId);
@@ -116,7 +119,7 @@ abstract contract NFT is
         address from,
         address to,
         uint256 tokenId
-    ) internal virtual override(ERC721, ERC721Enumerable) {
+    ) internal virtual override(SBT, SBTEnumerable) {
         super._beforeTokenTransfer(from, to, tokenId);
     }
 

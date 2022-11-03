@@ -68,39 +68,6 @@ describe("Soulbound Credit Report", () => {
     });
   });
 
-  describe("transfer", () => {
-    it("should fail to transfer because its soulbound", async () => {
-      await soulboundCreditReport.connect(owner).mint(someone.address);
-
-      await expect(
-        soulboundCreditReport
-          .connect(someone)
-          .transferFrom(someone.address, someone.address, 1)
-      ).to.be.rejectedWith("SBT_TRANSFER_NOT_PERMITTED");
-
-      await expect(
-        soulboundCreditReport
-          .connect(someone)
-          ["safeTransferFrom(address,address,uint256)"](
-            someone.address,
-            someone.address,
-            1
-          )
-      ).to.be.rejectedWith("SBT_TRANSFER_NOT_PERMITTED");
-
-      await expect(
-        soulboundCreditReport
-          .connect(someone)
-          ["safeTransferFrom(address,address,uint256,bytes)"](
-            someone.address,
-            someone.address,
-            1,
-            []
-          )
-      ).to.be.rejectedWith("SBT_TRANSFER_NOT_PERMITTED");
-    });
-  });
-
   describe("tokenUri", () => {
     it("should fail to transfer because its soulbound", async () => {
       const mintTx = await soulboundCreditReport
@@ -108,7 +75,7 @@ describe("Soulbound Credit Report", () => {
         .mint(someone.address);
 
       const mintReceipt = await mintTx.wait();
-      const tokenId = mintReceipt.events![0].args![2].toNumber();
+      const tokenId = mintReceipt.events![0].args![1].toNumber();
       const tokenUri = await soulboundCreditReport.tokenURI(tokenId);
 
       // check if it's a valid url
