@@ -94,6 +94,56 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
         _removeLinkedSBT(token);
     }
 
+    /// @notice Sets the price of store permission in stable coin
+    /// @dev The caller must have the owner to call this function
+    /// @param _storePermissionPrice New price of the store permission in stable coin
+    function setStorePermissionPrice(uint256 _storePermissionPrice)
+        external
+        onlyOwner
+    {
+        require(storePermissionPrice != _storePermissionPrice, "SAME_VALUE");
+        storePermissionPrice = _storePermissionPrice;
+    }
+
+    /// @notice Sets the utility token to pay the fee in ($MASA)
+    /// @dev The caller must have the owner to call this function
+    /// @param _utilityToken New utility token to pay the fee in
+    function setUtilityToken(address _utilityToken) external onlyOwner {
+        require(_utilityToken != address(0), "ZERO_ADDRESS");
+        require(utilityToken != _utilityToken, "SAME_VALUE");
+        utilityToken = _utilityToken;
+    }
+
+    /// @notice Set the reserve wallet
+    /// @dev Let change the reserve walled. It can be triggered by an authorized account.
+    /// @param _reserveWallet New reserve wallet
+    function setReserveWallet(address _reserveWallet) external onlyOwner {
+        require(_reserveWallet != address(0), "ZERO_ADDRESS");
+        require(_reserveWallet != reserveWallet, "SAME_VALUE");
+        reserveWallet = _reserveWallet;
+    }
+
+    /// @notice Sets the swap router address
+    /// @dev The caller must have the owner to call this function
+    /// @param _swapRouter New swap router address
+    function setSwapRouter(address _swapRouter) external onlyOwner {
+        require(_swapRouter != address(0), "ZERO_ADDRESS");
+        require(swapRouter != _swapRouter, "SAME_VALUE");
+        swapRouter = _swapRouter;
+    }
+
+    /// @notice Sets the wrapped native token address
+    /// @dev The caller must have the owner to call this function
+    /// @param _wrappedNativeToken New wrapped native token address
+    function setWrappedNativeToken(address _wrappedNativeToken)
+        external
+        onlyOwner
+    {
+        require(_wrappedNativeToken != address(0), "ZERO_ADDRESS");
+        require(wrappedNativeToken != _wrappedNativeToken, "SAME_VALUE");
+        wrappedNativeToken = _wrappedNativeToken;
+    }
+
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
     /* ========== VIEWS ===================================================== */
