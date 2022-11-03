@@ -26,6 +26,30 @@ Adds an SBT to the list of linked SBTs
 |---|---|---|
 | token | address | Address of the SBT contract |
 
+### estimateSwapAmount
+
+```solidity
+function estimateSwapAmount(address _fromToken, address _toToken, uint256 _amountOut) external view returns (uint256)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _fromToken | address | undefined |
+| _toToken | address | undefined |
+| _amountOut | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
 ### getIdentityId
 
 ```solidity
@@ -183,6 +207,23 @@ function renounceOwnership() external nonpayable
 *Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.*
 
 
+### reserveWallet
+
+```solidity
+function reserveWallet() external view returns (address)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
 ### setSoulboundIdentity
 
 ```solidity
@@ -216,6 +257,40 @@ function soulboundIdentity() external view returns (contract ISoulboundIdentity)
 |---|---|---|
 | _0 | contract ISoulboundIdentity | undefined |
 
+### storePermissionPrice
+
+```solidity
+function storePermissionPrice() external view returns (uint256)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+### swapRouter
+
+```solidity
+function swapRouter() external view returns (address)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
 ### transferOwnership
 
 ```solidity
@@ -231,6 +306,23 @@ function transferOwnership(address newOwner) external nonpayable
 | Name | Type | Description |
 |---|---|---|
 | newOwner | address | undefined |
+
+### utilityToken
+
+```solidity
+function utilityToken() external view returns (address)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
 
 ### validateLinkData
 
@@ -258,6 +350,23 @@ Validates the signature of the given read link request
 | Name | Type | Description |
 |---|---|---|
 | _0 | bool | `true` if the signature is valid, `false` otherwise |
+
+### wrappedNativeToken
+
+```solidity
+function wrappedNativeToken() external view returns (address)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
 
 
 
