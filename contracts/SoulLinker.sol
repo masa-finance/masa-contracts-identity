@@ -208,6 +208,8 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
     /// @param ownerIdentityId Id of the identity of the owner of the SBT
     /// @param token Address of the SBT contract
     /// @param tokenId Id of the token
+    /// @param data Data that owner wants to share
+    /// @param signatureDate Signature date of the signature
     /// @param expirationDate Expiration date of the signature
     /// @param signature Signature of the read link request made by the owner
     /// @return `true` if the signature is valid, `false` otherwise
@@ -216,6 +218,8 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
         uint256 ownerIdentityId,
         address token,
         uint256 tokenId,
+        string memory data,
+        uint256 signatureDate,
         uint256 expirationDate,
         bytes calldata signature
     ) external view returns (bool) {
@@ -235,6 +239,8 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
                     ownerIdentityId,
                     token,
                     tokenId,
+                    data,
+                    signatureDate,
                     expirationDate
                 ),
                 signature,
@@ -263,6 +269,8 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
         uint256 ownerIdentityId,
         address token,
         uint256 tokenId,
+        string memory data,
+        uint256 signatureDate,
         uint256 expirationDate
     ) internal view returns (bytes32) {
         return
@@ -270,12 +278,14 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
                 keccak256(
                     abi.encode(
                         keccak256(
-                            "Link(uint256 readerIdentityId,uint256 ownerIdentityId,address token,uint256 tokenId,uint256 expirationDate)"
+                            "Link(uint256 readerIdentityId,uint256 ownerIdentityId,address token,uint256 tokenId,string data,uint256 signatureDate,uint256 expirationDate)"
                         ),
                         readerIdentityId,
                         ownerIdentityId,
                         token,
                         tokenId,
+                        data,
+                        signatureDate,
                         expirationDate
                     )
                 )

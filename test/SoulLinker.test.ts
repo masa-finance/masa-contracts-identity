@@ -182,6 +182,8 @@ describe("Soul Linker", () => {
             { name: "ownerIdentityId", type: "uint256" },
             { name: "token", type: "address" },
             { name: "tokenId", type: "uint256" },
+            { name: "data", type: "string" },
+            { name: "signatureDate", type: "uint256" },
             { name: "expirationDate", type: "uint256" }
           ]
         },
@@ -191,6 +193,8 @@ describe("Soul Linker", () => {
           ownerIdentityId: ownerIdentityId,
           token: soulboundCreditReport.address,
           tokenId: creditReport1,
+          data: '{"data1","data2"}',
+          signatureDate: Math.floor(Date.now() / 1000),
           expirationDate: Math.floor(Date.now() / 1000) + 60 * 15
         }
       );
@@ -200,6 +204,8 @@ describe("Soul Linker", () => {
         ownerIdentityId,
         soulboundCreditReport.address,
         creditReport1,
+        '{"data1","data2"}',
+        Math.floor(Date.now() / 1000),
         Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
         signature
       );
@@ -225,6 +231,8 @@ describe("Soul Linker", () => {
             { name: "ownerIdentityId", type: "uint256" },
             { name: "token", type: "address" },
             { name: "tokenId", type: "uint256" },
+            { name: "data", type: "string" },
+            { name: "signatureDate", type: "uint256" },
             { name: "expirationDate", type: "uint256" }
           ]
         },
@@ -234,6 +242,8 @@ describe("Soul Linker", () => {
           ownerIdentityId: ownerIdentityId,
           token: soulboundCreditReport.address,
           tokenId: creditReport1,
+          data: '{"data1","data2"}',
+          signatureDate: Math.floor(Date.now() / 1000),
           expirationDate: Math.floor(Date.now() / 1000) + 60 * 15
         }
       );
@@ -244,6 +254,8 @@ describe("Soul Linker", () => {
           ownerIdentityId,
           soulboundCreditReport.address,
           creditReport1,
+          '{"data1","data2"}',
+          Math.floor(Date.now() / 1000),
           Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
           signature
         )

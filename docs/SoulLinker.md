@@ -224,6 +224,22 @@ function reserveWallet() external view returns (address)
 |---|---|---|
 | _0 | address | undefined |
 
+### setReserveWallet
+
+```solidity
+function setReserveWallet(address _reserveWallet) external nonpayable
+```
+
+Set the reserve wallet
+
+*Let change the reserve walled. It can be triggered by an authorized account.*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _reserveWallet | address | New reserve wallet |
+
 ### setSoulboundIdentity
 
 ```solidity
@@ -239,6 +255,70 @@ Sets the SoulboundIdentity contract address linked to this soul name
 | Name | Type | Description |
 |---|---|---|
 | _soulboundIdentity | contract ISoulboundIdentity | Address of the SoulboundIdentity contract |
+
+### setStorePermissionPrice
+
+```solidity
+function setStorePermissionPrice(uint256 _storePermissionPrice) external nonpayable
+```
+
+Sets the price of store permission in stable coin
+
+*The caller must have the owner to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _storePermissionPrice | uint256 | New price of the store permission in stable coin |
+
+### setSwapRouter
+
+```solidity
+function setSwapRouter(address _swapRouter) external nonpayable
+```
+
+Sets the swap router address
+
+*The caller must have the owner to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _swapRouter | address | New swap router address |
+
+### setUtilityToken
+
+```solidity
+function setUtilityToken(address _utilityToken) external nonpayable
+```
+
+Sets the utility token to pay the fee in ($MASA)
+
+*The caller must have the owner to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _utilityToken | address | New utility token to pay the fee in |
+
+### setWrappedNativeToken
+
+```solidity
+function setWrappedNativeToken(address _wrappedNativeToken) external nonpayable
+```
+
+Sets the wrapped native token address
+
+*The caller must have the owner to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _wrappedNativeToken | address | New wrapped native token address |
 
 ### soulboundIdentity
 
@@ -327,7 +407,7 @@ function utilityToken() external view returns (address)
 ### validateLinkData
 
 ```solidity
-function validateLinkData(uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, uint256 expirationDate, bytes signature) external view returns (bool)
+function validateLinkData(uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, string data, uint256 signatureDate, uint256 expirationDate, bytes signature) external view returns (bool)
 ```
 
 Validates the signature of the given read link request
@@ -342,6 +422,8 @@ Validates the signature of the given read link request
 | ownerIdentityId | uint256 | Id of the identity of the owner of the SBT |
 | token | address | Address of the SBT contract |
 | tokenId | uint256 | Id of the token |
+| data | string | Data that owner wants to share |
+| signatureDate | uint256 | Signature date of the signature |
 | expirationDate | uint256 | Expiration date of the signature |
 | signature | bytes | Signature of the read link request made by the owner |
 
