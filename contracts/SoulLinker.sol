@@ -38,17 +38,14 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
     /// @param _swapRouter Swap router address
     /// @param _reserveWallet Wallet that will receive the fee
     constructor(
-      address owner,
-      ISoulboundIdentity _soulboundIdentity,
-      uint256 _storePermissionPrice,
-      address _utilityToken,
-      address _wrappedNativeToken,
-      address _swapRouter,
-      address _reserveWallet
-    )
-        EIP712("SoulLinker", "1.0.0")
-        DexAMM(_swapRouter, _wrappedNativeToken)
-    {
+        address owner,
+        ISoulboundIdentity _soulboundIdentity,
+        uint256 _storePermissionPrice,
+        address _utilityToken,
+        address _wrappedNativeToken,
+        address _swapRouter,
+        address _reserveWallet
+    ) EIP712("SoulLinker", "1.0.0") DexAMM(_swapRouter, _wrappedNativeToken) {
         require(_utilityToken != address(0), "ZERO_ADDRESS");
         require(_reserveWallet != address(0), "ZERO_ADDRESS");
         require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
