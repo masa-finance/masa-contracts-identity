@@ -6,12 +6,13 @@ import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
+import "./dex/DexAMM.sol";
 import "./interfaces/ISoulboundIdentity.sol";
 
 /// @title Soul linker
 /// @author Masa Finance
 /// @notice Soul linker smart contract that let add links to a Soulbound token.
-contract SoulLinker is Ownable, EIP712 {
+contract SoulLinker is DexAMM, Ownable, EIP712 {
     /* ========== STATE VARIABLES =========================================== */
 
     ISoulboundIdentity public soulboundIdentity;
@@ -20,18 +21,45 @@ contract SoulLinker is Ownable, EIP712 {
     mapping(address => bool) public linkedSBT;
     address[] public linkedSBTs;
 
+    uint256 public storePermissionPrice; // store permission price in stable coin
+
+    address public utilityToken; // $MASA
+
+    address public reserveWallet;
+
     /* ========== INITIALIZE ================================================ */
 
     /// @notice Creates a new soul linker
     /// @param owner Owner of the smart contract
-    constructor(address owner, ISoulboundIdentity _soulboundIdentity)
+    /// @param _soulboundIdentity Soulbound identity smart contract
+    /// @param _storePermissionPrice Store permission price in stable coin
+    /// @param _utilityToken Utility token to pay the fee in ($MASA)
+    /// @param _wrappedNativeToken Wrapped native token address
+    /// @param _swapRouter Swap router address
+    /// @param _reserveWallet Wallet that will receive the fee
+    constructor(
+      address owner,
+      ISoulboundIdentity _soulboundIdentity,
+      uint256 _storePermissionPrice,
+      address _utilityToken,
+      address _wrappedNativeToken,
+      address _swapRouter,
+      address _reserveWallet
+    )
         EIP712("SoulLinker", "1.0.0")
+        DexAMM(_swapRouter, _wrappedNativeToken)
     {
+        require(_utilityToken != address(0), "ZERO_ADDRESS");
+        require(_reserveWallet != address(0), "ZERO_ADDRESS");
         require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
 
         Ownable.transferOwnership(owner);
 
         soulboundIdentity = _soulboundIdentity;
+
+        storePermissionPrice = _storePermissionPrice;
+        utilityToken = _utilityToken;
+        reserveWallet = _reserveWallet;
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
