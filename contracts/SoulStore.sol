@@ -53,6 +53,8 @@ contract SoulStore is DexAMM, Ownable {
         address _swapRouter,
         address _reserveWallet
     ) DexAMM(_swapRouter, _wrappedNativeToken) {
+        require(_stableCoin != address(0), "ZERO_ADDRESS");
+        require(_utilityToken != address(0), "ZERO_ADDRESS");
         require(_reserveWallet != address(0), "ZERO_ADDRESS");
         require(address(_soulBoundIdentity) != address(0), "ZERO_ADDRESS");
 
