@@ -6,14 +6,14 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./libraries/Utils.sol";
 import "./interfaces/ISoulboundIdentity.sol";
 import "./interfaces/ISoulName.sol";
-import "./tokens/NFT.sol";
+import "./tokens/MasaNFT.sol";
 
 /// @title SoulName NFT
 /// @author Masa Finance
 /// @notice SoulName NFT that points to a Soulbound identity token
 /// @dev SoulName NFT, that inherits from the NFT contract, and points to a Soulbound identity token.
 /// It has an extension, and stores all the information about the identity names.
-contract SoulName is NFT, ISoulName {
+contract SoulName is MasaNFT, ISoulName {
     /* ========== STATE VARIABLES ========== */
     using SafeMath for uint256;
 
@@ -58,7 +58,7 @@ contract SoulName is NFT, ISoulName {
         ISoulboundIdentity _soulboundIdentity,
         string memory _extension,
         string memory _contractURI
-    ) NFT(owner, "Masa Soul Name", "MSN", "") {
+    ) MasaNFT(owner, "Masa Soul Name", "MSN", "") {
         require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
 
         soulboundIdentity = _soulboundIdentity;

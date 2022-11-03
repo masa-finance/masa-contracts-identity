@@ -3,13 +3,13 @@ pragma solidity ^0.8.7;
 
 import "./interfaces/ISoulboundIdentity.sol";
 import "./interfaces/ISoulName.sol";
-import "./tokens/SBT.sol";
+import "./tokens/MasaSBT.sol";
 
 /// @title Soulbound Identity
 /// @author Masa Finance
 /// @notice Soulbound token that represents an identity.
 /// @dev Soulbound identity, that inherits from the SBT contract.
-contract SoulboundIdentity is SBT, ISoulboundIdentity {
+contract SoulboundIdentity is MasaSBT, ISoulboundIdentity {
     /* ========== STATE VARIABLES =========================================== */
 
     ISoulName public soulName;
@@ -21,7 +21,7 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
     /// @param owner Owner of the smart contract
     /// @param baseTokenURI Base URI of the token
     constructor(address owner, string memory baseTokenURI)
-        SBT(owner, "Masa Identity", "MID", baseTokenURI)
+        MasaSBT(owner, "Masa Identity", "MID", baseTokenURI)
     {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
@@ -42,7 +42,7 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
     /// @param to Address of the owner of the new identity
     function mint(address to)
         public
-        override(SBT, ISoulboundIdentity)
+        override(MasaSBT, ISoulboundIdentity)
         returns (uint256)
     {
         // Soulbound identity already created!
@@ -92,7 +92,7 @@ contract SoulboundIdentity is SBT, ISoulboundIdentity {
     function ownerOf(uint256 tokenId)
         public
         view
-        override(ERC721, IERC721)
+        override(SBT, ISBT)
         returns (address)
     {
         return super.ownerOf(tokenId);

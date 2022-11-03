@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
-import "./tokens/SBT.sol";
+import "./tokens/MasaSBT.sol";
 
 /// @title Soulbound Credit Report
 /// @author Masa Finance
 /// @notice Soulbound token that represents a credit report.
 /// @dev Soulbound credit report, that inherits from the SBT contract.
-contract SoulboundCreditReport is SBT {
+contract SoulboundCreditReport is MasaSBT {
     /* ========== STATE VARIABLES =========================================== */
 
     /* ========== INITIALIZE ================================================ */
@@ -17,7 +17,7 @@ contract SoulboundCreditReport is SBT {
     /// @param owner Owner of the smart contract
     /// @param baseTokenURI Base URI of the token
     constructor(address owner, string memory baseTokenURI)
-        SBT(owner, "Masa Credit Report", "MCR", baseTokenURI)
+        MasaSBT(owner, "Masa Credit Report", "MCR", baseTokenURI)
     {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */

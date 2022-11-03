@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "../tokens/SBT/ISBT.sol";
 
 import "./ISoulName.sol";
 
-interface ISoulboundIdentity is IERC721 {
+interface ISoulboundIdentity is ISBT {
     function mint(address to) external returns (uint256);
 
     function mintIdentityWithName(
