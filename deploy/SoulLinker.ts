@@ -111,6 +111,7 @@ const func: DeployFunction = async ({
 
 func.tags = ["SoulLinker"];
 func.dependencies = [
+  "MASA",
   "SoulboundIdentity",
   "SoulboundCreditReport",
   "Soulbound2FA"
