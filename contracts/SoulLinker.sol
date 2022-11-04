@@ -272,7 +272,7 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
         return sbtLinks;
     }
 
-    /// @notice Validates the signature of the given read link request
+    /// @notice Validates the permission of the given read link request
     /// @dev The token must be linked to this soul linker
     /// @param readerIdentityId Id of the identity of the reader
     /// @param ownerIdentityId Id of the identity of the owner of the SBT
@@ -281,17 +281,15 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
     /// @param data Data that owner wants to share
     /// @param signatureDate Signature date of the signature
     /// @param expirationDate Expiration date of the signature
-    /// @param signature Signature of the read link request made by the owner
     /// @return `true` if the signature is valid, `false` otherwise
-    function validateLinkData(
+    function validatePermission(
         uint256 readerIdentityId,
         uint256 ownerIdentityId,
         address token,
         uint256 tokenId,
         string memory data,
         uint256 signatureDate,
-        uint256 expirationDate,
-        bytes calldata signature
+        uint256 expirationDate
     ) external view returns (bool) {
         require(linkedSBT[token], "SBT_NOT_LINKED");
 
@@ -302,22 +300,6 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
         require(identityOwner == tokenOwner, "IDENTITY_OWNER_NOT_TOKEN_OWNER");
         require(identityReader == _msgSender(), "CALLER_NOT_READER");
         require(expirationDate >= block.timestamp, "VALID_PERIOD_EXPIRED");
-        require(
-            _verify(
-                _hash(
-                    readerIdentityId,
-                    ownerIdentityId,
-                    token,
-                    tokenId,
-                    data,
-                    signatureDate,
-                    expirationDate
-                ),
-                signature,
-                identityOwner
-            ),
-            "INVALID_SIGNATURE"
-        );
 
         return true;
     }
