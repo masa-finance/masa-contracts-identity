@@ -43,10 +43,7 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
       soulboundIdentityAddress,
       owner
     );
-    soulbound2FA = Soulbound2FA__factory.connect(
-      soulbound2FAAddress,
-      owner
-    );
+    soulbound2FA = Soulbound2FA__factory.connect(soulbound2FAAddress, owner);
 
     // we mint identity SBT
     await soulboundIdentity.connect(owner).mint(someone.address);
@@ -63,16 +60,14 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
     });
 
     it("should fail to mint from someone", async () => {
-      await expect(soulbound2FA.connect(someone).mint(someone.address))
-        .to.be.rejected;
+      await expect(soulbound2FA.connect(someone).mint(someone.address)).to.be
+        .rejected;
     });
   });
 
   describe("tokenUri", () => {
     it("should fail to transfer because its soulbound", async () => {
-      const mintTx = await soulbound2FA
-        .connect(owner)
-        .mint(someone.address);
+      const mintTx = await soulbound2FA.connect(owner).mint(someone.address);
 
       const mintReceipt = await mintTx.wait();
       const tokenId = mintReceipt.events![0].args![1].toNumber();
