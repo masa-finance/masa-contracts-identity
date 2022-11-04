@@ -1,5 +1,5 @@
 import hre from "hardhat";
-import { getEnvParams, getPrivateKey } from "../src/utils/EnvParams";
+import { getEnvParams } from "../src/utils/EnvParams";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
 
@@ -22,19 +22,11 @@ const func: DeployFunction = async ({
 
   [, owner] = await ethers.getSigners();
   const env = getEnvParams(network.name);
+  const baseUri = `${env.BASE_URI}/2fa/`;
 
-  const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
-  const soulboundCreditReportDeployed = await deployments.get(
-    "SoulboundCreditReport"
-  );
-  const soulbound2FADeployed = await deployments.get("Soulbound2FA");
+  const constructorArguments = [env.OWNER || owner.address, baseUri];
 
-  const constructorArguments = [
-    env.OWNER || owner.address,
-    soulboundIdentityDeployed.address
-  ];
-
-  const soulLinkerDeploymentResult = await deploy("SoulLinker", {
+  const soulbound2FADeploymentResult = await deploy("Soulbound2FA", {
     from: deployer,
     args: constructorArguments,
     log: true
@@ -45,7 +37,7 @@ const func: DeployFunction = async ({
   if (network.name == "mainnet" || network.name == "goerli") {
     try {
       await hre.run("verify:verify", {
-        address: soulLinkerDeploymentResult.address,
+        address: soulbound2FADeploymentResult.address,
         constructorArguments
       });
     } catch (error) {
@@ -57,30 +49,8 @@ const func: DeployFunction = async ({
       }
     }
   }
-
-  const signer = env.OWNER
-    ? new ethers.Wallet(
-        getPrivateKey(network.name),
-        ethers.getDefaultProvider(network.name)
-      )
-    : owner;
-
-  const soulLinker = await ethers.getContractAt(
-    "SoulLinker",
-    soulLinkerDeploymentResult.address
-  );
-
-  await soulLinker
-    .connect(signer)
-    .addLinkedSBT(soulboundCreditReportDeployed.address);
-
-  await soulLinker.connect(signer).addLinkedSBT(soulbound2FADeployed.address);
 };
 
-func.tags = ["SoulLinker"];
-func.dependencies = [
-  "SoulboundIdentity",
-  "SoulboundCreditReport",
-  "Soulbound2FA"
-];
+func.tags = ["Soulbound2FA"];
+func.dependencies = ["SoulboundIdentity"];
 export default func;
