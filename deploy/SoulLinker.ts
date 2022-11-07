@@ -2,7 +2,12 @@ import hre from "hardhat";
 import { getEnvParams, getPrivateKey } from "../src/utils/EnvParams";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
-import { MASA_GOERLI, SWAPROUTER_GOERLI, USDC_GOERLI, WETH_GOERLI } from "../src/constants";
+import {
+  MASA_GOERLI,
+  SWAPROUTER_GOERLI,
+  USDC_GOERLI,
+  WETH_GOERLI
+} from "../src/constants";
 
 let owner: SignerWithAddress;
 
