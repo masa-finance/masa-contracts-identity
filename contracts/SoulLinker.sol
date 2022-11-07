@@ -25,7 +25,7 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
     mapping(address => bool) public linkedSBT;
     address[] public linkedSBTs;
 
-    uint256 public storePermissionPrice; // store permission price in stable coin
+    uint256 public addPermissionPrice; // store permission price in stable coin
 
     address public stableCoin; // USDC
     address public utilityToken; // $MASA
@@ -48,7 +48,7 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
     /// @notice Creates a new soul linker
     /// @param owner Owner of the smart contract
     /// @param _soulboundIdentity Soulbound identity smart contract
-    /// @param _storePermissionPrice Store permission price in stable coin
+    /// @param _addPermissionPrice Store permission price in stable coin
     /// @param _utilityToken Utility token to pay the fee in ($MASA)
     /// @param _stableCoin Stable coin to pay the fee in (USDC)
     /// @param _wrappedNativeToken Wrapped native token address
@@ -57,7 +57,7 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
     constructor(
         address owner,
         ISoulboundIdentity _soulboundIdentity,
-        uint256 _storePermissionPrice,
+        uint256 _addPermissionPrice,
         address _utilityToken,
         address _stableCoin,
         address _wrappedNativeToken,
@@ -73,7 +73,7 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
 
         soulboundIdentity = _soulboundIdentity;
 
-        storePermissionPrice = _storePermissionPrice;
+        addPermissionPrice = _addPermissionPrice;
         stableCoin = _stableCoin;
         utilityToken = _utilityToken;
         reserveWallet = _reserveWallet;
@@ -116,13 +116,13 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
 
     /// @notice Sets the price of store permission in stable coin
     /// @dev The caller must have the owner to call this function
-    /// @param _storePermissionPrice New price of the store permission in stable coin
-    function setStorePermissionPrice(uint256 _storePermissionPrice)
+    /// @param _addPermissionPrice New price of the store permission in stable coin
+    function setAtorePermissionPrice(uint256 _addPermissionPrice)
         external
         onlyOwner
     {
-        require(storePermissionPrice != _storePermissionPrice, "SAME_VALUE");
-        storePermissionPrice = _storePermissionPrice;
+        require(addPermissionPrice != _addPermissionPrice, "SAME_VALUE");
+        addPermissionPrice = _addPermissionPrice;
     }
 
     /// @notice Sets the stable coin to pay the fee in (USDC)
@@ -185,7 +185,7 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
     /// @param signatureDate Signature date of the signature
     /// @param expirationDate Expiration date of the signature
     /// @param signature Signature of the read link request made by the owner
-    function storePermission(
+    function addPermission(
         uint256 readerIdentityId,
         uint256 ownerIdentityId,
         address token,
@@ -345,6 +345,7 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
 
         require(identityOwner == tokenOwner, "IDENTITY_OWNER_NOT_TOKEN_OWNER");
         require(identityReader == _msgSender(), "CALLER_NOT_READER");
+        require(permission.expirationDate > 0, "PERMISSION_DOES_NOT_EXIST");
         require(
             permission.expirationDate >= block.timestamp,
             "VALID_PERIOD_EXPIRED"
@@ -357,7 +358,7 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
     /// @notice Returns the price for storing a permission
     /// @dev Returns the current pricing for storing a permission
     /// @return priceInUtilityToken Current price of storing a permission in utility token ($MASA)
-    function storePermissionPriceInfo()
+    function addPermissionPriceInfo()
         public
         view
         returns (uint256 priceInUtilityToken)
@@ -365,7 +366,7 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
         priceInUtilityToken = estimateSwapAmount(
             utilityToken,
             stableCoin,
-            storePermissionPrice
+            addPermissionPrice
         );
     }
 
@@ -378,7 +379,7 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
         uint256 swapAmout = estimateSwapAmount(
             utilityToken,
             stableCoin,
-            storePermissionPrice
+            addPermissionPrice
         );
         IERC20(utilityToken).safeTransferFrom(
             msg.sender,
