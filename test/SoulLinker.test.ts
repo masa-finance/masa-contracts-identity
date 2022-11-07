@@ -163,10 +163,11 @@ describe("Soul Linker", () => {
     });
   });
 
-  describe("validateLinkData", () => {
-    it("validateLinkData must work with a valid signature", async () => {
+  describe("addPermission", () => {
+    it("addPermission must work with a valid signature", async () => {
       const chainId = await getChainId();
       const signatureDate = Math.floor(Date.now() / 1000);
+      const expirationDate = Math.floor(Date.now() / 1000) + 60 * 15;
       const data = '{"data1","data2"}';
 
       const signature = await address1._signTypedData(
@@ -197,9 +198,22 @@ describe("Soul Linker", () => {
           tokenId: creditReport1,
           data: data,
           signatureDate: signatureDate,
-          expirationDate: Math.floor(Date.now() / 1000) + 60 * 15
+          expirationDate: expirationDate
         }
       );
+
+      await soulLinker
+        .connect(address1)
+        .addPermission(
+          readerIdentityId,
+          ownerIdentityId,
+          soulboundCreditReport.address,
+          creditReport1,
+          data,
+          signatureDate,
+          expirationDate,
+          signature
+        );
 
       const dataWithPermissions = await soulLinker
         .connect(address2)
@@ -214,9 +228,10 @@ describe("Soul Linker", () => {
       expect(dataWithPermissions).to.be.equal(data);
     });
 
-    it("validateLinkData won't work with an invalid signature", async () => {
+    it("addPermission won't work with an invalid signature", async () => {
       const chainId = await getChainId();
       const signatureDate = Math.floor(Date.now() / 1000);
+      const expirationDate = Math.floor(Date.now() / 1000) + 60 * 15;
       const data = '{"data1","data2"}';
 
       const signature = await address1._signTypedData(
@@ -247,9 +262,24 @@ describe("Soul Linker", () => {
           tokenId: creditReport1,
           data: data,
           signatureDate: signatureDate,
-          expirationDate: Math.floor(Date.now() / 1000) + 60 * 15
+          expirationDate: expirationDate
         }
       );
+
+      await expect(
+        soulLinker
+          .connect(address1)
+          .addPermission(
+            readerIdentityId,
+            ownerIdentityId,
+            soulboundCreditReport.address,
+            creditReport1,
+            data,
+            signatureDate,
+            expirationDate,
+            signature
+          )
+      ).to.be.rejected;
 
       await expect(
         soulLinker
