@@ -183,7 +183,6 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
     /// @param signatureDate Signature date of the signature
     /// @param expirationDate Expiration date of the signature
     /// @param signature Signature of the read link request made by the owner
-    /// @return `true` if the signature is valid and the permission is stored, `false` otherwise
     function storePermission(
         uint256 readerIdentityId,
         uint256 ownerIdentityId,
