@@ -166,6 +166,8 @@ describe("Soul Linker", () => {
   describe("validateLinkData", () => {
     it("validateLinkData must work with a valid signature", async () => {
       const chainId = await getChainId();
+      const signatureDate = Math.floor(Date.now() / 1000);
+      const data = '{"data1","data2"}';
 
       const signature = await address1._signTypedData(
         // Domain
@@ -193,28 +195,29 @@ describe("Soul Linker", () => {
           ownerIdentityId: ownerIdentityId,
           token: soulboundCreditReport.address,
           tokenId: creditReport1,
-          data: '{"data1","data2"}',
-          signatureDate: Math.floor(Date.now() / 1000),
+          data: data,
+          signatureDate: signatureDate,
           expirationDate: Math.floor(Date.now() / 1000) + 60 * 15
         }
       );
 
-      const isValid = await soulLinker.connect(address2).validateLinkData(
-        readerIdentityId,
-        ownerIdentityId,
-        soulboundCreditReport.address,
-        creditReport1,
-        '{"data1","data2"}',
-        Math.floor(Date.now() / 1000),
-        Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
-        signature
-      );
+      const dataWithPermissions = await soulLinker
+        .connect(address2)
+        .validatePermission(
+          readerIdentityId,
+          ownerIdentityId,
+          soulboundCreditReport.address,
+          creditReport1,
+          signatureDate
+        );
 
-      expect(isValid).to.be.true;
+      expect(dataWithPermissions).to.be.equal(data);
     });
 
     it("validateLinkData won't work with an invalid signature", async () => {
       const chainId = await getChainId();
+      const signatureDate = Math.floor(Date.now() / 1000);
+      const data = '{"data1","data2"}';
 
       const signature = await address1._signTypedData(
         // Domain
@@ -242,23 +245,22 @@ describe("Soul Linker", () => {
           ownerIdentityId: ownerIdentityId,
           token: soulboundCreditReport.address,
           tokenId: creditReport1,
-          data: '{"data1","data2"}',
-          signatureDate: Math.floor(Date.now() / 1000),
+          data: data,
+          signatureDate: signatureDate,
           expirationDate: Math.floor(Date.now() / 1000) + 60 * 15
         }
       );
 
       await expect(
-        soulLinker.connect(address2).validateLinkData(
-          readerIdentityId,
-          ownerIdentityId,
-          soulboundCreditReport.address,
-          creditReport1,
-          '{"data1","data2"}',
-          Math.floor(Date.now() / 1000),
-          Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
-          signature
-        )
+        soulLinker
+          .connect(address2)
+          .validatePermission(
+            readerIdentityId,
+            ownerIdentityId,
+            soulboundCreditReport.address,
+            creditReport1,
+            signatureDate
+          )
       ).to.be.rejected;
     });
   });
