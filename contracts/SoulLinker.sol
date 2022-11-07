@@ -34,7 +34,8 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
 
     // token => tokenId => readerIdentityId => signatureDate => PermissionData
     mapping(address => mapping(uint256 => mapping(uint256 => mapping(uint256 => PermissionData)))) _permissions;
-    
+    mapping(address => mapping(uint256 => mapping(uint256 => uint256[]))) _permissionSignatureDates;
+
     struct PermissionData {
         uint256 ownerIdentityId;
         string data;
@@ -195,12 +196,11 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
     ) external {
         require(linkedSBT[token], "SBT_NOT_LINKED");
 
-        address identityReader = soulboundIdentity.ownerOf(readerIdentityId);
         address identityOwner = soulboundIdentity.ownerOf(ownerIdentityId);
         address tokenOwner = IERC721Enumerable(token).ownerOf(tokenId);
 
         require(identityOwner == tokenOwner, "IDENTITY_OWNER_NOT_TOKEN_OWNER");
-        require(identityReader == _msgSender(), "CALLER_NOT_READER");
+        require(identityOwner == _msgSender(), "CALLER_NOT_OWNER");
         require(expirationDate >= block.timestamp, "VALID_PERIOD_EXPIRED");
         require(
             _verify(
@@ -222,10 +222,11 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
         _payForStoringPermission();
 
         // token => tokenId => readerIdentityId => signatureDate => PermissionData
-        _permissions[token][tokenId][readerIdentityId][signatureDate] = PermissionData(
-            ownerIdentityId,
-            data,
-            expirationDate
+        _permissions[token][tokenId][readerIdentityId][
+            signatureDate
+        ] = PermissionData(ownerIdentityId, data, expirationDate);
+        _permissionSignatureDates[token][tokenId][readerIdentityId].push(
+            signatureDate
         );
     }
 
@@ -285,36 +286,40 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
         return sbtLinks;
     }
 
-    /// @notice Validates the permission of the given read link request
+    /// @notice Validates the permission of the given read link request and returns the
+    /// data that reader can read if the permission is valid
     /// @dev The token must be linked to this soul linker
     /// @param readerIdentityId Id of the identity of the reader
     /// @param ownerIdentityId Id of the identity of the owner of the SBT
     /// @param token Address of the SBT contract
     /// @param tokenId Id of the token
-    /// @param data Data that owner wants to share
     /// @param signatureDate Signature date of the signature
-    /// @param expirationDate Expiration date of the signature
     /// @return `true` if the signature is valid, `false` otherwise
     function validatePermission(
         uint256 readerIdentityId,
         uint256 ownerIdentityId,
         address token,
         uint256 tokenId,
-        string memory data,
-        uint256 signatureDate,
-        uint256 expirationDate
-    ) external view returns (bool) {
+        uint256 signatureDate
+    ) external view returns (string memory) {
         require(linkedSBT[token], "SBT_NOT_LINKED");
 
         address identityReader = soulboundIdentity.ownerOf(readerIdentityId);
         address identityOwner = soulboundIdentity.ownerOf(ownerIdentityId);
         address tokenOwner = IERC721Enumerable(token).ownerOf(tokenId);
 
+        PermissionData memory permission = _permissions[token][tokenId][
+            readerIdentityId
+        ][signatureDate];
+
         require(identityOwner == tokenOwner, "IDENTITY_OWNER_NOT_TOKEN_OWNER");
         require(identityReader == _msgSender(), "CALLER_NOT_READER");
-        require(expirationDate >= block.timestamp, "VALID_PERIOD_EXPIRED");
+        require(
+            permission.expirationDate >= block.timestamp,
+            "VALID_PERIOD_EXPIRED"
+        );
 
-        return true;
+        return permission.data;
     }
 
     /// @notice Returns the price for storing a permission
