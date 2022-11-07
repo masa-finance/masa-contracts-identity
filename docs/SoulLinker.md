@@ -224,6 +224,26 @@ function reserveWallet() external view returns (address)
 |---|---|---|
 | _0 | address | undefined |
 
+### revokePermission
+
+```solidity
+function revokePermission(uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, uint256 signatureDate) external nonpayable
+```
+
+Revokes the permission
+
+*The token must be linked to this soul linker*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| readerIdentityId | uint256 | Id of the identity of the reader |
+| ownerIdentityId | uint256 | Id of the identity of the owner of the SBT |
+| token | address | Address of the SBT contract |
+| tokenId | uint256 | Id of the token |
+| signatureDate | uint256 | Signature date of the signature |
+
 ### setReserveWallet
 
 ```solidity
@@ -255,6 +275,22 @@ Sets the SoulboundIdentity contract address linked to this soul name
 | Name | Type | Description |
 |---|---|---|
 | _soulboundIdentity | contract ISoulboundIdentity | Address of the SoulboundIdentity contract |
+
+### setStableCoin
+
+```solidity
+function setStableCoin(address _stableCoin) external nonpayable
+```
+
+Sets the stable coin to pay the fee in (USDC)
+
+*The caller must have the owner to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _stableCoin | address | New stable coin to pay the fee in |
 
 ### setStorePermissionPrice
 
@@ -337,6 +373,46 @@ function soulboundIdentity() external view returns (contract ISoulboundIdentity)
 |---|---|---|
 | _0 | contract ISoulboundIdentity | undefined |
 
+### stableCoin
+
+```solidity
+function stableCoin() external view returns (address)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
+### storePermission
+
+```solidity
+function storePermission(uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, string data, uint256 signatureDate, uint256 expirationDate, bytes signature) external nonpayable
+```
+
+Stores the permission, validating the signature of the given read link request
+
+*The token must be linked to this soul linker*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| readerIdentityId | uint256 | Id of the identity of the reader |
+| ownerIdentityId | uint256 | Id of the identity of the owner of the SBT |
+| token | address | Address of the SBT contract |
+| tokenId | uint256 | Id of the token |
+| data | string | Data that owner wants to share |
+| signatureDate | uint256 | Signature date of the signature |
+| expirationDate | uint256 | Expiration date of the signature |
+| signature | bytes | Signature of the read link request made by the owner |
+
 ### storePermissionPrice
 
 ```solidity
@@ -353,6 +429,23 @@ function storePermissionPrice() external view returns (uint256)
 | Name | Type | Description |
 |---|---|---|
 | _0 | uint256 | undefined |
+
+### storePermissionPriceInfo
+
+```solidity
+function storePermissionPriceInfo() external view returns (uint256 priceInUtilityToken)
+```
+
+Returns the price for storing a permission
+
+*Returns the current pricing for storing a permission*
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| priceInUtilityToken | uint256 | Current price of storing a permission in utility token ($MASA) |
 
 ### swapRouter
 
@@ -404,13 +497,13 @@ function utilityToken() external view returns (address)
 |---|---|---|
 | _0 | address | undefined |
 
-### validateLinkData
+### validatePermission
 
 ```solidity
-function validateLinkData(uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, string data, uint256 signatureDate, uint256 expirationDate, bytes signature) external view returns (bool)
+function validatePermission(uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, uint256 signatureDate) external view returns (string)
 ```
 
-Validates the signature of the given read link request
+Validates the permission of the given read link request and returns the data that reader can read if the permission is valid
 
 *The token must be linked to this soul linker*
 
@@ -422,16 +515,13 @@ Validates the signature of the given read link request
 | ownerIdentityId | uint256 | Id of the identity of the owner of the SBT |
 | token | address | Address of the SBT contract |
 | tokenId | uint256 | Id of the token |
-| data | string | Data that owner wants to share |
 | signatureDate | uint256 | Signature date of the signature |
-| expirationDate | uint256 | Expiration date of the signature |
-| signature | bytes | Signature of the read link request made by the owner |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | bool | `true` if the signature is valid, `false` otherwise |
+| _0 | string | `true` if the signature is valid, `false` otherwise |
 
 ### wrappedNativeToken
 
