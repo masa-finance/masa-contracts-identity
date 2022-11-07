@@ -2,7 +2,7 @@ import hre from "hardhat";
 import { getEnvParams, getPrivateKey } from "../src/utils/EnvParams";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
-import { MASA_GOERLI, SWAPROUTER_GOERLI, WETH_GOERLI } from "../src/constants";
+import { MASA_GOERLI, SWAPROUTER_GOERLI, USDC_GOERLI, WETH_GOERLI } from "../src/constants";
 
 let owner: SignerWithAddress;
 
@@ -31,23 +31,28 @@ const func: DeployFunction = async ({
   );
   const soulbound2FADeployed = await deployments.get("Soulbound2FA");
 
+  let stableCoin: string; // usdc
   let wrappedNativeToken: string; // weth
   let swapRouter: string;
 
   if (network.name == "mainnet") {
     // mainnet
+    stableCoin = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
     wrappedNativeToken = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
     swapRouter = SWAPROUTER_GOERLI;
   } else if (network.name == "goerli") {
     // goerli
+    stableCoin = USDC_GOERLI;
     wrappedNativeToken = WETH_GOERLI;
     swapRouter = SWAPROUTER_GOERLI;
   } else if (network.name == "hardhat") {
     // hardhat
+    stableCoin = USDC_GOERLI;
     wrappedNativeToken = WETH_GOERLI;
     swapRouter = SWAPROUTER_GOERLI;
   } else if (network.name == "alfajores") {
     // alfajores
+    stableCoin = "0x37f39aD164cBBf0Cc03Dd638472F3FbeC7aE426C";
     wrappedNativeToken = "0xF194afDf50B03e69Bd7D057c1Aa9e10c9954E4C9";
     swapRouter = "0xE3D8bd6Aed4F159bc8000a9cD47CffDb95F96121"; // Ubeswap
   } else {
@@ -61,6 +66,7 @@ const func: DeployFunction = async ({
     network.name == "hardhat" || network.name == "goerli"
       ? MASA_GOERLI // MASA
       : masa.address,
+    stableCoin,
     wrappedNativeToken,
     swapRouter,
     env.RESERVE_WALLET || owner.address
