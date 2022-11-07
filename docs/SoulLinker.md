@@ -26,6 +26,63 @@ Adds an SBT to the list of linked SBTs
 |---|---|---|
 | token | address | Address of the SBT contract |
 
+### addPermission
+
+```solidity
+function addPermission(uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, string data, uint256 signatureDate, uint256 expirationDate, bytes signature) external nonpayable
+```
+
+Stores the permission, validating the signature of the given read link request
+
+*The token must be linked to this soul linker*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| readerIdentityId | uint256 | Id of the identity of the reader |
+| ownerIdentityId | uint256 | Id of the identity of the owner of the SBT |
+| token | address | Address of the SBT contract |
+| tokenId | uint256 | Id of the token |
+| data | string | Data that owner wants to share |
+| signatureDate | uint256 | Signature date of the signature |
+| expirationDate | uint256 | Expiration date of the signature |
+| signature | bytes | Signature of the read link request made by the owner |
+
+### addPermissionPrice
+
+```solidity
+function addPermissionPrice() external view returns (uint256)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+### addPermissionPriceInfo
+
+```solidity
+function addPermissionPriceInfo() external view returns (uint256 priceInUtilityToken)
+```
+
+Returns the price for storing a permission
+
+*Returns the current pricing for storing a permission*
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| priceInUtilityToken | uint256 | Current price of storing a permission in utility token ($MASA) |
+
 ### estimateSwapAmount
 
 ```solidity
@@ -244,6 +301,22 @@ Revokes the permission
 | tokenId | uint256 | Id of the token |
 | signatureDate | uint256 | Signature date of the signature |
 
+### setAtorePermissionPrice
+
+```solidity
+function setAtorePermissionPrice(uint256 _addPermissionPrice) external nonpayable
+```
+
+Sets the price of store permission in stable coin
+
+*The caller must have the owner to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _addPermissionPrice | uint256 | New price of the store permission in stable coin |
+
 ### setReserveWallet
 
 ```solidity
@@ -291,22 +364,6 @@ Sets the stable coin to pay the fee in (USDC)
 | Name | Type | Description |
 |---|---|---|
 | _stableCoin | address | New stable coin to pay the fee in |
-
-### setStorePermissionPrice
-
-```solidity
-function setStorePermissionPrice(uint256 _storePermissionPrice) external nonpayable
-```
-
-Sets the price of store permission in stable coin
-
-*The caller must have the owner to call this function*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _storePermissionPrice | uint256 | New price of the store permission in stable coin |
 
 ### setSwapRouter
 
@@ -389,63 +446,6 @@ function stableCoin() external view returns (address)
 | Name | Type | Description |
 |---|---|---|
 | _0 | address | undefined |
-
-### storePermission
-
-```solidity
-function storePermission(uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, string data, uint256 signatureDate, uint256 expirationDate, bytes signature) external nonpayable
-```
-
-Stores the permission, validating the signature of the given read link request
-
-*The token must be linked to this soul linker*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| readerIdentityId | uint256 | Id of the identity of the reader |
-| ownerIdentityId | uint256 | Id of the identity of the owner of the SBT |
-| token | address | Address of the SBT contract |
-| tokenId | uint256 | Id of the token |
-| data | string | Data that owner wants to share |
-| signatureDate | uint256 | Signature date of the signature |
-| expirationDate | uint256 | Expiration date of the signature |
-| signature | bytes | Signature of the read link request made by the owner |
-
-### storePermissionPrice
-
-```solidity
-function storePermissionPrice() external view returns (uint256)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | undefined |
-
-### storePermissionPriceInfo
-
-```solidity
-function storePermissionPriceInfo() external view returns (uint256 priceInUtilityToken)
-```
-
-Returns the price for storing a permission
-
-*Returns the current pricing for storing a permission*
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| priceInUtilityToken | uint256 | Current price of storing a permission in utility token ($MASA) |
 
 ### swapRouter
 
