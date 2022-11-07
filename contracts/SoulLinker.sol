@@ -40,6 +40,7 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
         uint256 ownerIdentityId;
         string data;
         uint256 expirationDate;
+        bool isRevoked;
     }
 
     /* ========== INITIALIZE ================================================ */
@@ -224,10 +225,40 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
         // token => tokenId => readerIdentityId => signatureDate => PermissionData
         _permissions[token][tokenId][readerIdentityId][
             signatureDate
-        ] = PermissionData(ownerIdentityId, data, expirationDate);
+        ] = PermissionData(ownerIdentityId, data, expirationDate, false);
         _permissionSignatureDates[token][tokenId][readerIdentityId].push(
             signatureDate
         );
+    }
+
+    /// @notice Revokes the permission
+    /// @dev The token must be linked to this soul linker
+    /// @param readerIdentityId Id of the identity of the reader
+    /// @param ownerIdentityId Id of the identity of the owner of the SBT
+    /// @param token Address of the SBT contract
+    /// @param tokenId Id of the token
+    /// @param signatureDate Signature date of the signature
+    function revokePermission(
+        uint256 readerIdentityId,
+        uint256 ownerIdentityId,
+        address token,
+        uint256 tokenId,
+        uint256 signatureDate
+    ) external {
+        address identityOwner = soulboundIdentity.ownerOf(ownerIdentityId);
+        address tokenOwner = IERC721Enumerable(token).ownerOf(tokenId);
+
+        require(identityOwner == tokenOwner, "IDENTITY_OWNER_NOT_TOKEN_OWNER");
+        require(identityOwner == _msgSender(), "CALLER_NOT_OWNER");
+        require(
+            _permissions[token][tokenId][readerIdentityId][signatureDate]
+                .isRevoked == false,
+            "PERMISSION_ALREADY_REVOKED"
+        );
+
+        // token => tokenId => readerIdentityId => signatureDate => PermissionData
+        _permissions[token][tokenId][readerIdentityId][signatureDate]
+            .isRevoked = true;
     }
 
     /* ========== VIEWS ===================================================== */
@@ -318,6 +349,7 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
             permission.expirationDate >= block.timestamp,
             "VALID_PERIOD_EXPIRED"
         );
+        require(permission.isRevoked == false, "PERMISSION_REVOKED");
 
         return permission.data;
     }
