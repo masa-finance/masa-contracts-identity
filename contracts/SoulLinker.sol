@@ -32,6 +32,15 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
 
     address public reserveWallet;
 
+    // token => tokenId => readerIdentityId => signatureDate => PermissionData
+    mapping(address => mapping(uint256 => mapping(uint256 => mapping(uint256 => PermissionData)))) _permissions;
+    
+    struct PermissionData {
+        uint256 ownerIdentityId;
+        string data;
+        uint256 expirationDate;
+    }
+
     /* ========== INITIALIZE ================================================ */
 
     /// @notice Creates a new soul linker
@@ -184,7 +193,7 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
         uint256 signatureDate,
         uint256 expirationDate,
         bytes calldata signature
-    ) external returns (bool) {
+    ) external {
         require(linkedSBT[token], "SBT_NOT_LINKED");
 
         address identityReader = soulboundIdentity.ownerOf(readerIdentityId);
@@ -213,7 +222,12 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
 
         _payForStoringPermission();
 
-        return true;
+        // token => tokenId => readerIdentityId => signatureDate => PermissionData
+        _permissions[token][tokenId][readerIdentityId][signatureDate] = PermissionData(
+            ownerIdentityId,
+            data,
+            expirationDate
+        );
     }
 
     /* ========== VIEWS ===================================================== */
