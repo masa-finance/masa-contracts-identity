@@ -11,6 +11,8 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "./dex/DexAMM.sol";
 import "./interfaces/ISoulboundIdentity.sol";
 
+import "hardhat/console.sol";
+
 /// @title Soul linker
 /// @author Masa Finance
 /// @notice Soul linker smart contract that let add links to a Soulbound token.
@@ -412,15 +414,15 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
                 keccak256(
                     abi.encode(
                         keccak256(
-                            "Link(uint256 readerIdentityId,uint256 ownerIdentityId,address token,uint256 tokenId,uint256 signatureDate,uint256 expirationDate,string data)"
+                            "Link(uint256 readerIdentityId,uint256 ownerIdentityId,address token,uint256 tokenId,string data,uint256 signatureDate,uint256 expirationDate)"
                         ),
                         readerIdentityId,
                         ownerIdentityId,
                         token,
                         tokenId,
+                        keccak256(bytes(data)),
                         signatureDate,
-                        expirationDate,
-                        data
+                        expirationDate
                     )
                 )
             );

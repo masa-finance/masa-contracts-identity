@@ -206,9 +206,9 @@ describe("Soul Linker", () => {
             { name: "ownerIdentityId", type: "uint256" },
             { name: "token", type: "address" },
             { name: "tokenId", type: "uint256" },
+            { name: "data", type: "string" },
             { name: "signatureDate", type: "uint256" },
-            { name: "expirationDate", type: "uint256" },
-            { name: "data", type: "string" }
+            { name: "expirationDate", type: "uint256" }
           ]
         },
         // Value
@@ -217,9 +217,9 @@ describe("Soul Linker", () => {
           ownerIdentityId: ownerIdentityId,
           token: soulboundCreditReport.address,
           tokenId: creditReport1,
+          data: data,
           signatureDate: signatureDate,
-          expirationDate: expirationDate,
-          data: data
+          expirationDate: expirationDate
         }
       );
 
@@ -278,9 +278,9 @@ describe("Soul Linker", () => {
             { name: "ownerIdentityId", type: "uint256" },
             { name: "token", type: "address" },
             { name: "tokenId", type: "uint256" },
+            { name: "data", type: "string" },
             { name: "signatureDate", type: "uint256" },
-            { name: "expirationDate", type: "uint256" },
-            { name: "data", type: "string" }
+            { name: "expirationDate", type: "uint256" }
           ]
         },
         // Value
@@ -289,9 +289,9 @@ describe("Soul Linker", () => {
           ownerIdentityId: ownerIdentityId,
           token: soulboundCreditReport.address,
           tokenId: creditReport1,
+          data: data,
           signatureDate: signatureDate,
-          expirationDate: expirationDate,
-          data: data
+          expirationDate: expirationDate
         }
       );
 
