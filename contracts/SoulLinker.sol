@@ -210,6 +210,7 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
                     ownerIdentityId,
                     token,
                     tokenId,
+                    data,
                     signatureDate,
                     expirationDate
                 ),
@@ -402,6 +403,7 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
         uint256 ownerIdentityId,
         address token,
         uint256 tokenId,
+        string memory data,
         uint256 signatureDate,
         uint256 expirationDate
     ) internal view returns (bytes32) {
@@ -410,14 +412,15 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
                 keccak256(
                     abi.encode(
                         keccak256(
-                            "Link(uint256 readerIdentityId,uint256 ownerIdentityId,address token,uint256 tokenId,uint256 signatureDate,uint256 expirationDate)"
+                            "Link(uint256 readerIdentityId,uint256 ownerIdentityId,address token,uint256 tokenId,uint256 signatureDate,uint256 expirationDate,string data)"
                         ),
                         readerIdentityId,
                         ownerIdentityId,
                         token,
                         tokenId,
                         signatureDate,
-                        expirationDate
+                        expirationDate,
+                        data
                     )
                 )
             );
