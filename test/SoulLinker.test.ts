@@ -153,6 +153,79 @@ describe("Soul Linker", () => {
       await expect(soulLinker.connect(owner).removeLinkedSBT(address1.address))
         .to.be.rejected;
     });
+
+    it("should set NameRegistrationPricePerYear from owner", async () => {
+      const newPrice = 100;
+      await soulLinker.connect(owner).setAddPermissionPrice(newPrice);
+
+      expect(await soulLinker.addPermissionPrice()).to.be.equal(newPrice);
+    });
+
+    it("should fail to set MintingNamePrice from non owner", async () => {
+      const newPrice = 100;
+      await expect(soulLinker.connect(address1).setAddPermissionPrice(newPrice))
+        .to.be.rejected;
+    });
+
+    it("should set StableCoin from owner", async () => {
+      await soulLinker.connect(owner).setStableCoin(address1.address);
+
+      expect(await soulLinker.stableCoin()).to.be.equal(address1.address);
+    });
+
+    it("should fail to set StableCoin from non owner", async () => {
+      await expect(soulLinker.connect(address1).setStableCoin(address1.address))
+        .to.be.rejected;
+    });
+
+    it("should set UtilityToken from owner", async () => {
+      await soulLinker.connect(owner).setUtilityToken(address1.address);
+
+      expect(await soulLinker.utilityToken()).to.be.equal(address1.address);
+    });
+
+    it("should fail to set UtilityToken from non owner", async () => {
+      await expect(
+        soulLinker.connect(address1).setUtilityToken(address1.address)
+      ).to.be.rejected;
+    });
+
+    it("should set ReserveWallet from owner", async () => {
+      await soulLinker.connect(owner).setReserveWallet(address1.address);
+
+      expect(await soulLinker.reserveWallet()).to.be.equal(address1.address);
+    });
+
+    it("should fail to set ReserveWallet from non owner", async () => {
+      await expect(
+        soulLinker.connect(address1).setReserveWallet(address1.address)
+      ).to.be.rejected;
+    });
+
+    it("should set SwapRouter from owner", async () => {
+      await soulLinker.connect(owner).setSwapRouter(address1.address);
+
+      expect(await soulLinker.swapRouter()).to.be.equal(address1.address);
+    });
+
+    it("should fail to set SwapRouter from non owner", async () => {
+      await expect(soulLinker.connect(address1).setSwapRouter(address1.address))
+        .to.be.rejected;
+    });
+
+    it("should set WrappedNativeToken from owner", async () => {
+      await soulLinker.connect(owner).setWrappedNativeToken(address1.address);
+
+      expect(await soulLinker.wrappedNativeToken()).to.be.equal(
+        address1.address
+      );
+    });
+
+    it("should fail to set WrappedNativeToken from non owner", async () => {
+      await expect(
+        soulLinker.connect(address1).setWrappedNativeToken(address1.address)
+      ).to.be.rejected;
+    });
   });
 
   describe("read link information", () => {
