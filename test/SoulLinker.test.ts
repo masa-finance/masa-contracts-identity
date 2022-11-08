@@ -35,6 +35,53 @@ let ownerIdentityId: number;
 let readerIdentityId: number;
 let creditReport1: number;
 
+const data = '{"data1","data2"}';
+const signatureDate = Math.floor(Date.now() / 1000);
+const expirationDate = Math.floor(Date.now() / 1000) + 60 * 15;
+
+const signTypedData = async (
+  readerIdentityId: number,
+  ownerIdentityId: number,
+  token: string,
+  tokenId: number
+) => {
+  const chainId = await getChainId();
+
+  const signature = await address1._signTypedData(
+    // Domain
+    {
+      name: "SoulLinker",
+      version: "1.0.0",
+      chainId: chainId,
+      verifyingContract: soulLinker.address
+    },
+    // Types
+    {
+      Link: [
+        { name: "readerIdentityId", type: "uint256" },
+        { name: "ownerIdentityId", type: "uint256" },
+        { name: "token", type: "address" },
+        { name: "tokenId", type: "uint256" },
+        { name: "data", type: "string" },
+        { name: "signatureDate", type: "uint256" },
+        { name: "expirationDate", type: "uint256" }
+      ]
+    },
+    // Value
+    {
+      readerIdentityId: readerIdentityId,
+      ownerIdentityId: ownerIdentityId,
+      token: token,
+      tokenId: tokenId,
+      data: data,
+      signatureDate: signatureDate,
+      expirationDate: expirationDate
+    }
+  );
+
+  return signature;
+};
+
 describe("Soul Linker", () => {
   before(async () => {
     [, owner, address1, address2] = await ethers.getSigners();
@@ -259,41 +306,11 @@ describe("Soul Linker", () => {
 
   describe("addPermission", () => {
     it("addPermission must work with a valid signature", async () => {
-      const chainId = await getChainId();
-      const signatureDate = Math.floor(Date.now() / 1000);
-      const expirationDate = Math.floor(Date.now() / 1000) + 60 * 15;
-      const data = '{"data1","data2"}';
-
-      const signature = await address1._signTypedData(
-        // Domain
-        {
-          name: "SoulLinker",
-          version: "1.0.0",
-          chainId: chainId,
-          verifyingContract: soulLinker.address
-        },
-        // Types
-        {
-          Link: [
-            { name: "readerIdentityId", type: "uint256" },
-            { name: "ownerIdentityId", type: "uint256" },
-            { name: "token", type: "address" },
-            { name: "tokenId", type: "uint256" },
-            { name: "data", type: "string" },
-            { name: "signatureDate", type: "uint256" },
-            { name: "expirationDate", type: "uint256" }
-          ]
-        },
-        // Value
-        {
-          readerIdentityId: readerIdentityId,
-          ownerIdentityId: ownerIdentityId,
-          token: soulboundCreditReport.address,
-          tokenId: creditReport1,
-          data: data,
-          signatureDate: signatureDate,
-          expirationDate: expirationDate
-        }
+      const signature = await signTypedData(
+        readerIdentityId,
+        ownerIdentityId,
+        soulboundCreditReport.address,
+        creditReport1
       );
 
       const priceInUtilityToken = await soulLinker.addPermissionPriceInfo();
@@ -331,41 +348,11 @@ describe("Soul Linker", () => {
     });
 
     it("addPermission won't work with an invalid signature", async () => {
-      const chainId = await getChainId();
-      const signatureDate = Math.floor(Date.now() / 1000);
-      const expirationDate = Math.floor(Date.now() / 1000) + 60 * 15;
-      const data = '{"data1","data2"}';
-
-      const signature = await address1._signTypedData(
-        // Domain
-        {
-          name: "SoulLinker",
-          version: "1.0.0",
-          chainId: chainId,
-          verifyingContract: soulLinker.address
-        },
-        // Types
-        {
-          Link: [
-            { name: "readerIdentityId", type: "uint256" },
-            { name: "ownerIdentityId", type: "uint256" },
-            { name: "token", type: "address" },
-            { name: "tokenId", type: "uint256" },
-            { name: "data", type: "string" },
-            { name: "signatureDate", type: "uint256" },
-            { name: "expirationDate", type: "uint256" }
-          ]
-        },
-        // Value
-        {
-          readerIdentityId: ownerIdentityId,
-          ownerIdentityId: ownerIdentityId,
-          token: soulboundCreditReport.address,
-          tokenId: creditReport1,
-          data: data,
-          signatureDate: signatureDate,
-          expirationDate: expirationDate
-        }
+      const signature = await signTypedData(
+        ownerIdentityId,
+        ownerIdentityId,
+        soulboundCreditReport.address,
+        creditReport1
       );
 
       const priceInUtilityToken = await soulLinker.addPermissionPriceInfo();
