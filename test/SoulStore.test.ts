@@ -60,10 +60,6 @@ describe("Soul Store", () => {
       owner
     );
 
-    // we get $MASA tokens for address1
-    const masa: MASA = MASA__factory.connect(masaAddress, owner);
-    await masa.connect(address1).mint();
-
     // we get stable coins for address1
     await uniswapRouter.swapExactETHForTokens(
       0,
@@ -75,7 +71,7 @@ describe("Soul Store", () => {
       }
     );
 
-    // we get utility tokens for address1
+    // we get $MASA utility tokens for address1
     await uniswapRouter.swapExactETHForTokens(
       0,
       [WETH_GOERLI, MASA_GOERLI],

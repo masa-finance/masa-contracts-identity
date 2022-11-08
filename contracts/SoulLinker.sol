@@ -117,7 +117,7 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
     /// @notice Sets the price of store permission in stable coin
     /// @dev The caller must have the owner to call this function
     /// @param _addPermissionPrice New price of the store permission in stable coin
-    function setAtorePermissionPrice(uint256 _addPermissionPrice)
+    function setAddPermissionPrice(uint256 _addPermissionPrice)
         external
         onlyOwner
     {
@@ -210,7 +210,6 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
                     ownerIdentityId,
                     token,
                     tokenId,
-                    data,
                     signatureDate,
                     expirationDate
                 ),
@@ -403,7 +402,6 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
         uint256 ownerIdentityId,
         address token,
         uint256 tokenId,
-        string memory data,
         uint256 signatureDate,
         uint256 expirationDate
     ) internal view returns (bytes32) {
@@ -412,13 +410,12 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
                 keccak256(
                     abi.encode(
                         keccak256(
-                            "Link(uint256 readerIdentityId,uint256 ownerIdentityId,address token,uint256 tokenId,string data,uint256 signatureDate,uint256 expirationDate)"
+                            "Link(uint256 readerIdentityId,uint256 ownerIdentityId,address token,uint256 tokenId,uint256 signatureDate,uint256 expirationDate)"
                         ),
                         readerIdentityId,
                         ownerIdentityId,
                         token,
                         tokenId,
-                        data,
                         signatureDate,
                         expirationDate
                     )

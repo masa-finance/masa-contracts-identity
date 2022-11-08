@@ -4,6 +4,10 @@ import { solidity } from "ethereum-waffle";
 import { ethers, deployments, getChainId } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
+  ERC20,
+  ERC20__factory,
+  IUniswapRouter,
+  IUniswapRouter__factory,
   SoulboundCreditReport,
   SoulboundCreditReport__factory,
   SoulboundIdentity,
@@ -12,6 +16,7 @@ import {
   SoulLinker__factory
 } from "../typechain";
 import { BigNumber } from "ethers";
+import { MASA_GOERLI, SWAPROUTER_GOERLI, WETH_GOERLI } from "../src/constants";
 
 chai.use(chaiAsPromised);
 chai.use(solidity);
@@ -77,6 +82,22 @@ describe("Soul Linker", () => {
     mintReceipt = await mintTx.wait();
 
     creditReport1 = mintReceipt.events![0].args![1].toNumber();
+
+    const uniswapRouter: IUniswapRouter = IUniswapRouter__factory.connect(
+      SWAPROUTER_GOERLI,
+      owner
+    );
+
+    // we get $MASA utility tokens for address1
+    await uniswapRouter.swapExactETHForTokens(
+      0,
+      [WETH_GOERLI, MASA_GOERLI],
+      address1.address,
+      Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
+      {
+        value: ethers.utils.parseEther("10")
+      }
+    );
   });
 
   describe("owner functions", () => {
@@ -185,7 +206,6 @@ describe("Soul Linker", () => {
             { name: "ownerIdentityId", type: "uint256" },
             { name: "token", type: "address" },
             { name: "tokenId", type: "uint256" },
-            { name: "data", type: "string" },
             { name: "signatureDate", type: "uint256" },
             { name: "expirationDate", type: "uint256" }
           ]
@@ -196,11 +216,18 @@ describe("Soul Linker", () => {
           ownerIdentityId: ownerIdentityId,
           token: soulboundCreditReport.address,
           tokenId: creditReport1,
-          data: data,
           signatureDate: signatureDate,
           expirationDate: expirationDate
         }
       );
+
+      const priceInUtilityToken = await soulLinker.addPermissionPriceInfo();
+
+      // set allowance for soul store
+      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
+      await masa
+        .connect(address1)
+        .approve(soulLinker.address, priceInUtilityToken);
 
       await soulLinker
         .connect(address1)
@@ -249,7 +276,6 @@ describe("Soul Linker", () => {
             { name: "ownerIdentityId", type: "uint256" },
             { name: "token", type: "address" },
             { name: "tokenId", type: "uint256" },
-            { name: "data", type: "string" },
             { name: "signatureDate", type: "uint256" },
             { name: "expirationDate", type: "uint256" }
           ]
@@ -260,11 +286,18 @@ describe("Soul Linker", () => {
           ownerIdentityId: ownerIdentityId,
           token: soulboundCreditReport.address,
           tokenId: creditReport1,
-          data: data,
           signatureDate: signatureDate,
           expirationDate: expirationDate
         }
       );
+
+      const priceInUtilityToken = await soulLinker.addPermissionPriceInfo();
+
+      // set allowance for soul store
+      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
+      await masa
+        .connect(address1)
+        .approve(soulLinker.address, priceInUtilityToken);
 
       await expect(
         soulLinker

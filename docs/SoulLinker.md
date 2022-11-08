@@ -301,10 +301,10 @@ Revokes the permission
 | tokenId | uint256 | Id of the token |
 | signatureDate | uint256 | Signature date of the signature |
 
-### setAtorePermissionPrice
+### setAddPermissionPrice
 
 ```solidity
-function setAtorePermissionPrice(uint256 _addPermissionPrice) external nonpayable
+function setAddPermissionPrice(uint256 _addPermissionPrice) external nonpayable
 ```
 
 Sets the price of store permission in stable coin
