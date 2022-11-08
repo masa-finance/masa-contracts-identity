@@ -130,6 +130,31 @@ Returns the identityId owned by the given token
 |---|---|---|
 | _0 | uint256 | Id of the identity |
 
+### getPermissionInfo
+
+```solidity
+function getPermissionInfo(address token, uint256 tokenId, uint256 readerIdentityId, uint256 signatureDate) external view returns (struct SoulLinker.PermissionData)
+```
+
+Returns the information of permission dates for a given SBT token and reader
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| token | address | Address of the SBT contract |
+| tokenId | uint256 | Id of the token |
+| readerIdentityId | uint256 | Id of the identity of the reader of the SBT |
+| signatureDate | uint256 | Signature date of the signature |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | SoulLinker.PermissionData | permissionData List of linked SBTs |
+
 ### getPermissionSignatureDates
 
 ```solidity

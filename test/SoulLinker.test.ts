@@ -334,12 +334,29 @@ describe("Soul Linker", () => {
           signature
         );
 
-      const permissionSignatureDates = await soulLinker.getPermissionSignatureDates(
+      const permissionSignatureDates =
+        await soulLinker.getPermissionSignatureDates(
+          soulboundCreditReport.address,
+          creditReport1,
+          readerIdentityId
+        );
+      expect(permissionSignatureDates[0]).to.be.equal(signatureDate);
+
+      const {
+        ownerIdentityId: ownerIdentityIdInfo,
+        data: dataInfo,
+        expirationDate: expirationDateInfo,
+        isRevoked: isRevokedInfo
+      } = await soulLinker.getPermissionInfo(
         soulboundCreditReport.address,
         creditReport1,
-        readerIdentityId
+        readerIdentityId,
+        signatureDate
       );
-      expect(permissionSignatureDates[0]).to.be.equal(signatureDate);
+      expect(ownerIdentityIdInfo).to.be.equal(ownerIdentityId);
+      expect(dataInfo).to.be.equal(data);
+      expect(expirationDateInfo).to.be.equal(expirationDate);
+      expect(isRevokedInfo).to.be.equal(false);
 
       const dataWithPermissions = await soulLinker
         .connect(address2)

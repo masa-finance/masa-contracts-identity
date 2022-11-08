@@ -334,6 +334,21 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
         return _permissionSignatureDates[token][tokenId][readerIdentityId];
     }
 
+    /// @notice Returns the information of permission dates for a given SBT token and reader
+    /// @param token Address of the SBT contract
+    /// @param tokenId Id of the token
+    /// @param readerIdentityId Id of the identity of the reader of the SBT
+    /// @param signatureDate Signature date of the signature
+    /// @return permissionData List of linked SBTs
+    function getPermissionInfo(
+        address token,
+        uint256 tokenId,
+        uint256 readerIdentityId,
+        uint256 signatureDate
+    ) public view returns (PermissionData memory) {
+        return _permissions[token][tokenId][readerIdentityId][signatureDate];
+    }
+
     /// @notice Validates the permission of the given read link request and returns the
     /// data that reader can read if the permission is valid
     /// @dev The token must be linked to this soul linker
