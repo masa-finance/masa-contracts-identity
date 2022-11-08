@@ -35,8 +35,10 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
     address public reserveWallet;
 
     // token => tokenId => readerIdentityId => signatureDate => PermissionData
-    mapping(address => mapping(uint256 => mapping(uint256 => mapping(uint256 => PermissionData)))) _permissions;
-    mapping(address => mapping(uint256 => mapping(uint256 => uint256[]))) _permissionSignatureDates;
+    mapping(address => mapping(uint256 => mapping(uint256 => mapping(uint256 => PermissionData))))
+        private _permissions;
+    mapping(address => mapping(uint256 => mapping(uint256 => uint256[])))
+        private _permissionSignatureDates;
 
     struct PermissionData {
         uint256 ownerIdentityId;
@@ -317,6 +319,19 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
         }
 
         return sbtLinks;
+    }
+
+    /// @notice Returns the list of permission signature dates for a given SBT token and reader
+    /// @param token Address of the SBT contract
+    /// @param tokenId Id of the token
+    /// @param readerIdentityId Id of the identity of the reader of the SBT
+    /// @return List of linked SBTs
+    function getPermissionSignatureDates(
+        address token,
+        uint256 tokenId,
+        uint256 readerIdentityId
+    ) public view returns (uint256[] memory) {
+        return _permissionSignatureDates[token][tokenId][readerIdentityId];
     }
 
     /// @notice Validates the permission of the given read link request and returns the

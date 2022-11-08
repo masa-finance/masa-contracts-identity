@@ -130,6 +130,30 @@ Returns the identityId owned by the given token
 |---|---|---|
 | _0 | uint256 | Id of the identity |
 
+### getPermissionSignatureDates
+
+```solidity
+function getPermissionSignatureDates(address token, uint256 tokenId, uint256 readerIdentityId) external view returns (uint256[])
+```
+
+Returns the list of permission signature dates for a given SBT token and reader
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| token | address | Address of the SBT contract |
+| tokenId | uint256 | Id of the token |
+| readerIdentityId | uint256 | Id of the identity of the reader of the SBT |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256[] | List of linked SBTs |
+
 ### getSBTLinks
 
 ```solidity
