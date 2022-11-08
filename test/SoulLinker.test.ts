@@ -334,6 +334,13 @@ describe("Soul Linker", () => {
           signature
         );
 
+      const permissionSignatureDates = await soulLinker.getPermissionSignatureDates(
+        soulboundCreditReport.address,
+        creditReport1,
+        readerIdentityId
+      );
+      expect(permissionSignatureDates[0]).to.be.equal(signatureDate);
+
       const dataWithPermissions = await soulLinker
         .connect(address2)
         .validatePermission(
