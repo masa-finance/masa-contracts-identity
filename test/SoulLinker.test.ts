@@ -391,4 +391,124 @@ describe("Soul Linker", () => {
       ).to.be.rejected;
     });
   });
+
+  describe("revokePermission", () => {
+    it("non owner of data can't call revokePermission", async () => {
+      const signature = await signTypedData(
+        readerIdentityId,
+        ownerIdentityId,
+        soulboundCreditReport.address,
+        creditReport1
+      );
+
+      const priceInUtilityToken = await soulLinker.addPermissionPriceInfo();
+
+      // set allowance for soul store
+      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
+      await masa
+        .connect(address1)
+        .approve(soulLinker.address, priceInUtilityToken);
+
+      await soulLinker
+        .connect(address1)
+        .addPermission(
+          readerIdentityId,
+          ownerIdentityId,
+          soulboundCreditReport.address,
+          creditReport1,
+          data,
+          signatureDate,
+          expirationDate,
+          signature
+        );
+
+      await expect(
+        soulLinker
+          .connect(address2)
+          .revokePermission(
+            readerIdentityId,
+            ownerIdentityId,
+            soulboundCreditReport.address,
+            creditReport1,
+            signatureDate
+          )
+      ).to.be.rejected;
+
+      const dataWithPermissions = await soulLinker
+        .connect(address2)
+        .validatePermission(
+          readerIdentityId,
+          ownerIdentityId,
+          soulboundCreditReport.address,
+          creditReport1,
+          signatureDate
+        );
+
+      expect(dataWithPermissions).to.be.equal(data);
+    });
+
+    it("owner of data can call revokePermission", async () => {
+      const signature = await signTypedData(
+        readerIdentityId,
+        ownerIdentityId,
+        soulboundCreditReport.address,
+        creditReport1
+      );
+
+      const priceInUtilityToken = await soulLinker.addPermissionPriceInfo();
+
+      // set allowance for soul store
+      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
+      await masa
+        .connect(address1)
+        .approve(soulLinker.address, priceInUtilityToken);
+
+      await soulLinker
+        .connect(address1)
+        .addPermission(
+          readerIdentityId,
+          ownerIdentityId,
+          soulboundCreditReport.address,
+          creditReport1,
+          data,
+          signatureDate,
+          expirationDate,
+          signature
+        );
+
+      const dataWithPermissions = await soulLinker
+        .connect(address2)
+        .validatePermission(
+          readerIdentityId,
+          ownerIdentityId,
+          soulboundCreditReport.address,
+          creditReport1,
+          signatureDate
+        );
+
+      expect(dataWithPermissions).to.be.equal(data);
+
+      await soulLinker
+        .connect(address1)
+        .revokePermission(
+          readerIdentityId,
+          ownerIdentityId,
+          soulboundCreditReport.address,
+          creditReport1,
+          signatureDate
+        );
+
+      await expect(
+        soulLinker
+          .connect(address2)
+          .validatePermission(
+            readerIdentityId,
+            ownerIdentityId,
+            soulboundCreditReport.address,
+            creditReport1,
+            signatureDate
+          )
+      ).to.be.rejected;
+    });
+  });
 });
