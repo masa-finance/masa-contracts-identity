@@ -88,6 +88,17 @@ describe("Soulbound Identity", () => {
       expect(await soulboundIdentity.tokenByIndex(0)).to.equal(0);
     });
 
+    it("should mint twice to different accounts", async () => {
+      await soulboundIdentity.connect(owner).mint(someone.address);
+      await soulboundIdentity.connect(owner).mint(address1.address);
+
+      expect(await soulboundIdentity.totalSupply()).to.equal(2);
+      expect(await soulboundIdentity.tokenByIndex(0)).to.equal(0);
+      expect(await soulboundIdentity.tokenByIndex(1)).to.equal(1);
+      expect(await soulboundIdentity.tokenOfOwner(someone.address)).to.equal(0);
+      expect(await soulboundIdentity.tokenOfOwner(address1.address)).to.equal(1);
+    });
+
     it("should fail to mint from someone", async () => {
       await expect(soulboundIdentity.connect(someone).mint(someone.address)).to
         .be.rejected;
