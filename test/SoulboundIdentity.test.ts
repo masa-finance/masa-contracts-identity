@@ -62,6 +62,14 @@ describe("Soulbound Identity", () => {
     });
   });
 
+  describe("sbt information", () => {
+    it("should be able to get sbt information", async () => {
+      expect(await soulboundIdentity.name()).to.equal("Masa Identity");
+
+      expect(await soulboundIdentity.symbol()).to.equal("MID");
+    });
+  });
+
   describe("mint", () => {
     it("should mint from owner", async () => {
       await soulboundIdentity.connect(owner).mint(someone.address);

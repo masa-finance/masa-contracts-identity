@@ -52,6 +52,14 @@ describe("Soulbound Credit Report", () => {
     await soulboundIdentity.connect(owner).mint(someone.address);
   });
 
+  describe("sbt information", () => {
+    it("should be able to get sbt information", async () => {
+      expect(await soulboundCreditReport.name()).to.equal("Masa Credit Report");
+
+      expect(await soulboundCreditReport.symbol()).to.equal("MCR");
+    });
+  });
+
   describe("mint", () => {
     it("should mint from owner", async () => {
       await soulboundCreditReport.connect(owner).mint(someone.address);

@@ -66,6 +66,14 @@ describe("Soul Name", () => {
     identityId2 = mintReceipt.events![0].args![1].toNumber();
   });
 
+  describe("nft information", () => {
+    it("should be able to get nft information", async () => {
+      expect(await soulName.name()).to.equal("Masa Soul Name");
+
+      expect(await soulName.symbol()).to.equal("MSN");
+    });
+  });
+
   describe("supportsInterface", () => {
     it("get data from supportsInterface()", async () => {
       expect(await soulName.supportsInterface("0x01ffc9a7")).to.be.true;

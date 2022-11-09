@@ -49,6 +49,14 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
     await soulboundIdentity.connect(owner).mint(someone.address);
   });
 
+  describe("sbt information", () => {
+    it("should be able to get sbt information", async () => {
+      expect(await soulbound2FA.name()).to.equal("Masa 2FA");
+
+      expect(await soulbound2FA.symbol()).to.equal("M2F");
+    });
+  });
+
   describe("mint", () => {
     it("should mint from owner", async () => {
       await soulbound2FA.connect(owner).mint(someone.address);
