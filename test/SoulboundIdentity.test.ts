@@ -44,7 +44,8 @@ describe("Soulbound Identity", () => {
 
   describe("supportsInterface", () => {
     it("get data from supportsInterface()", async () => {
-      expect(await soulboundIdentity.supportsInterface("0x01ffc9a7")).to.be.true;
+      expect(await soulboundIdentity.supportsInterface("0x01ffc9a7")).to.be
+        .true;
     });
   });
 
