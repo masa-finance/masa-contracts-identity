@@ -77,6 +77,36 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
     });
   });
 
+  describe("burn", () => {
+    it("should burn", async () => {
+      // we mint
+      let mintTx = await soulbound2FA.connect(owner).mint(someone.address);
+      let mintReceipt = await mintTx.wait();
+      const tokenId1 = mintReceipt.events![0].args![1].toNumber();
+
+      // we mint again
+      mintTx = await soulbound2FA.connect(owner).mint(someone.address);
+      mintReceipt = await mintTx.wait();
+      const tokenId2 = mintReceipt.events![0].args![1].toNumber();
+
+      expect(await soulbound2FA.balanceOf(someone.address)).to.be.equal(2);
+      expect(await soulbound2FA["ownerOf(uint256)"](tokenId1)).to.be.equal(
+        someone.address
+      );
+      expect(await soulbound2FA["ownerOf(uint256)"](tokenId2)).to.be.equal(
+        someone.address
+      );
+
+      await soulbound2FA.connect(someone).burn(tokenId1);
+
+      expect(await soulbound2FA.balanceOf(someone.address)).to.be.equal(1);
+
+      await soulbound2FA.connect(someone).burn(tokenId2);
+
+      expect(await soulbound2FA.balanceOf(someone.address)).to.be.equal(0);
+    });
+  });
+
   describe("tokenUri", () => {
     it("should fail to transfer because its soulbound", async () => {
       const mintTx = await soulbound2FA.connect(owner).mint(someone.address);
