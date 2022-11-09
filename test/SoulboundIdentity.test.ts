@@ -82,6 +82,9 @@ describe("Soulbound Identity", () => {
       await expect(
         soulboundIdentity.connect(owner).mint(someone.address)
       ).to.be.rejectedWith("Soulbound identity already created!");
+
+      expect(await soulboundIdentity.totalSupply()).to.equal(1);
+      expect(await soulboundIdentity.tokenByIndex(0)).to.equal(0);
     });
 
     it("should fail to mint from someone", async () => {

@@ -65,6 +65,10 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
     it("should mint twice", async () => {
       await soulbound2FA.connect(owner).mint(someone.address);
       await soulbound2FA.connect(owner).mint(someone.address);
+
+      expect(await soulbound2FA.totalSupply()).to.equal(2);
+      expect(await soulbound2FA.tokenByIndex(0)).to.equal(0);
+      expect(await soulbound2FA.tokenByIndex(1)).to.equal(1);
     });
 
     it("should fail to mint from someone", async () => {

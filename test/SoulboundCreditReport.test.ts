@@ -68,6 +68,10 @@ describe("Soulbound Credit Report", () => {
     it("should mint twice", async () => {
       await soulboundCreditReport.connect(owner).mint(someone.address);
       await soulboundCreditReport.connect(owner).mint(someone.address);
+
+      expect(await soulboundCreditReport.totalSupply()).to.equal(2);
+      expect(await soulboundCreditReport.tokenByIndex(0)).to.equal(0);
+      expect(await soulboundCreditReport.tokenByIndex(1)).to.equal(1);
     });
 
     it("should fail to mint from someone", async () => {
