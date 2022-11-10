@@ -25,6 +25,10 @@ abstract contract PayDexAMM is Ownable {
     address public stableCoin; // USDC
     address public utilityToken; // $MASA
 
+    // other ERC20 tokens
+    mapping(address => bool) public erc20token;
+    address[] public erc20tokens;
+
     address public reserveWallet;
 
     /* ========== INITIALIZE ================================================ */
@@ -155,7 +159,7 @@ abstract contract PayDexAMM is Ownable {
                 (success, ) = payable(msg.sender).call{value: refund}("");
                 require(success);
             }
-        } else if (paymentMethod == utilityToken) {
+        } else if (paymentMethod == utilityToken || erc20token[paymentMethod]) {
             // $MASA
             uint256 swapAmout = _convertFromStableCoin(
                 paymentMethod,
