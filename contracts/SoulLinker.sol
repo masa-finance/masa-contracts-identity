@@ -3,8 +3,6 @@ pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
@@ -17,8 +15,6 @@ import "hardhat/console.sol";
 /// @author Masa Finance
 /// @notice Soul linker smart contract that let add links to a Soulbound token.
 contract SoulLinker is PayDexAMM, Ownable, EIP712 {
-    using SafeERC20 for IERC20;
-
     /* ========== STATE VARIABLES =========================================== */
 
     ISoulboundIdentity public soulboundIdentity;
@@ -28,11 +24,6 @@ contract SoulLinker is PayDexAMM, Ownable, EIP712 {
     address[] public linkedSBTs;
 
     uint256 public addPermissionPrice; // store permission price in stable coin
-
-    address public stableCoin; // USDC
-    address public utilityToken; // $MASA
-
-    address public reserveWallet;
 
     // token => tokenId => readerIdentityId => signatureDate => PermissionData
     mapping(address => mapping(uint256 => mapping(uint256 => mapping(uint256 => PermissionData))))
@@ -69,11 +60,14 @@ contract SoulLinker is PayDexAMM, Ownable, EIP712 {
         address _reserveWallet
     )
         EIP712("SoulLinker", "1.0.0")
-        PayDexAMM(_swapRouter, _wrappedNativeToken)
+        PayDexAMM(
+            _swapRouter,
+            _wrappedNativeToken,
+            _stableCoin,
+            _utilityToken,
+            _reserveWallet
+        )
     {
-        require(_stableCoin != address(0), "ZERO_ADDRESS");
-        require(_utilityToken != address(0), "ZERO_ADDRESS");
-        require(_reserveWallet != address(0), "ZERO_ADDRESS");
         require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
 
         Ownable.transferOwnership(owner);
@@ -81,9 +75,6 @@ contract SoulLinker is PayDexAMM, Ownable, EIP712 {
         soulboundIdentity = _soulboundIdentity;
 
         addPermissionPrice = _addPermissionPrice;
-        stableCoin = _stableCoin;
-        utilityToken = _utilityToken;
-        reserveWallet = _reserveWallet;
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
@@ -130,54 +121,6 @@ contract SoulLinker is PayDexAMM, Ownable, EIP712 {
     {
         require(addPermissionPrice != _addPermissionPrice, "SAME_VALUE");
         addPermissionPrice = _addPermissionPrice;
-    }
-
-    /// @notice Sets the stable coin to pay the fee in (USDC)
-    /// @dev The caller must have the owner to call this function
-    /// @param _stableCoin New stable coin to pay the fee in
-    function setStableCoin(address _stableCoin) external onlyOwner {
-        require(_stableCoin != address(0), "ZERO_ADDRESS");
-        require(stableCoin != _stableCoin, "SAME_VALUE");
-        stableCoin = _stableCoin;
-    }
-
-    /// @notice Sets the utility token to pay the fee in ($MASA)
-    /// @dev The caller must have the owner to call this function
-    /// @param _utilityToken New utility token to pay the fee in
-    function setUtilityToken(address _utilityToken) external onlyOwner {
-        require(_utilityToken != address(0), "ZERO_ADDRESS");
-        require(utilityToken != _utilityToken, "SAME_VALUE");
-        utilityToken = _utilityToken;
-    }
-
-    /// @notice Set the reserve wallet
-    /// @dev Let change the reserve walled. It can be triggered by an authorized account.
-    /// @param _reserveWallet New reserve wallet
-    function setReserveWallet(address _reserveWallet) external onlyOwner {
-        require(_reserveWallet != address(0), "ZERO_ADDRESS");
-        require(_reserveWallet != reserveWallet, "SAME_VALUE");
-        reserveWallet = _reserveWallet;
-    }
-
-    /// @notice Sets the swap router address
-    /// @dev The caller must have the owner to call this function
-    /// @param _swapRouter New swap router address
-    function setSwapRouter(address _swapRouter) external onlyOwner {
-        require(_swapRouter != address(0), "ZERO_ADDRESS");
-        require(swapRouter != _swapRouter, "SAME_VALUE");
-        swapRouter = _swapRouter;
-    }
-
-    /// @notice Sets the wrapped native token address
-    /// @dev The caller must have the owner to call this function
-    /// @param _wrappedNativeToken New wrapped native token address
-    function setWrappedNativeToken(address _wrappedNativeToken)
-        external
-        onlyOwner
-    {
-        require(_wrappedNativeToken != address(0), "ZERO_ADDRESS");
-        require(wrappedNativeToken != _wrappedNativeToken, "SAME_VALUE");
-        wrappedNativeToken = _wrappedNativeToken;
     }
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
