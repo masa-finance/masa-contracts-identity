@@ -177,12 +177,6 @@ describe("Soul Store", () => {
   });
 
   describe("purchase info", () => {
-    it("should fail to get purchase info for invalid payment method", async () => {
-      await expect(
-        soulStore.getPriceForMintingName(owner.address, SOUL_NAME, YEAR)
-      ).to.be.rejectedWith("INVALID_PAYMENT_METHOD");
-    });
-
     it("we can get name purchase info for 1 and 2 years", async () => {
       const priceInStableCoin1 = await soulStore.getPriceForMintingName(
         await soulStore.stableCoin(),
@@ -721,6 +715,12 @@ describe("Soul Store", () => {
   });
 
   describe("use invalid payment method", () => {
+    it("should fail to get purchase info for invalid payment method", async () => {
+      await expect(
+        soulStore.getPriceForMintingName(owner.address, SOUL_NAME, YEAR)
+      ).to.be.rejectedWith("INVALID_PAYMENT_METHOD");
+    });
+
     it("we can't use an invalid payment method", async () => {
       await expect(
         soulStore.connect(address1).purchaseIdentityAndName(
