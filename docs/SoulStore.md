@@ -92,6 +92,30 @@ Returns the price of register a name per year in stable coin for an specific len
 |---|---|---|
 | _0 | uint256 | Price in stable coin for that name length |
 
+### getPriceForMintingName
+
+```solidity
+function getPriceForMintingName(address paymentMethod, string name, uint256 yearsPeriod) external view returns (uint256)
+```
+
+Returns the price of the name minting
+
+*Returns current pricing for name minting for a given name length and years period*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| paymentMethod | address | Address of token that user want to pay |
+| name | string | Name of the new soul name |
+| yearsPeriod | uint256 | Years of validity of the name |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | Current price of the name minting in the given payment method |
+
 ### nameRegistrationPricePerYear
 
 ```solidity
@@ -197,31 +221,6 @@ Mints a new Soul Name purchasing it
 | Name | Type | Description |
 |---|---|---|
 | _0 | uint256 | TokenId of the new sou name |
-
-### purchaseNameInfo
-
-```solidity
-function purchaseNameInfo(string name, uint256 yearsPeriod) external view returns (uint256 priceInStableCoin, uint256 priceInETH, uint256 priceInUtilityToken)
-```
-
-Returns the price of the name minting
-
-*Returns all current pricing and amount informations for a purchase*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| name | string | Name of the new soul name |
-| yearsPeriod | uint256 | Years of validity of the name |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| priceInStableCoin | uint256 | Current price of the name minting in stable coin |
-| priceInETH | uint256 | Current price of the name minting in native token (ETH) |
-| priceInUtilityToken | uint256 | Current price of the name minting in utility token ($MASA) |
 
 ### removeErc20Token
 

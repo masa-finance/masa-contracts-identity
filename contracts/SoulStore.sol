@@ -176,32 +176,29 @@ contract SoulStore is PayDexAMM {
     }
 
     /// @notice Returns the price of the name minting
-    /// @dev Returns all current pricing and amount informations for a purchase
+    /// @dev Returns current pricing for name minting for a given name length and years period
+    /// @param paymentMethod Address of token that user want to pay
     /// @param name Name of the new soul name
     /// @param yearsPeriod Years of validity of the name
-    /// @return priceInStableCoin Current price of the name minting in stable coin
-    /// @return priceInETH Current price of the name minting in native token (ETH)
-    /// @return priceInUtilityToken Current price of the name minting in utility token ($MASA)
-    function purchaseNameInfo(string memory name, uint256 yearsPeriod)
-        public
-        view
-        returns (
-            uint256 priceInStableCoin,
-            uint256 priceInETH,
-            uint256 priceInUtilityToken
-        )
-    {
+    /// @return Current price of the name minting in the given payment method
+    function getPriceForMintingName(
+        address paymentMethod,
+        string memory name,
+        uint256 yearsPeriod
+    ) public view returns (uint256) {
         uint256 mintingPrice = getNameRegistrationPricePerYear(name).mul(
             yearsPeriod
         );
 
-        priceInStableCoin = mintingPrice;
-        // get swapped price in ETH and $MASA
-        priceInETH = _convertFromStableCoin(wrappedNativeToken, mintingPrice);
-        priceInUtilityToken = _convertFromStableCoin(
-            utilityToken,
-            mintingPrice
-        );
+        if (paymentMethod == stableCoin) {
+            return mintingPrice;
+        } else if (paymentMethod == address(0)) {
+            return _convertFromStableCoin(wrappedNativeToken, mintingPrice);
+        } else if (paymentMethod == utilityToken || erc20token[paymentMethod]) {
+            return _convertFromStableCoin(paymentMethod, mintingPrice);
+        } else {
+            revert("INVALID_PAYMENT_METHOD");
+        }
     }
 
     /* ========== PRIVATE FUNCTIONS ========== */
