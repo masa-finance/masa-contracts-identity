@@ -313,7 +313,7 @@ describe("Soul Linker", () => {
         creditReport1
       );
 
-      const priceInUtilityToken = await soulLinker.addPermissionPriceInfo();
+      const priceInUtilityToken = await soulLinker.getPriceForAddPermission();
 
       // set allowance for soul store
       const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
@@ -379,7 +379,7 @@ describe("Soul Linker", () => {
         creditReport1
       );
 
-      const priceInUtilityToken = await soulLinker.addPermissionPriceInfo();
+      const priceInUtilityToken = await soulLinker.getPriceForAddPermission();
 
       // set allowance for soul store
       const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
@@ -425,7 +425,7 @@ describe("Soul Linker", () => {
         creditReport1
       );
 
-      const priceInUtilityToken = await soulLinker.addPermissionPriceInfo();
+      const priceInUtilityToken = await soulLinker.getPriceForAddPermission();
 
       // set allowance for soul store
       const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
@@ -479,7 +479,7 @@ describe("Soul Linker", () => {
         creditReport1
       );
 
-      const priceInUtilityToken = await soulLinker.addPermissionPriceInfo();
+      const priceInUtilityToken = await soulLinker.getPriceForAddPermission();
 
       // set allowance for soul store
       const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);

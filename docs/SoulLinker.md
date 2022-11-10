@@ -82,23 +82,6 @@ function addPermissionPrice() external view returns (uint256)
 |---|---|---|
 | _0 | uint256 | undefined |
 
-### addPermissionPriceInfo
-
-```solidity
-function addPermissionPriceInfo() external view returns (uint256 priceInUtilityToken)
-```
-
-Returns the price for storing a permission
-
-*Returns the current pricing for storing a permission*
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| priceInUtilityToken | uint256 | Current price of storing a permission in utility token ($MASA) |
-
 ### erc20token
 
 ```solidity
@@ -214,6 +197,23 @@ Returns the list of permission signature dates for a given SBT token and reader
 | Name | Type | Description |
 |---|---|---|
 | _0 | uint256[] | List of linked SBTs |
+
+### getPriceForAddPermission
+
+```solidity
+function getPriceForAddPermission() external view returns (uint256 priceInUtilityToken)
+```
+
+Returns the price for storing a permission
+
+*Returns the current pricing for storing a permission*
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| priceInUtilityToken | uint256 | Current price of storing a permission in utility token ($MASA) |
 
 ### getSBTLinks
 

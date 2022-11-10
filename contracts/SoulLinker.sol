@@ -351,7 +351,7 @@ contract SoulLinker is PayDexAMM, EIP712 {
     /// @notice Returns the price for storing a permission
     /// @dev Returns the current pricing for storing a permission
     /// @return priceInUtilityToken Current price of storing a permission in utility token ($MASA)
-    function addPermissionPriceInfo()
+    function getPriceForAddPermission()
         public
         view
         returns (uint256 priceInUtilityToken)
