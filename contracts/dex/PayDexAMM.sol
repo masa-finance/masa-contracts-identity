@@ -113,11 +113,21 @@ abstract contract PayDexAMM is Ownable {
 
     /* ========== VIEWS ===================================================== */
 
-    function estimateSwapAmount(
+    function convertFromStableCoin(address _token, uint256 _amount)
+        public
+        view
+        returns (uint256)
+    {
+        return _estimateSwapAmount(_token, stableCoin, _amount);
+    }
+
+    /* ========== PRIVATE FUNCTIONS ========================================= */
+
+    function _estimateSwapAmount(
         address _fromToken,
         address _toToken,
         uint256 _amountOut
-    ) public view returns (uint256) {
+    ) private view returns (uint256) {
         uint256[] memory amounts;
         address[] memory path;
         path = _getPathFromTokenToToken(_fromToken, _toToken);
@@ -125,10 +135,8 @@ abstract contract PayDexAMM is Ownable {
         return amounts[0];
     }
 
-    /* ========== PRIVATE FUNCTIONS ========================================= */
-
     function _getPathFromTokenToToken(address fromToken, address toToken)
-        internal
+        private
         view
         returns (address[] memory)
     {
