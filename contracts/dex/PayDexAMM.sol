@@ -126,6 +126,12 @@ abstract contract PayDexAMM is Ownable {
         view
         returns (uint256)
     {
+        require(
+            token == wrappedNativeToken ||
+                token == utilityToken ||
+                erc20token[token],
+            "INVALID_TOKEN"
+        );
         return _estimateSwapAmount(token, stableCoin, amount);
     }
 
