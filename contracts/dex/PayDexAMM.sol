@@ -106,6 +106,34 @@ abstract contract PayDexAMM is Ownable {
         utilityToken = _utilityToken;
     }
 
+    /// @notice Adds a new ERC20 token as a valid payment method
+    /// @dev The caller must have the owner to call this function
+    /// @param _erc20token New ERC20 token to add
+    function addErc20Token(address _erc20token) external onlyOwner {
+        require(_erc20token != address(0), "ZERO_ADDRESS");
+        require(!erc20token[_erc20token], "ALREADY_ADDED");
+
+        erc20token[_erc20token] = true;
+        erc20tokens.push(_erc20token);
+    }
+
+    /// @notice Removes an ERC20 token as a valid payment method
+    /// @dev The caller must have the owner to call this function
+    /// @param _erc20token ERC20 token to remove
+    function removeErc20Token(address _erc20token) external onlyOwner {
+        require(_erc20token != address(0), "ZERO_ADDRESS");
+        require(erc20token[_erc20token], "NOT_EXISITING_ERC20TOKEN");
+
+        erc20token[_erc20token] = false;
+        for (uint256 i = 0; i < erc20tokens.length; i++) {
+            if (erc20tokens[i] == _erc20token) {
+                erc20tokens[i] = erc20tokens[erc20tokens.length - 1];
+                erc20tokens.pop();
+                break;
+            }
+        }
+    }
+
     /// @notice Set the reserve wallet
     /// @dev Let change the reserve walled. It can be triggered by an authorized account.
     /// @param _reserveWallet New reserve wallet
