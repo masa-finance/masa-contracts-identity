@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
@@ -11,7 +12,7 @@ import "../interfaces/dex/IUniswapRouter.sol";
 /// @notice Smart contract to call a Dex AMM smart contract to pay to a reserve wallet recipient
 /// @dev This smart contract will call the Uniswap Router interface, based on
 /// https://github.com/Uniswap/v2-periphery/blob/master/contracts/interfaces/IUniswapV2Router01.sol
-abstract contract PayDexAMM {
+abstract contract PayDexAMM is Ownable {
     using SafeERC20 for IERC20;
 
     /* ========== STATE VARIABLES =========================================== */
@@ -29,12 +30,14 @@ abstract contract PayDexAMM {
     /// @notice Creates a new Dex AMM
     /// @dev Creates a new Decentralized automated market maker (AMM) smart contract,
     // that will call the Uniswap Router interface
+    /// @param owner Owner of the smart contract
     /// @param _swapRouter Swap router address
     /// @param _wrappedNativeToken Wrapped native token address
     /// @param _stableCoin Stable coin to pay the fee in (USDC)
     /// @param _utilityToken Utility token to pay the fee in ($MASA)
     /// @param _reserveWallet Wallet that will receive the fee
     constructor(
+        address owner,
         address _swapRouter,
         address _wrappedNativeToken,
         address _stableCoin,
@@ -46,6 +49,8 @@ abstract contract PayDexAMM {
         require(_stableCoin != address(0), "ZERO_ADDRESS");
         require(_utilityToken != address(0), "ZERO_ADDRESS");
         require(_reserveWallet != address(0), "ZERO_ADDRESS");
+
+        Ownable.transferOwnership(owner);
 
         swapRouter = _swapRouter;
         wrappedNativeToken = _wrappedNativeToken;

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
@@ -9,12 +8,10 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "./dex/PayDexAMM.sol";
 import "./interfaces/ISoulboundIdentity.sol";
 
-import "hardhat/console.sol";
-
 /// @title Soul linker
 /// @author Masa Finance
 /// @notice Soul linker smart contract that let add links to a Soulbound token.
-contract SoulLinker is PayDexAMM, Ownable, EIP712 {
+contract SoulLinker is PayDexAMM, EIP712 {
     /* ========== STATE VARIABLES =========================================== */
 
     ISoulboundIdentity public soulboundIdentity;
@@ -61,6 +58,7 @@ contract SoulLinker is PayDexAMM, Ownable, EIP712 {
     )
         EIP712("SoulLinker", "1.0.0")
         PayDexAMM(
+            owner,
             _swapRouter,
             _wrappedNativeToken,
             _stableCoin,
@@ -69,8 +67,6 @@ contract SoulLinker is PayDexAMM, Ownable, EIP712 {
         )
     {
         require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
-
-        Ownable.transferOwnership(owner);
 
         soulboundIdentity = _soulboundIdentity;
 

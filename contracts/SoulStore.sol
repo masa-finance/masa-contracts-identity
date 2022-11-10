@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 import "./dex/PayDexAMM.sol";
@@ -13,7 +12,9 @@ import "./interfaces/ISoulName.sol";
 /// @notice Soul Store, that can mint new Soulbound Identities and Soul Name NFTs, paying a fee
 /// @dev From this smart contract we can mint new Soulbound Identities and Soul Name NFTs.
 /// This minting can be done paying a fee in ETH, USDC or $MASA
-contract SoulStore is PayDexAMM, Ownable {
+contract SoulStore is PayDexAMM {
+    using SafeMath for uint256;
+
     /* ========== STATE VARIABLES ========== */
 
     ISoulboundIdentity public soulboundIdentity;
@@ -44,6 +45,7 @@ contract SoulStore is PayDexAMM, Ownable {
         address _reserveWallet
     )
         PayDexAMM(
+            owner,
             _swapRouter,
             _wrappedNativeToken,
             _stableCoin,
@@ -52,8 +54,6 @@ contract SoulStore is PayDexAMM, Ownable {
         )
     {
         require(address(_soulBoundIdentity) != address(0), "ZERO_ADDRESS");
-
-        Ownable.transferOwnership(owner);
 
         soulboundIdentity = _soulBoundIdentity;
 
