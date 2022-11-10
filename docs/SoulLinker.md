@@ -149,6 +149,26 @@ Returns the identityId owned by the given token
 |---|---|---|
 | _0 | uint256 | Id of the identity |
 
+### getPaymentMethods
+
+```solidity
+function getPaymentMethods() external view returns (address _nativeToken, address _stableCoin, address _utilityToken, address[] _erc20tokens)
+```
+
+Returns all available payment methods
+
+*Returns the address of all available payment methods*
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _nativeToken | address | Address of the native token (ETH) |
+| _stableCoin | address | Address of the stable coin (USDC) |
+| _utilityToken | address | Address of the utility token ($MASA) |
+| _erc20tokens | address[] | Array of all ERC20 tokens |
+
 ### getPermissionInfo
 
 ```solidity
