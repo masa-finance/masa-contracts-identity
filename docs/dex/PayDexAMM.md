@@ -10,6 +10,66 @@ Smart contract to call a Dex AMM smart contract to pay to a reserve wallet recip
 
 ## Methods
 
+### addErc20Token
+
+```solidity
+function addErc20Token(address _erc20token) external nonpayable
+```
+
+Adds a new ERC20 token as a valid payment method
+
+*The caller must have the owner to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _erc20token | address | New ERC20 token to add |
+
+### erc20token
+
+```solidity
+function erc20token(address) external view returns (bool)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bool | undefined |
+
+### erc20tokens
+
+```solidity
+function erc20tokens(uint256) external view returns (address)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
 ### owner
 
 ```solidity
@@ -26,6 +86,22 @@ function owner() external view returns (address)
 | Name | Type | Description |
 |---|---|---|
 | _0 | address | undefined |
+
+### removeErc20Token
+
+```solidity
+function removeErc20Token(address _erc20token) external nonpayable
+```
+
+Removes an ERC20 token as a valid payment method
+
+*The caller must have the owner to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _erc20token | address | ERC20 token to remove |
 
 ### renounceOwnership
 

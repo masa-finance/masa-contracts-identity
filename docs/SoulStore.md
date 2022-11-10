@@ -10,29 +10,65 @@ Soul Store, that can mint new Soulbound Identities and Soul Name NFTs, paying a 
 
 ## Methods
 
-### _getSwapAmounts
+### addErc20Token
 
 ```solidity
-function _getSwapAmounts(uint256 mintingPrice) external view returns (uint256 priceInStableCoin, uint256 priceInETH, uint256 priceInUtilityToken)
+function addErc20Token(address _erc20token) external nonpayable
 ```
 
-Returns the price of minting
+Adds a new ERC20 token as a valid payment method
 
-*Returns all current pricing and amount informations for a purchase*
+*The caller must have the owner to call this function*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| mintingPrice | uint256 | undefined |
+| _erc20token | address | New ERC20 token to add |
+
+### erc20token
+
+```solidity
+function erc20token(address) external view returns (bool)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| priceInStableCoin | uint256 | Current price in stable coin |
-| priceInETH | uint256 | Current pric in native token (ETH) |
-| priceInUtilityToken | uint256 | Current price in utility token ($MASA) |
+| _0 | bool | undefined |
+
+### erc20tokens
+
+```solidity
+function erc20tokens(uint256) external view returns (address)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
 
 ### getNameRegistrationPricePerYear
 
@@ -186,6 +222,22 @@ Returns the price of the name minting
 | priceInStableCoin | uint256 | Current price of the name minting in stable coin |
 | priceInETH | uint256 | Current price of the name minting in native token (ETH) |
 | priceInUtilityToken | uint256 | Current price of the name minting in utility token ($MASA) |
+
+### removeErc20Token
+
+```solidity
+function removeErc20Token(address _erc20token) external nonpayable
+```
+
+Removes an ERC20 token as a valid payment method
+
+*The caller must have the owner to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _erc20token | address | ERC20 token to remove |
 
 ### renounceOwnership
 
