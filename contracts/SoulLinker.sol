@@ -166,7 +166,8 @@ contract SoulLinker is PayDexAMM, EIP712 {
             "INVALID_SIGNATURE"
         );
 
-        _payForStoringPermission();
+        // pay with $MASA
+        _pay(utilityToken, addPermissionPrice);
 
         // token => tokenId => readerIdentityId => signatureDate => PermissionData
         _permissions[token][tokenId][readerIdentityId][
@@ -362,21 +363,6 @@ contract SoulLinker is PayDexAMM, EIP712 {
     }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
-
-    /// @notice Performs the payment for storing a permission
-    /// @dev This method will transfer the funds to the reserve wallet, performing the swap
-    function _payForStoringPermission() internal {
-        // pay with $MASA
-        uint256 swapAmout = _convertFromStableCoin(
-            utilityToken,
-            addPermissionPrice
-        );
-        IERC20(utilityToken).safeTransferFrom(
-            msg.sender,
-            reserveWallet,
-            swapAmout
-        );
-    }
 
     function _removeLinkedSBT(address token) internal {
         for (uint256 i = 0; i < linkedSBTs.length; i++) {

@@ -4,6 +4,7 @@ pragma solidity ^0.8.7;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 import "../interfaces/dex/IUniswapRouter.sol";
 
@@ -14,6 +15,7 @@ import "../interfaces/dex/IUniswapRouter.sol";
 /// https://github.com/Uniswap/v2-periphery/blob/master/contracts/interfaces/IUniswapV2Router01.sol
 abstract contract PayDexAMM is Ownable {
     using SafeERC20 for IERC20;
+    using SafeMath for uint256;
 
     /* ========== STATE VARIABLES =========================================== */
 
@@ -115,12 +117,55 @@ abstract contract PayDexAMM is Ownable {
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
 
-    function _convertFromStableCoin(address _token, uint256 _amount)
+    function _convertFromStableCoin(address token, uint256 amount)
         internal
         view
         returns (uint256)
     {
-        return _estimateSwapAmount(_token, stableCoin, _amount);
+        return _estimateSwapAmount(token, stableCoin, amount);
+    }
+
+    /// @notice Performs the payment
+    /// @dev This method will transfer the funds to the reserve wallet, performing
+    /// the swap if necessary
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param amount Price to be paid
+    function _pay(address paymentMethod, uint256 amount) internal {
+        if (paymentMethod == stableCoin) {
+            // USDC
+            IERC20(paymentMethod).safeTransferFrom(
+                msg.sender,
+                reserveWallet,
+                amount
+            );
+        } else if (paymentMethod == address(0)) {
+            // ETH
+            uint256 swapAmout = _convertFromStableCoin(
+                wrappedNativeToken,
+                amount
+            );
+            require(msg.value >= swapAmout, "INVALID_PAYMENT_AMOUNT");
+            (bool success, ) = payable(reserveWallet).call{value: swapAmout}(
+                ""
+            );
+            require(success, "TRANSFER_FAILED");
+            if (msg.value > swapAmout) {
+                // return diff
+                uint256 refund = msg.value.sub(swapAmout);
+                (success, ) = payable(msg.sender).call{value: refund}("");
+                require(success);
+            }
+        } else if (paymentMethod == utilityToken) {
+            // $MASA
+            uint256 swapAmout = _convertFromStableCoin(paymentMethod, amount);
+            IERC20(paymentMethod).safeTransferFrom(
+                msg.sender,
+                reserveWallet,
+                swapAmout
+            );
+        } else {
+            revert("INVALID_PAYMENT_METHOD");
+        }
     }
 
     function _estimateSwapAmount(

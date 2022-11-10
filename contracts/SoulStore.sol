@@ -109,7 +109,7 @@ contract SoulStore is PayDexAMM {
         uint256 yearsPeriod,
         string memory _tokenURI
     ) external payable returns (uint256) {
-        _payForMinting(
+        _pay(
             paymentMethod,
             getNameRegistrationPricePerYear(name).mul(yearsPeriod)
         );
@@ -146,7 +146,7 @@ contract SoulStore is PayDexAMM {
         uint256 yearsPeriod,
         string memory _tokenURI
     ) external payable returns (uint256) {
-        _payForMinting(
+        _pay(
             paymentMethod,
             getNameRegistrationPricePerYear(name).mul(yearsPeriod)
         );
@@ -219,54 +219,6 @@ contract SoulStore is PayDexAMM {
             utilityToken,
             mintingPrice
         );
-    }
-
-    /// @notice Performs the payment for the minting
-    /// @dev This method will transfer the funds to the reserve wallet, performing
-    /// the swap if necessary
-    /// @param paymentMethod Address of token that user want to pay
-    /// @param mintingPrice Price of the minting
-    function _payForMinting(address paymentMethod, uint256 mintingPrice)
-        internal
-    {
-        if (paymentMethod == stableCoin) {
-            // USDC
-            IERC20(paymentMethod).safeTransferFrom(
-                msg.sender,
-                reserveWallet,
-                mintingPrice
-            );
-        } else if (paymentMethod == address(0)) {
-            // ETH
-            uint256 swapAmout = _convertFromStableCoin(
-                wrappedNativeToken,
-                mintingPrice
-            );
-            require(msg.value >= swapAmout, "INVALID_PAYMENT_AMOUNT");
-            (bool success, ) = payable(reserveWallet).call{value: swapAmout}(
-                ""
-            );
-            require(success, "TRANSFER_FAILED");
-            if (msg.value > swapAmout) {
-                // return diff
-                uint256 refund = msg.value.sub(swapAmout);
-                (success, ) = payable(msg.sender).call{value: refund}("");
-                require(success);
-            }
-        } else if (paymentMethod == utilityToken) {
-            // $MASA
-            uint256 swapAmout = _convertFromStableCoin(
-                paymentMethod,
-                mintingPrice
-            );
-            IERC20(paymentMethod).safeTransferFrom(
-                msg.sender,
-                reserveWallet,
-                swapAmout
-            );
-        } else {
-            revert("INVALID_PAYMENT_METHOD");
-        }
     }
 
     /// @notice Mints a new Soulbound Identity and Name
