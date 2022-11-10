@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
-import "./dex/DexAMM.sol";
+import "./dex/PayDexAMM.sol";
 import "./interfaces/ISoulboundIdentity.sol";
 
 import "hardhat/console.sol";
@@ -16,7 +16,7 @@ import "hardhat/console.sol";
 /// @title Soul linker
 /// @author Masa Finance
 /// @notice Soul linker smart contract that let add links to a Soulbound token.
-contract SoulLinker is DexAMM, Ownable, EIP712 {
+contract SoulLinker is PayDexAMM, Ownable, EIP712 {
     using SafeERC20 for IERC20;
 
     /* ========== STATE VARIABLES =========================================== */
@@ -67,7 +67,10 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
         address _wrappedNativeToken,
         address _swapRouter,
         address _reserveWallet
-    ) EIP712("SoulLinker", "1.0.0") DexAMM(_swapRouter, _wrappedNativeToken) {
+    )
+        EIP712("SoulLinker", "1.0.0")
+        PayDexAMM(_swapRouter, _wrappedNativeToken)
+    {
         require(_stableCoin != address(0), "ZERO_ADDRESS");
         require(_utilityToken != address(0), "ZERO_ADDRESS");
         require(_reserveWallet != address(0), "ZERO_ADDRESS");

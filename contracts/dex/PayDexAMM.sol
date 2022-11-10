@@ -3,12 +3,12 @@ pragma solidity ^0.8.7;
 
 import "../interfaces/dex/IUniswapRouter.sol";
 
-/// @title Decentralized automated market maker (AMM)
+/// @title Pay using a Decentralized automated market maker (AMM) when needed
 /// @author Masa Finance
-/// @notice Smart contract to call a Dex AMM smart contract
+/// @notice Smart contract to call a Dex AMM smart contract to pay to a reserve wallet recipient
 /// @dev This smart contract will call the Uniswap Router interface, based on
 /// https://github.com/Uniswap/v2-periphery/blob/master/contracts/interfaces/IUniswapV2Router01.sol
-abstract contract DexAMM {
+abstract contract PayDexAMM {
     /* ========== STATE VARIABLES =========================================== */
 
     address public swapRouter;

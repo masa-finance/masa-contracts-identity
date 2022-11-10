@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
-import "./dex/DexAMM.sol";
+import "./dex/PayDexAMM.sol";
 import "./interfaces/ISoulboundIdentity.sol";
 import "./interfaces/ISoulName.sol";
 
@@ -15,7 +15,7 @@ import "./interfaces/ISoulName.sol";
 /// @notice Soul Store, that can mint new Soulbound Identities and Soul Name NFTs, paying a fee
 /// @dev From this smart contract we can mint new Soulbound Identities and Soul Name NFTs.
 /// This minting can be done paying a fee in ETH, USDC or $MASA
-contract SoulStore is DexAMM, Ownable {
+contract SoulStore is PayDexAMM, Ownable {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
@@ -52,7 +52,7 @@ contract SoulStore is DexAMM, Ownable {
         address _wrappedNativeToken,
         address _swapRouter,
         address _reserveWallet
-    ) DexAMM(_swapRouter, _wrappedNativeToken) {
+    ) PayDexAMM(_swapRouter, _wrappedNativeToken) {
         require(_stableCoin != address(0), "ZERO_ADDRESS");
         require(_utilityToken != address(0), "ZERO_ADDRESS");
         require(_reserveWallet != address(0), "ZERO_ADDRESS");
