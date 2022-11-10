@@ -191,27 +191,10 @@ contract SoulStore is PayDexAMM {
             uint256 priceInUtilityToken
         )
     {
-        (priceInStableCoin, priceInETH, priceInUtilityToken) = _getSwapAmounts(
-            getNameRegistrationPricePerYear(name).mul(yearsPeriod)
+        uint256 mintingPrice = getNameRegistrationPricePerYear(name).mul(
+            yearsPeriod
         );
-    }
 
-    /* ========== PRIVATE FUNCTIONS ========== */
-
-    /// @notice Returns the price of minting
-    /// @dev Returns all current pricing and amount informations for a purchase
-    /// @return priceInStableCoin Current price in stable coin
-    /// @return priceInETH Current pric in native token (ETH)
-    /// @return priceInUtilityToken Current price in utility token ($MASA)
-    function _getSwapAmounts(uint256 mintingPrice)
-        public
-        view
-        returns (
-            uint256 priceInStableCoin,
-            uint256 priceInETH,
-            uint256 priceInUtilityToken
-        )
-    {
         priceInStableCoin = mintingPrice;
         // get swapped price in ETH and $MASA
         priceInETH = _convertFromStableCoin(wrappedNativeToken, mintingPrice);
@@ -220,6 +203,8 @@ contract SoulStore is PayDexAMM {
             mintingPrice
         );
     }
+
+    /* ========== PRIVATE FUNCTIONS ========== */
 
     /// @notice Mints a new Soulbound Identity and Name
     /// @dev The final step of all purchase options. Will mint a
