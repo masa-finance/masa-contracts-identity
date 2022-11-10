@@ -4,8 +4,6 @@ import { solidity } from "ethereum-waffle";
 import { ethers, deployments } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
-  MASA,
-  MASA__factory,
   ERC20,
   ERC20__factory,
   IUniswapRouter,
@@ -18,7 +16,8 @@ import {
   USDC_GOERLI,
   SWAPROUTER_GOERLI,
   WETH_GOERLI,
-  ZERO_ADDRESS
+  ZERO_ADDRESS,
+  LINK_GOERLI
 } from "../src/constants";
 
 chai.use(chaiAsPromised);
@@ -52,7 +51,6 @@ describe("Soul Store", () => {
     await deployments.fixture("SoulName", { fallbackToGlobal: false });
     await deployments.fixture("SoulStore", { fallbackToGlobal: false });
 
-    const { address: masaAddress } = await deployments.get("MASA");
     const { address: soulStoreAddress } = await deployments.get("SoulStore");
 
     soulStore = SoulStore__factory.connect(soulStoreAddress, owner);
@@ -712,6 +710,61 @@ describe("Soul Store", () => {
         )
       ).to.be.rejected;
     });
+  });
+
+  describe("purchase name with other ERC-20 token", () => {
+    beforeEach(async () => {
+      // first we need to purchase an identity
+      await soulStore.connect(address1).purchaseIdentity();
+    });
+
+    it("should add ERC-20 token from owner", async () => {
+      await soulStore.connect(owner).addErc20Token(LINK_GOERLI);
+
+      expect(await soulStore.erc20token(LINK_GOERLI)).to.be.true;
+    });
+
+    it("should fail to add ERC-20 token from non owner", async () => {
+      await expect(
+        soulStore.connect(address1).addErc20Token(LINK_GOERLI)
+      ).to.be.rejected;
+    });
+
+    it("should remove ERC-20 token from owner", async () => {
+      await soulStore.connect(owner).addErc20Token(LINK_GOERLI);
+
+      expect(await soulStore.erc20token(LINK_GOERLI)).to.be.true;
+
+      await soulStore.connect(owner).removeErc20Token(LINK_GOERLI);
+
+      expect(await soulStore.erc20token(LINK_GOERLI)).to.be.false;
+    });
+
+    it("should fail to remove ERC-20 token from non owner", async () => {
+      await soulStore.connect(owner).addErc20Token(LINK_GOERLI);
+
+      expect(await soulStore.erc20token(LINK_GOERLI)).to.be.true;
+
+      await expect(
+        soulStore.connect(address1).removeErc20Token(LINK_GOERLI)
+      ).to.be.rejected;
+    });
+/*
+    it("we can purchase a name with other ERC-20 token", async () => {
+      const priceInETH = await soulStore.getPriceForMintingName(
+        ZERO_ADDRESS,
+        SOUL_NAME,
+        YEAR
+      );
+
+      await soulStore.connect(address1).purchaseName(
+        ethers.constants.AddressZero, // ETH
+        SOUL_NAME,
+        YEAR,
+        ARWEAVE_LINK,
+        { value: priceInETH }
+      );
+    });*/
   });
 
   describe("use invalid payment method", () => {
