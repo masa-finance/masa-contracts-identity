@@ -129,20 +129,20 @@ abstract contract PayDexAMM is Ownable {
     /// @dev This method will transfer the funds to the reserve wallet, performing
     /// the swap if necessary
     /// @param paymentMethod Address of token that user want to pay
-    /// @param amount Price to be paid
-    function _pay(address paymentMethod, uint256 amount) internal {
+    /// @param amountInStableCoin Price to be paid in stable coin
+    function _pay(address paymentMethod, uint256 amountInStableCoin) internal {
         if (paymentMethod == stableCoin) {
             // USDC
             IERC20(paymentMethod).safeTransferFrom(
                 msg.sender,
                 reserveWallet,
-                amount
+                amountInStableCoin
             );
         } else if (paymentMethod == address(0)) {
             // ETH
             uint256 swapAmout = _convertFromStableCoin(
                 wrappedNativeToken,
-                amount
+                amountInStableCoin
             );
             require(msg.value >= swapAmout, "INVALID_PAYMENT_AMOUNT");
             (bool success, ) = payable(reserveWallet).call{value: swapAmout}(
@@ -157,7 +157,10 @@ abstract contract PayDexAMM is Ownable {
             }
         } else if (paymentMethod == utilityToken) {
             // $MASA
-            uint256 swapAmout = _convertFromStableCoin(paymentMethod, amount);
+            uint256 swapAmout = _convertFromStableCoin(
+                paymentMethod,
+                amountInStableCoin
+            );
             IERC20(paymentMethod).safeTransferFrom(
                 msg.sender,
                 reserveWallet,
