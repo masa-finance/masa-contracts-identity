@@ -610,5 +610,47 @@ event OwnershipTransferred(address indexed previousOwner, address indexed newOwn
 | previousOwner `indexed` | address | undefined |
 | newOwner `indexed` | address | undefined |
 
+### PermissionAdded
+
+```solidity
+event PermissionAdded(uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, string data, uint256 signatureDate, uint256 expirationDate)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| readerIdentityId  | uint256 | undefined |
+| ownerIdentityId  | uint256 | undefined |
+| token  | address | undefined |
+| tokenId  | uint256 | undefined |
+| data  | string | undefined |
+| signatureDate  | uint256 | undefined |
+| expirationDate  | uint256 | undefined |
+
+### PermissionRevoked
+
+```solidity
+event PermissionRevoked(uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, uint256 signatureDate)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| readerIdentityId  | uint256 | undefined |
+| ownerIdentityId  | uint256 | undefined |
+| token  | address | undefined |
+| tokenId  | uint256 | undefined |
+| signatureDate  | uint256 | undefined |
+
 
 
