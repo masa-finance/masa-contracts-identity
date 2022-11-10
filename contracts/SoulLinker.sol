@@ -233,6 +233,16 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
         _permissionSignatureDates[token][tokenId][readerIdentityId].push(
             signatureDate
         );
+
+        emit PermissionAdded(
+            readerIdentityId,
+            ownerIdentityId,
+            token,
+            tokenId,
+            data,
+            signatureDate,
+            expirationDate
+        );
     }
 
     /// @notice Revokes the permission
@@ -263,6 +273,14 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
         // token => tokenId => readerIdentityId => signatureDate => PermissionData
         _permissions[token][tokenId][readerIdentityId][signatureDate]
             .isRevoked = true;
+
+        emit PermissionRevoked(
+            readerIdentityId,
+            ownerIdentityId,
+            token,
+            tokenId,
+            signatureDate
+        );
     }
 
     /* ========== VIEWS ===================================================== */
@@ -469,4 +487,22 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
     /* ========== MODIFIERS ================================================= */
 
     /* ========== EVENTS ==================================================== */
+
+    event PermissionAdded(
+        uint256 readerIdentityId,
+        uint256 ownerIdentityId,
+        address token,
+        uint256 tokenId,
+        string data,
+        uint256 signatureDate,
+        uint256 expirationDate
+    );
+
+    event PermissionRevoked(
+        uint256 readerIdentityId,
+        uint256 ownerIdentityId,
+        address token,
+        uint256 tokenId,
+        uint256 signatureDate
+    );
 }
