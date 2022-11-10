@@ -214,8 +214,11 @@ contract SoulStore is PayDexAMM {
     {
         priceInStableCoin = mintingPrice;
         // get swapped price in ETH and $MASA
-        priceInETH = convertFromStableCoin(wrappedNativeToken, mintingPrice);
-        priceInUtilityToken = convertFromStableCoin(utilityToken, mintingPrice);
+        priceInETH = _convertFromStableCoin(wrappedNativeToken, mintingPrice);
+        priceInUtilityToken = _convertFromStableCoin(
+            utilityToken,
+            mintingPrice
+        );
     }
 
     /// @notice Performs the payment for the minting
@@ -235,7 +238,7 @@ contract SoulStore is PayDexAMM {
             );
         } else if (paymentMethod == address(0)) {
             // ETH
-            uint256 swapAmout = convertFromStableCoin(
+            uint256 swapAmout = _convertFromStableCoin(
                 wrappedNativeToken,
                 mintingPrice
             );
@@ -252,7 +255,7 @@ contract SoulStore is PayDexAMM {
             }
         } else if (paymentMethod == utilityToken) {
             // $MASA
-            uint256 swapAmout = convertFromStableCoin(
+            uint256 swapAmout = _convertFromStableCoin(
                 paymentMethod,
                 mintingPrice
             );

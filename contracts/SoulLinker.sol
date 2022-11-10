@@ -355,7 +355,7 @@ contract SoulLinker is PayDexAMM, EIP712 {
         view
         returns (uint256 priceInUtilityToken)
     {
-        priceInUtilityToken = convertFromStableCoin(
+        priceInUtilityToken = _convertFromStableCoin(
             utilityToken,
             addPermissionPrice
         );
@@ -367,7 +367,7 @@ contract SoulLinker is PayDexAMM, EIP712 {
     /// @dev This method will transfer the funds to the reserve wallet, performing the swap
     function _payForStoringPermission() internal {
         // pay with $MASA
-        uint256 swapAmout = convertFromStableCoin(
+        uint256 swapAmout = _convertFromStableCoin(
             utilityToken,
             addPermissionPrice
         );
