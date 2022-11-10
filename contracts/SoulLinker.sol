@@ -41,19 +41,19 @@ contract SoulLinker is PayDexAMM, EIP712 {
     /// @param owner Owner of the smart contract
     /// @param _soulboundIdentity Soulbound identity smart contract
     /// @param _addPermissionPrice Store permission price in stable coin
-    /// @param _utilityToken Utility token to pay the fee in ($MASA)
-    /// @param _stableCoin Stable coin to pay the fee in (USDC)
-    /// @param _wrappedNativeToken Wrapped native token address
     /// @param _swapRouter Swap router address
+    /// @param _wrappedNativeToken Wrapped native token address
+    /// @param _stableCoin Stable coin to pay the fee in (USDC)
+    /// @param _utilityToken Utility token to pay the fee in ($MASA)
     /// @param _reserveWallet Wallet that will receive the fee
     constructor(
         address owner,
         ISoulboundIdentity _soulboundIdentity,
         uint256 _addPermissionPrice,
-        address _utilityToken,
-        address _stableCoin,
-        address _wrappedNativeToken,
         address _swapRouter,
+        address _wrappedNativeToken,
+        address _stableCoin,
+        address _utilityToken,
         address _reserveWallet
     )
         EIP712("SoulLinker", "1.0.0")

@@ -30,30 +30,30 @@ const func: DeployFunction = async ({
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
   const soulNameDeployed = await deployments.get("SoulName");
 
-  let stableCoin: string; // usdc
-  let wrappedNativeToken: string; // weth
   let swapRouter: string;
+  let wrappedNativeToken: string; // weth
+  let stableCoin: string; // usdc
 
   if (network.name == "mainnet") {
     // mainnet
-    stableCoin = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
-    wrappedNativeToken = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
     swapRouter = SWAPROUTER_GOERLI;
+    wrappedNativeToken = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
+    stableCoin = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
   } else if (network.name == "goerli") {
     // goerli
-    stableCoin = USDC_GOERLI;
-    wrappedNativeToken = WETH_GOERLI;
     swapRouter = SWAPROUTER_GOERLI;
+    wrappedNativeToken = WETH_GOERLI;
+    stableCoin = USDC_GOERLI;
   } else if (network.name == "hardhat") {
     // hardhat
-    stableCoin = USDC_GOERLI;
-    wrappedNativeToken = WETH_GOERLI;
     swapRouter = SWAPROUTER_GOERLI;
+    wrappedNativeToken = WETH_GOERLI;
+    stableCoin = USDC_GOERLI;
   } else if (network.name == "alfajores") {
     // alfajores
-    stableCoin = "0x37f39aD164cBBf0Cc03Dd638472F3FbeC7aE426C";
-    wrappedNativeToken = "0xF194afDf50B03e69Bd7D057c1Aa9e10c9954E4C9";
     swapRouter = "0xE3D8bd6Aed4F159bc8000a9cD47CffDb95F96121"; // Ubeswap
+    wrappedNativeToken = "0xF194afDf50B03e69Bd7D057c1Aa9e10c9954E4C9";
+    stableCoin = "0x37f39aD164cBBf0Cc03Dd638472F3FbeC7aE426C";
   } else {
     throw new Error("Network not supported");
   }
@@ -62,12 +62,12 @@ const func: DeployFunction = async ({
     env.OWNER || owner.address,
     soulboundIdentityDeployed.address,
     "10000000", // 10 USDC, with 6 decimals
+    swapRouter,
+    wrappedNativeToken,
+    stableCoin,
     network.name == "hardhat" || network.name == "goerli"
       ? MASA_GOERLI // MASA
       : masa.address,
-    stableCoin,
-    wrappedNativeToken,
-    swapRouter,
     env.RESERVE_WALLET || owner.address
   ];
 

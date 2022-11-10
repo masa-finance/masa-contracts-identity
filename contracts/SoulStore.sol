@@ -29,19 +29,19 @@ contract SoulStore is PayDexAMM {
     /// @param owner Owner of the smart contract
     /// @param _soulBoundIdentity Address of the Soulbound identity contract
     /// @param _nameRegistrationPricePerYear Price of the default name registering in stable coin per year
-    /// @param _utilityToken Utility token to pay the fee in ($MASA)
-    /// @param _stableCoin Stable coin to pay the fee in (USDC)
-    /// @param _wrappedNativeToken Wrapped native token address
     /// @param _swapRouter Swap router address
+    /// @param _wrappedNativeToken Wrapped native token address
+    /// @param _stableCoin Stable coin to pay the fee in (USDC)
+    /// @param _utilityToken Utility token to pay the fee in ($MASA)
     /// @param _reserveWallet Wallet that will receive the fee
     constructor(
         address owner,
         ISoulboundIdentity _soulBoundIdentity,
         uint256 _nameRegistrationPricePerYear,
-        address _utilityToken,
-        address _stableCoin,
-        address _wrappedNativeToken,
         address _swapRouter,
+        address _wrappedNativeToken,
+        address _stableCoin,
+        address _utilityToken,
         address _reserveWallet
     )
         PayDexAMM(

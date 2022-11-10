@@ -83,30 +83,6 @@ Returns the price for storing a permission
 |---|---|---|
 | priceInUtilityToken | uint256 | Current price of storing a permission in utility token ($MASA) |
 
-### estimateSwapAmount
-
-```solidity
-function estimateSwapAmount(address _fromToken, address _toToken, uint256 _amountOut) external view returns (uint256)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _fromToken | address | undefined |
-| _toToken | address | undefined |
-| _amountOut | uint256 | undefined |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | undefined |
-
 ### getIdentityId
 
 ```solidity
