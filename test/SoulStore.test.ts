@@ -12,12 +12,11 @@ import {
   SoulStore__factory
 } from "../typechain";
 import {
+  DAI_GOERLI,
   MASA_GOERLI,
   USDC_GOERLI,
   SWAPROUTER_GOERLI,
-  WETH_GOERLI,
-  ZERO_ADDRESS,
-  LINK_GOERLI
+  WETH_GOERLI
 } from "../src/constants";
 
 chai.use(chaiAsPromised);
@@ -74,6 +73,17 @@ describe("Soul Store", () => {
     await uniswapRouter.swapExactETHForTokens(
       0,
       [WETH_GOERLI, MASA_GOERLI],
+      address1.address,
+      Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
+      {
+        value: ethers.utils.parseEther("10")
+      }
+    );
+
+    // we get DAI tokens for address1
+    await uniswapRouter.swapExactETHForTokens(
+      0,
+      [WETH_GOERLI, DAI_GOERLI],
       address1.address,
       Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
       {
@@ -182,7 +192,7 @@ describe("Soul Store", () => {
         YEAR
       );
       const priceInETH1 = await soulStore.getPriceForMintingName(
-        ZERO_ADDRESS,
+        ethers.constants.AddressZero,
         SOUL_NAME,
         YEAR
       );
@@ -202,7 +212,7 @@ describe("Soul Store", () => {
         YEAR * 2
       );
       const priceInETH2 = await soulStore.getPriceForMintingName(
-        ZERO_ADDRESS,
+        ethers.constants.AddressZero,
         SOUL_NAME,
         YEAR * 2
       );
@@ -226,7 +236,7 @@ describe("Soul Store", () => {
         YEAR
       );
       const priceInETH1 = await soulStore.getPriceForMintingName(
-        ZERO_ADDRESS,
+        ethers.constants.AddressZero,
         SOUL_NAME_1LETTERS,
         YEAR
       );
@@ -246,7 +256,7 @@ describe("Soul Store", () => {
         YEAR * 2
       );
       const priceInETH2 = await soulStore.getPriceForMintingName(
-        ZERO_ADDRESS,
+        ethers.constants.AddressZero,
         SOUL_NAME_1LETTERS,
         YEAR * 2
       );
@@ -270,7 +280,7 @@ describe("Soul Store", () => {
         YEAR
       );
       const priceInETH1 = await soulStore.getPriceForMintingName(
-        ZERO_ADDRESS,
+        ethers.constants.AddressZero,
         SOUL_NAME_2LETTERS,
         YEAR
       );
@@ -290,7 +300,7 @@ describe("Soul Store", () => {
         YEAR * 2
       );
       const priceInETH2 = await soulStore.getPriceForMintingName(
-        ZERO_ADDRESS,
+        ethers.constants.AddressZero,
         SOUL_NAME_2LETTERS,
         YEAR * 2
       );
@@ -314,7 +324,7 @@ describe("Soul Store", () => {
         YEAR
       );
       const priceInETH1 = await soulStore.getPriceForMintingName(
-        ZERO_ADDRESS,
+        ethers.constants.AddressZero,
         SOUL_NAME_3LETTERS,
         YEAR
       );
@@ -334,7 +344,7 @@ describe("Soul Store", () => {
         YEAR * 2
       );
       const priceInETH2 = await soulStore.getPriceForMintingName(
-        ZERO_ADDRESS,
+        ethers.constants.AddressZero,
         SOUL_NAME_3LETTERS,
         YEAR * 2
       );
@@ -358,7 +368,7 @@ describe("Soul Store", () => {
         YEAR
       );
       const priceInETH1 = await soulStore.getPriceForMintingName(
-        ZERO_ADDRESS,
+        ethers.constants.AddressZero,
         SOUL_NAME_4LETTERS,
         YEAR
       );
@@ -378,7 +388,7 @@ describe("Soul Store", () => {
         YEAR * 2
       );
       const priceInETH2 = await soulStore.getPriceForMintingName(
-        ZERO_ADDRESS,
+        ethers.constants.AddressZero,
         SOUL_NAME_4LETTERS,
         YEAR * 2
       );
@@ -398,7 +408,7 @@ describe("Soul Store", () => {
     it("we can purchase an identity and name with ETH", async () => {
       const reserveWallet = await soulStore.reserveWallet();
       const priceInETH = await soulStore.getPriceForMintingName(
-        ZERO_ADDRESS,
+        ethers.constants.AddressZero,
         SOUL_NAME,
         YEAR
       );
@@ -486,7 +496,7 @@ describe("Soul Store", () => {
 
     it("we can't purchase an identity and name with ETH if we pay less", async () => {
       const priceInETH = await soulStore.getPriceForMintingName(
-        ZERO_ADDRESS,
+        ethers.constants.AddressZero,
         SOUL_NAME,
         YEAR
       );
@@ -550,7 +560,7 @@ describe("Soul Store", () => {
 
     it("we can purchase an identity and name with more ETH receiving the refund", async () => {
       const priceInETH = await soulStore.getPriceForMintingName(
-        ZERO_ADDRESS,
+        ethers.constants.AddressZero,
         SOUL_NAME,
         YEAR
       );
@@ -591,7 +601,7 @@ describe("Soul Store", () => {
 
     it("we can purchase a name with ETH", async () => {
       const priceInETH = await soulStore.getPriceForMintingName(
-        ZERO_ADDRESS,
+        ethers.constants.AddressZero,
         SOUL_NAME,
         YEAR
       );
@@ -649,7 +659,7 @@ describe("Soul Store", () => {
 
     it("we can't purchase a name with ETH if we pay less", async () => {
       const priceInETH = await soulStore.getPriceForMintingName(
-        ZERO_ADDRESS,
+        ethers.constants.AddressZero,
         SOUL_NAME,
         YEAR
       );
@@ -719,52 +729,55 @@ describe("Soul Store", () => {
     });
 
     it("should add ERC-20 token from owner", async () => {
-      await soulStore.connect(owner).addErc20Token(LINK_GOERLI);
+      await soulStore.connect(owner).addErc20Token(DAI_GOERLI);
 
-      expect(await soulStore.erc20token(LINK_GOERLI)).to.be.true;
+      expect(await soulStore.erc20token(DAI_GOERLI)).to.be.true;
     });
 
     it("should fail to add ERC-20 token from non owner", async () => {
-      await expect(
-        soulStore.connect(address1).addErc20Token(LINK_GOERLI)
-      ).to.be.rejected;
+      await expect(soulStore.connect(address1).addErc20Token(DAI_GOERLI)).to.be
+        .rejected;
     });
 
     it("should remove ERC-20 token from owner", async () => {
-      await soulStore.connect(owner).addErc20Token(LINK_GOERLI);
+      await soulStore.connect(owner).addErc20Token(DAI_GOERLI);
 
-      expect(await soulStore.erc20token(LINK_GOERLI)).to.be.true;
+      expect(await soulStore.erc20token(DAI_GOERLI)).to.be.true;
 
-      await soulStore.connect(owner).removeErc20Token(LINK_GOERLI);
+      await soulStore.connect(owner).removeErc20Token(DAI_GOERLI);
 
-      expect(await soulStore.erc20token(LINK_GOERLI)).to.be.false;
+      expect(await soulStore.erc20token(DAI_GOERLI)).to.be.false;
     });
 
     it("should fail to remove ERC-20 token from non owner", async () => {
-      await soulStore.connect(owner).addErc20Token(LINK_GOERLI);
+      await soulStore.connect(owner).addErc20Token(DAI_GOERLI);
 
-      expect(await soulStore.erc20token(LINK_GOERLI)).to.be.true;
+      expect(await soulStore.erc20token(DAI_GOERLI)).to.be.true;
 
-      await expect(
-        soulStore.connect(address1).removeErc20Token(LINK_GOERLI)
-      ).to.be.rejected;
+      await expect(soulStore.connect(address1).removeErc20Token(DAI_GOERLI)).to
+        .be.rejected;
     });
-/*
+
     it("we can purchase a name with other ERC-20 token", async () => {
-      const priceInETH = await soulStore.getPriceForMintingName(
-        ZERO_ADDRESS,
+      await soulStore.connect(owner).addErc20Token(DAI_GOERLI);
+
+      const priceInDAI = await soulStore.getPriceForMintingName(
+        DAI_GOERLI,
         SOUL_NAME,
         YEAR
       );
 
+      // set allowance for soul store
+      const dai: ERC20 = ERC20__factory.connect(DAI_GOERLI, owner);
+      await dai.connect(address1).approve(soulStore.address, priceInDAI);
+
       await soulStore.connect(address1).purchaseName(
-        ethers.constants.AddressZero, // ETH
+        DAI_GOERLI, // DAI token, other ERC-20 token
         SOUL_NAME,
         YEAR,
-        ARWEAVE_LINK,
-        { value: priceInETH }
+        ARWEAVE_LINK
       );
-    });*/
+    });
   });
 
   describe("use invalid payment method", () => {
