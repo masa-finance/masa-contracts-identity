@@ -125,7 +125,7 @@ abstract contract PayDexAMM is Ownable {
         return _estimateSwapAmount(token, stableCoin, amount);
     }
 
-    /// @notice Performs the payment
+    /// @notice Performs the payment in any payment method
     /// @dev This method will transfer the funds to the reserve wallet, performing
     /// the swap if necessary
     /// @param paymentMethod Address of token that user want to pay
@@ -169,6 +169,19 @@ abstract contract PayDexAMM is Ownable {
         } else {
             revert("INVALID_PAYMENT_METHOD");
         }
+    }
+
+    /// @notice Performs the payment in MASA
+    /// @dev This method will transfer the funds to the reserve wallet, without
+    /// performing any swap
+    /// @param amountInMASA Price to be paid in MASA
+    function _payWithMASA(uint256 amountInMASA) internal {
+        // $MASA
+        IERC20(utilityToken).safeTransferFrom(
+            msg.sender,
+            reserveWallet,
+            amountInMASA
+        );
     }
 
     function _estimateSwapAmount(
