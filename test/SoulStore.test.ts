@@ -734,6 +734,18 @@ describe("Soul Store", () => {
       expect(await soulStore.erc20token(DAI_GOERLI)).to.be.true;
     });
 
+    it("should get all payment methods information", async () => {
+      await soulStore.connect(owner).addErc20Token(DAI_GOERLI);
+
+      const { _nativeToken, _stableCoin, _utilityToken, _erc20tokens } =
+        await soulStore.getPaymentMethods();
+
+      expect(_nativeToken).to.be.equal(ethers.constants.AddressZero);
+      expect(_stableCoin).to.be.equal(USDC_GOERLI);
+      expect(_utilityToken).to.be.equal(MASA_GOERLI);
+      expect(_erc20tokens).to.be.deep.equal([DAI_GOERLI]);
+    });
+
     it("should fail to add ERC-20 token from non owner", async () => {
       await expect(soulStore.connect(address1).addErc20Token(DAI_GOERLI)).to.be
         .rejected;
