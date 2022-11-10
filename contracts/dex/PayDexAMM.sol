@@ -147,6 +147,25 @@ abstract contract PayDexAMM is Ownable {
 
     /* ========== VIEWS ===================================================== */
 
+    /// @notice Returns all available payment methods
+    /// @dev Returns the address of all available payment methods
+    /// @return _nativeToken Address of the native token (ETH)
+    /// @return _stableCoin Address of the stable coin (USDC)
+    /// @return _utilityToken Address of the utility token ($MASA)
+    /// @return _erc20tokens Array of all ERC20 tokens
+    function getPaymentMethods()
+        external
+        view
+        returns (
+            address _nativeToken,
+            address _stableCoin,
+            address _utilityToken,
+            address[] memory _erc20tokens
+        )
+    {
+        return (address(0), stableCoin, utilityToken, erc20tokens);
+    }
+
     /* ========== PRIVATE FUNCTIONS ========================================= */
 
     function _convertFromStableCoin(address token, uint256 amount)
