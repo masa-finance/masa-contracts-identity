@@ -68,6 +68,7 @@ const func: DeployFunction = async ({
     env.OWNER || owner.address,
     soulboundIdentityDeployed.address,
     "1000000", // 1 USDC, with 6 decimals
+    0,
     swapRouter,
     wrappedNativeToken,
     stableCoin,
