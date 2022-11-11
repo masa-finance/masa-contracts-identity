@@ -371,6 +371,76 @@ describe("Soul Linker", () => {
       expect(dataWithPermissions).to.be.equal(data);
     });
 
+    it("addPermission must work with a valid signature paying with $MASA token without applying exchange rate", async () => {
+      await soulLinker.connect(owner).setAddPermissionPriceMASA(10);
+      expect(await soulLinker.addPermissionPriceMASA()).to.be.equal(10);
+
+      const signature = await signTypedData(
+        readerIdentityId,
+        ownerIdentityId,
+        soulboundCreditReport.address,
+        creditReport1
+      );
+
+      const priceInUtilityToken = await soulLinker.getPriceForAddPermission();
+      expect(priceInUtilityToken).to.be.equal(10);
+
+      // set allowance for soul store
+      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
+      await masa
+        .connect(address1)
+        .approve(soulLinker.address, priceInUtilityToken);
+
+      await soulLinker
+        .connect(address1)
+        .addPermission(
+          readerIdentityId,
+          ownerIdentityId,
+          soulboundCreditReport.address,
+          creditReport1,
+          data,
+          signatureDate,
+          expirationDate,
+          signature
+        );
+
+      const permissionSignatureDates =
+        await soulLinker.getPermissionSignatureDates(
+          soulboundCreditReport.address,
+          creditReport1,
+          readerIdentityId
+        );
+      expect(permissionSignatureDates[0]).to.be.equal(signatureDate);
+
+      const {
+        ownerIdentityId: ownerIdentityIdInfo,
+        data: dataInfo,
+        expirationDate: expirationDateInfo,
+        isRevoked: isRevokedInfo
+      } = await soulLinker.getPermissionInfo(
+        soulboundCreditReport.address,
+        creditReport1,
+        readerIdentityId,
+        signatureDate
+      );
+      expect(ownerIdentityIdInfo).to.be.equal(ownerIdentityId);
+      expect(dataInfo).to.be.equal(data);
+      expect(expirationDateInfo).to.be.equal(expirationDate);
+      expect(isRevokedInfo).to.be.equal(false);
+
+      const dataWithPermissions = await soulLinker
+        .connect(address2)
+        .validatePermission(
+          readerIdentityId,
+          ownerIdentityId,
+          soulboundCreditReport.address,
+          creditReport1,
+          signatureDate
+        );
+
+      expect(dataWithPermissions).to.be.equal(data);
+    });
+
     it("addPermission won't work with an invalid signature", async () => {
       const signature = await signTypedData(
         ownerIdentityId,
