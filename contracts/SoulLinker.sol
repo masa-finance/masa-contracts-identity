@@ -21,6 +21,7 @@ contract SoulLinker is PayDexAMM, EIP712 {
     address[] public linkedSBTs;
 
     uint256 public addPermissionPrice; // store permission price in stable coin
+    uint256 public addPermissionPriceMASA; // store permission price in $MASA
 
     // token => tokenId => readerIdentityId => signatureDate => PermissionData
     mapping(address => mapping(uint256 => mapping(uint256 => mapping(uint256 => PermissionData))))
@@ -41,6 +42,7 @@ contract SoulLinker is PayDexAMM, EIP712 {
     /// @param owner Owner of the smart contract
     /// @param _soulboundIdentity Soulbound identity smart contract
     /// @param _addPermissionPrice Store permission price in stable coin
+    /// @param _addPermissionPriceMASA Store permission price in $MASA
     /// @param _swapRouter Swap router address
     /// @param _wrappedNativeToken Wrapped native token address
     /// @param _stableCoin Stable coin to pay the fee in (USDC)
@@ -50,6 +52,7 @@ contract SoulLinker is PayDexAMM, EIP712 {
         address owner,
         ISoulboundIdentity _soulboundIdentity,
         uint256 _addPermissionPrice,
+        uint256 _addPermissionPriceMASA,
         address _swapRouter,
         address _wrappedNativeToken,
         address _stableCoin,
@@ -71,6 +74,7 @@ contract SoulLinker is PayDexAMM, EIP712 {
         soulboundIdentity = _soulboundIdentity;
 
         addPermissionPrice = _addPermissionPrice;
+        addPermissionPriceMASA = _addPermissionPriceMASA;
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
@@ -117,6 +121,20 @@ contract SoulLinker is PayDexAMM, EIP712 {
     {
         require(addPermissionPrice != _addPermissionPrice, "SAME_VALUE");
         addPermissionPrice = _addPermissionPrice;
+    }
+
+    /// @notice Sets the price of store permission in $MASA
+    /// @dev The caller must have the owner to call this function
+    /// @param _addPermissionPriceMASA New price of the store permission in $MASA
+    function setAddPermissionPriceMASA(uint256 _addPermissionPriceMASA)
+        external
+        onlyOwner
+    {
+        require(
+            addPermissionPriceMASA != _addPermissionPriceMASA,
+            "SAME_VALUE"
+        );
+        addPermissionPriceMASA = _addPermissionPriceMASA;
     }
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
@@ -166,8 +184,13 @@ contract SoulLinker is PayDexAMM, EIP712 {
             "INVALID_SIGNATURE"
         );
 
-        // pay with $MASA
-        _pay(utilityToken, addPermissionPrice);
+        if (addPermissionPriceMASA > 0) {
+            // if there is a price in $MASA, pay it without conversion rate
+            _payWithMASA(addPermissionPriceMASA);
+        } else {
+            // pay with $MASA with conversion rate
+            _pay(utilityToken, addPermissionPrice);
+        }
 
         // token => tokenId => readerIdentityId => signatureDate => PermissionData
         _permissions[token][tokenId][readerIdentityId][
@@ -356,10 +379,16 @@ contract SoulLinker is PayDexAMM, EIP712 {
         view
         returns (uint256 priceInUtilityToken)
     {
-        priceInUtilityToken = _convertFromStableCoin(
-            utilityToken,
-            addPermissionPrice
-        );
+        if (addPermissionPriceMASA > 0) {
+            // if there is a price in $MASA, return it without conversion rate
+            priceInUtilityToken = addPermissionPriceMASA;
+        } else {
+            // return $MASA with conversion rate
+            priceInUtilityToken = _convertFromStableCoin(
+                utilityToken,
+                addPermissionPrice
+            );
+        }
     }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */

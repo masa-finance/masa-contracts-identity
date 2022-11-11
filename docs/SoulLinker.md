@@ -82,6 +82,23 @@ function addPermissionPrice() external view returns (uint256)
 |---|---|---|
 | _0 | uint256 | undefined |
 
+### addPermissionPriceMASA
+
+```solidity
+function addPermissionPriceMASA() external view returns (uint256)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
 ### erc20token
 
 ```solidity
@@ -437,6 +454,22 @@ Sets the price of store permission in stable coin
 | Name | Type | Description |
 |---|---|---|
 | _addPermissionPrice | uint256 | New price of the store permission in stable coin |
+
+### setAddPermissionPriceMASA
+
+```solidity
+function setAddPermissionPriceMASA(uint256 _addPermissionPriceMASA) external nonpayable
+```
+
+Sets the price of store permission in $MASA
+
+*The caller must have the owner to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _addPermissionPriceMASA | uint256 | New price of the store permission in $MASA |
 
 ### setReserveWallet
 
