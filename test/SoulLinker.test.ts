@@ -371,7 +371,7 @@ describe("Soul Linker", () => {
       expect(dataWithPermissions).to.be.equal(data);
     });
 
-    it("addPermission must work with a valid signature paying with $MASA token without applying exchange rate", async () => {
+    it("addPermission must work paying with $MASA without an exchange rate", async () => {
       await soulLinker.connect(owner).setAddPermissionPriceMASA(10);
       expect(await soulLinker.addPermissionPriceMASA()).to.be.equal(10);
 
