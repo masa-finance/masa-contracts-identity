@@ -278,6 +278,18 @@ describe("Soul Name", () => {
       );
     });
 
+    it ("getTokenData with an existing name, and a non-existing identity", async () => {
+      await soulboundIdentity.connect(address1).burn(identityId1);
+
+      const { sbtName, linked } = await soulName.getTokenData(
+        SOUL_NAME1
+      );
+      const extension = await soulName.getExtension();
+
+      await expect(sbtName).to.be.equal(SOUL_NAME1 + extension);
+      await expect(linked).to.be.false;
+    });
+
     it("getSoulNames(uint256) returns array of SBT names in lower case", async () => {
       expect(
         await soulName["getSoulNames(uint256)"](identityId1)
