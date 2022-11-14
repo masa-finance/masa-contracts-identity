@@ -195,7 +195,7 @@ contract SoulName is MasaNFT, ISoulName {
         delete tokenData[tokenId];
 
         // if the last owner of the name is burning it, remove the name from nameData
-        if (nameData[lowercaseName].exists) {
+        if (nameData[lowercaseName].tokenId == tokenId) {
             delete nameData[lowercaseName];
         }
 
