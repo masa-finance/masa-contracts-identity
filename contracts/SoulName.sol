@@ -32,11 +32,9 @@ contract SoulName is MasaNFT, ISoulName {
 
     mapping(uint256 => TokenData) public tokenData; // used to store the data of the token id
     mapping(string => NameData) public nameData; // stores the token id of the current active soul name
-    mapping(uint256 => string[]) identityNames; // register of all names associated to an identityId
 
     struct TokenData {
         string name; // Name with lowercase and uppercase
-        uint256 identityId;
         uint256 expirationDate;
     }
 
