@@ -22,6 +22,7 @@ interface ISoulName {
         view
         returns (
             string memory sbtName,
+            bool linked,
             uint256 identityId,
             uint256 tokenId,
             uint256 expirationDate,

@@ -232,6 +232,7 @@ contract SoulName is MasaNFT, ISoulName {
     /// @dev This function queries the information of a soul name
     /// @param name Name of the soul name
     /// @return sbtName Soul name, in upper/lower case and extension
+    /// @return linked `true` if the soul name is linked, `false` otherwise
     /// @return identityId Identity id of the soul name
     /// @return tokenId SoulName id of the soul name
     /// @return expirationDate Expiration date of the soul name
