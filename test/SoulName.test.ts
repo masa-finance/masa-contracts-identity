@@ -323,27 +323,7 @@ describe("Soul Name", () => {
       nameId = mintReceipt.events![0].args![2].toNumber();
     });
 
-    it("should transfer", async () => {
-      await soulName
-        .connect(address1)
-        .transferFrom(address1.address, address2.address, nameId);
-
-      expect(await soulboundIdentity.balanceOf(address1.address)).to.be.equal(
-        1
-      );
-      expect(await soulboundIdentity.balanceOf(address2.address)).to.be.equal(
-        1
-      );
-      expect(await soulName.balanceOf(address1.address)).to.be.equal(0);
-      expect(await soulName.balanceOf(address2.address)).to.be.equal(1);
-
-      const { identityId, tokenId } = await soulName.getTokenData(SOUL_NAME1);
-
-      await expect(identityId).to.be.equal(identityId1);
-      await expect(tokenId).to.be.equal(nameId);
-    });
-
-    it("should update identity Id", async () => {
+    it("should transfer and update identity Id", async () => {
       await soulName
         .connect(address1)
         .transferFrom(address1.address, address2.address, nameId);
