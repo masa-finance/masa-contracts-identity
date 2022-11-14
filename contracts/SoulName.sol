@@ -108,13 +108,11 @@ contract SoulName is MasaNFT, ISoulName {
     /// @dev The caller can mint more than one name. The soul name must be unique.
     /// @param to Address of the owner of the new soul name
     /// @param name Name of the new soul name
-    /// @param identityId TokenId of the soulbound identity that will be pointed from this soul name
     /// @param yearsPeriod Years of validity of the name
     /// @param _tokenURI URI of the NFT
     function mint(
         address to,
         string memory name,
-        uint256 identityId,
         uint256 yearsPeriod,
         string memory _tokenURI
     ) public override returns (uint256) {
@@ -122,8 +120,8 @@ contract SoulName is MasaNFT, ISoulName {
         require(bytes(name).length > 0, "ZERO_LENGTH_NAME");
         require(yearsPeriod > 0, "ZERO_YEARS_PERIOD");
         require(
-            soulboundIdentity.ownerOf(identityId) != address(0),
-            "IDENTITY_NOT_FOUND"
+            soulboundIdentity.balanceOf(to) > 0,
+            "ADDRESS_DOES_NOT_HAVE_IDENTITY"
         );
         require(
             Utils.startsWith(_tokenURI, "ar://") ||
@@ -135,7 +133,6 @@ contract SoulName is MasaNFT, ISoulName {
         _setTokenURI(tokenId, _tokenURI);
 
         tokenData[tokenId].name = name;
-        tokenData[tokenId].identityId = identityId;
         tokenData[tokenId].expirationDate = block.timestamp.add(
             YEAR.mul(yearsPeriod)
         );
@@ -143,8 +140,6 @@ contract SoulName is MasaNFT, ISoulName {
         string memory lowercaseName = Utils.toLowerCase(name);
         nameData[lowercaseName].tokenId = tokenId;
         nameData[lowercaseName].exists = true;
-
-        identityNames[identityId].push(lowercaseName);
 
         return tokenId;
     }

@@ -388,15 +388,8 @@ contract SoulStore is DexAMM, Ownable {
     ) internal returns (uint256) {
         // mint Soul Name token
         ISoulName soulName = soulboundIdentity.getSoulName();
-        uint256 identityId = soulboundIdentity.tokenOfOwner(to);
 
-        uint256 tokenId = soulName.mint(
-            to,
-            name,
-            identityId,
-            yearsPeriod,
-            _tokenURI
-        );
+        uint256 tokenId = soulName.mint(to, name, yearsPeriod, _tokenURI);
 
         emit SoulNamePurchased(to, tokenId, name, yearsPeriod);
 
