@@ -242,6 +242,7 @@ contract SoulName is MasaNFT, ISoulName {
         override
         returns (
             string memory sbtName,
+            bool linked,
             uint256 identityId,
             uint256 tokenId,
             uint256 expirationDate,
@@ -249,11 +250,19 @@ contract SoulName is MasaNFT, ISoulName {
         )
     {
         tokenId = _getTokenId(name);
+        address _owner = ownerOf(tokenId);
+        bool _linked = soulboundIdentity.balanceOf(_owner) > 0;
+        uint256 _identityId;
+        if (_linked) {
+            _identityId = soulboundIdentity.tokenOfOwner(_owner);
+        }
 
         TokenData memory _tokenData = tokenData[tokenId];
+
         return (
             _getName(_tokenData.name),
-            _tokenData.identityId,
+            _linked,
+            _identityId,
             tokenId,
             _tokenData.expirationDate,
             _tokenData.expirationDate >= block.timestamp
