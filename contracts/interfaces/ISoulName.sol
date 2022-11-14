@@ -5,7 +5,6 @@ interface ISoulName {
     function mint(
         address to,
         string memory name,
-        uint256 identityId,
         uint256 yearsPeriod,
         string memory _tokenURI
     ) external returns (uint256);

@@ -288,13 +288,13 @@ contract SoulName is MasaNFT, ISoulName {
     /// @param identityId TokenId of the identity
     /// @return sbtNames Array of soul names associated to the identity Id
     function getSoulNames(uint256 identityId)
-        public
+        external
         view
         override
         returns (string[] memory sbtNames)
     {
         // return owner if exists
-        uint256 _owner = soulboundIdentity.ownerOf(identityId);
+        address _owner = soulboundIdentity.ownerOf(identityId);
 
         return getSoulNames(_owner);
     }
@@ -304,7 +304,7 @@ contract SoulName is MasaNFT, ISoulName {
     /// @param owner Address of the owner of the identities
     /// @return sbtNames Array of soul names associated to the account
     function getSoulNames(address owner)
-        external
+        public
         view
         override
         returns (string[] memory sbtNames)
