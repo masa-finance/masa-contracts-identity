@@ -183,16 +183,14 @@ contract SoulName is MasaNFT, ISoulName {
         string memory lowercaseName = Utils.toLowerCase(
             tokenData[tokenId].name
         );
-        uint256 identityId = tokenData[tokenId].identityId;
 
         // remove info from tokenIdName and tokenData
         delete tokenData[tokenId];
 
         // if the last owner of the name is burning it, remove the name from nameData
-        if (nameData[lowercaseName].tokenId == tokenId) {
+        if (nameData[lowercaseName].exists) {
             delete nameData[lowercaseName];
         }
-        Utils.removeStringFromArray(identityNames[identityId], lowercaseName);
 
         if (bytes(_tokenURIs[tokenId]).length != 0) {
             delete _tokenURIs[tokenId];
