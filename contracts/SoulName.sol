@@ -283,22 +283,6 @@ contract SoulName is MasaNFT, ISoulName {
     }
 
     /// @notice Returns all the active soul names of an account
-    /// @dev This function queries all the identity names of the specified account
-    /// @param owner Address of the owner of the identities
-    /// @return sbtNames Array of soul names associated to the account
-    function getSoulNames(address owner)
-        external
-        view
-        override
-        returns (string[] memory sbtNames)
-    {
-        // return identity id if exists
-        uint256 identityId = soulboundIdentity.tokenOfOwner(owner);
-
-        return getSoulNames(identityId);
-    }
-
-    /// @notice Returns all the active soul names of an account
     /// @dev This function queries all the identity names of the specified identity Id
     /// @param identityId TokenId of the identity
     /// @return sbtNames Array of soul names associated to the identity Id
@@ -308,30 +292,40 @@ contract SoulName is MasaNFT, ISoulName {
         override
         returns (string[] memory sbtNames)
     {
-        uint256 results;
-        for (uint256 i = 0; i < identityNames[identityId].length; i++) {
-            string memory lowercaseName = identityNames[identityId][i];
+        // return owner if exists
+        uint256 _owner = soulboundIdentity.ownerOf(identityId);
 
-            if (nameData[lowercaseName].exists) {
-                uint256 tokenId = nameData[lowercaseName].tokenId;
-                if (tokenData[tokenId].expirationDate >= block.timestamp) {
-                    results = results.add(1);
-                }
+        return getSoulNames(_owner);
+    }
+
+    /// @notice Returns all the active soul names of an account
+    /// @dev This function queries all the identity names of the specified account
+    /// @param owner Address of the owner of the identities
+    /// @return sbtNames Array of soul names associated to the account
+    function getSoulNames(address owner)
+        external
+        view
+        override
+        returns (string[] memory sbtNames)
+    {
+        uint256 results;
+        uint256 balance = balanceOf(owner);
+
+        for (uint256 i = 0; i < balance; i++) {
+            uint256 tokenId = tokenOfOwnerByIndex(owner, i);
+            if (tokenData[tokenId].expirationDate >= block.timestamp) {
+                results = results.add(1);
             }
         }
 
         string[] memory _sbtNames = new string[](results);
         uint256 index;
 
-        for (uint256 i = 0; i < identityNames[identityId].length; i++) {
-            string memory lowercaseName = identityNames[identityId][i];
-
-            if (nameData[lowercaseName].exists) {
-                uint256 tokenId = nameData[lowercaseName].tokenId;
-                if (tokenData[tokenId].expirationDate >= block.timestamp) {
-                    _sbtNames[index] = lowercaseName;
-                    index = index.add(1);
-                }
+        for (uint256 i = 0; i < balance; i++) {
+            uint256 tokenId = tokenOfOwnerByIndex(owner, i);
+            if (tokenData[tokenId].expirationDate >= block.timestamp) {
+                _sbtNames[index] = Utils.toLowerCase(tokenData[tokenId].name);
+                index = index.add(1);
             }
         }
 
