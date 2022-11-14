@@ -144,42 +144,6 @@ contract SoulName is MasaNFT, ISoulName {
         return tokenId;
     }
 
-    /// @notice Update the identity id pointed from a soul name
-    /// @dev The caller must be the owner or an approved address of the soul name.
-    /// @param tokenId TokenId of the soul name
-    /// @param identityId New TokenId of the soulbound identity that will be pointed from this soul name
-    function updateIdentityId(uint256 tokenId, uint256 identityId) public {
-        // ERC721: caller is not token owner nor approved
-        require(
-            _isApprovedOrOwner(_msgSender(), tokenId),
-            "ERC721_CALLER_NOT_OWNER"
-        );
-        require(
-            soulboundIdentity.ownerOf(identityId) != address(0),
-            "IDENTITY_NOT_FOUND"
-        );
-
-        uint256 oldIdentityId = tokenData[tokenId].identityId;
-        require(identityId != oldIdentityId, "SAME_VALUE");
-
-        // change value from soulNames
-        tokenData[tokenId].identityId = identityId;
-
-        string memory lowercaseName = Utils.toLowerCase(
-            tokenData[tokenId].name
-        );
-        // remove name from identityNames[oldIdentityId]
-        Utils.removeStringFromArray(
-            identityNames[oldIdentityId],
-            lowercaseName
-        );
-
-        // add name to identityNames[identityId]
-        identityNames[identityId].push(lowercaseName);
-
-        emit IdentityIdUpdated(tokenId, oldIdentityId, identityId);
-    }
-
     /// @notice Update the expiration date of a soul name
     /// @dev The caller must be the owner or an approved address of the soul name.
     /// @param tokenId TokenId of the soul name
@@ -449,12 +413,6 @@ contract SoulName is MasaNFT, ISoulName {
     /* ========== MODIFIERS ========== */
 
     /* ========== EVENTS ========== */
-
-    event IdentityIdUpdated(
-        uint256 tokenId,
-        uint256 oldIdentityId,
-        uint256 identityId
-    );
 
     event YearsPeriodRenewed(
         uint256 tokenId,
