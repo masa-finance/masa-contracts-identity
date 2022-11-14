@@ -52,6 +52,14 @@ describe("Soulbound Credit Report", () => {
     await soulboundIdentity.connect(owner).mint(someone.address);
   });
 
+  describe("sbt information", () => {
+    it("should be able to get sbt information", async () => {
+      expect(await soulboundCreditReport.name()).to.equal("Masa Credit Report");
+
+      expect(await soulboundCreditReport.symbol()).to.equal("MCR");
+    });
+  });
+
   describe("mint", () => {
     it("should mint from owner", async () => {
       await soulboundCreditReport.connect(owner).mint(someone.address);
@@ -60,11 +68,53 @@ describe("Soulbound Credit Report", () => {
     it("should mint twice", async () => {
       await soulboundCreditReport.connect(owner).mint(someone.address);
       await soulboundCreditReport.connect(owner).mint(someone.address);
+
+      expect(await soulboundCreditReport.totalSupply()).to.equal(2);
+      expect(await soulboundCreditReport.tokenByIndex(0)).to.equal(0);
+      expect(await soulboundCreditReport.tokenByIndex(1)).to.equal(1);
     });
 
     it("should fail to mint from someone", async () => {
       await expect(soulboundCreditReport.connect(someone).mint(someone.address))
         .to.be.rejected;
+    });
+  });
+
+  describe("burn", () => {
+    it("should burn", async () => {
+      // we mint
+      let mintTx = await soulboundCreditReport
+        .connect(owner)
+        .mint(someone.address);
+      let mintReceipt = await mintTx.wait();
+      const tokenId1 = mintReceipt.events![0].args![1].toNumber();
+
+      // we mint again
+      mintTx = await soulboundCreditReport.connect(owner).mint(someone.address);
+      mintReceipt = await mintTx.wait();
+      const tokenId2 = mintReceipt.events![0].args![1].toNumber();
+
+      expect(
+        await soulboundCreditReport.balanceOf(someone.address)
+      ).to.be.equal(2);
+      expect(
+        await soulboundCreditReport["ownerOf(uint256)"](tokenId1)
+      ).to.be.equal(someone.address);
+      expect(
+        await soulboundCreditReport["ownerOf(uint256)"](tokenId2)
+      ).to.be.equal(someone.address);
+
+      await soulboundCreditReport.connect(someone).burn(tokenId1);
+
+      expect(
+        await soulboundCreditReport.balanceOf(someone.address)
+      ).to.be.equal(1);
+
+      await soulboundCreditReport.connect(someone).burn(tokenId2);
+
+      expect(
+        await soulboundCreditReport.balanceOf(someone.address)
+      ).to.be.equal(0);
     });
   });
 
