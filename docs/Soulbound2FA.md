@@ -267,6 +267,39 @@ function revokeRole(bytes32 role, address account) external nonpayable
 | role | bytes32 | undefined |
 | account | address | undefined |
 
+### setSoulboundIdentity
+
+```solidity
+function setSoulboundIdentity(contract ISoulboundIdentity _soulboundIdentity) external nonpayable
+```
+
+Sets the SoulboundIdentity contract address linked to this SBT
+
+*The caller must be the owner to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _soulboundIdentity | contract ISoulboundIdentity | Address of the SoulboundIdentity contract |
+
+### soulboundIdentity
+
+```solidity
+function soulboundIdentity() external view returns (contract ISoulboundIdentity)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | contract ISoulboundIdentity | undefined |
+
 ### supportsInterface
 
 ```solidity

@@ -1,12 +1,12 @@
-# SoulboundCreditReport
+# MasaSBTChild
 
 *Masa Finance*
 
-> Soulbound Credit Report
+> MasaSBTChild
 
-Soulbound token that represents a credit report.
+Soulbound token. Non-fungible token that is not transferable. Adds a link to a SoulboundIdentity SC to let minting using the identityId
 
-*Soulbound credit report, that inherits from the SBT contract.*
+*Implementation of https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763 Soulbound token.*
 
 ## Methods
 
