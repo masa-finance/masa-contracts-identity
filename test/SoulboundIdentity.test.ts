@@ -42,6 +42,13 @@ describe("Soulbound Identity", () => {
     );
   });
 
+  describe("supportsInterface", () => {
+    it("get data from supportsInterface()", async () => {
+      expect(await soulboundIdentity.supportsInterface("0x01ffc9a7")).to.be
+        .true;
+    });
+  });
+
   describe("set soulName", () => {
     it("should fail to set soulName from non owner user", async () => {
       await expect(
@@ -53,6 +60,14 @@ describe("Soulbound Identity", () => {
       await soulboundIdentity.connect(owner).setSoulName(address2.address);
 
       expect(await soulboundIdentity.soulName()).to.be.equal(address2.address);
+    });
+  });
+
+  describe("sbt information", () => {
+    it("should be able to get sbt information", async () => {
+      expect(await soulboundIdentity.name()).to.equal("Masa Identity");
+
+      expect(await soulboundIdentity.symbol()).to.equal("MID");
     });
   });
 
@@ -68,6 +83,20 @@ describe("Soulbound Identity", () => {
       await expect(
         soulboundIdentity.connect(owner).mint(someone.address)
       ).to.be.rejectedWith("Soulbound identity already created!");
+
+      expect(await soulboundIdentity.totalSupply()).to.equal(1);
+      expect(await soulboundIdentity.tokenByIndex(0)).to.equal(0);
+    });
+
+    it("should mint twice to different accounts", async () => {
+      await soulboundIdentity.connect(owner).mint(someone.address);
+      await soulboundIdentity.connect(owner).mint(address1.address);
+
+      expect(await soulboundIdentity.totalSupply()).to.equal(2);
+      expect(await soulboundIdentity.tokenByIndex(0)).to.equal(0);
+      expect(await soulboundIdentity.tokenByIndex(1)).to.equal(1);
+      expect(await soulboundIdentity.tokenOfOwner(someone.address)).to.equal(0);
+      expect(await soulboundIdentity.tokenOfOwner(address1.address)).to.equal(1);
     });
 
     it("should fail to mint from someone", async () => {
