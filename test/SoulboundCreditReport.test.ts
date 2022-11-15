@@ -19,11 +19,14 @@ let soulboundIdentity: SoulboundIdentity;
 let soulboundCreditReport: SoulboundCreditReport;
 
 let owner: SignerWithAddress;
-let someone: SignerWithAddress;
+let address1: SignerWithAddress;
+let address2: SignerWithAddress;
+
+let identityId1: number;
 
 describe("Soulbound Credit Report", () => {
   before(async () => {
-    [, owner, someone] = await ethers.getSigners();
+    [, owner, address1, address2] = await ethers.getSigners();
   });
 
   beforeEach(async () => {
@@ -49,25 +52,28 @@ describe("Soulbound Credit Report", () => {
     );
 
     // we mint identity SBT
-    await soulboundIdentity.connect(owner).mint(someone.address);
+    let mintTx = await soulboundIdentity.connect(owner).mint(address1.address);
+    let mintReceipt = await mintTx.wait();
+
+    identityId1 = mintReceipt.events![0].args![1].toNumber();
   });
 
   describe("owner functions", () => {
     it("should set SoulboundIdentity from owner", async () => {
       await soulboundCreditReport
         .connect(owner)
-        .setSoulboundIdentity(someone.address);
+        .setSoulboundIdentity(address1.address);
 
       expect(await soulboundCreditReport.soulboundIdentity()).to.be.equal(
-        someone.address
+        address1.address
       );
     });
 
     it("should fail to set SoulboundIdentity from non owner", async () => {
       await expect(
         soulboundCreditReport
-          .connect(someone)
-          .setSoulboundIdentity(someone.address)
+          .connect(address1)
+          .setSoulboundIdentity(address1.address)
       ).to.be.rejected;
     });
   });
@@ -81,28 +87,40 @@ describe("Soulbound Credit Report", () => {
   });
 
   describe("mint", () => {
-    it("should mint from owner", async () => {
+    it("should mint from owner address", async () => {
       await soulboundCreditReport
         .connect(owner)
-        ["mint(address)"](someone.address);
+        ["mint(address)"](address1.address);
+    });
+
+    it("should mint from owner identity", async () => {
+      await soulboundCreditReport.connect(owner)["mint(uint256)"](identityId1);
     });
 
     it("should mint twice", async () => {
       await soulboundCreditReport
         .connect(owner)
-        ["mint(address)"](someone.address);
+        ["mint(address)"](address1.address);
       await soulboundCreditReport
         .connect(owner)
-        ["mint(address)"](someone.address);
+        ["mint(address)"](address1.address);
 
       expect(await soulboundCreditReport.totalSupply()).to.equal(2);
       expect(await soulboundCreditReport.tokenByIndex(0)).to.equal(0);
       expect(await soulboundCreditReport.tokenByIndex(1)).to.equal(1);
     });
 
-    it("should fail to mint from someone", async () => {
+    it("should fail to mint from non minter", async () => {
       await expect(
-        soulboundCreditReport.connect(someone)["mint(address)"](someone.address)
+        soulboundCreditReport
+          .connect(address1)
+          ["mint(address)"](address1.address)
+      ).to.be.rejected;
+    });
+
+    it("should fail to mint to address without identity", async () => {
+      await expect(
+        soulboundCreditReport.connect(owner)["mint(address)"](address2.address)
       ).to.be.rejected;
     });
   });
@@ -112,37 +130,37 @@ describe("Soulbound Credit Report", () => {
       // we mint
       let mintTx = await soulboundCreditReport
         .connect(owner)
-        ["mint(address)"](someone.address);
+        ["mint(address)"](address1.address);
       let mintReceipt = await mintTx.wait();
       const tokenId1 = mintReceipt.events![0].args![1].toNumber();
 
       // we mint again
       mintTx = await soulboundCreditReport
         .connect(owner)
-        ["mint(address)"](someone.address);
+        ["mint(address)"](address1.address);
       mintReceipt = await mintTx.wait();
       const tokenId2 = mintReceipt.events![0].args![1].toNumber();
 
       expect(
-        await soulboundCreditReport.balanceOf(someone.address)
+        await soulboundCreditReport.balanceOf(address1.address)
       ).to.be.equal(2);
       expect(
         await soulboundCreditReport["ownerOf(uint256)"](tokenId1)
-      ).to.be.equal(someone.address);
+      ).to.be.equal(address1.address);
       expect(
         await soulboundCreditReport["ownerOf(uint256)"](tokenId2)
-      ).to.be.equal(someone.address);
+      ).to.be.equal(address1.address);
 
-      await soulboundCreditReport.connect(someone).burn(tokenId1);
+      await soulboundCreditReport.connect(address1).burn(tokenId1);
 
       expect(
-        await soulboundCreditReport.balanceOf(someone.address)
+        await soulboundCreditReport.balanceOf(address1.address)
       ).to.be.equal(1);
 
-      await soulboundCreditReport.connect(someone).burn(tokenId2);
+      await soulboundCreditReport.connect(address1).burn(tokenId2);
 
       expect(
-        await soulboundCreditReport.balanceOf(someone.address)
+        await soulboundCreditReport.balanceOf(address1.address)
       ).to.be.equal(0);
     });
   });
@@ -151,7 +169,7 @@ describe("Soulbound Credit Report", () => {
     it("should fail to transfer because its soulbound", async () => {
       const mintTx = await soulboundCreditReport
         .connect(owner)
-        ["mint(address)"](someone.address);
+        ["mint(address)"](address1.address);
 
       const mintReceipt = await mintTx.wait();
       const tokenId = mintReceipt.events![0].args![1].toNumber();
