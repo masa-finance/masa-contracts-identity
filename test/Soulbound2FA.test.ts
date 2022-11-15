@@ -74,34 +74,39 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
   });
 
   describe("mint", () => {
-    it("should mint from owner", async () => {
-      await soulbound2FA.connect(owner).mint(someone.address);
+    it("should mint from owner address", async () => {
+      await soulbound2FA.connect(owner)["mint(address)"](someone.address);
     });
 
     it("should mint twice", async () => {
-      await soulbound2FA.connect(owner).mint(someone.address);
-      await soulbound2FA.connect(owner).mint(someone.address);
+      await soulbound2FA.connect(owner)["mint(address)"](someone.address);
+      await soulbound2FA.connect(owner)["mint(address)"](someone.address);
 
       expect(await soulbound2FA.totalSupply()).to.equal(2);
       expect(await soulbound2FA.tokenByIndex(0)).to.equal(0);
       expect(await soulbound2FA.tokenByIndex(1)).to.equal(1);
     });
 
-    it("should fail to mint from someone", async () => {
-      await expect(soulbound2FA.connect(someone).mint(someone.address)).to.be
-        .rejected;
+    it("should fail to mint from someone's address", async () => {
+      await expect(
+        soulbound2FA.connect(someone)["mint(address)"](someone.address)
+      ).to.be.rejected;
     });
   });
 
   describe("burn", () => {
     it("should burn", async () => {
       // we mint
-      let mintTx = await soulbound2FA.connect(owner).mint(someone.address);
+      let mintTx = await soulbound2FA
+        .connect(owner)
+        ["mint(address)"](someone.address);
       let mintReceipt = await mintTx.wait();
       const tokenId1 = mintReceipt.events![0].args![1].toNumber();
 
       // we mint again
-      mintTx = await soulbound2FA.connect(owner).mint(someone.address);
+      mintTx = await soulbound2FA
+        .connect(owner)
+        ["mint(address)"](someone.address);
       mintReceipt = await mintTx.wait();
       const tokenId2 = mintReceipt.events![0].args![1].toNumber();
 
@@ -125,7 +130,9 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
 
   describe("tokenUri", () => {
     it("should fail to transfer because its soulbound", async () => {
-      const mintTx = await soulbound2FA.connect(owner).mint(someone.address);
+      const mintTx = await soulbound2FA
+        .connect(owner)
+        ["mint(address)"](someone.address);
 
       const mintReceipt = await mintTx.wait();
       const tokenId = mintReceipt.events![0].args![1].toNumber();

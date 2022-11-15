@@ -60,7 +60,17 @@ abstract contract MasaSBTChild is MasaSBT {
     function mint(uint256 identityId) public virtual returns (uint256) {
         address to = soulboundIdentity.ownerOf(identityId);
 
-        return super.mint(to);
+        return _mintWithCounter(to);
+    }
+
+    /// @notice Mints a new SBT
+    /// @dev The caller must have the MINTER role
+    /// @param to The address to mint the SBT to
+    /// @return The SBT ID of the newly minted SBT
+    function mint(address to) public virtual override returns (uint256) {
+        uint256 identityId = soulboundIdentity.tokenOfOwner(to);
+
+        return mint(identityId);
     }
 
     /* ========== VIEWS ===================================================== */
@@ -68,11 +78,7 @@ abstract contract MasaSBTChild is MasaSBT {
     /// @notice Returns the identityId owned by the given token
     /// @param tokenId Id of the token
     /// @return Id of the identity
-    function getIdentityId(uint256 tokenId)
-        external
-        view
-        returns (uint256)
-    {
+    function getIdentityId(uint256 tokenId) external view returns (uint256) {
         address owner = super.ownerOf(tokenId);
         return soulboundIdentity.tokenOfOwner(owner);
     }

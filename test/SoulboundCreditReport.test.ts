@@ -82,12 +82,18 @@ describe("Soulbound Credit Report", () => {
 
   describe("mint", () => {
     it("should mint from owner", async () => {
-      await soulboundCreditReport.connect(owner).mint(someone.address);
+      await soulboundCreditReport
+        .connect(owner)
+        ["mint(address)"](someone.address);
     });
 
     it("should mint twice", async () => {
-      await soulboundCreditReport.connect(owner).mint(someone.address);
-      await soulboundCreditReport.connect(owner).mint(someone.address);
+      await soulboundCreditReport
+        .connect(owner)
+        ["mint(address)"](someone.address);
+      await soulboundCreditReport
+        .connect(owner)
+        ["mint(address)"](someone.address);
 
       expect(await soulboundCreditReport.totalSupply()).to.equal(2);
       expect(await soulboundCreditReport.tokenByIndex(0)).to.equal(0);
@@ -95,8 +101,9 @@ describe("Soulbound Credit Report", () => {
     });
 
     it("should fail to mint from someone", async () => {
-      await expect(soulboundCreditReport.connect(someone).mint(someone.address))
-        .to.be.rejected;
+      await expect(
+        soulboundCreditReport.connect(someone)["mint(address)"](someone.address)
+      ).to.be.rejected;
     });
   });
 
@@ -105,12 +112,14 @@ describe("Soulbound Credit Report", () => {
       // we mint
       let mintTx = await soulboundCreditReport
         .connect(owner)
-        .mint(someone.address);
+        ["mint(address)"](someone.address);
       let mintReceipt = await mintTx.wait();
       const tokenId1 = mintReceipt.events![0].args![1].toNumber();
 
       // we mint again
-      mintTx = await soulboundCreditReport.connect(owner).mint(someone.address);
+      mintTx = await soulboundCreditReport
+        .connect(owner)
+        ["mint(address)"](someone.address);
       mintReceipt = await mintTx.wait();
       const tokenId2 = mintReceipt.events![0].args![1].toNumber();
 
@@ -142,7 +151,7 @@ describe("Soulbound Credit Report", () => {
     it("should fail to transfer because its soulbound", async () => {
       const mintTx = await soulboundCreditReport
         .connect(owner)
-        .mint(someone.address);
+        ["mint(address)"](someone.address);
 
       const mintReceipt = await mintTx.wait();
       const tokenId = mintReceipt.events![0].args![1].toNumber();
