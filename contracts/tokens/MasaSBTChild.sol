@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
+import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
+
 import "../interfaces/ISoulboundIdentity.sol";
 import "./MasaSBT.sol";
 
@@ -62,6 +64,18 @@ abstract contract MasaSBTChild is MasaSBT {
     }
 
     /* ========== VIEWS ===================================================== */
+
+    /// @notice Returns the identityId owned by the given token
+    /// @param tokenId Id of the token
+    /// @return Id of the identity
+    function getIdentityId(uint256 tokenId)
+        external
+        view
+        returns (uint256)
+    {
+        address owner = super.ownerOf(tokenId);
+        return soulboundIdentity.tokenOfOwner(owner);
+    }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
 

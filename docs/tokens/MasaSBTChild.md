@@ -82,6 +82,28 @@ function burn(uint256 tokenId) external nonpayable
 |---|---|---|
 | tokenId | uint256 | undefined |
 
+### getIdentityId
+
+```solidity
+function getIdentityId(uint256 tokenId) external view returns (uint256)
+```
+
+Returns the identityId owned by the given token
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId | uint256 | Id of the token |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | Id of the identity |
+
 ### getRoleAdmin
 
 ```solidity
