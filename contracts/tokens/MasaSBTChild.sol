@@ -51,6 +51,16 @@ abstract contract MasaSBTChild is MasaSBT {
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
+    /// @notice Mints a new SBT
+    /// @dev The caller must have the MINTER role
+    /// @param identityId TokenId of the identity to mint the NFT to
+    /// @return The NFT ID of the newly minted SBT
+    function mint(uint256 identityId) public virtual returns (uint256) {
+        address to = soulboundIdentity.ownerOf(identityId);
+
+        return super.mint(to);
+    }
+
     /* ========== VIEWS ===================================================== */
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
