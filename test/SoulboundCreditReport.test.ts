@@ -52,6 +52,26 @@ describe("Soulbound Credit Report", () => {
     await soulboundIdentity.connect(owner).mint(someone.address);
   });
 
+  describe("owner functions", () => {
+    it("should set SoulboundIdentity from owner", async () => {
+      await soulboundCreditReport
+        .connect(owner)
+        .setSoulboundIdentity(someone.address);
+
+      expect(await soulboundCreditReport.soulboundIdentity()).to.be.equal(
+        someone.address
+      );
+    });
+
+    it("should fail to set SoulboundIdentity from non owner", async () => {
+      await expect(
+        soulboundCreditReport
+          .connect(someone)
+          .setSoulboundIdentity(someone.address)
+      ).to.be.rejected;
+    });
+  });
+
   describe("sbt information", () => {
     it("should be able to get sbt information", async () => {
       expect(await soulboundCreditReport.name()).to.equal("Masa Credit Report");

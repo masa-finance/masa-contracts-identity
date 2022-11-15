@@ -49,6 +49,22 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
     await soulboundIdentity.connect(owner).mint(someone.address);
   });
 
+  describe("owner functions", () => {
+    it("should set SoulboundIdentity from owner", async () => {
+      await soulbound2FA.connect(owner).setSoulboundIdentity(someone.address);
+
+      expect(await soulbound2FA.soulboundIdentity()).to.be.equal(
+        someone.address
+      );
+    });
+
+    it("should fail to set SoulboundIdentity from non owner", async () => {
+      await expect(
+        soulbound2FA.connect(someone).setSoulboundIdentity(someone.address)
+      ).to.be.rejected;
+    });
+  });
+
   describe("sbt information", () => {
     it("should be able to get sbt information", async () => {
       expect(await soulbound2FA.name()).to.equal("Masa 2FA");
