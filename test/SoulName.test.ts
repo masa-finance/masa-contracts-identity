@@ -278,12 +278,10 @@ describe("Soul Name", () => {
       );
     });
 
-    it ("getTokenData with an existing name, and a non-existing identity", async () => {
+    it("getTokenData with an existing name, and a non-existing identity", async () => {
       await soulboundIdentity.connect(address1).burn(identityId1);
 
-      const { sbtName, linked } = await soulName.getTokenData(
-        SOUL_NAME1
-      );
+      const { sbtName, linked } = await soulName.getTokenData(SOUL_NAME1);
       const extension = await soulName.getExtension();
 
       await expect(sbtName).to.be.equal(SOUL_NAME1 + extension);
@@ -488,7 +486,7 @@ describe("Soul Name", () => {
       // the first owner of the soul name tries to renew the period and fails
       await expect(
         soulName.connect(address1).renewYearsPeriod(nameId, YEAR)
-      ).to.be.rejectedWith("CAN_NOT_RENEW");
+      ).to.be.rejectedWith("NAME_REGISTERED_BY_OTHER_ACCOUNT");
     });
   });
 
