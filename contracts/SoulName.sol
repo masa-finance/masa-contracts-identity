@@ -160,8 +160,7 @@ contract SoulName is MasaNFT, ISoulName {
         string memory lowercaseName = Utils.toLowerCase(
             tokenData[tokenId].name
         );
-        require(nameData[lowercaseName].exists, "NAME_NOT_FOUND");
-        require(nameData[lowercaseName].tokenId == tokenId, "CAN_NOT_RENEW");
+        require(nameData[lowercaseName].tokenId == tokenId, "NAME_REGISTERED_BY_OTHER_ACCOUNT");
 
         // check if the name is expired
         if (tokenData[tokenId].expirationDate < block.timestamp) {
