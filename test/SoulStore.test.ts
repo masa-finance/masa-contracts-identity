@@ -43,7 +43,7 @@ const ARWEAVE_LINK = "ar://jK9sR4OrYvODj7PD3czIAyNJalub0-vdV_JAg1NqQ-o";
 
 describe("Soul Store", () => {
   before(async () => {
-    [, owner, address1, address2] = await ethers.getSigners();
+    [, owner, address1, , address2] = await ethers.getSigners();
   });
 
   beforeEach(async () => {
