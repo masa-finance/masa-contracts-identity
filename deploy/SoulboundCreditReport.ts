@@ -22,7 +22,7 @@ const func: DeployFunction = async ({
 
   [, owner] = await ethers.getSigners();
   const env = getEnvParams(network.name);
-  const baseUri = `${env.BASE_URI}/credit-report/`;
+  const baseUri = `${env.BASE_URI}/credit-score/`;
 
   const constructorArguments = [env.OWNER || owner.address, baseUri];
 
