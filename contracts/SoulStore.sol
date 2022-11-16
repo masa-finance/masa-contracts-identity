@@ -194,12 +194,14 @@ contract SoulStore is DexAMM, Ownable {
     /// @param name Name of the new soul name
     /// @param yearsPeriod Years of validity of the name
     /// @param _tokenURI URI of the NFT
+    /// @param to Address of the new owner of the soul name
     /// @return TokenId of the new sou name
     function purchaseName(
         address paymentMethod,
         string memory name,
         uint256 yearsPeriod,
-        string memory _tokenURI
+        string memory _tokenURI,
+        address to
     ) external payable returns (uint256) {
         _payForMinting(
             paymentMethod,
@@ -207,7 +209,7 @@ contract SoulStore is DexAMM, Ownable {
         );
 
         // finalize purchase
-        return _mintSoulName(_msgSender(), name, yearsPeriod, _tokenURI);
+        return _mintSoulName(to, name, yearsPeriod, _tokenURI);
     }
 
     /* ========== VIEWS ========== */
