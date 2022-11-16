@@ -486,6 +486,7 @@ describe("Soul Store", () => {
         SOUL_NAME,
         YEAR,
         ARWEAVE_LINK,
+        address1.address,
         { value: priceInETH }
       );
     });
@@ -506,7 +507,8 @@ describe("Soul Store", () => {
         USDC_GOERLI, // USDC
         SOUL_NAME,
         YEAR,
-        ARWEAVE_LINK
+        ARWEAVE_LINK,
+        address1.address
       );
     });
 
@@ -526,7 +528,8 @@ describe("Soul Store", () => {
         MASA_GOERLI, // $MASA
         SOUL_NAME,
         YEAR,
-        ARWEAVE_LINK
+        ARWEAVE_LINK,
+        address1.address
       );
     });
 
@@ -539,6 +542,7 @@ describe("Soul Store", () => {
           SOUL_NAME,
           YEAR,
           ARWEAVE_LINK,
+          address1.address,
           { value: priceInETH.div(2) }
         )
       ).to.be.rejectedWith("INVALID_PAYMENT_AMOUNT");
@@ -561,7 +565,8 @@ describe("Soul Store", () => {
           USDC_GOERLI, // USDC
           SOUL_NAME,
           YEAR,
-          ARWEAVE_LINK
+          ARWEAVE_LINK,
+          address1.address
         )
       ).to.be.rejected;
     });
@@ -583,7 +588,8 @@ describe("Soul Store", () => {
           MASA_GOERLI, // $MASA
           SOUL_NAME,
           YEAR,
-          ARWEAVE_LINK
+          ARWEAVE_LINK,
+          address1.address
         )
       ).to.be.rejected;
     });
