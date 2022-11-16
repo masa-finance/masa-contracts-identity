@@ -49,8 +49,10 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
     soulbound2FA = Soulbound2FA__factory.connect(soulbound2FAAddress, owner);
 
     // we mint identity SBT
-    let mintTx = await soulboundIdentity.connect(owner).mint(address1.address);
-    let mintReceipt = await mintTx.wait();
+    const mintTx = await soulboundIdentity
+      .connect(owner)
+      .mint(address1.address);
+    const mintReceipt = await mintTx.wait();
 
     identityId1 = mintReceipt.events![0].args![1].toNumber();
   });
@@ -85,7 +87,14 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
     });
 
     it("should mint from owner identity", async () => {
-      await soulbound2FA.connect(owner)["mint(uint256)"](identityId1);
+      const mintTx = await soulbound2FA
+        .connect(owner)
+        ["mint(uint256)"](identityId1);
+      const mintReceipt = await mintTx.wait();
+
+      const tokenId = mintReceipt.events![0].args![1].toNumber();
+
+      expect(await soulbound2FA.getIdentityId(tokenId)).to.equal(identityId1);
     });
 
     it("should mint twice", async () => {

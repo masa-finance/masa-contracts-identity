@@ -52,8 +52,10 @@ describe("Soulbound Credit Report", () => {
     );
 
     // we mint identity SBT
-    let mintTx = await soulboundIdentity.connect(owner).mint(address1.address);
-    let mintReceipt = await mintTx.wait();
+    const mintTx = await soulboundIdentity
+      .connect(owner)
+      .mint(address1.address);
+    const mintReceipt = await mintTx.wait();
 
     identityId1 = mintReceipt.events![0].args![1].toNumber();
   });
@@ -94,7 +96,16 @@ describe("Soulbound Credit Report", () => {
     });
 
     it("should mint from owner identity", async () => {
-      await soulboundCreditReport.connect(owner)["mint(uint256)"](identityId1);
+      const mintTx = await soulboundCreditReport
+        .connect(owner)
+        ["mint(uint256)"](identityId1);
+      const mintReceipt = await mintTx.wait();
+
+      const tokenId = mintReceipt.events![0].args![1].toNumber();
+
+      expect(await soulboundCreditReport.getIdentityId(tokenId)).to.equal(
+        identityId1
+      );
     });
 
     it("should mint twice", async () => {
