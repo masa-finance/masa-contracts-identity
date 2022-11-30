@@ -96,7 +96,9 @@ describe("Soulbound Identity", () => {
       expect(await soulboundIdentity.tokenByIndex(0)).to.equal(0);
       expect(await soulboundIdentity.tokenByIndex(1)).to.equal(1);
       expect(await soulboundIdentity.tokenOfOwner(someone.address)).to.equal(0);
-      expect(await soulboundIdentity.tokenOfOwner(address1.address)).to.equal(1);
+      expect(await soulboundIdentity.tokenOfOwner(address1.address)).to.equal(
+        1
+      );
     });
 
     it("should fail to mint from someone", async () => {
