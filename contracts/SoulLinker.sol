@@ -375,7 +375,7 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
     /// @param token Address of the SBT contract
     /// @param tokenId Id of the token
     /// @param signatureDate Signature date of the signature
-    /// @return `true` if the signature is valid, `false` otherwise
+    /// @return Data that the reader can read
     function validatePermission(
         uint256 readerIdentityId,
         uint256 ownerIdentityId,
