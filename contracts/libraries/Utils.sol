@@ -30,21 +30,6 @@ library Utils {
         return string(bLower);
     }
 
-    function removeStringFromArray(string[] storage array, string memory name)
-        internal
-    {
-        for (uint256 i = 0; i < array.length; i++) {
-            if (
-                keccak256(abi.encodePacked((array[i]))) ==
-                keccak256(abi.encodePacked((name)))
-            ) {
-                array[i] = array[array.length - 1];
-                array.pop();
-                break;
-            }
-        }
-    }
-
     function toSlice(string memory self) internal pure returns (slice memory) {
         uint256 ptr;
         assembly {
