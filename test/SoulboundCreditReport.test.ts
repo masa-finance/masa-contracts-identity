@@ -56,7 +56,7 @@ describe("Soulbound Credit Score", () => {
     it("should be able to get sbt information", async () => {
       expect(await soulboundCreditScore.name()).to.equal("Masa Credit Score");
 
-      expect(await soulboundCreditScore.symbol()).to.equal("MCR");
+      expect(await soulboundCreditScore.symbol()).to.equal("MCS");
     });
   });
 
