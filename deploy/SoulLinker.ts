@@ -24,8 +24,8 @@ const func: DeployFunction = async ({
   const env = getEnvParams(network.name);
 
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
-  const soulboundCreditReportDeployed = await deployments.get(
-    "SoulboundCreditReport"
+  const soulboundCreditScoreDeployed = await deployments.get(
+    "SoulboundCreditScore"
   );
   const soulbound2FADeployed = await deployments.get("Soulbound2FA");
 
@@ -72,7 +72,7 @@ const func: DeployFunction = async ({
 
   await soulLinker
     .connect(signer)
-    .addLinkedSBT(soulboundCreditReportDeployed.address);
+    .addLinkedSBT(soulboundCreditScoreDeployed.address);
 
   await soulLinker.connect(signer).addLinkedSBT(soulbound2FADeployed.address);
 };
@@ -80,7 +80,7 @@ const func: DeployFunction = async ({
 func.tags = ["SoulLinker"];
 func.dependencies = [
   "SoulboundIdentity",
-  "SoulboundCreditReport",
+  "SoulboundCreditScore",
   "Soulbound2FA"
 ];
 export default func;
