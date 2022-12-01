@@ -14,14 +14,13 @@ let soulboundIdentity: SoulboundIdentity;
 
 let owner: SignerWithAddress;
 let someone: SignerWithAddress;
+let address1: SignerWithAddress;
+let address2: SignerWithAddress;
 
 const SOUL_NAME1 = "soulName1";
 const SOUL_NAME2 = "soulName2";
 const YEAR = 1; // 1 year
 const ARWEAVE_LINK = "ar://jK9sR4OrYvODj7PD3czIAyNJalub0-vdV_JAg1NqQ-o";
-
-let address1: SignerWithAddress;
-let address2: SignerWithAddress;
 
 describe("Soulbound Identity", () => {
   before(async () => {
@@ -96,7 +95,9 @@ describe("Soulbound Identity", () => {
       expect(await soulboundIdentity.tokenByIndex(0)).to.equal(0);
       expect(await soulboundIdentity.tokenByIndex(1)).to.equal(1);
       expect(await soulboundIdentity.tokenOfOwner(someone.address)).to.equal(0);
-      expect(await soulboundIdentity.tokenOfOwner(address1.address)).to.equal(1);
+      expect(await soulboundIdentity.tokenOfOwner(address1.address)).to.equal(
+        1
+      );
     });
 
     it("should fail to mint from someone", async () => {

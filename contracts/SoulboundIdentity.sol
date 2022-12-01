@@ -64,7 +64,7 @@ contract SoulboundIdentity is MasaSBT, ISoulboundIdentity {
         string memory _tokenURI
     ) public payable override soulNameAlreadySet returns (uint256) {
         uint256 identityId = mint(to);
-        soulName.mint(to, name, identityId, yearsPeriod, _tokenURI);
+        soulName.mint(to, name, yearsPeriod, _tokenURI);
 
         return identityId;
     }
@@ -108,7 +108,7 @@ contract SoulboundIdentity is MasaSBT, ISoulboundIdentity {
         soulNameAlreadySet
         returns (address)
     {
-        (, uint256 identityId, , , ) = soulName.getTokenData(name);
+        (, , uint256 identityId, , , ) = soulName.getTokenData(name);
         return super.ownerOf(identityId);
     }
 
@@ -122,7 +122,7 @@ contract SoulboundIdentity is MasaSBT, ISoulboundIdentity {
         soulNameAlreadySet
         returns (string memory)
     {
-        (, uint256 identityId, , , ) = soulName.getTokenData(name);
+        (, , uint256 identityId, , , ) = soulName.getTokenData(name);
         return super.tokenURI(identityId);
     }
 
@@ -165,6 +165,7 @@ contract SoulboundIdentity is MasaSBT, ISoulboundIdentity {
     /// @dev This function queries the information of a soul name
     /// @param name Name of the soul name
     /// @return sbtName Soul name, in upper/lower case and extension
+    /// @return linked `true` if the soul name is linked, `false` otherwise
     /// @return identityId Identity id of the soul name
     /// @return tokenId SoulName id id of the soul name
     /// @return expirationDate Expiration date of the soul name
@@ -175,6 +176,7 @@ contract SoulboundIdentity is MasaSBT, ISoulboundIdentity {
         soulNameAlreadySet
         returns (
             string memory sbtName,
+            bool linked,
             uint256 identityId,
             uint256 tokenId,
             uint256 expirationDate,

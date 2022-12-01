@@ -139,12 +139,14 @@ contract SoulStore is PaymentGateway {
     /// @param name Name of the new soul name
     /// @param yearsPeriod Years of validity of the name
     /// @param _tokenURI URI of the NFT
+    /// @param to Address of the new owner of the soul name
     /// @return TokenId of the new sou name
     function purchaseName(
         address paymentMethod,
         string memory name,
         uint256 yearsPeriod,
-        string memory _tokenURI
+        string memory _tokenURI,
+        address to
     ) external payable returns (uint256) {
         _pay(
             paymentMethod,
@@ -152,7 +154,7 @@ contract SoulStore is PaymentGateway {
         );
 
         // finalize purchase
-        return _mintSoulName(_msgSender(), name, yearsPeriod, _tokenURI);
+        return _mintSoulName(to, name, yearsPeriod, _tokenURI);
     }
 
     /* ========== VIEWS ========== */
@@ -260,15 +262,8 @@ contract SoulStore is PaymentGateway {
     ) internal returns (uint256) {
         // mint Soul Name token
         ISoulName soulName = soulboundIdentity.getSoulName();
-        uint256 identityId = soulboundIdentity.tokenOfOwner(to);
 
-        uint256 tokenId = soulName.mint(
-            to,
-            name,
-            identityId,
-            yearsPeriod,
-            _tokenURI
-        );
+        uint256 tokenId = soulName.mint(to, name, yearsPeriod, _tokenURI);
 
         emit SoulNamePurchased(to, tokenId, name, yearsPeriod);
 

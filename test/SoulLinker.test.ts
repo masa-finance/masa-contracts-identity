@@ -8,8 +8,8 @@ import {
   ERC20__factory,
   IUniswapRouter,
   IUniswapRouter__factory,
-  SoulboundCreditReport,
-  SoulboundCreditReport__factory,
+  SoulboundCreditScore,
+  SoulboundCreditScore__factory,
   SoulboundIdentity,
   SoulboundIdentity__factory,
   SoulLinker,
@@ -24,7 +24,7 @@ const expect = chai.expect;
 
 // contract instances
 let soulboundIdentity: SoulboundIdentity;
-let soulboundCreditReport: SoulboundCreditReport;
+let soulboundCreditScore: SoulboundCreditScore;
 let soulLinker: SoulLinker;
 
 let owner: SignerWithAddress;
@@ -33,7 +33,7 @@ let address2: SignerWithAddress;
 
 let ownerIdentityId: number;
 let readerIdentityId: number;
-let creditReport1: number;
+let creditScore1: number;
 
 const data = '{"data1","data2"}';
 const signatureDate = Math.floor(Date.now() / 1000);
@@ -89,7 +89,7 @@ describe("Soul Linker", () => {
 
   beforeEach(async () => {
     await deployments.fixture("SoulboundIdentity", { fallbackToGlobal: false });
-    await deployments.fixture("SoulboundCreditReport", {
+    await deployments.fixture("SoulboundCreditScore", {
       fallbackToGlobal: false
     });
     await deployments.fixture("SoulLinker", { fallbackToGlobal: false });
@@ -97,8 +97,8 @@ describe("Soul Linker", () => {
     const { address: soulboundIdentityAddress } = await deployments.get(
       "SoulboundIdentity"
     );
-    const { address: soulboundCreditReportAddress } = await deployments.get(
-      "SoulboundCreditReport"
+    const { address: soulboundCreditScoreAddress } = await deployments.get(
+      "SoulboundCreditScore"
     );
     const { address: soulLinkerAddress } = await deployments.get("SoulLinker");
 
@@ -106,8 +106,8 @@ describe("Soul Linker", () => {
       soulboundIdentityAddress,
       owner
     );
-    soulboundCreditReport = SoulboundCreditReport__factory.connect(
-      soulboundCreditReportAddress,
+    soulboundCreditScore = SoulboundCreditScore__factory.connect(
+      soulboundCreditScoreAddress,
       owner
     );
     soulLinker = SoulLinker__factory.connect(soulLinkerAddress, owner);
@@ -124,11 +124,13 @@ describe("Soul Linker", () => {
 
     readerIdentityId = mintReceipt.events![0].args![1].toNumber();
 
-    // we mint credit report SBT for address1
-    mintTx = await soulboundCreditReport.connect(owner).mint(address1.address);
+    // we mint credit score SBT for address1
+    mintTx = await soulboundCreditScore
+      .connect(owner)
+      ["mint(address)"](address1.address);
     mintReceipt = await mintTx.wait();
 
-    creditReport1 = mintReceipt.events![0].args![1].toNumber();
+    creditScore1 = mintReceipt.events![0].args![1].toNumber();
 
     const uniswapRouter: IUniswapRouter = IUniswapRouter__factory.connect(
       SWAPROUTER_GOERLI,
@@ -175,16 +177,16 @@ describe("Soul Linker", () => {
 
     it("should fail to add already existing linked SBT from owner", async () => {
       await expect(
-        soulLinker.connect(owner).addLinkedSBT(soulboundCreditReport.address)
+        soulLinker.connect(owner).addLinkedSBT(soulboundCreditScore.address)
       ).to.be.rejected;
     });
 
     it("should remove linked SBT from owner", async () => {
       await soulLinker
         .connect(owner)
-        .removeLinkedSBT(soulboundCreditReport.address);
+        .removeLinkedSBT(soulboundCreditScore.address);
 
-      expect(await soulLinker.linkedSBT(soulboundCreditReport.address)).to.be
+      expect(await soulLinker.linkedSBT(soulboundCreditScore.address)).to.be
         .false;
     });
 
@@ -192,7 +194,7 @@ describe("Soul Linker", () => {
       await expect(
         soulLinker
           .connect(address1)
-          .removeLinkedSBT(soulboundCreditReport.address)
+          .removeLinkedSBT(soulboundCreditScore.address)
       ).to.be.rejected;
     });
 
@@ -279,8 +281,8 @@ describe("Soul Linker", () => {
     it("should get identity id", async () => {
       expect(
         await soulLinker.getIdentityId(
-          soulboundCreditReport.address,
-          creditReport1
+          soulboundCreditScore.address,
+          creditScore1
         )
       ).to.be.equal(ownerIdentityId);
     });
@@ -289,18 +291,18 @@ describe("Soul Linker", () => {
       expect(
         await soulLinker["getSBTLinks(uint256,address)"](
           ownerIdentityId,
-          soulboundCreditReport.address
+          soulboundCreditScore.address
         )
-      ).to.deep.equal([BigNumber.from(creditReport1)]);
+      ).to.deep.equal([BigNumber.from(creditScore1)]);
     });
 
     it("should get SBT links by owner address", async () => {
       expect(
         await soulLinker["getSBTLinks(address,address)"](
           address1.address,
-          soulboundCreditReport.address
+          soulboundCreditScore.address
         )
-      ).to.deep.equal([BigNumber.from(creditReport1)]);
+      ).to.deep.equal([BigNumber.from(creditScore1)]);
     });
   });
 
@@ -309,8 +311,8 @@ describe("Soul Linker", () => {
       const signature = await signTypedData(
         readerIdentityId,
         ownerIdentityId,
-        soulboundCreditReport.address,
-        creditReport1
+        soulboundCreditScore.address,
+        creditScore1
       );
 
       const priceInUtilityToken = await soulLinker.getPriceForAddPermission();
@@ -326,8 +328,8 @@ describe("Soul Linker", () => {
         .addPermission(
           readerIdentityId,
           ownerIdentityId,
-          soulboundCreditReport.address,
-          creditReport1,
+          soulboundCreditScore.address,
+          creditScore1,
           data,
           signatureDate,
           expirationDate,
@@ -336,8 +338,8 @@ describe("Soul Linker", () => {
 
       const permissionSignatureDates =
         await soulLinker.getPermissionSignatureDates(
-          soulboundCreditReport.address,
-          creditReport1,
+          soulboundCreditScore.address,
+          creditScore1,
           readerIdentityId
         );
       expect(permissionSignatureDates[0]).to.be.equal(signatureDate);
@@ -348,8 +350,8 @@ describe("Soul Linker", () => {
         expirationDate: expirationDateInfo,
         isRevoked: isRevokedInfo
       } = await soulLinker.getPermissionInfo(
-        soulboundCreditReport.address,
-        creditReport1,
+        soulboundCreditScore.address,
+        creditScore1,
         readerIdentityId,
         signatureDate
       );
@@ -363,8 +365,8 @@ describe("Soul Linker", () => {
         .validatePermission(
           readerIdentityId,
           ownerIdentityId,
-          soulboundCreditReport.address,
-          creditReport1,
+          soulboundCreditScore.address,
+          creditScore1,
           signatureDate
         );
 
@@ -378,8 +380,8 @@ describe("Soul Linker", () => {
       const signature = await signTypedData(
         readerIdentityId,
         ownerIdentityId,
-        soulboundCreditReport.address,
-        creditReport1
+        soulboundCreditScore.address,
+        creditScore1
       );
 
       const priceInUtilityToken = await soulLinker.getPriceForAddPermission();
@@ -396,8 +398,8 @@ describe("Soul Linker", () => {
         .addPermission(
           readerIdentityId,
           ownerIdentityId,
-          soulboundCreditReport.address,
-          creditReport1,
+          soulboundCreditScore.address,
+          creditScore1,
           data,
           signatureDate,
           expirationDate,
@@ -406,8 +408,8 @@ describe("Soul Linker", () => {
 
       const permissionSignatureDates =
         await soulLinker.getPermissionSignatureDates(
-          soulboundCreditReport.address,
-          creditReport1,
+          soulboundCreditScore.address,
+          creditScore1,
           readerIdentityId
         );
       expect(permissionSignatureDates[0]).to.be.equal(signatureDate);
@@ -418,8 +420,8 @@ describe("Soul Linker", () => {
         expirationDate: expirationDateInfo,
         isRevoked: isRevokedInfo
       } = await soulLinker.getPermissionInfo(
-        soulboundCreditReport.address,
-        creditReport1,
+        soulboundCreditScore.address,
+        creditScore1,
         readerIdentityId,
         signatureDate
       );
@@ -433,8 +435,8 @@ describe("Soul Linker", () => {
         .validatePermission(
           readerIdentityId,
           ownerIdentityId,
-          soulboundCreditReport.address,
-          creditReport1,
+          soulboundCreditScore.address,
+          creditScore1,
           signatureDate
         );
 
@@ -445,8 +447,8 @@ describe("Soul Linker", () => {
       const signature = await signTypedData(
         ownerIdentityId,
         ownerIdentityId,
-        soulboundCreditReport.address,
-        creditReport1
+        soulboundCreditScore.address,
+        creditScore1
       );
 
       const priceInUtilityToken = await soulLinker.getPriceForAddPermission();
@@ -463,8 +465,8 @@ describe("Soul Linker", () => {
           .addPermission(
             readerIdentityId,
             ownerIdentityId,
-            soulboundCreditReport.address,
-            creditReport1,
+            soulboundCreditScore.address,
+            creditScore1,
             data,
             signatureDate,
             expirationDate,
@@ -478,8 +480,8 @@ describe("Soul Linker", () => {
           .validatePermission(
             readerIdentityId,
             ownerIdentityId,
-            soulboundCreditReport.address,
-            creditReport1,
+            soulboundCreditScore.address,
+            creditScore1,
             signatureDate
           )
       ).to.be.rejected;
@@ -491,8 +493,8 @@ describe("Soul Linker", () => {
       const signature = await signTypedData(
         readerIdentityId,
         ownerIdentityId,
-        soulboundCreditReport.address,
-        creditReport1
+        soulboundCreditScore.address,
+        creditScore1
       );
 
       const priceInUtilityToken = await soulLinker.getPriceForAddPermission();
@@ -508,8 +510,8 @@ describe("Soul Linker", () => {
         .addPermission(
           readerIdentityId,
           ownerIdentityId,
-          soulboundCreditReport.address,
-          creditReport1,
+          soulboundCreditScore.address,
+          creditScore1,
           data,
           signatureDate,
           expirationDate,
@@ -522,8 +524,8 @@ describe("Soul Linker", () => {
           .revokePermission(
             readerIdentityId,
             ownerIdentityId,
-            soulboundCreditReport.address,
-            creditReport1,
+            soulboundCreditScore.address,
+            creditScore1,
             signatureDate
           )
       ).to.be.rejected;
@@ -533,8 +535,8 @@ describe("Soul Linker", () => {
         .validatePermission(
           readerIdentityId,
           ownerIdentityId,
-          soulboundCreditReport.address,
-          creditReport1,
+          soulboundCreditScore.address,
+          creditScore1,
           signatureDate
         );
 
@@ -545,8 +547,8 @@ describe("Soul Linker", () => {
       const signature = await signTypedData(
         readerIdentityId,
         ownerIdentityId,
-        soulboundCreditReport.address,
-        creditReport1
+        soulboundCreditScore.address,
+        creditScore1
       );
 
       const priceInUtilityToken = await soulLinker.getPriceForAddPermission();
@@ -562,8 +564,8 @@ describe("Soul Linker", () => {
         .addPermission(
           readerIdentityId,
           ownerIdentityId,
-          soulboundCreditReport.address,
-          creditReport1,
+          soulboundCreditScore.address,
+          creditScore1,
           data,
           signatureDate,
           expirationDate,
@@ -575,8 +577,8 @@ describe("Soul Linker", () => {
         .validatePermission(
           readerIdentityId,
           ownerIdentityId,
-          soulboundCreditReport.address,
-          creditReport1,
+          soulboundCreditScore.address,
+          creditScore1,
           signatureDate
         );
 
@@ -587,8 +589,8 @@ describe("Soul Linker", () => {
         .revokePermission(
           readerIdentityId,
           ownerIdentityId,
-          soulboundCreditReport.address,
-          creditReport1,
+          soulboundCreditScore.address,
+          creditScore1,
           signatureDate
         );
 
@@ -598,8 +600,8 @@ describe("Soul Linker", () => {
           .validatePermission(
             readerIdentityId,
             ownerIdentityId,
-            soulboundCreditReport.address,
-            creditReport1,
+            soulboundCreditScore.address,
+            creditScore1,
             signatureDate
           )
       ).to.be.rejected;
