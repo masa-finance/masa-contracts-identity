@@ -24,7 +24,13 @@ const func: DeployFunction = async ({
   const env = getEnvParams(network.name);
   const baseUri = `${env.BASE_URI}/2fa/`;
 
-  const constructorArguments = [env.OWNER || owner.address, baseUri];
+  const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
+
+  const constructorArguments = [
+    env.OWNER || owner.address,
+    baseUri,
+    soulboundIdentityDeployed.address
+  ];
 
   const soulbound2FADeploymentResult = await deploy("Soulbound2FA", {
     from: deployer,

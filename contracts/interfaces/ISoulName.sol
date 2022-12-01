@@ -5,7 +5,6 @@ interface ISoulName {
     function mint(
         address to,
         string memory name,
-        uint256 identityId,
         uint256 yearsPeriod,
         string memory _tokenURI
     ) external returns (uint256);
@@ -22,6 +21,7 @@ interface ISoulName {
         view
         returns (
             string memory sbtName,
+            bool linked,
             uint256 identityId,
             uint256 tokenId,
             uint256 expirationDate,

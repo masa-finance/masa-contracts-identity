@@ -31,8 +31,8 @@ const func: DeployFunction = async ({
 
   const masa = await deployments.get("MASA");
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
-  const soulboundCreditReportDeployed = await deployments.get(
-    "SoulboundCreditReport"
+  const soulboundCreditScoreDeployed = await deployments.get(
+    "SoulboundCreditScore"
   );
   const soulbound2FADeployed = await deployments.get("Soulbound2FA");
 
@@ -115,7 +115,7 @@ const func: DeployFunction = async ({
 
   await soulLinker
     .connect(signer)
-    .addLinkedSBT(soulboundCreditReportDeployed.address);
+    .addLinkedSBT(soulboundCreditScoreDeployed.address);
 
   await soulLinker.connect(signer).addLinkedSBT(soulbound2FADeployed.address);
 };
@@ -124,7 +124,7 @@ func.tags = ["SoulLinker"];
 func.dependencies = [
   "MASA",
   "SoulboundIdentity",
-  "SoulboundCreditReport",
+  "SoulboundCreditScore",
   "Soulbound2FA"
 ];
 export default func;

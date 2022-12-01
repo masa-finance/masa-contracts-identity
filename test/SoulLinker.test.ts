@@ -8,8 +8,8 @@ import {
   ERC20__factory,
   IUniswapRouter,
   IUniswapRouter__factory,
-  SoulboundCreditReport,
-  SoulboundCreditReport__factory,
+  SoulboundCreditScore,
+  SoulboundCreditScore__factory,
   SoulboundIdentity,
   SoulboundIdentity__factory,
   SoulLinker,
@@ -24,7 +24,7 @@ const expect = chai.expect;
 
 // contract instances
 let soulboundIdentity: SoulboundIdentity;
-let soulboundCreditReport: SoulboundCreditReport;
+let soulboundCreditScore: SoulboundCreditScore;
 let soulLinker: SoulLinker;
 
 let owner: SignerWithAddress;
@@ -33,7 +33,7 @@ let address2: SignerWithAddress;
 
 let ownerIdentityId: number;
 let readerIdentityId: number;
-let creditReport1: number;
+let creditScore1: number;
 
 const data = '{"data1","data2"}';
 const signatureDate = Math.floor(Date.now() / 1000);
@@ -89,7 +89,7 @@ describe("Soul Linker", () => {
 
   beforeEach(async () => {
     await deployments.fixture("SoulboundIdentity", { fallbackToGlobal: false });
-    await deployments.fixture("SoulboundCreditReport", {
+    await deployments.fixture("SoulboundCreditScore", {
       fallbackToGlobal: false
     });
     await deployments.fixture("SoulLinker", { fallbackToGlobal: false });
@@ -97,8 +97,8 @@ describe("Soul Linker", () => {
     const { address: soulboundIdentityAddress } = await deployments.get(
       "SoulboundIdentity"
     );
-    const { address: soulboundCreditReportAddress } = await deployments.get(
-      "SoulboundCreditReport"
+    const { address: soulboundCreditScoreAddress } = await deployments.get(
+      "SoulboundCreditScore"
     );
     const { address: soulLinkerAddress } = await deployments.get("SoulLinker");
 
@@ -106,8 +106,8 @@ describe("Soul Linker", () => {
       soulboundIdentityAddress,
       owner
     );
-    soulboundCreditReport = SoulboundCreditReport__factory.connect(
-      soulboundCreditReportAddress,
+    soulboundCreditScore = SoulboundCreditScore__factory.connect(
+      soulboundCreditScoreAddress,
       owner
     );
     soulLinker = SoulLinker__factory.connect(soulLinkerAddress, owner);
@@ -125,26 +125,12 @@ describe("Soul Linker", () => {
     readerIdentityId = mintReceipt.events![0].args![1].toNumber();
 
     // we mint credit report SBT for address1
-    mintTx = await soulboundCreditReport.connect(owner).mint(address1.address);
+    mintTx = await soulboundCreditScore
+      .connect(owner)
+      ["mint(address)"](address1.address);
     mintReceipt = await mintTx.wait();
 
-    creditReport1 = mintReceipt.events![0].args![1].toNumber();
-
-    const uniswapRouter: IUniswapRouter = IUniswapRouter__factory.connect(
-      SWAPROUTER_GOERLI,
-      owner
-    );
-
-    // we get $MASA utility tokens for address1
-    await uniswapRouter.swapExactETHForTokens(
-      0,
-      [WETH_GOERLI, MASA_GOERLI],
-      address1.address,
-      Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
-      {
-        value: ethers.utils.parseEther("10")
-      }
-    );
+    creditScore1 = mintReceipt.events![0].args![1].toNumber();
   });
 
   describe("owner functions", () => {
@@ -175,16 +161,16 @@ describe("Soul Linker", () => {
 
     it("should fail to add already existing linked SBT from owner", async () => {
       await expect(
-        soulLinker.connect(owner).addLinkedSBT(soulboundCreditReport.address)
+        soulLinker.connect(owner).addLinkedSBT(soulboundCreditScore.address)
       ).to.be.rejected;
     });
 
     it("should remove linked SBT from owner", async () => {
       await soulLinker
         .connect(owner)
-        .removeLinkedSBT(soulboundCreditReport.address);
+        .removeLinkedSBT(soulboundCreditScore.address);
 
-      expect(await soulLinker.linkedSBT(soulboundCreditReport.address)).to.be
+      expect(await soulLinker.linkedSBT(soulboundCreditScore.address)).to.be
         .false;
     });
 
@@ -192,7 +178,7 @@ describe("Soul Linker", () => {
       await expect(
         soulLinker
           .connect(address1)
-          .removeLinkedSBT(soulboundCreditReport.address)
+          .removeLinkedSBT(soulboundCreditScore.address)
       ).to.be.rejected;
     });
 
@@ -279,8 +265,8 @@ describe("Soul Linker", () => {
     it("should get identity id", async () => {
       expect(
         await soulLinker.getIdentityId(
-          soulboundCreditReport.address,
-          creditReport1
+          soulboundCreditScore.address,
+          creditScore1
         )
       ).to.be.equal(ownerIdentityId);
     });
@@ -289,28 +275,60 @@ describe("Soul Linker", () => {
       expect(
         await soulLinker["getSBTLinks(uint256,address)"](
           ownerIdentityId,
-          soulboundCreditReport.address
+          soulboundCreditScore.address
         )
-      ).to.deep.equal([BigNumber.from(creditReport1)]);
+      ).to.deep.equal([BigNumber.from(creditScore1)]);
     });
 
     it("should get SBT links by owner address", async () => {
       expect(
         await soulLinker["getSBTLinks(address,address)"](
           address1.address,
-          soulboundCreditReport.address
+          soulboundCreditScore.address
         )
-      ).to.deep.equal([BigNumber.from(creditReport1)]);
+      ).to.deep.equal([BigNumber.from(creditScore1)]);
     });
   });
 
-  describe("addPermission", () => {
-    it("addPermission must work with a valid signature", async () => {
-      const signature = await signTypedData(
+  describe("validateLinkData", () => {
+    it("validateLinkData must work with a valid signature", async () => {
+      const chainId = await getChainId();
+
+      const signature = await address1._signTypedData(
+        // Domain
+        {
+          name: "SoulLinker",
+          version: "1.0.0",
+          chainId: chainId,
+          verifyingContract: soulLinker.address
+        },
+        // Types
+        {
+          Link: [
+            { name: "readerIdentityId", type: "uint256" },
+            { name: "ownerIdentityId", type: "uint256" },
+            { name: "token", type: "address" },
+            { name: "tokenId", type: "uint256" },
+            { name: "expirationDate", type: "uint256" }
+          ]
+        },
+        // Value
+        {
+          readerIdentityId: readerIdentityId,
+          ownerIdentityId: ownerIdentityId,
+          token: soulboundCreditScore.address,
+          tokenId: creditScore1,
+          expirationDate: Math.floor(Date.now() / 1000) + 60 * 15
+        }
+      );
+
+      const isValid = await soulLinker.connect(address2).validateLinkData(
         readerIdentityId,
         ownerIdentityId,
-        soulboundCreditReport.address,
-        creditReport1
+        soulboundCreditScore.address,
+        creditScore1,
+        Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
+        signature
       );
 
       const priceInUtilityToken = await soulLinker.addPermissionPriceInfo();
@@ -321,16 +339,41 @@ describe("Soul Linker", () => {
         .connect(address1)
         .approve(soulLinker.address, priceInUtilityToken);
 
-      await soulLinker
-        .connect(address1)
-        .addPermission(
+      const signature = await address1._signTypedData(
+        // Domain
+        {
+          name: "SoulLinker",
+          version: "1.0.0",
+          chainId: chainId,
+          verifyingContract: soulLinker.address
+        },
+        // Types
+        {
+          Link: [
+            { name: "readerIdentityId", type: "uint256" },
+            { name: "ownerIdentityId", type: "uint256" },
+            { name: "token", type: "address" },
+            { name: "tokenId", type: "uint256" },
+            { name: "expirationDate", type: "uint256" }
+          ]
+        },
+        // Value
+        {
+          readerIdentityId: ownerIdentityId,
+          ownerIdentityId: ownerIdentityId,
+          token: soulboundCreditScore.address,
+          tokenId: creditScore1,
+          expirationDate: Math.floor(Date.now() / 1000) + 60 * 15
+        }
+      );
+
+      await expect(
+        soulLinker.connect(address2).validateLinkData(
           readerIdentityId,
           ownerIdentityId,
-          soulboundCreditReport.address,
-          creditReport1,
-          data,
-          signatureDate,
-          expirationDate,
+          soulboundCreditScore.address,
+          creditScore1,
+          Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
           signature
         );
 

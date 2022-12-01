@@ -32,11 +32,9 @@ contract SoulName is MasaNFT, ISoulName {
 
     mapping(uint256 => TokenData) public tokenData; // used to store the data of the token id
     mapping(string => NameData) public nameData; // stores the token id of the current active soul name
-    mapping(uint256 => string[]) identityNames; // register of all names associated to an identityId
 
     struct TokenData {
         string name; // Name with lowercase and uppercase
-        uint256 identityId;
         uint256 expirationDate;
     }
 
@@ -110,13 +108,11 @@ contract SoulName is MasaNFT, ISoulName {
     /// @dev The caller can mint more than one name. The soul name must be unique.
     /// @param to Address of the owner of the new soul name
     /// @param name Name of the new soul name
-    /// @param identityId TokenId of the soulbound identity that will be pointed from this soul name
     /// @param yearsPeriod Years of validity of the name
     /// @param _tokenURI URI of the NFT
     function mint(
         address to,
         string memory name,
-        uint256 identityId,
         uint256 yearsPeriod,
         string memory _tokenURI
     ) public override returns (uint256) {
@@ -124,8 +120,8 @@ contract SoulName is MasaNFT, ISoulName {
         require(bytes(name).length > 0, "ZERO_LENGTH_NAME");
         require(yearsPeriod > 0, "ZERO_YEARS_PERIOD");
         require(
-            soulboundIdentity.ownerOf(identityId) != address(0),
-            "IDENTITY_NOT_FOUND"
+            soulboundIdentity.balanceOf(to) > 0,
+            "ADDRESS_DOES_NOT_HAVE_IDENTITY"
         );
         require(
             Utils.startsWith(_tokenURI, "ar://") ||
@@ -137,7 +133,6 @@ contract SoulName is MasaNFT, ISoulName {
         _setTokenURI(tokenId, _tokenURI);
 
         tokenData[tokenId].name = name;
-        tokenData[tokenId].identityId = identityId;
         tokenData[tokenId].expirationDate = block.timestamp.add(
             YEAR.mul(yearsPeriod)
         );
@@ -146,45 +141,7 @@ contract SoulName is MasaNFT, ISoulName {
         nameData[lowercaseName].tokenId = tokenId;
         nameData[lowercaseName].exists = true;
 
-        identityNames[identityId].push(lowercaseName);
-
         return tokenId;
-    }
-
-    /// @notice Update the identity id pointed from a soul name
-    /// @dev The caller must be the owner or an approved address of the soul name.
-    /// @param tokenId TokenId of the soul name
-    /// @param identityId New TokenId of the soulbound identity that will be pointed from this soul name
-    function updateIdentityId(uint256 tokenId, uint256 identityId) public {
-        // ERC721: caller is not token owner nor approved
-        require(
-            _isApprovedOrOwner(_msgSender(), tokenId),
-            "ERC721_CALLER_NOT_OWNER"
-        );
-        require(
-            soulboundIdentity.ownerOf(identityId) != address(0),
-            "IDENTITY_NOT_FOUND"
-        );
-
-        uint256 oldIdentityId = tokenData[tokenId].identityId;
-        require(identityId != oldIdentityId, "SAME_VALUE");
-
-        // change value from soulNames
-        tokenData[tokenId].identityId = identityId;
-
-        string memory lowercaseName = Utils.toLowerCase(
-            tokenData[tokenId].name
-        );
-        // remove name from identityNames[oldIdentityId]
-        Utils.removeStringFromArray(
-            identityNames[oldIdentityId],
-            lowercaseName
-        );
-
-        // add name to identityNames[identityId]
-        identityNames[identityId].push(lowercaseName);
-
-        emit IdentityIdUpdated(tokenId, oldIdentityId, identityId);
     }
 
     /// @notice Update the expiration date of a soul name
@@ -203,8 +160,10 @@ contract SoulName is MasaNFT, ISoulName {
         string memory lowercaseName = Utils.toLowerCase(
             tokenData[tokenId].name
         );
-        require(nameData[lowercaseName].exists, "NAME_NOT_FOUND");
-        require(nameData[lowercaseName].tokenId == tokenId, "CAN_NOT_RENEW");
+        require(
+            nameData[lowercaseName].tokenId == tokenId,
+            "NAME_REGISTERED_BY_OTHER_ACCOUNT"
+        );
 
         // check if the name is expired
         if (tokenData[tokenId].expirationDate < block.timestamp) {
@@ -233,7 +192,6 @@ contract SoulName is MasaNFT, ISoulName {
         string memory lowercaseName = Utils.toLowerCase(
             tokenData[tokenId].name
         );
-        uint256 identityId = tokenData[tokenId].identityId;
 
         // remove info from tokenIdName and tokenData
         delete tokenData[tokenId];
@@ -242,7 +200,6 @@ contract SoulName is MasaNFT, ISoulName {
         if (nameData[lowercaseName].tokenId == tokenId) {
             delete nameData[lowercaseName];
         }
-        Utils.removeStringFromArray(identityNames[identityId], lowercaseName);
 
         if (bytes(_tokenURIs[tokenId]).length != 0) {
             delete _tokenURIs[tokenId];
@@ -284,6 +241,7 @@ contract SoulName is MasaNFT, ISoulName {
     /// @dev This function queries the information of a soul name
     /// @param name Name of the soul name
     /// @return sbtName Soul name, in upper/lower case and extension
+    /// @return linked `true` if the soul name is linked, `false` otherwise
     /// @return identityId Identity id of the soul name
     /// @return tokenId SoulName id of the soul name
     /// @return expirationDate Expiration date of the soul name
@@ -294,6 +252,7 @@ contract SoulName is MasaNFT, ISoulName {
         override
         returns (
             string memory sbtName,
+            bool linked,
             uint256 identityId,
             uint256 tokenId,
             uint256 expirationDate,
@@ -301,11 +260,19 @@ contract SoulName is MasaNFT, ISoulName {
         )
     {
         tokenId = _getTokenId(name);
+        address _owner = ownerOf(tokenId);
+        bool _linked = soulboundIdentity.balanceOf(_owner) > 0;
+        uint256 _identityId;
+        if (_linked) {
+            _identityId = soulboundIdentity.tokenOfOwner(_owner);
+        }
 
         TokenData memory _tokenData = tokenData[tokenId];
+
         return (
             _getName(_tokenData.name),
-            _tokenData.identityId,
+            _linked,
+            _identityId,
             tokenId,
             _tokenData.expirationDate,
             _tokenData.expirationDate >= block.timestamp
@@ -326,55 +293,49 @@ contract SoulName is MasaNFT, ISoulName {
     }
 
     /// @notice Returns all the active soul names of an account
-    /// @dev This function queries all the identity names of the specified account
-    /// @param owner Address of the owner of the identities
-    /// @return sbtNames Array of soul names associated to the account
-    function getSoulNames(address owner)
+    /// @dev This function queries all the identity names of the specified identity Id
+    /// @param identityId TokenId of the identity
+    /// @return sbtNames Array of soul names associated to the identity Id
+    function getSoulNames(uint256 identityId)
         external
         view
         override
         returns (string[] memory sbtNames)
     {
-        // return identity id if exists
-        uint256 identityId = soulboundIdentity.tokenOfOwner(owner);
+        // return owner if exists
+        address _owner = soulboundIdentity.ownerOf(identityId);
 
-        return getSoulNames(identityId);
+        return getSoulNames(_owner);
     }
 
     /// @notice Returns all the active soul names of an account
-    /// @dev This function queries all the identity names of the specified identity Id
-    /// @param identityId TokenId of the identity
-    /// @return sbtNames Array of soul names associated to the identity Id
-    function getSoulNames(uint256 identityId)
+    /// @dev This function queries all the identity names of the specified account
+    /// @param owner Address of the owner of the identities
+    /// @return sbtNames Array of soul names associated to the account
+    function getSoulNames(address owner)
         public
         view
         override
         returns (string[] memory sbtNames)
     {
         uint256 results;
-        for (uint256 i = 0; i < identityNames[identityId].length; i++) {
-            string memory lowercaseName = identityNames[identityId][i];
+        uint256 balance = balanceOf(owner);
 
-            if (nameData[lowercaseName].exists) {
-                uint256 tokenId = nameData[lowercaseName].tokenId;
-                if (tokenData[tokenId].expirationDate >= block.timestamp) {
-                    results = results.add(1);
-                }
+        for (uint256 i = 0; i < balance; i++) {
+            uint256 tokenId = tokenOfOwnerByIndex(owner, i);
+            if (tokenData[tokenId].expirationDate >= block.timestamp) {
+                results = results.add(1);
             }
         }
 
         string[] memory _sbtNames = new string[](results);
         uint256 index;
 
-        for (uint256 i = 0; i < identityNames[identityId].length; i++) {
-            string memory lowercaseName = identityNames[identityId][i];
-
-            if (nameData[lowercaseName].exists) {
-                uint256 tokenId = nameData[lowercaseName].tokenId;
-                if (tokenData[tokenId].expirationDate >= block.timestamp) {
-                    _sbtNames[index] = lowercaseName;
-                    index = index.add(1);
-                }
+        for (uint256 i = 0; i < balance; i++) {
+            uint256 tokenId = tokenOfOwnerByIndex(owner, i);
+            if (tokenData[tokenId].expirationDate >= block.timestamp) {
+                _sbtNames[index] = Utils.toLowerCase(tokenData[tokenId].name);
+                index = index.add(1);
             }
         }
 
@@ -456,12 +417,6 @@ contract SoulName is MasaNFT, ISoulName {
     /* ========== MODIFIERS ========== */
 
     /* ========== EVENTS ========== */
-
-    event IdentityIdUpdated(
-        uint256 tokenId,
-        uint256 oldIdentityId,
-        uint256 identityId
-    );
 
     event YearsPeriodRenewed(
         uint256 tokenId,
