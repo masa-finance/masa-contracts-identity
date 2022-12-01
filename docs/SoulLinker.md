@@ -10,6 +10,22 @@ Soul linker smart contract that let add links to a Soulbound token.
 
 ## Methods
 
+### addErc20Token
+
+```solidity
+function addErc20Token(address _erc20token) external nonpayable
+```
+
+Adds a new ERC20 token as a valid payment method
+
+*The caller must have the owner to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _erc20token | address | New ERC20 token to add |
+
 ### addLinkedSBT
 
 ```solidity
@@ -66,27 +82,27 @@ function addPermissionPrice() external view returns (uint256)
 |---|---|---|
 | _0 | uint256 | undefined |
 
-### addPermissionPriceInfo
+### addPermissionPriceMASA
 
 ```solidity
-function addPermissionPriceInfo() external view returns (uint256 priceInUtilityToken)
+function addPermissionPriceMASA() external view returns (uint256)
 ```
 
-Returns the price for storing a permission
 
-*Returns the current pricing for storing a permission*
+
+
 
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| priceInUtilityToken | uint256 | Current price of storing a permission in utility token ($MASA) |
+| _0 | uint256 | undefined |
 
-### estimateSwapAmount
+### erc20token
 
 ```solidity
-function estimateSwapAmount(address _fromToken, address _toToken, uint256 _amountOut) external view returns (uint256)
+function erc20token(address) external view returns (bool)
 ```
 
 
@@ -97,15 +113,35 @@ function estimateSwapAmount(address _fromToken, address _toToken, uint256 _amoun
 
 | Name | Type | Description |
 |---|---|---|
-| _fromToken | address | undefined |
-| _toToken | address | undefined |
-| _amountOut | uint256 | undefined |
+| _0 | address | undefined |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
+| _0 | bool | undefined |
+
+### erc20tokens
+
+```solidity
+function erc20tokens(uint256) external view returns (address)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
 | _0 | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
 
 ### getIdentityId
 
@@ -129,6 +165,26 @@ Returns the identityId owned by the given token
 | Name | Type | Description |
 |---|---|---|
 | _0 | uint256 | Id of the identity |
+
+### getPaymentMethods
+
+```solidity
+function getPaymentMethods() external view returns (address _nativeToken, address _stableCoin, address _utilityToken, address[] _erc20tokens)
+```
+
+Returns all available payment methods
+
+*Returns the address of all available payment methods*
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _nativeToken | address | Address of the native token (ETH) |
+| _stableCoin | address | Address of the stable coin (USDC) |
+| _utilityToken | address | Address of the utility token ($MASA) |
+| _erc20tokens | address[] | Array of all ERC20 tokens |
 
 ### getPermissionInfo
 
@@ -178,6 +234,23 @@ Returns the list of permission signature dates for a given SBT token and reader
 | Name | Type | Description |
 |---|---|---|
 | _0 | uint256[] | List of linked SBTs |
+
+### getPriceForAddPermission
+
+```solidity
+function getPriceForAddPermission() external view returns (uint256 priceInUtilityToken)
+```
+
+Returns the price for storing a permission
+
+*Returns the current pricing for storing a permission*
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| priceInUtilityToken | uint256 | Current price of storing a permission in utility token ($MASA) |
 
 ### getSBTLinks
 
@@ -286,6 +359,22 @@ function owner() external view returns (address)
 |---|---|---|
 | _0 | address | undefined |
 
+### removeErc20Token
+
+```solidity
+function removeErc20Token(address _erc20token) external nonpayable
+```
+
+Removes an ERC20 token as a valid payment method
+
+*The caller must have the owner to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _erc20token | address | ERC20 token to remove |
+
 ### removeLinkedSBT
 
 ```solidity
@@ -365,6 +454,22 @@ Sets the price of store permission in stable coin
 | Name | Type | Description |
 |---|---|---|
 | _addPermissionPrice | uint256 | New price of the store permission in stable coin |
+
+### setAddPermissionPriceMASA
+
+```solidity
+function setAddPermissionPriceMASA(uint256 _addPermissionPriceMASA) external nonpayable
+```
+
+Sets the price of store permission in $MASA
+
+*The caller must have the owner to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _addPermissionPriceMASA | uint256 | New price of the store permission in $MASA |
 
 ### setReserveWallet
 

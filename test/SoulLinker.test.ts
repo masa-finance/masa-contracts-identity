@@ -124,13 +124,29 @@ describe("Soul Linker", () => {
 
     readerIdentityId = mintReceipt.events![0].args![1].toNumber();
 
-    // we mint credit report SBT for address1
+    // we mint credit score SBT for address1
     mintTx = await soulboundCreditScore
       .connect(owner)
       ["mint(address)"](address1.address);
     mintReceipt = await mintTx.wait();
 
     creditScore1 = mintReceipt.events![0].args![1].toNumber();
+
+    const uniswapRouter: IUniswapRouter = IUniswapRouter__factory.connect(
+      SWAPROUTER_GOERLI,
+      owner
+    );
+
+    // we get $MASA utility tokens for address1
+    await uniswapRouter.swapExactETHForTokens(
+      0,
+      [WETH_GOERLI, MASA_GOERLI],
+      address1.address,
+      Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
+      {
+        value: ethers.utils.parseEther("10")
+      }
+    );
   });
 
   describe("owner functions", () => {
@@ -290,48 +306,16 @@ describe("Soul Linker", () => {
     });
   });
 
-  describe("validateLinkData", () => {
-    it("validateLinkData must work with a valid signature", async () => {
-      const chainId = await getChainId();
-
-      const signature = await address1._signTypedData(
-        // Domain
-        {
-          name: "SoulLinker",
-          version: "1.0.0",
-          chainId: chainId,
-          verifyingContract: soulLinker.address
-        },
-        // Types
-        {
-          Link: [
-            { name: "readerIdentityId", type: "uint256" },
-            { name: "ownerIdentityId", type: "uint256" },
-            { name: "token", type: "address" },
-            { name: "tokenId", type: "uint256" },
-            { name: "expirationDate", type: "uint256" }
-          ]
-        },
-        // Value
-        {
-          readerIdentityId: readerIdentityId,
-          ownerIdentityId: ownerIdentityId,
-          token: soulboundCreditScore.address,
-          tokenId: creditScore1,
-          expirationDate: Math.floor(Date.now() / 1000) + 60 * 15
-        }
-      );
-
-      const isValid = await soulLinker.connect(address2).validateLinkData(
+  describe("addPermission", () => {
+    it("addPermission must work with a valid signature", async () => {
+      const signature = await signTypedData(
         readerIdentityId,
         ownerIdentityId,
         soulboundCreditScore.address,
-        creditScore1,
-        Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
-        signature
+        creditScore1
       );
 
-      const priceInUtilityToken = await soulLinker.addPermissionPriceInfo();
+      const priceInUtilityToken = await soulLinker.getPriceForAddPermission();
 
       // set allowance for soul store
       const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
@@ -339,48 +323,23 @@ describe("Soul Linker", () => {
         .connect(address1)
         .approve(soulLinker.address, priceInUtilityToken);
 
-      const signature = await address1._signTypedData(
-        // Domain
-        {
-          name: "SoulLinker",
-          version: "1.0.0",
-          chainId: chainId,
-          verifyingContract: soulLinker.address
-        },
-        // Types
-        {
-          Link: [
-            { name: "readerIdentityId", type: "uint256" },
-            { name: "ownerIdentityId", type: "uint256" },
-            { name: "token", type: "address" },
-            { name: "tokenId", type: "uint256" },
-            { name: "expirationDate", type: "uint256" }
-          ]
-        },
-        // Value
-        {
-          readerIdentityId: ownerIdentityId,
-          ownerIdentityId: ownerIdentityId,
-          token: soulboundCreditScore.address,
-          tokenId: creditScore1,
-          expirationDate: Math.floor(Date.now() / 1000) + 60 * 15
-        }
-      );
-
-      await expect(
-        soulLinker.connect(address2).validateLinkData(
+      await soulLinker
+        .connect(address1)
+        .addPermission(
           readerIdentityId,
           ownerIdentityId,
           soulboundCreditScore.address,
           creditScore1,
-          Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
+          data,
+          signatureDate,
+          expirationDate,
           signature
         );
 
       const permissionSignatureDates =
         await soulLinker.getPermissionSignatureDates(
-          soulboundCreditReport.address,
-          creditReport1,
+          soulboundCreditScore.address,
+          creditScore1,
           readerIdentityId
         );
       expect(permissionSignatureDates[0]).to.be.equal(signatureDate);
@@ -391,8 +350,8 @@ describe("Soul Linker", () => {
         expirationDate: expirationDateInfo,
         isRevoked: isRevokedInfo
       } = await soulLinker.getPermissionInfo(
-        soulboundCreditReport.address,
-        creditReport1,
+        soulboundCreditScore.address,
+        creditScore1,
         readerIdentityId,
         signatureDate
       );
@@ -406,8 +365,78 @@ describe("Soul Linker", () => {
         .validatePermission(
           readerIdentityId,
           ownerIdentityId,
-          soulboundCreditReport.address,
-          creditReport1,
+          soulboundCreditScore.address,
+          creditScore1,
+          signatureDate
+        );
+
+      expect(dataWithPermissions).to.be.equal(data);
+    });
+
+    it("addPermission must work paying with $MASA without an exchange rate", async () => {
+      await soulLinker.connect(owner).setAddPermissionPriceMASA(10);
+      expect(await soulLinker.addPermissionPriceMASA()).to.be.equal(10);
+
+      const signature = await signTypedData(
+        readerIdentityId,
+        ownerIdentityId,
+        soulboundCreditScore.address,
+        creditScore1
+      );
+
+      const priceInUtilityToken = await soulLinker.getPriceForAddPermission();
+      expect(priceInUtilityToken).to.be.equal(10);
+
+      // set allowance for soul store
+      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
+      await masa
+        .connect(address1)
+        .approve(soulLinker.address, priceInUtilityToken);
+
+      await soulLinker
+        .connect(address1)
+        .addPermission(
+          readerIdentityId,
+          ownerIdentityId,
+          soulboundCreditScore.address,
+          creditScore1,
+          data,
+          signatureDate,
+          expirationDate,
+          signature
+        );
+
+      const permissionSignatureDates =
+        await soulLinker.getPermissionSignatureDates(
+          soulboundCreditScore.address,
+          creditScore1,
+          readerIdentityId
+        );
+      expect(permissionSignatureDates[0]).to.be.equal(signatureDate);
+
+      const {
+        ownerIdentityId: ownerIdentityIdInfo,
+        data: dataInfo,
+        expirationDate: expirationDateInfo,
+        isRevoked: isRevokedInfo
+      } = await soulLinker.getPermissionInfo(
+        soulboundCreditScore.address,
+        creditScore1,
+        readerIdentityId,
+        signatureDate
+      );
+      expect(ownerIdentityIdInfo).to.be.equal(ownerIdentityId);
+      expect(dataInfo).to.be.equal(data);
+      expect(expirationDateInfo).to.be.equal(expirationDate);
+      expect(isRevokedInfo).to.be.equal(false);
+
+      const dataWithPermissions = await soulLinker
+        .connect(address2)
+        .validatePermission(
+          readerIdentityId,
+          ownerIdentityId,
+          soulboundCreditScore.address,
+          creditScore1,
           signatureDate
         );
 
@@ -418,11 +447,11 @@ describe("Soul Linker", () => {
       const signature = await signTypedData(
         ownerIdentityId,
         ownerIdentityId,
-        soulboundCreditReport.address,
-        creditReport1
+        soulboundCreditScore.address,
+        creditScore1
       );
 
-      const priceInUtilityToken = await soulLinker.addPermissionPriceInfo();
+      const priceInUtilityToken = await soulLinker.getPriceForAddPermission();
 
       // set allowance for soul store
       const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
@@ -436,8 +465,8 @@ describe("Soul Linker", () => {
           .addPermission(
             readerIdentityId,
             ownerIdentityId,
-            soulboundCreditReport.address,
-            creditReport1,
+            soulboundCreditScore.address,
+            creditScore1,
             data,
             signatureDate,
             expirationDate,
@@ -451,8 +480,8 @@ describe("Soul Linker", () => {
           .validatePermission(
             readerIdentityId,
             ownerIdentityId,
-            soulboundCreditReport.address,
-            creditReport1,
+            soulboundCreditScore.address,
+            creditScore1,
             signatureDate
           )
       ).to.be.rejected;
@@ -464,11 +493,11 @@ describe("Soul Linker", () => {
       const signature = await signTypedData(
         readerIdentityId,
         ownerIdentityId,
-        soulboundCreditReport.address,
-        creditReport1
+        soulboundCreditScore.address,
+        creditScore1
       );
 
-      const priceInUtilityToken = await soulLinker.addPermissionPriceInfo();
+      const priceInUtilityToken = await soulLinker.getPriceForAddPermission();
 
       // set allowance for soul store
       const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
@@ -481,8 +510,8 @@ describe("Soul Linker", () => {
         .addPermission(
           readerIdentityId,
           ownerIdentityId,
-          soulboundCreditReport.address,
-          creditReport1,
+          soulboundCreditScore.address,
+          creditScore1,
           data,
           signatureDate,
           expirationDate,
@@ -495,8 +524,8 @@ describe("Soul Linker", () => {
           .revokePermission(
             readerIdentityId,
             ownerIdentityId,
-            soulboundCreditReport.address,
-            creditReport1,
+            soulboundCreditScore.address,
+            creditScore1,
             signatureDate
           )
       ).to.be.rejected;
@@ -506,8 +535,8 @@ describe("Soul Linker", () => {
         .validatePermission(
           readerIdentityId,
           ownerIdentityId,
-          soulboundCreditReport.address,
-          creditReport1,
+          soulboundCreditScore.address,
+          creditScore1,
           signatureDate
         );
 
@@ -518,11 +547,11 @@ describe("Soul Linker", () => {
       const signature = await signTypedData(
         readerIdentityId,
         ownerIdentityId,
-        soulboundCreditReport.address,
-        creditReport1
+        soulboundCreditScore.address,
+        creditScore1
       );
 
-      const priceInUtilityToken = await soulLinker.addPermissionPriceInfo();
+      const priceInUtilityToken = await soulLinker.getPriceForAddPermission();
 
       // set allowance for soul store
       const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
@@ -535,8 +564,8 @@ describe("Soul Linker", () => {
         .addPermission(
           readerIdentityId,
           ownerIdentityId,
-          soulboundCreditReport.address,
-          creditReport1,
+          soulboundCreditScore.address,
+          creditScore1,
           data,
           signatureDate,
           expirationDate,
@@ -548,8 +577,8 @@ describe("Soul Linker", () => {
         .validatePermission(
           readerIdentityId,
           ownerIdentityId,
-          soulboundCreditReport.address,
-          creditReport1,
+          soulboundCreditScore.address,
+          creditScore1,
           signatureDate
         );
 
@@ -560,8 +589,8 @@ describe("Soul Linker", () => {
         .revokePermission(
           readerIdentityId,
           ownerIdentityId,
-          soulboundCreditReport.address,
-          creditReport1,
+          soulboundCreditScore.address,
+          creditScore1,
           signatureDate
         );
 
@@ -571,8 +600,8 @@ describe("Soul Linker", () => {
           .validatePermission(
             readerIdentityId,
             ownerIdentityId,
-            soulboundCreditReport.address,
-            creditReport1,
+            soulboundCreditScore.address,
+            creditScore1,
             signatureDate
           )
       ).to.be.rejected;

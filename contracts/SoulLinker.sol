@@ -1,24 +1,17 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
-import "./dex/DexAMM.sol";
+import "./dex/PaymentGateway.sol";
 import "./interfaces/ISoulboundIdentity.sol";
-
-import "hardhat/console.sol";
 
 /// @title Soul linker
 /// @author Masa Finance
 /// @notice Soul linker smart contract that let add links to a Soulbound token.
-contract SoulLinker is DexAMM, Ownable, EIP712 {
-    using SafeERC20 for IERC20;
-
+contract SoulLinker is PaymentGateway, EIP712 {
     /* ========== STATE VARIABLES =========================================== */
 
     ISoulboundIdentity public soulboundIdentity;
@@ -28,11 +21,7 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
     address[] public linkedSBTs;
 
     uint256 public addPermissionPrice; // store permission price in stable coin
-
-    address public stableCoin; // USDC
-    address public utilityToken; // $MASA
-
-    address public reserveWallet;
+    uint256 public addPermissionPriceMASA; // store permission price in $MASA
 
     // token => tokenId => readerIdentityId => signatureDate => PermissionData
     mapping(address => mapping(uint256 => mapping(uint256 => mapping(uint256 => PermissionData))))
@@ -53,34 +42,39 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
     /// @param owner Owner of the smart contract
     /// @param _soulboundIdentity Soulbound identity smart contract
     /// @param _addPermissionPrice Store permission price in stable coin
-    /// @param _utilityToken Utility token to pay the fee in ($MASA)
-    /// @param _stableCoin Stable coin to pay the fee in (USDC)
-    /// @param _wrappedNativeToken Wrapped native token address
+    /// @param _addPermissionPriceMASA Store permission price in $MASA
     /// @param _swapRouter Swap router address
+    /// @param _wrappedNativeToken Wrapped native token address
+    /// @param _stableCoin Stable coin to pay the fee in (USDC)
+    /// @param _utilityToken Utility token to pay the fee in ($MASA)
     /// @param _reserveWallet Wallet that will receive the fee
     constructor(
         address owner,
         ISoulboundIdentity _soulboundIdentity,
         uint256 _addPermissionPrice,
-        address _utilityToken,
-        address _stableCoin,
-        address _wrappedNativeToken,
+        uint256 _addPermissionPriceMASA,
         address _swapRouter,
+        address _wrappedNativeToken,
+        address _stableCoin,
+        address _utilityToken,
         address _reserveWallet
-    ) EIP712("SoulLinker", "1.0.0") DexAMM(_swapRouter, _wrappedNativeToken) {
-        require(_stableCoin != address(0), "ZERO_ADDRESS");
-        require(_utilityToken != address(0), "ZERO_ADDRESS");
-        require(_reserveWallet != address(0), "ZERO_ADDRESS");
+    )
+        EIP712("SoulLinker", "1.0.0")
+        PaymentGateway(
+            owner,
+            _swapRouter,
+            _wrappedNativeToken,
+            _stableCoin,
+            _utilityToken,
+            _reserveWallet
+        )
+    {
         require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
-
-        Ownable.transferOwnership(owner);
 
         soulboundIdentity = _soulboundIdentity;
 
         addPermissionPrice = _addPermissionPrice;
-        stableCoin = _stableCoin;
-        utilityToken = _utilityToken;
-        reserveWallet = _reserveWallet;
+        addPermissionPriceMASA = _addPermissionPriceMASA;
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
@@ -129,52 +123,18 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
         addPermissionPrice = _addPermissionPrice;
     }
 
-    /// @notice Sets the stable coin to pay the fee in (USDC)
+    /// @notice Sets the price of store permission in $MASA
     /// @dev The caller must have the owner to call this function
-    /// @param _stableCoin New stable coin to pay the fee in
-    function setStableCoin(address _stableCoin) external onlyOwner {
-        require(_stableCoin != address(0), "ZERO_ADDRESS");
-        require(stableCoin != _stableCoin, "SAME_VALUE");
-        stableCoin = _stableCoin;
-    }
-
-    /// @notice Sets the utility token to pay the fee in ($MASA)
-    /// @dev The caller must have the owner to call this function
-    /// @param _utilityToken New utility token to pay the fee in
-    function setUtilityToken(address _utilityToken) external onlyOwner {
-        require(_utilityToken != address(0), "ZERO_ADDRESS");
-        require(utilityToken != _utilityToken, "SAME_VALUE");
-        utilityToken = _utilityToken;
-    }
-
-    /// @notice Set the reserve wallet
-    /// @dev Let change the reserve walled. It can be triggered by an authorized account.
-    /// @param _reserveWallet New reserve wallet
-    function setReserveWallet(address _reserveWallet) external onlyOwner {
-        require(_reserveWallet != address(0), "ZERO_ADDRESS");
-        require(_reserveWallet != reserveWallet, "SAME_VALUE");
-        reserveWallet = _reserveWallet;
-    }
-
-    /// @notice Sets the swap router address
-    /// @dev The caller must have the owner to call this function
-    /// @param _swapRouter New swap router address
-    function setSwapRouter(address _swapRouter) external onlyOwner {
-        require(_swapRouter != address(0), "ZERO_ADDRESS");
-        require(swapRouter != _swapRouter, "SAME_VALUE");
-        swapRouter = _swapRouter;
-    }
-
-    /// @notice Sets the wrapped native token address
-    /// @dev The caller must have the owner to call this function
-    /// @param _wrappedNativeToken New wrapped native token address
-    function setWrappedNativeToken(address _wrappedNativeToken)
+    /// @param _addPermissionPriceMASA New price of the store permission in $MASA
+    function setAddPermissionPriceMASA(uint256 _addPermissionPriceMASA)
         external
         onlyOwner
     {
-        require(_wrappedNativeToken != address(0), "ZERO_ADDRESS");
-        require(wrappedNativeToken != _wrappedNativeToken, "SAME_VALUE");
-        wrappedNativeToken = _wrappedNativeToken;
+        require(
+            addPermissionPriceMASA != _addPermissionPriceMASA,
+            "SAME_VALUE"
+        );
+        addPermissionPriceMASA = _addPermissionPriceMASA;
     }
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
@@ -224,7 +184,13 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
             "INVALID_SIGNATURE"
         );
 
-        _payForStoringPermission();
+        if (addPermissionPriceMASA > 0) {
+            // if there is a price in $MASA, pay it without conversion rate
+            _payWithMASA(addPermissionPriceMASA);
+        } else {
+            // pay with $MASA with conversion rate
+            _pay(utilityToken, addPermissionPrice);
+        }
 
         // token => tokenId => readerIdentityId => signatureDate => PermissionData
         _permissions[token][tokenId][readerIdentityId][
@@ -408,35 +374,24 @@ contract SoulLinker is DexAMM, Ownable, EIP712 {
     /// @notice Returns the price for storing a permission
     /// @dev Returns the current pricing for storing a permission
     /// @return priceInUtilityToken Current price of storing a permission in utility token ($MASA)
-    function addPermissionPriceInfo()
+    function getPriceForAddPermission()
         public
         view
         returns (uint256 priceInUtilityToken)
     {
-        priceInUtilityToken = estimateSwapAmount(
-            utilityToken,
-            stableCoin,
-            addPermissionPrice
-        );
+        if (addPermissionPriceMASA > 0) {
+            // if there is a price in $MASA, return it without conversion rate
+            priceInUtilityToken = addPermissionPriceMASA;
+        } else {
+            // return $MASA with conversion rate
+            priceInUtilityToken = _convertFromStableCoin(
+                utilityToken,
+                addPermissionPrice
+            );
+        }
     }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
-
-    /// @notice Performs the payment for storing a permission
-    /// @dev This method will transfer the funds to the reserve wallet, performing the swap
-    function _payForStoringPermission() internal {
-        // pay with $MASA
-        uint256 swapAmout = estimateSwapAmount(
-            utilityToken,
-            stableCoin,
-            addPermissionPrice
-        );
-        IERC20(utilityToken).safeTransferFrom(
-            msg.sender,
-            reserveWallet,
-            swapAmout
-        );
-    }
 
     function _removeLinkedSBT(address token) internal {
         for (uint256 i = 0; i < linkedSBTs.length; i++) {
