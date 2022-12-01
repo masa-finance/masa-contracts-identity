@@ -3,7 +3,7 @@ pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
-import "./dex/PayDexAMM.sol";
+import "./dex/PaymentGateway.sol";
 import "./interfaces/ISoulboundIdentity.sol";
 import "./interfaces/ISoulName.sol";
 
@@ -12,7 +12,7 @@ import "./interfaces/ISoulName.sol";
 /// @notice Soul Store, that can mint new Soulbound Identities and Soul Name NFTs, paying a fee
 /// @dev From this smart contract we can mint new Soulbound Identities and Soul Name NFTs.
 /// This minting can be done paying a fee in ETH, USDC or $MASA
-contract SoulStore is PayDexAMM {
+contract SoulStore is PaymentGateway {
     using SafeMath for uint256;
 
     /* ========== STATE VARIABLES ========== */
@@ -44,7 +44,7 @@ contract SoulStore is PayDexAMM {
         address _utilityToken,
         address _reserveWallet
     )
-        PayDexAMM(
+        PaymentGateway(
             owner,
             _swapRouter,
             _wrappedNativeToken,

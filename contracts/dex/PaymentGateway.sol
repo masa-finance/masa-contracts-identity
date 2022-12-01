@@ -13,7 +13,7 @@ import "../interfaces/dex/IUniswapRouter.sol";
 /// @notice Smart contract to call a Dex AMM smart contract to pay to a reserve wallet recipient
 /// @dev This smart contract will call the Uniswap Router interface, based on
 /// https://github.com/Uniswap/v2-periphery/blob/master/contracts/interfaces/IUniswapV2Router01.sol
-abstract contract PayDexAMM is Ownable {
+abstract contract PaymentGateway is Ownable {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 

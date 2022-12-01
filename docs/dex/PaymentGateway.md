@@ -1,4 +1,4 @@
-# PayDexAMM
+# PaymentGateway
 
 *Masa Finance*
 

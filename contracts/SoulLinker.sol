@@ -5,13 +5,13 @@ import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
-import "./dex/PayDexAMM.sol";
+import "./dex/PaymentGateway.sol";
 import "./interfaces/ISoulboundIdentity.sol";
 
 /// @title Soul linker
 /// @author Masa Finance
 /// @notice Soul linker smart contract that let add links to a Soulbound token.
-contract SoulLinker is PayDexAMM, EIP712 {
+contract SoulLinker is PaymentGateway, EIP712 {
     /* ========== STATE VARIABLES =========================================== */
 
     ISoulboundIdentity public soulboundIdentity;
@@ -60,7 +60,7 @@ contract SoulLinker is PayDexAMM, EIP712 {
         address _reserveWallet
     )
         EIP712("SoulLinker", "1.0.0")
-        PayDexAMM(
+        PaymentGateway(
             owner,
             _swapRouter,
             _wrappedNativeToken,
