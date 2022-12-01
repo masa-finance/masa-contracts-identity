@@ -25,8 +25,8 @@ async function main() {
   const { address: soulboundIdentityAddress } = await deployments.get(
     "SoulboundIdentity"
   );
-  const { address: soulboundCreditReportAddress } = await deployments.get(
-    "SoulboundCreditReport"
+  const { address: soulboundCreditScoreAddress } = await deployments.get(
+    "SoulboundCreditScore"
   );
   const { address: soulbound2FAAddress } = await deployments.get(
     "Soulbound2FA"
@@ -45,7 +45,7 @@ async function main() {
 
   console.log(`MASA address:                  ${masaAddress}`);
   console.log(`SoulboundIdentity address:     ${soulboundIdentityAddress}`);
-  console.log(`SoulboundCreditReport address: ${soulboundCreditReportAddress}`);
+  console.log(`SoulboundCreditScore address:  ${soulboundCreditScoreAddress}`);
   console.log(`Soulbound2FA address:          ${soulbound2FAAddress}`);
   console.log(`SoulName address:              ${soulNameAddress}`);
   console.log(`SoulStore address:             ${soulStoreAddress}`);
@@ -104,8 +104,8 @@ async function main() {
     `SoulLinker.SoulboundIdentity: ${await soulLinker.soulboundIdentity()}`
   );
   console.log(
-    `SoulLinker.linkedSBT(SoulboundCreditReport): ${await soulLinker.linkedSBT(
-      soulboundCreditReportAddress
+    `SoulLinker.linkedSBT(SoulboundCreditScore): ${await soulLinker.linkedSBT(
+      soulboundCreditScoreAddress
     )}`
   );
   console.log(
