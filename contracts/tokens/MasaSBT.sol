@@ -71,8 +71,8 @@ abstract contract MasaSBT is
 
     /// @notice Mints a new SBT
     /// @dev The caller must have the MINTER role
-    /// @param to The address to mint the NFT to
-    /// @return The NFT ID of the newly minted NFT
+    /// @param to The address to mint the SBT to
+    /// @return The SBT ID of the newly minted SBT
     function mint(address to) public virtual returns (uint256) {
         return _mintWithCounter(to);
     }
@@ -80,11 +80,11 @@ abstract contract MasaSBT is
     /* ========== VIEWS ===================================================== */
 
     /// @notice A distinct Uniform Resource Identifier (URI) for a given asset.
-    /// @dev Throws if `_tokenId` is not a valid NFT. URIs are defined in RFC
+    /// @dev Throws if `_tokenId` is not a valid SBT. URIs are defined in RFC
     ///  3986. The URI may point to a JSON file that conforms to the "ERC721
     ///  Metadata JSON Schema".
-    /// @param tokenId NFT to get the URI of
-    /// @return URI of the NFT
+    /// @param tokenId SBT to get the URI of
+    /// @return URI of the SBT
     function tokenURI(uint256 tokenId)
         public
         view
