@@ -22,12 +22,12 @@ const func: DeployFunction = async ({
 
   [, owner] = await ethers.getSigners();
   const env = getEnvParams(network.name);
-  const baseUri = `${env.BASE_URI}/credit-report/`;
+  const baseUri = `${env.BASE_URI}/credit-score/`;
 
   const constructorArguments = [env.OWNER || owner.address, baseUri];
 
-  const soulboundCreditReportDeploymentResult = await deploy(
-    "SoulboundCreditReport",
+  const soulboundCreditScoreDeploymentResult = await deploy(
+    "SoulboundCreditScore",
     {
       from: deployer,
       args: constructorArguments,
@@ -40,7 +40,7 @@ const func: DeployFunction = async ({
   if (network.name == "mainnet" || network.name == "goerli") {
     try {
       await hre.run("verify:verify", {
-        address: soulboundCreditReportDeploymentResult.address,
+        address: soulboundCreditScoreDeploymentResult.address,
         constructorArguments
       });
     } catch (error) {
@@ -54,6 +54,6 @@ const func: DeployFunction = async ({
   }
 };
 
-func.tags = ["SoulboundCreditReport"];
+func.tags = ["SoulboundCreditScore"];
 func.dependencies = ["SoulboundIdentity"];
 export default func;
