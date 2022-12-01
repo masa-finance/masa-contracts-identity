@@ -793,7 +793,8 @@ describe("Soul Store", () => {
         DAI_GOERLI, // DAI token, other ERC-20 token
         SOUL_NAME,
         YEAR,
-        ARWEAVE_LINK
+        ARWEAVE_LINK,
+        address1.address
       );
     });
   });
