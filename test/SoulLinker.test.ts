@@ -72,8 +72,10 @@ describe("Soul Linker", () => {
 
     readerIdentityId = mintReceipt.events![0].args![1].toNumber();
 
-    // we mint credit score SBT for address1
-    mintTx = await soulboundCreditScore.connect(owner).mint(address1.address);
+    // we mint credit report SBT for address1
+    mintTx = await soulboundCreditScore
+      .connect(owner)
+      ["mint(address)"](address1.address);
     mintReceipt = await mintTx.wait();
 
     creditScore1 = mintReceipt.events![0].args![1].toNumber();
