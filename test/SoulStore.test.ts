@@ -4,8 +4,6 @@ import { solidity } from "ethereum-waffle";
 import { ethers, deployments } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
-  MASA,
-  MASA__factory,
   ERC20,
   ERC20__factory,
   IUniswapRouter,
@@ -14,6 +12,7 @@ import {
   SoulStore__factory
 } from "../typechain";
 import {
+  DAI_GOERLI,
   MASA_GOERLI,
   USDC_GOERLI,
   SWAPROUTER_GOERLI,
@@ -51,7 +50,6 @@ describe("Soul Store", () => {
     await deployments.fixture("SoulName", { fallbackToGlobal: false });
     await deployments.fixture("SoulStore", { fallbackToGlobal: false });
 
-    const { address: masaAddress } = await deployments.get("MASA");
     const { address: soulStoreAddress } = await deployments.get("SoulStore");
 
     soulStore = SoulStore__factory.connect(soulStoreAddress, owner);
@@ -59,10 +57,6 @@ describe("Soul Store", () => {
       SWAPROUTER_GOERLI,
       owner
     );
-
-    // we get $MASA tokens for address1
-    const masa: MASA = MASA__factory.connect(masaAddress, owner);
-    await masa.connect(address1).mint();
 
     // we get stable coins for address1
     await uniswapRouter.swapExactETHForTokens(
@@ -75,10 +69,21 @@ describe("Soul Store", () => {
       }
     );
 
-    // we get utility tokens for address1
+    // we get $MASA utility tokens for address1
     await uniswapRouter.swapExactETHForTokens(
       0,
       [WETH_GOERLI, MASA_GOERLI],
+      address1.address,
+      Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
+      {
+        value: ethers.utils.parseEther("10")
+      }
+    );
+
+    // we get DAI tokens for address1
+    await uniswapRouter.swapExactETHForTokens(
+      0,
+      [WETH_GOERLI, DAI_GOERLI],
       address1.address,
       Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
       {
@@ -181,21 +186,41 @@ describe("Soul Store", () => {
 
   describe("purchase info", () => {
     it("we can get name purchase info for 1 and 2 years", async () => {
-      const {
-        priceInStableCoin: priceInStableCoin1,
-        priceInETH: priceInETH1,
-        priceInUtilityToken: priceInUtilityToken1
-      } = await soulStore.purchaseNameInfo(SOUL_NAME, YEAR);
+      const priceInStableCoin1 = await soulStore.getPriceForMintingName(
+        await soulStore.stableCoin(),
+        SOUL_NAME,
+        YEAR
+      );
+      const priceInETH1 = await soulStore.getPriceForMintingName(
+        ethers.constants.AddressZero,
+        SOUL_NAME,
+        YEAR
+      );
+      const priceInUtilityToken1 = await soulStore.getPriceForMintingName(
+        await soulStore.utilityToken(),
+        SOUL_NAME,
+        YEAR
+      );
 
       expect(priceInStableCoin1).to.be.equal(MINTING_NAME_PRICE_5LETTERS);
       expect(priceInETH1).not.to.be.equal("0");
       expect(priceInUtilityToken1).not.to.be.equal("0");
 
-      const {
-        priceInStableCoin: priceInStableCoin2,
-        priceInETH: priceInETH2,
-        priceInUtilityToken: priceInUtilityToken2
-      } = await soulStore.purchaseNameInfo(SOUL_NAME, YEAR * 2);
+      const priceInStableCoin2 = await soulStore.getPriceForMintingName(
+        await soulStore.stableCoin(),
+        SOUL_NAME,
+        YEAR * 2
+      );
+      const priceInETH2 = await soulStore.getPriceForMintingName(
+        ethers.constants.AddressZero,
+        SOUL_NAME,
+        YEAR * 2
+      );
+      const priceInUtilityToken2 = await soulStore.getPriceForMintingName(
+        await soulStore.utilityToken(),
+        SOUL_NAME,
+        YEAR * 2
+      );
 
       expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_5LETTERS * 2);
       expect(priceInETH2).not.to.be.equal(priceInETH1.mul(2));
@@ -205,21 +230,41 @@ describe("Soul Store", () => {
     it("we can get 1 letters name purchase info for 1 and 2 years", async () => {
       const SOUL_NAME_1LETTERS = "a";
 
-      const {
-        priceInStableCoin: priceInStableCoin1,
-        priceInETH: priceInETH1,
-        priceInUtilityToken: priceInUtilityToken1
-      } = await soulStore.purchaseNameInfo(SOUL_NAME_1LETTERS, YEAR);
+      const priceInStableCoin1 = await soulStore.getPriceForMintingName(
+        await soulStore.stableCoin(),
+        SOUL_NAME_1LETTERS,
+        YEAR
+      );
+      const priceInETH1 = await soulStore.getPriceForMintingName(
+        ethers.constants.AddressZero,
+        SOUL_NAME_1LETTERS,
+        YEAR
+      );
+      const priceInUtilityToken1 = await soulStore.getPriceForMintingName(
+        await soulStore.utilityToken(),
+        SOUL_NAME_1LETTERS,
+        YEAR
+      );
 
       expect(priceInStableCoin1).to.be.equal(MINTING_NAME_PRICE_1LETTERS);
       expect(priceInETH1).not.to.be.equal("0");
       expect(priceInUtilityToken1).not.to.be.equal("0");
 
-      const {
-        priceInStableCoin: priceInStableCoin2,
-        priceInETH: priceInETH2,
-        priceInUtilityToken: priceInUtilityToken2
-      } = await soulStore.purchaseNameInfo(SOUL_NAME_1LETTERS, YEAR * 2);
+      const priceInStableCoin2 = await soulStore.getPriceForMintingName(
+        await soulStore.stableCoin(),
+        SOUL_NAME_1LETTERS,
+        YEAR * 2
+      );
+      const priceInETH2 = await soulStore.getPriceForMintingName(
+        ethers.constants.AddressZero,
+        SOUL_NAME_1LETTERS,
+        YEAR * 2
+      );
+      const priceInUtilityToken2 = await soulStore.getPriceForMintingName(
+        await soulStore.utilityToken(),
+        SOUL_NAME_1LETTERS,
+        YEAR * 2
+      );
 
       expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_1LETTERS * 2);
       expect(priceInETH2).not.to.be.equal(priceInETH1.mul(2));
@@ -229,21 +274,41 @@ describe("Soul Store", () => {
     it("we can get 2 letters name purchase info for 1 and 2 years", async () => {
       const SOUL_NAME_2LETTERS = "aa";
 
-      const {
-        priceInStableCoin: priceInStableCoin1,
-        priceInETH: priceInETH1,
-        priceInUtilityToken: priceInUtilityToken1
-      } = await soulStore.purchaseNameInfo(SOUL_NAME_2LETTERS, YEAR);
+      const priceInStableCoin1 = await soulStore.getPriceForMintingName(
+        await soulStore.stableCoin(),
+        SOUL_NAME_2LETTERS,
+        YEAR
+      );
+      const priceInETH1 = await soulStore.getPriceForMintingName(
+        ethers.constants.AddressZero,
+        SOUL_NAME_2LETTERS,
+        YEAR
+      );
+      const priceInUtilityToken1 = await soulStore.getPriceForMintingName(
+        await soulStore.utilityToken(),
+        SOUL_NAME_2LETTERS,
+        YEAR
+      );
 
       expect(priceInStableCoin1).to.be.equal(MINTING_NAME_PRICE_2LETTERS);
       expect(priceInETH1).not.to.be.equal("0");
       expect(priceInUtilityToken1).not.to.be.equal("0");
 
-      const {
-        priceInStableCoin: priceInStableCoin2,
-        priceInETH: priceInETH2,
-        priceInUtilityToken: priceInUtilityToken2
-      } = await soulStore.purchaseNameInfo(SOUL_NAME_2LETTERS, YEAR * 2);
+      const priceInStableCoin2 = await soulStore.getPriceForMintingName(
+        await soulStore.stableCoin(),
+        SOUL_NAME_2LETTERS,
+        YEAR * 2
+      );
+      const priceInETH2 = await soulStore.getPriceForMintingName(
+        ethers.constants.AddressZero,
+        SOUL_NAME_2LETTERS,
+        YEAR * 2
+      );
+      const priceInUtilityToken2 = await soulStore.getPriceForMintingName(
+        await soulStore.utilityToken(),
+        SOUL_NAME_2LETTERS,
+        YEAR * 2
+      );
 
       expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_2LETTERS * 2);
       expect(priceInETH2).not.to.be.equal(priceInETH1.mul(2));
@@ -253,21 +318,41 @@ describe("Soul Store", () => {
     it("we can get 3 letters name purchase info for 1 and 2 years", async () => {
       const SOUL_NAME_3LETTERS = "aaa";
 
-      const {
-        priceInStableCoin: priceInStableCoin1,
-        priceInETH: priceInETH1,
-        priceInUtilityToken: priceInUtilityToken1
-      } = await soulStore.purchaseNameInfo(SOUL_NAME_3LETTERS, YEAR);
+      const priceInStableCoin1 = await soulStore.getPriceForMintingName(
+        await soulStore.stableCoin(),
+        SOUL_NAME_3LETTERS,
+        YEAR
+      );
+      const priceInETH1 = await soulStore.getPriceForMintingName(
+        ethers.constants.AddressZero,
+        SOUL_NAME_3LETTERS,
+        YEAR
+      );
+      const priceInUtilityToken1 = await soulStore.getPriceForMintingName(
+        await soulStore.utilityToken(),
+        SOUL_NAME_3LETTERS,
+        YEAR
+      );
 
       expect(priceInStableCoin1).to.be.equal(MINTING_NAME_PRICE_3LETTERS);
       expect(priceInETH1).not.to.be.equal("0");
       expect(priceInUtilityToken1).not.to.be.equal("0");
 
-      const {
-        priceInStableCoin: priceInStableCoin2,
-        priceInETH: priceInETH2,
-        priceInUtilityToken: priceInUtilityToken2
-      } = await soulStore.purchaseNameInfo(SOUL_NAME_3LETTERS, YEAR * 2);
+      const priceInStableCoin2 = await soulStore.getPriceForMintingName(
+        await soulStore.stableCoin(),
+        SOUL_NAME_3LETTERS,
+        YEAR * 2
+      );
+      const priceInETH2 = await soulStore.getPriceForMintingName(
+        ethers.constants.AddressZero,
+        SOUL_NAME_3LETTERS,
+        YEAR * 2
+      );
+      const priceInUtilityToken2 = await soulStore.getPriceForMintingName(
+        await soulStore.utilityToken(),
+        SOUL_NAME_3LETTERS,
+        YEAR * 2
+      );
 
       expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_3LETTERS * 2);
       expect(priceInETH2).not.to.be.equal(priceInETH1.mul(2));
@@ -277,21 +362,41 @@ describe("Soul Store", () => {
     it("we can get 4 letters name purchase info for 1 and 2 years", async () => {
       const SOUL_NAME_4LETTERS = "aaaa";
 
-      const {
-        priceInStableCoin: priceInStableCoin1,
-        priceInETH: priceInETH1,
-        priceInUtilityToken: priceInUtilityToken1
-      } = await soulStore.purchaseNameInfo(SOUL_NAME_4LETTERS, YEAR);
+      const priceInStableCoin1 = await soulStore.getPriceForMintingName(
+        await soulStore.stableCoin(),
+        SOUL_NAME_4LETTERS,
+        YEAR
+      );
+      const priceInETH1 = await soulStore.getPriceForMintingName(
+        ethers.constants.AddressZero,
+        SOUL_NAME_4LETTERS,
+        YEAR
+      );
+      const priceInUtilityToken1 = await soulStore.getPriceForMintingName(
+        await soulStore.utilityToken(),
+        SOUL_NAME_4LETTERS,
+        YEAR
+      );
 
       expect(priceInStableCoin1).to.be.equal(MINTING_NAME_PRICE_4LETTERS);
       expect(priceInETH1).not.to.be.equal("0");
       expect(priceInUtilityToken1).not.to.be.equal("0");
 
-      const {
-        priceInStableCoin: priceInStableCoin2,
-        priceInETH: priceInETH2,
-        priceInUtilityToken: priceInUtilityToken2
-      } = await soulStore.purchaseNameInfo(SOUL_NAME_4LETTERS, YEAR * 2);
+      const priceInStableCoin2 = await soulStore.getPriceForMintingName(
+        await soulStore.stableCoin(),
+        SOUL_NAME_4LETTERS,
+        YEAR * 2
+      );
+      const priceInETH2 = await soulStore.getPriceForMintingName(
+        ethers.constants.AddressZero,
+        SOUL_NAME_4LETTERS,
+        YEAR * 2
+      );
+      const priceInUtilityToken2 = await soulStore.getPriceForMintingName(
+        await soulStore.utilityToken(),
+        SOUL_NAME_4LETTERS,
+        YEAR * 2
+      );
 
       expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_4LETTERS * 2);
       expect(priceInETH2).not.to.be.equal(priceInETH1.mul(2));
@@ -302,7 +407,11 @@ describe("Soul Store", () => {
   describe("purchase identity and name", () => {
     it("we can purchase an identity and name with ETH", async () => {
       const reserveWallet = await soulStore.reserveWallet();
-      const { priceInETH } = await soulStore.purchaseNameInfo(SOUL_NAME, YEAR);
+      const priceInETH = await soulStore.getPriceForMintingName(
+        ethers.constants.AddressZero,
+        SOUL_NAME,
+        YEAR
+      );
       const reserveWalletBalanceBefore = await ethers.provider.getBalance(
         reserveWallet
       );
@@ -327,7 +436,8 @@ describe("Soul Store", () => {
 
     it("we can purchase an identity and name with stable coin", async () => {
       const reserveWallet = await soulStore.reserveWallet();
-      const { priceInStableCoin } = await soulStore.purchaseNameInfo(
+      const priceInStableCoin = await soulStore.getPriceForMintingName(
+        await soulStore.stableCoin(),
         SOUL_NAME,
         YEAR
       );
@@ -356,7 +466,8 @@ describe("Soul Store", () => {
 
     it("we can purchase an identity and name with utility coin", async () => {
       const reserveWallet = await soulStore.reserveWallet();
-      const { priceInUtilityToken } = await soulStore.purchaseNameInfo(
+      const priceInUtilityToken = await soulStore.getPriceForMintingName(
+        await soulStore.utilityToken(),
         SOUL_NAME,
         YEAR
       );
@@ -384,7 +495,11 @@ describe("Soul Store", () => {
     });
 
     it("we can't purchase an identity and name with ETH if we pay less", async () => {
-      const { priceInETH } = await soulStore.purchaseNameInfo(SOUL_NAME, YEAR);
+      const priceInETH = await soulStore.getPriceForMintingName(
+        ethers.constants.AddressZero,
+        SOUL_NAME,
+        YEAR
+      );
 
       await expect(
         soulStore.connect(address1).purchaseIdentityAndName(
@@ -398,7 +513,8 @@ describe("Soul Store", () => {
     });
 
     it("we can't purchase an identity and name with stable coin if we don't have funds", async () => {
-      const { priceInStableCoin } = await soulStore.purchaseNameInfo(
+      const priceInStableCoin = await soulStore.getPriceForMintingName(
+        await soulStore.stableCoin(),
         SOUL_NAME,
         YEAR
       );
@@ -420,7 +536,8 @@ describe("Soul Store", () => {
     });
 
     it("we can't purchase an identity and name with utility coin if we don't have funds", async () => {
-      const { priceInUtilityToken } = await soulStore.purchaseNameInfo(
+      const priceInUtilityToken = await soulStore.getPriceForMintingName(
+        await soulStore.utilityToken(),
         SOUL_NAME,
         YEAR
       );
@@ -442,7 +559,11 @@ describe("Soul Store", () => {
     });
 
     it("we can purchase an identity and name with more ETH receiving the refund", async () => {
-      const { priceInETH } = await soulStore.purchaseNameInfo(SOUL_NAME, YEAR);
+      const priceInETH = await soulStore.getPriceForMintingName(
+        ethers.constants.AddressZero,
+        SOUL_NAME,
+        YEAR
+      );
 
       const balance = await address1.getBalance();
 
@@ -479,7 +600,11 @@ describe("Soul Store", () => {
     });
 
     it("we can purchase a name with ETH", async () => {
-      const { priceInETH } = await soulStore.purchaseNameInfo(SOUL_NAME, YEAR);
+      const priceInETH = await soulStore.getPriceForMintingName(
+        ethers.constants.AddressZero,
+        SOUL_NAME,
+        YEAR
+      );
 
       await soulStore.connect(address1).purchaseName(
         ethers.constants.AddressZero, // ETH
@@ -492,7 +617,8 @@ describe("Soul Store", () => {
     });
 
     it("we can purchase a name with stable coin", async () => {
-      const { priceInStableCoin } = await soulStore.purchaseNameInfo(
+      const priceInStableCoin = await soulStore.getPriceForMintingName(
+        await soulStore.stableCoin(),
         SOUL_NAME,
         YEAR
       );
@@ -513,7 +639,8 @@ describe("Soul Store", () => {
     });
 
     it("we can purchase a name with utility coin", async () => {
-      const { priceInUtilityToken } = await soulStore.purchaseNameInfo(
+      const priceInUtilityToken = await soulStore.getPriceForMintingName(
+        await soulStore.utilityToken(),
         SOUL_NAME,
         YEAR
       );
@@ -534,7 +661,11 @@ describe("Soul Store", () => {
     });
 
     it("we can't purchase a name with ETH if we pay less", async () => {
-      const { priceInETH } = await soulStore.purchaseNameInfo(SOUL_NAME, YEAR);
+      const priceInETH = await soulStore.getPriceForMintingName(
+        ethers.constants.AddressZero,
+        SOUL_NAME,
+        YEAR
+      );
 
       await expect(
         soulStore.connect(address1).purchaseName(
@@ -549,7 +680,8 @@ describe("Soul Store", () => {
     });
 
     it("we can't purchase a name with stable coin if we don't have funds", async () => {
-      const { priceInStableCoin } = await soulStore.purchaseNameInfo(
+      const priceInStableCoin = await soulStore.getPriceForMintingName(
+        await soulStore.stableCoin(),
         SOUL_NAME,
         YEAR
       );
@@ -572,7 +704,8 @@ describe("Soul Store", () => {
     });
 
     it("we can't purchase a name with utility coin if we don't have funds", async () => {
-      const { priceInUtilityToken } = await soulStore.purchaseNameInfo(
+      const priceInUtilityToken = await soulStore.getPriceForMintingName(
+        await soulStore.utilityToken(),
         SOUL_NAME,
         YEAR
       );
@@ -595,7 +728,84 @@ describe("Soul Store", () => {
     });
   });
 
+  describe("purchase name with other ERC-20 token", () => {
+    beforeEach(async () => {
+      // first we need to purchase an identity
+      await soulStore.connect(address1).purchaseIdentity();
+    });
+
+    it("should add ERC-20 token from owner", async () => {
+      await soulStore.connect(owner).addErc20Token(DAI_GOERLI);
+
+      expect(await soulStore.erc20token(DAI_GOERLI)).to.be.true;
+    });
+
+    it("should get all payment methods information", async () => {
+      await soulStore.connect(owner).addErc20Token(DAI_GOERLI);
+
+      const { _nativeToken, _stableCoin, _utilityToken, _erc20tokens } =
+        await soulStore.getPaymentMethods();
+
+      expect(_nativeToken).to.be.equal(ethers.constants.AddressZero);
+      expect(_stableCoin).to.be.equal(USDC_GOERLI);
+      expect(_utilityToken).to.be.equal(MASA_GOERLI);
+      expect(_erc20tokens).to.be.deep.equal([DAI_GOERLI]);
+    });
+
+    it("should fail to add ERC-20 token from non owner", async () => {
+      await expect(soulStore.connect(address1).addErc20Token(DAI_GOERLI)).to.be
+        .rejected;
+    });
+
+    it("should remove ERC-20 token from owner", async () => {
+      await soulStore.connect(owner).addErc20Token(DAI_GOERLI);
+
+      expect(await soulStore.erc20token(DAI_GOERLI)).to.be.true;
+
+      await soulStore.connect(owner).removeErc20Token(DAI_GOERLI);
+
+      expect(await soulStore.erc20token(DAI_GOERLI)).to.be.false;
+    });
+
+    it("should fail to remove ERC-20 token from non owner", async () => {
+      await soulStore.connect(owner).addErc20Token(DAI_GOERLI);
+
+      expect(await soulStore.erc20token(DAI_GOERLI)).to.be.true;
+
+      await expect(soulStore.connect(address1).removeErc20Token(DAI_GOERLI)).to
+        .be.rejected;
+    });
+
+    it("we can purchase a name with other ERC-20 token", async () => {
+      await soulStore.connect(owner).addErc20Token(DAI_GOERLI);
+
+      const priceInDAI = await soulStore.getPriceForMintingName(
+        DAI_GOERLI,
+        SOUL_NAME,
+        YEAR
+      );
+
+      // set allowance for soul store
+      const dai: ERC20 = ERC20__factory.connect(DAI_GOERLI, owner);
+      await dai.connect(address1).approve(soulStore.address, priceInDAI);
+
+      await soulStore.connect(address1).purchaseName(
+        DAI_GOERLI, // DAI token, other ERC-20 token
+        SOUL_NAME,
+        YEAR,
+        ARWEAVE_LINK,
+        address1.address
+      );
+    });
+  });
+
   describe("use invalid payment method", () => {
+    it("should fail to get purchase info for invalid payment method", async () => {
+      await expect(
+        soulStore.getPriceForMintingName(owner.address, SOUL_NAME, YEAR)
+      ).to.be.rejectedWith("INVALID_PAYMENT_METHOD");
+    });
+
     it("we can't use an invalid payment method", async () => {
       await expect(
         soulStore.connect(address1).purchaseIdentityAndName(

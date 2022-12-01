@@ -1,12 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
-import "./dex/DexAMM.sol";
+import "./dex/PaymentGateway.sol";
 import "./interfaces/ISoulboundIdentity.sol";
 import "./interfaces/ISoulName.sol";
 
@@ -15,8 +12,7 @@ import "./interfaces/ISoulName.sol";
 /// @notice Soul Store, that can mint new Soulbound Identities and Soul Name NFTs, paying a fee
 /// @dev From this smart contract we can mint new Soulbound Identities and Soul Name NFTs.
 /// This minting can be done paying a fee in ETH, USDC or $MASA
-contract SoulStore is DexAMM, Ownable {
-    using SafeERC20 for IERC20;
+contract SoulStore is PaymentGateway {
     using SafeMath for uint256;
 
     /* ========== STATE VARIABLES ========== */
@@ -24,11 +20,6 @@ contract SoulStore is DexAMM, Ownable {
     ISoulboundIdentity public soulboundIdentity;
 
     mapping(uint256 => uint256) public nameRegistrationPricePerYear; // (length --> price in stable coin per year)
-
-    address public stableCoin; // USDC
-    address public utilityToken; // $MASA
-
-    address public reserveWallet;
 
     /* ========== INITIALIZE ========== */
 
@@ -38,33 +29,35 @@ contract SoulStore is DexAMM, Ownable {
     /// @param owner Owner of the smart contract
     /// @param _soulBoundIdentity Address of the Soulbound identity contract
     /// @param _nameRegistrationPricePerYear Price of the default name registering in stable coin per year
-    /// @param _utilityToken Utility token to pay the fee in ($MASA)
-    /// @param _stableCoin Stable coin to pay the fee in (USDC)
-    /// @param _wrappedNativeToken Wrapped native token address
     /// @param _swapRouter Swap router address
+    /// @param _wrappedNativeToken Wrapped native token address
+    /// @param _stableCoin Stable coin to pay the fee in (USDC)
+    /// @param _utilityToken Utility token to pay the fee in ($MASA)
     /// @param _reserveWallet Wallet that will receive the fee
     constructor(
         address owner,
         ISoulboundIdentity _soulBoundIdentity,
         uint256 _nameRegistrationPricePerYear,
-        address _utilityToken,
-        address _stableCoin,
-        address _wrappedNativeToken,
         address _swapRouter,
+        address _wrappedNativeToken,
+        address _stableCoin,
+        address _utilityToken,
         address _reserveWallet
-    ) DexAMM(_swapRouter, _wrappedNativeToken) {
-        require(_reserveWallet != address(0), "ZERO_ADDRESS");
+    )
+        PaymentGateway(
+            owner,
+            _swapRouter,
+            _wrappedNativeToken,
+            _stableCoin,
+            _utilityToken,
+            _reserveWallet
+        )
+    {
         require(address(_soulBoundIdentity) != address(0), "ZERO_ADDRESS");
-
-        Ownable.transferOwnership(owner);
 
         soulboundIdentity = _soulBoundIdentity;
 
         nameRegistrationPricePerYear[0] = _nameRegistrationPricePerYear; // name price for default length per year
-        stableCoin = _stableCoin;
-        utilityToken = _utilityToken;
-
-        reserveWallet = _reserveWallet;
     }
 
     /* ========== RESTRICTED FUNCTIONS ========== */
@@ -100,54 +93,6 @@ contract SoulStore is DexAMM, Ownable {
         ] = _nameRegistrationPricePerYear;
     }
 
-    /// @notice Sets the stable coin to pay the fee in (USDC)
-    /// @dev The caller must have the owner to call this function
-    /// @param _stableCoin New stable coin to pay the fee in
-    function setStableCoin(address _stableCoin) external onlyOwner {
-        require(_stableCoin != address(0), "ZERO_ADDRESS");
-        require(stableCoin != _stableCoin, "SAME_VALUE");
-        stableCoin = _stableCoin;
-    }
-
-    /// @notice Sets the utility token to pay the fee in ($MASA)
-    /// @dev The caller must have the owner to call this function
-    /// @param _utilityToken New utility token to pay the fee in
-    function setUtilityToken(address _utilityToken) external onlyOwner {
-        require(_utilityToken != address(0), "ZERO_ADDRESS");
-        require(utilityToken != _utilityToken, "SAME_VALUE");
-        utilityToken = _utilityToken;
-    }
-
-    /// @notice Set the reserve wallet
-    /// @dev Let change the reserve walled. It can be triggered by an authorized account.
-    /// @param _reserveWallet New reserve wallet
-    function setReserveWallet(address _reserveWallet) external onlyOwner {
-        require(_reserveWallet != address(0), "ZERO_ADDRESS");
-        require(_reserveWallet != reserveWallet, "SAME_VALUE");
-        reserveWallet = _reserveWallet;
-    }
-
-    /// @notice Sets the swap router address
-    /// @dev The caller must have the owner to call this function
-    /// @param _swapRouter New swap router address
-    function setSwapRouter(address _swapRouter) external onlyOwner {
-        require(_swapRouter != address(0), "ZERO_ADDRESS");
-        require(swapRouter != _swapRouter, "SAME_VALUE");
-        swapRouter = _swapRouter;
-    }
-
-    /// @notice Sets the wrapped native token address
-    /// @dev The caller must have the owner to call this function
-    /// @param _wrappedNativeToken New wrapped native token address
-    function setWrappedNativeToken(address _wrappedNativeToken)
-        external
-        onlyOwner
-    {
-        require(_wrappedNativeToken != address(0), "ZERO_ADDRESS");
-        require(wrappedNativeToken != _wrappedNativeToken, "SAME_VALUE");
-        wrappedNativeToken = _wrappedNativeToken;
-    }
-
     /* ========== MUTATIVE FUNCTIONS ========== */
 
     /// @notice Mints a new Soulbound Identity and Name purchasing it
@@ -164,7 +109,7 @@ contract SoulStore is DexAMM, Ownable {
         uint256 yearsPeriod,
         string memory _tokenURI
     ) external payable returns (uint256) {
-        _payForMinting(
+        _pay(
             paymentMethod,
             getNameRegistrationPricePerYear(name).mul(yearsPeriod)
         );
@@ -203,7 +148,7 @@ contract SoulStore is DexAMM, Ownable {
         string memory _tokenURI,
         address to
     ) external payable returns (uint256) {
-        _payForMinting(
+        _pay(
             paymentMethod,
             getNameRegistrationPricePerYear(name).mul(yearsPeriod)
         );
@@ -233,105 +178,32 @@ contract SoulStore is DexAMM, Ownable {
     }
 
     /// @notice Returns the price of the name minting
-    /// @dev Returns all current pricing and amount informations for a purchase
+    /// @dev Returns current pricing for name minting for a given name length and years period
+    /// @param paymentMethod Address of token that user want to pay
     /// @param name Name of the new soul name
     /// @param yearsPeriod Years of validity of the name
-    /// @return priceInStableCoin Current price of the name minting in stable coin
-    /// @return priceInETH Current price of the name minting in native token (ETH)
-    /// @return priceInUtilityToken Current price of the name minting in utility token ($MASA)
-    function purchaseNameInfo(string memory name, uint256 yearsPeriod)
-        public
-        view
-        returns (
-            uint256 priceInStableCoin,
-            uint256 priceInETH,
-            uint256 priceInUtilityToken
-        )
-    {
-        (priceInStableCoin, priceInETH, priceInUtilityToken) = _getSwapAmounts(
-            getNameRegistrationPricePerYear(name).mul(yearsPeriod)
+    /// @return Current price of the name minting in the given payment method
+    function getPriceForMintingName(
+        address paymentMethod,
+        string memory name,
+        uint256 yearsPeriod
+    ) public view returns (uint256) {
+        uint256 mintingPrice = getNameRegistrationPricePerYear(name).mul(
+            yearsPeriod
         );
-    }
 
-    /* ========== PRIVATE FUNCTIONS ========== */
-
-    /// @notice Returns the price of minting
-    /// @dev Returns all current pricing and amount informations for a purchase
-    /// @return priceInStableCoin Current price in stable coin
-    /// @return priceInETH Current pric in native token (ETH)
-    /// @return priceInUtilityToken Current price in utility token ($MASA)
-    function _getSwapAmounts(uint256 mintingPrice)
-        public
-        view
-        returns (
-            uint256 priceInStableCoin,
-            uint256 priceInETH,
-            uint256 priceInUtilityToken
-        )
-    {
-        priceInStableCoin = mintingPrice;
-        // get swapped price in ETH and $MASA
-        priceInETH = estimateSwapAmount(
-            wrappedNativeToken,
-            stableCoin,
-            mintingPrice
-        );
-        priceInUtilityToken = estimateSwapAmount(
-            utilityToken,
-            stableCoin,
-            mintingPrice
-        );
-    }
-
-    /// @notice Performs the payment for the minting
-    /// @dev This method will transfer the funds to the reserve wallet, performing
-    /// the swap if necessary
-    /// @param paymentMethod Address of token that user want to pay
-    /// @param mintingPrice Price of the minting
-    function _payForMinting(address paymentMethod, uint256 mintingPrice)
-        internal
-    {
         if (paymentMethod == stableCoin) {
-            // USDC
-            IERC20(paymentMethod).safeTransferFrom(
-                msg.sender,
-                reserveWallet,
-                mintingPrice
-            );
+            return mintingPrice;
         } else if (paymentMethod == address(0)) {
-            // ETH
-            uint256 swapAmout = estimateSwapAmount(
-                wrappedNativeToken,
-                stableCoin,
-                mintingPrice
-            );
-            require(msg.value >= swapAmout, "INVALID_PAYMENT_AMOUNT");
-            (bool success, ) = payable(reserveWallet).call{value: swapAmout}(
-                ""
-            );
-            require(success, "TRANSFER_FAILED");
-            if (msg.value > swapAmout) {
-                // return diff
-                uint256 refund = msg.value.sub(swapAmout);
-                (success, ) = payable(msg.sender).call{value: refund}("");
-                require(success);
-            }
-        } else if (paymentMethod == utilityToken) {
-            // $MASA
-            uint256 swapAmout = estimateSwapAmount(
-                paymentMethod,
-                stableCoin,
-                mintingPrice
-            );
-            IERC20(paymentMethod).safeTransferFrom(
-                msg.sender,
-                reserveWallet,
-                swapAmout
-            );
+            return _convertFromStableCoin(wrappedNativeToken, mintingPrice);
+        } else if (paymentMethod == utilityToken || erc20token[paymentMethod]) {
+            return _convertFromStableCoin(paymentMethod, mintingPrice);
         } else {
             revert("INVALID_PAYMENT_METHOD");
         }
     }
+
+    /* ========== PRIVATE FUNCTIONS ========== */
 
     /// @notice Mints a new Soulbound Identity and Name
     /// @dev The final step of all purchase options. Will mint a
