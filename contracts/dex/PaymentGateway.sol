@@ -185,6 +185,7 @@ abstract contract PaymentGateway is Ownable {
     /// @param paymentMethod Address of token that user want to pay
     /// @param amountInStableCoin Price to be paid in stable coin
     function _pay(address paymentMethod, uint256 amountInStableCoin) internal {
+        if (amountInStableCoin == 0) return;
         if (paymentMethod == stableCoin) {
             // USDC
             IERC20(paymentMethod).safeTransferFrom(

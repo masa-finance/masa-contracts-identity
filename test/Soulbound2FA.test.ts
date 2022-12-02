@@ -83,13 +83,15 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
 
   describe("mint", () => {
     it("should mint from owner address", async () => {
-      await soulbound2FA.connect(owner)["mint(address)"](address1.address);
+      await soulbound2FA
+        .connect(owner)
+        ["mint(address)"](ethers.constants.AddressZero, address1.address);
     });
 
     it("should mint from owner identity", async () => {
       const mintTx = await soulbound2FA
         .connect(owner)
-        ["mint(uint256)"](identityId1);
+        ["mint(uint256)"](ethers.constants.AddressZero, identityId1);
       const mintReceipt = await mintTx.wait();
 
       const tokenId = mintReceipt.events![0].args![1].toNumber();
@@ -98,8 +100,12 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
     });
 
     it("should mint twice", async () => {
-      await soulbound2FA.connect(owner)["mint(address)"](address1.address);
-      await soulbound2FA.connect(owner)["mint(address)"](address1.address);
+      await soulbound2FA
+        .connect(owner)
+        ["mint(address)"](ethers.constants.AddressZero, address1.address);
+      await soulbound2FA
+        .connect(owner)
+        ["mint(address)"](ethers.constants.AddressZero, address1.address);
 
       expect(await soulbound2FA.totalSupply()).to.equal(2);
       expect(await soulbound2FA.tokenByIndex(0)).to.equal(0);
@@ -108,13 +114,17 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
 
     it("should fail to mint from non minter", async () => {
       await expect(
-        soulbound2FA.connect(address1)["mint(address)"](address1.address)
+        soulbound2FA
+          .connect(address1)
+          ["mint(address)"](ethers.constants.AddressZero, address1.address)
       ).to.be.rejected;
     });
 
     it("should fail to mint to address without identity", async () => {
       await expect(
-        soulbound2FA.connect(owner)["mint(address)"](address2.address)
+        soulbound2FA
+          .connect(owner)
+          ["mint(address)"](ethers.constants.AddressZero, address2.address)
       ).to.be.rejected;
     });
   });
@@ -124,14 +134,14 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
       // we mint
       let mintTx = await soulbound2FA
         .connect(owner)
-        ["mint(address)"](address1.address);
+        ["mint(address)"](ethers.constants.AddressZero, address1.address);
       let mintReceipt = await mintTx.wait();
       const tokenId1 = mintReceipt.events![0].args![1].toNumber();
 
       // we mint again
       mintTx = await soulbound2FA
         .connect(owner)
-        ["mint(address)"](address1.address);
+        ["mint(address)"](ethers.constants.AddressZero, address1.address);
       mintReceipt = await mintTx.wait();
       const tokenId2 = mintReceipt.events![0].args![1].toNumber();
 
@@ -157,7 +167,7 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
     it("should fail to transfer because its soulbound", async () => {
       const mintTx = await soulbound2FA
         .connect(owner)
-        ["mint(address)"](address1.address);
+        ["mint(address)"](ethers.constants.AddressZero, address1.address);
 
       const mintReceipt = await mintTx.wait();
       const tokenId = mintReceipt.events![0].args![1].toNumber();
