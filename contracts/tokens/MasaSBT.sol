@@ -57,6 +57,7 @@ abstract contract MasaSBT is
 
     function _mintWithCounter(address to)
         internal
+        virtual
         onlyRole(MINTER_ROLE)
         returns (uint256)
     {
