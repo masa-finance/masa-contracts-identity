@@ -70,14 +70,6 @@ abstract contract MasaSBT is
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
-    /// @notice Mints a new SBT
-    /// @dev The caller must have the MINTER role
-    /// @param to The address to mint the SBT to
-    /// @return The SBT ID of the newly minted SBT
-    function mint(address to) public virtual returns (uint256) {
-        return _mintWithCounter(to);
-    }
-
     /* ========== VIEWS ===================================================== */
 
     /// @notice A distinct Uniform Resource Identifier (URI) for a given asset.

@@ -29,6 +29,26 @@ contract Soulbound2FA is MasaSBTLinked {
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
+    /// @notice Mints a new SBT
+    /// @dev The caller must have the MINTER role
+    /// @param identityId TokenId of the identity to mint the NFT to
+    /// @return The NFT ID of the newly minted SBT
+    function mint(uint256 identityId) public virtual returns (uint256) {
+        address to = soulboundIdentity.ownerOf(identityId);
+
+        return _mintWithCounter(to);
+    }
+
+    /// @notice Mints a new SBT
+    /// @dev The caller must have the MINTER role
+    /// @param to The address to mint the SBT to
+    /// @return The SBT ID of the newly minted SBT
+    function mint(address to) public virtual returns (uint256) {
+        uint256 identityId = soulboundIdentity.tokenOfOwner(to);
+
+        return mint(identityId);
+    }
+
     /* ========== VIEWS ===================================================== */
 
     /* ========== PRIVATE FUNCTIONS ========================================= */

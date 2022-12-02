@@ -144,28 +144,6 @@ function hasRole(bytes32 role, address account) external view returns (bool)
 |---|---|---|
 | _0 | bool | undefined |
 
-### mint
-
-```solidity
-function mint(address to) external nonpayable returns (uint256)
-```
-
-Mints a new SBT
-
-*The caller must have the MINTER role*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| to | address | The address to mint the SBT to |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | The SBT ID of the newly minted SBT |
-
 ### name
 
 ```solidity
