@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
-import "./tokens/MasaSBTChild.sol";
+import "./tokens/MasaSBTLinked.sol";
 
 /// @title Soulbound Two-factor authentication (2FA)
 /// @author Masa Finance
 /// @notice Soulbound token that represents a Two-factor authentication (2FA)
 /// @dev Soulbound 2FA, that inherits from the SBT contract.
-contract Soulbound2FA is MasaSBTChild {
+contract Soulbound2FA is MasaSBTLinked {
     /* ========== STATE VARIABLES =========================================== */
 
     /* ========== INITIALIZE ================================================ */
@@ -21,7 +21,9 @@ contract Soulbound2FA is MasaSBTChild {
         address owner,
         string memory baseTokenURI,
         ISoulboundIdentity soulboundIdentity
-    ) MasaSBTChild(owner, "Masa 2FA", "M2F", baseTokenURI, soulboundIdentity) {}
+    )
+        MasaSBTLinked(owner, "Masa 2FA", "M2F", baseTokenURI, soulboundIdentity)
+    {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 

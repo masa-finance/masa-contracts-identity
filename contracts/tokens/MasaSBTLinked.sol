@@ -6,12 +6,12 @@ import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 import "../interfaces/ISoulboundIdentity.sol";
 import "./MasaSBT.sol";
 
-/// @title MasaSBTChild
+/// @title MasaSBTLinked
 /// @author Masa Finance
 /// @notice Soulbound token. Non-fungible token that is not transferable.
 /// Adds a link to a SoulboundIdentity SC to let minting using the identityId
 /// @dev Implementation of https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763 Soulbound token.
-abstract contract MasaSBTChild is MasaSBT {
+abstract contract MasaSBTLinked is MasaSBT {
     /* ========== STATE VARIABLES =========================================== */
 
     ISoulboundIdentity public soulboundIdentity;

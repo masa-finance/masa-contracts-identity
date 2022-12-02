@@ -1,8 +1,8 @@
-# MasaSBTChild
+# MasaSBTLinked
 
 *Masa Finance*
 
-> MasaSBTChild
+> MasaSBTLinked
 
 Soulbound token. Non-fungible token that is not transferable. Adds a link to a SoulboundIdentity SC to let minting using the identityId
 
