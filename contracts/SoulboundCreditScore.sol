@@ -14,46 +14,32 @@ contract SoulboundCreditScore is MasaSBTLinked {
 
     /// @notice Creates a new soulbound credit score
     /// @dev Creates a new soulbound credit score, inheriting from the SBT contract.
-    /// @param owner Owner of the smart contract
+    /// @param admin Administrator of the smart contract
     /// @param baseTokenURI Base URI of the token
     /// @param soulboundIdentity Address of the SoulboundIdentity contract
+    /// @param _mintingPrice Price of minting in stable coin
+    /// @param paymentParams Payment gateway params
     constructor(
-        address owner,
+        address admin,
         string memory baseTokenURI,
-        ISoulboundIdentity soulboundIdentity
+        ISoulboundIdentity soulboundIdentity,
+        uint256 _mintingPrice,
+        PaymentParams memory paymentParams
     )
         MasaSBTLinked(
-            owner,
+            admin,
             "Masa Credit Score",
             "MCS",
             baseTokenURI,
-            soulboundIdentity
+            soulboundIdentity,
+            _mintingPrice,
+            paymentParams
         )
     {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
-
-    /// @notice Mints a new SBT
-    /// @dev The caller must have the MINTER role
-    /// @param identityId TokenId of the identity to mint the NFT to
-    /// @return The NFT ID of the newly minted SBT
-    function mint(uint256 identityId) public virtual returns (uint256) {
-        address to = soulboundIdentity.ownerOf(identityId);
-
-        return _mintWithCounter(to);
-    }
-
-    /// @notice Mints a new SBT
-    /// @dev The caller must have the MINTER role
-    /// @param to The address to mint the SBT to
-    /// @return The SBT ID of the newly minted SBT
-    function mint(address to) public virtual returns (uint256) {
-        uint256 identityId = soulboundIdentity.tokenOfOwner(to);
-
-        return mint(identityId);
-    }
 
     /* ========== VIEWS ===================================================== */
 

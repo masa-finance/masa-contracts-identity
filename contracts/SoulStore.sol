@@ -29,30 +29,13 @@ contract SoulStore is PaymentGateway {
     /// @param owner Owner of the smart contract
     /// @param _soulBoundIdentity Address of the Soulbound identity contract
     /// @param _nameRegistrationPricePerYear Price of the default name registering in stable coin per year
-    /// @param _swapRouter Swap router address
-    /// @param _wrappedNativeToken Wrapped native token address
-    /// @param _stableCoin Stable coin to pay the fee in (USDC)
-    /// @param _utilityToken Utility token to pay the fee in ($MASA)
-    /// @param _reserveWallet Wallet that will receive the fee
+    /// @param paymentParams Payment gateway params
     constructor(
         address owner,
         ISoulboundIdentity _soulBoundIdentity,
         uint256 _nameRegistrationPricePerYear,
-        address _swapRouter,
-        address _wrappedNativeToken,
-        address _stableCoin,
-        address _utilityToken,
-        address _reserveWallet
-    )
-        PaymentGateway(
-            owner,
-            _swapRouter,
-            _wrappedNativeToken,
-            _stableCoin,
-            _utilityToken,
-            _reserveWallet
-        )
-    {
+        PaymentParams memory paymentParams
+    ) PaymentGateway(owner, paymentParams) {
         require(address(_soulBoundIdentity) != address(0), "ZERO_ADDRESS");
 
         soulboundIdentity = _soulBoundIdentity;

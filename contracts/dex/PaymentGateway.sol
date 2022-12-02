@@ -17,6 +17,14 @@ abstract contract PaymentGateway is Ownable {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
+    struct PaymentParams {
+        address swapRouter; // Swap router address
+        address wrappedNativeToken; // Wrapped native token address
+        address stableCoin; // Stable coin to pay the fee in (USDC)
+        address utilityToken; // Utility token to pay the fee in ($MASA)
+        address reserveWallet; // Wallet that will receive the fee
+    }
+
     /* ========== STATE VARIABLES =========================================== */
 
     address public swapRouter;
@@ -37,32 +45,21 @@ abstract contract PaymentGateway is Ownable {
     /// @dev Creates a new Decentralized automated market maker (AMM) smart contract,
     // that will call the Uniswap Router interface
     /// @param owner Owner of the smart contract
-    /// @param _swapRouter Swap router address
-    /// @param _wrappedNativeToken Wrapped native token address
-    /// @param _stableCoin Stable coin to pay the fee in (USDC)
-    /// @param _utilityToken Utility token to pay the fee in ($MASA)
-    /// @param _reserveWallet Wallet that will receive the fee
-    constructor(
-        address owner,
-        address _swapRouter,
-        address _wrappedNativeToken,
-        address _stableCoin,
-        address _utilityToken,
-        address _reserveWallet
-    ) {
-        require(_swapRouter != address(0), "ZERO_ADDRESS");
-        require(_wrappedNativeToken != address(0), "ZERO_ADDRESS");
-        require(_stableCoin != address(0), "ZERO_ADDRESS");
-        require(_utilityToken != address(0), "ZERO_ADDRESS");
-        require(_reserveWallet != address(0), "ZERO_ADDRESS");
+    /// @param paymentParams Payment params
+    constructor(address owner, PaymentParams memory paymentParams) {
+        require(paymentParams.swapRouter != address(0), "ZERO_ADDRESS");
+        require(paymentParams.wrappedNativeToken != address(0), "ZERO_ADDRESS");
+        require(paymentParams.stableCoin != address(0), "ZERO_ADDRESS");
+        require(paymentParams.utilityToken != address(0), "ZERO_ADDRESS");
+        require(paymentParams.reserveWallet != address(0), "ZERO_ADDRESS");
 
         Ownable.transferOwnership(owner);
 
-        swapRouter = _swapRouter;
-        wrappedNativeToken = _wrappedNativeToken;
-        stableCoin = _stableCoin;
-        utilityToken = _utilityToken;
-        reserveWallet = _reserveWallet;
+        swapRouter = paymentParams.swapRouter;
+        wrappedNativeToken = paymentParams.wrappedNativeToken;
+        stableCoin = paymentParams.stableCoin;
+        utilityToken = paymentParams.utilityToken;
+        reserveWallet = paymentParams.reserveWallet;
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */

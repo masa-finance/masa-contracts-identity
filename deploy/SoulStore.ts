@@ -62,13 +62,15 @@ const func: DeployFunction = async ({
     env.OWNER || owner.address,
     soulboundIdentityDeployed.address,
     "10000000", // 10 USDC, with 6 decimals
-    swapRouter,
-    wrappedNativeToken,
-    stableCoin,
-    network.name == "hardhat" || network.name == "goerli"
-      ? MASA_GOERLI // MASA
-      : masa.address,
-    env.RESERVE_WALLET || owner.address
+    [
+      swapRouter,
+      wrappedNativeToken,
+      stableCoin,
+      network.name == "hardhat" || network.name == "goerli"
+        ? MASA_GOERLI // MASA
+        : masa.address,
+      env.RESERVE_WALLET || owner.address
+    ]
   ];
 
   const soulStoreDeploymentResult = await deploy("SoulStore", {

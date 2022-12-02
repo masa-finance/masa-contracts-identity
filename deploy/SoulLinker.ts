@@ -69,13 +69,15 @@ const func: DeployFunction = async ({
     soulboundIdentityDeployed.address,
     "1000000", // 1 USDC, with 6 decimals
     0,
-    swapRouter,
-    wrappedNativeToken,
-    stableCoin,
-    network.name == "hardhat" || network.name == "goerli"
-      ? MASA_GOERLI // MASA
-      : masa.address,
-    env.RESERVE_WALLET || owner.address
+    [
+      swapRouter,
+      wrappedNativeToken,
+      stableCoin,
+      network.name == "hardhat" || network.name == "goerli"
+        ? MASA_GOERLI // MASA
+        : masa.address,
+      env.RESERVE_WALLET || owner.address
+    ]
   ];
 
   const soulLinkerDeploymentResult = await deploy("SoulLinker", {
