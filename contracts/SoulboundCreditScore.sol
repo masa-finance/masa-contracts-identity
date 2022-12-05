@@ -35,6 +35,7 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
             _mintingPrice,
             paymentParams
         )
+        EIP712("Masa Credit Score", "1.0.0")
     {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */

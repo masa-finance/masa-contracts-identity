@@ -35,6 +35,7 @@ contract Soulbound2FA is MasaSBTSelfSovereign {
             _mintingPrice,
             paymentParams
         )
+        EIP712("Masa 2FA", "1.0.0")
     {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */

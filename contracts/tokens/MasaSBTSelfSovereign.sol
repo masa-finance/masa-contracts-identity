@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
+import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
+import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+
 import "../interfaces/ISoulboundIdentity.sol";
 import "../dex/PaymentGateway.sol";
 import "./MasaSBT.sol";
@@ -12,7 +15,7 @@ import "./MasaSBT.sol";
 /// Adds a payment gateway to let minting paying a fee
 /// Adds a self-sovereign protocol to let minting using an authority signature
 /// @dev Implementation of https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763 Soulbound token.
-abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT {
+abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
     /* ========== STATE VARIABLES =========================================== */
 
     ISoulboundIdentity public soulboundIdentity;
@@ -101,6 +104,14 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT {
     }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
+
+    function _verify(
+        bytes32 digest,
+        bytes memory signature,
+        address owner
+    ) internal pure returns (bool) {
+        return ECDSA.recover(digest, signature) == owner;
+    }
 
     /* ========== MODIFIERS ================================================= */
 
