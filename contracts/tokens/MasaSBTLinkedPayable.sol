@@ -39,8 +39,6 @@ abstract contract MasaSBTLinkedPayable is PaymentGateway, MasaSBTLinked {
         PaymentGateway(admin, paymentParams)
         MasaSBTLinked(admin, name, symbol, baseTokenURI, _soulboundIdentity)
     {
-        require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
-
         mintingPrice = _mintingPrice;
     }
 
