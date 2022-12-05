@@ -1,4 +1,4 @@
-# MasaSBT
+# MasaSBTAuthority
 
 *Masa Finance*
 
@@ -14,6 +14,23 @@ Soulbound token. Non-fungible token that is not transferable.
 
 ```solidity
 function DEFAULT_ADMIN_ROLE() external view returns (bytes32)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bytes32 | undefined |
+
+### MINTER_ROLE
+
+```solidity
+function MINTER_ROLE() external view returns (bytes32)
 ```
 
 
