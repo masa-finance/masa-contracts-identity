@@ -3,6 +3,7 @@ pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 
 import "../interfaces/ISoulboundIdentity.sol";
 import "../dex/PaymentGateway.sol";
@@ -17,6 +18,10 @@ import "./MasaSBT.sol";
 /// @dev Implementation of https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763 Soulbound token.
 abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
     /* ========== STATE VARIABLES =========================================== */
+
+    using Counters for Counters.Counter;
+
+    Counters.Counter private _tokenIdCounter;
 
     ISoulboundIdentity public soulboundIdentity;
 
@@ -113,6 +118,14 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
         address _signer = ECDSA.recover(digest, signature);
         require(_signer == signer, "INVALID_SIGNATURE");
         require(authorities[_signer], "NOT_AUTHORIZED");
+    }
+
+    function _mintWithCounter(address to) internal virtual returns (uint256) {
+        uint256 tokenId = _tokenIdCounter.current();
+        _tokenIdCounter.increment();
+        _mint(to, tokenId);
+
+        return tokenId;
     }
 
     /* ========== MODIFIERS ================================================= */

@@ -3,13 +3,13 @@ pragma solidity ^0.8.7;
 
 import "./interfaces/ISoulboundIdentity.sol";
 import "./interfaces/ISoulName.sol";
-import "./tokens/MasaSBT.sol";
+import "./tokens/MasaSBTAuthority.sol";
 
 /// @title Soulbound Identity
 /// @author Masa Finance
 /// @notice Soulbound token that represents an identity.
 /// @dev Soulbound identity, that inherits from the SBT contract.
-contract SoulboundIdentity is MasaSBT, ISoulboundIdentity {
+contract SoulboundIdentity is MasaSBTAuthority, ISoulboundIdentity {
     /* ========== STATE VARIABLES =========================================== */
 
     ISoulName public soulName;
@@ -21,7 +21,7 @@ contract SoulboundIdentity is MasaSBT, ISoulboundIdentity {
     /// @param admin Administrator of the smart contract
     /// @param baseTokenURI Base URI of the token
     constructor(address admin, string memory baseTokenURI)
-        MasaSBT(admin, "Masa Identity", "MID", baseTokenURI)
+        MasaSBTAuthority(admin, "Masa Identity", "MID", baseTokenURI)
     {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */

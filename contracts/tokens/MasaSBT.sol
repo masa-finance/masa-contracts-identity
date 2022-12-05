@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 import "./SBT/SBT.sol";
@@ -18,10 +16,6 @@ abstract contract MasaSBT is SBT, SBTEnumerable, AccessControl, SBTBurnable {
     /* ========== STATE VARIABLES =========================================== */
 
     using Strings for uint256;
-    using Counters for Counters.Counter;
-
-    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
-    Counters.Counter private _tokenIdCounter;
 
     string private _baseTokenURI;
 
@@ -40,25 +34,11 @@ abstract contract MasaSBT is SBT, SBTEnumerable, AccessControl, SBTBurnable {
         string memory baseTokenURI
     ) SBT(name, symbol) {
         _grantRole(DEFAULT_ADMIN_ROLE, admin);
-        _grantRole(MINTER_ROLE, admin);
 
         _baseTokenURI = baseTokenURI;
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
-
-    function _mintWithCounter(address to)
-        internal
-        virtual
-        onlyRole(MINTER_ROLE)
-        returns (uint256)
-    {
-        uint256 tokenId = _tokenIdCounter.current();
-        _tokenIdCounter.increment();
-        _mint(to, tokenId);
-
-        return tokenId;
-    }
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
