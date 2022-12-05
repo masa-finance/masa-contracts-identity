@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
-import "./tokens/MasaSBTLinkedPayable.sol";
+import "./tokens/MasaSBTSelfSovereign.sol";
 
 /// @title Soulbound Two-factor authentication (2FA)
 /// @author Masa Finance
 /// @notice Soulbound token that represents a Two-factor authentication (2FA)
 /// @dev Soulbound 2FA, that inherits from the SBT contract.
-contract Soulbound2FA is MasaSBTLinkedPayable {
+contract Soulbound2FA is MasaSBTSelfSovereign {
     /* ========== STATE VARIABLES =========================================== */
 
     /* ========== INITIALIZE ================================================ */
@@ -26,7 +26,7 @@ contract Soulbound2FA is MasaSBTLinkedPayable {
         uint256 _mintingPrice,
         PaymentParams memory paymentParams
     )
-        MasaSBTLinkedPayable(
+        MasaSBTSelfSovereign(
             admin,
             "Masa 2FA",
             "M2F",
