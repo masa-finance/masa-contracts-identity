@@ -35,7 +35,7 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
             _mintingPrice,
             paymentParams
         )
-        EIP712("Masa Credit Score", "1.0.0")
+        EIP712("SoulboundCreditScore", "1.0.0")
     {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
@@ -65,7 +65,18 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
 
         _pay(paymentMethod, mintingPrice);
 
-        return _mintWithCounter(to);
+        uint256 tokenId = _mintWithCounter(to);
+
+        emit SoulboundCreditScoreMinted(
+            tokenId,
+            identityId,
+            authorityAddress,
+            signatureDate,
+            paymentMethod,
+            mintingPrice
+        );
+
+        return tokenId;
     }
 
     /// @notice Mints a new SBT
@@ -119,4 +130,13 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
     /* ========== MODIFIERS ================================================= */
 
     /* ========== EVENTS ==================================================== */
+
+    event SoulboundCreditScoreMinted(
+        uint256 tokenId,
+        uint256 identityId,
+        address authorityAddress,
+        uint256 signatureDate,
+        address paymentMethod,
+        uint256 mintingPrice
+    );
 }
