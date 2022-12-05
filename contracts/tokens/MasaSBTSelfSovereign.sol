@@ -108,9 +108,11 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
     function _verify(
         bytes32 digest,
         bytes memory signature,
-        address owner
-    ) internal pure returns (bool) {
-        return ECDSA.recover(digest, signature) == owner;
+        address signer
+    ) internal view {
+        address _signer = ECDSA.recover(digest, signature);
+        require(_signer == signer, "INVALID_SIGNATURE");
+        require(authorities[_signer], "NOT_AUTHORIZED");
     }
 
     /* ========== MODIFIERS ================================================= */

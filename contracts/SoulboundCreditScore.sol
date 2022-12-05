@@ -47,12 +47,21 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
     /// @param paymentMethod Address of token that user want to pay
     /// @param identityId TokenId of the identity to mint the NFT to
     /// @return The NFT ID of the newly minted SBT
-    function mint(address paymentMethod, uint256 identityId)
-        public
-        virtual
-        returns (uint256)
-    {
+    function mint(
+        address paymentMethod,
+        uint256 identityId,
+        address authorityAddress,
+        uint256 signatureDate,
+        bytes calldata signature
+    ) public virtual returns (uint256) {
         address to = soulboundIdentity.ownerOf(identityId);
+        require(to == _msgSender(), "CALLER_NOT_OWNER");
+
+        _verify(
+            _hash(identityId, authorityAddress, signatureDate),
+            signature,
+            authorityAddress
+        );
 
         _pay(paymentMethod, mintingPrice);
 
@@ -64,19 +73,48 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
     /// @param paymentMethod Address of token that user want to pay
     /// @param to The address to mint the SBT to
     /// @return The SBT ID of the newly minted SBT
-    function mint(address paymentMethod, address to)
-        public
-        virtual
-        returns (uint256)
-    {
+    function mint(
+        address paymentMethod,
+        address to,
+        address authorityAddress,
+        uint256 signatureDate,
+        bytes calldata signature
+    ) public virtual returns (uint256) {
         uint256 identityId = soulboundIdentity.tokenOfOwner(to);
 
-        return mint(paymentMethod, identityId);
+        return
+            mint(
+                paymentMethod,
+                identityId,
+                authorityAddress,
+                signatureDate,
+                signature
+            );
     }
 
     /* ========== VIEWS ===================================================== */
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
+
+    function _hash(
+        uint256 identityId,
+        address authorityAddress,
+        uint256 signatureDate
+    ) internal view returns (bytes32) {
+        return
+            _hashTypedDataV4(
+                keccak256(
+                    abi.encode(
+                        keccak256(
+                            "SoulboundCreditScore(uint256 identityId,address authorityAddress,uint256 signatureDate)"
+                        ),
+                        identityId,
+                        authorityAddress,
+                        signatureDate
+                    )
+                )
+            );
+    }
 
     /* ========== MODIFIERS ================================================= */
 

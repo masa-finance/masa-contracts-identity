@@ -287,7 +287,7 @@ function hasRole(bytes32 role, address account) external view returns (bool)
 ### mint
 
 ```solidity
-function mint(address paymentMethod, uint256 identityId) external nonpayable returns (uint256)
+function mint(address paymentMethod, uint256 identityId, address authorityAddress, uint256 signatureDate, bytes signature) external nonpayable returns (uint256)
 ```
 
 Mints a new SBT
@@ -300,6 +300,9 @@ Mints a new SBT
 |---|---|---|
 | paymentMethod | address | Address of token that user want to pay |
 | identityId | uint256 | TokenId of the identity to mint the NFT to |
+| authorityAddress | address | undefined |
+| signatureDate | uint256 | undefined |
+| signature | bytes | undefined |
 
 #### Returns
 
@@ -310,7 +313,7 @@ Mints a new SBT
 ### mint
 
 ```solidity
-function mint(address paymentMethod, address to) external nonpayable returns (uint256)
+function mint(address paymentMethod, address to, address authorityAddress, uint256 signatureDate, bytes signature) external nonpayable returns (uint256)
 ```
 
 Mints a new SBT
@@ -323,6 +326,9 @@ Mints a new SBT
 |---|---|---|
 | paymentMethod | address | Address of token that user want to pay |
 | to | address | The address to mint the SBT to |
+| authorityAddress | address | undefined |
+| signatureDate | uint256 | undefined |
+| signature | bytes | undefined |
 
 #### Returns
 
