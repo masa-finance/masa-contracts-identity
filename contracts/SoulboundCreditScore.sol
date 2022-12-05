@@ -41,6 +41,38 @@ contract SoulboundCreditScore is MasaSBTLinked {
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
+    /// @notice Mints a new SBT
+    /// @dev The caller must have the MINTER role
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param identityId TokenId of the identity to mint the NFT to
+    /// @return The NFT ID of the newly minted SBT
+    function mint(address paymentMethod, uint256 identityId)
+        public
+        virtual
+        returns (uint256)
+    {
+        address to = soulboundIdentity.ownerOf(identityId);
+
+        _pay(paymentMethod, mintingPrice);
+
+        return _mintWithCounter(to);
+    }
+
+    /// @notice Mints a new SBT
+    /// @dev The caller must have the MINTER role
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param to The address to mint the SBT to
+    /// @return The SBT ID of the newly minted SBT
+    function mint(address paymentMethod, address to)
+        public
+        virtual
+        returns (uint256)
+    {
+        uint256 identityId = soulboundIdentity.tokenOfOwner(to);
+
+        return mint(paymentMethod, identityId);
+    }
+
     /* ========== VIEWS ===================================================== */
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
