@@ -192,9 +192,7 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
 
       const tokenId = mintReceipt.events![0].args![1].toNumber();
 
-      expect(await soulbound2FA.getIdentityId(tokenId)).to.equal(
-        identityId1
-      );
+      expect(await soulbound2FA.getIdentityId(tokenId)).to.equal(identityId1);
     });
 
     it("should mint from final user identity", async () => {
@@ -211,9 +209,7 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
 
       const tokenId = mintReceipt.events![0].args![1].toNumber();
 
-      expect(await soulbound2FA.getIdentityId(tokenId)).to.equal(
-        identityId1
-      );
+      expect(await soulbound2FA.getIdentityId(tokenId)).to.equal(identityId1);
     });
   });
 
@@ -245,30 +241,22 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
       mintReceipt = await mintTx.wait();
       const tokenId2 = mintReceipt.events![0].args![1].toNumber();
 
-      expect(
-        await soulbound2FA.balanceOf(address1.address)
-      ).to.be.equal(2);
-      expect(
-        await soulbound2FA.balanceOf(address1.address)
-      ).to.be.equal(2);
-      expect(
-        await soulbound2FA["ownerOf(uint256)"](tokenId1)
-      ).to.be.equal(address1.address);
-      expect(
-        await soulbound2FA["ownerOf(uint256)"](tokenId2)
-      ).to.be.equal(address1.address);
+      expect(await soulbound2FA.balanceOf(address1.address)).to.be.equal(2);
+      expect(await soulbound2FA.balanceOf(address1.address)).to.be.equal(2);
+      expect(await soulbound2FA["ownerOf(uint256)"](tokenId1)).to.be.equal(
+        address1.address
+      );
+      expect(await soulbound2FA["ownerOf(uint256)"](tokenId2)).to.be.equal(
+        address1.address
+      );
 
       await soulbound2FA.connect(address1).burn(tokenId1);
 
-      expect(
-        await soulbound2FA.balanceOf(address1.address)
-      ).to.be.equal(1);
+      expect(await soulbound2FA.balanceOf(address1.address)).to.be.equal(1);
 
       await soulbound2FA.connect(address1).burn(tokenId2);
 
-      expect(
-        await soulbound2FA.balanceOf(address1.address)
-      ).to.be.equal(0);
+      expect(await soulbound2FA.balanceOf(address1.address)).to.be.equal(0);
     });
   });
 
