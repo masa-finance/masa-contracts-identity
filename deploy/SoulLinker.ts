@@ -9,7 +9,7 @@ import {
   WETH_GOERLI
 } from "../src/constants";
 
-let owner: SignerWithAddress;
+let admin: SignerWithAddress;
 
 const func: DeployFunction = async ({
   // @ts-ignore
@@ -26,7 +26,7 @@ const func: DeployFunction = async ({
   // const currentNonce: number = await ethers.provider.getTransactionCount(deployer);
   // to solve REPLACEMENT_UNDERPRICED, when needed
 
-  [, owner] = await ethers.getSigners();
+  [, admin] = await ethers.getSigners();
   const env = getEnvParams(network.name);
 
   const masa = await deployments.get("MASA");
@@ -65,7 +65,7 @@ const func: DeployFunction = async ({
   }
 
   const constructorArguments = [
-    env.OWNER || owner.address,
+    env.ADMIN || admin.address,
     soulboundIdentityDeployed.address,
     "1000000", // 1 USDC, with 6 decimals
     0,
@@ -76,7 +76,7 @@ const func: DeployFunction = async ({
       network.name == "hardhat" || network.name == "goerli"
         ? MASA_GOERLI // MASA
         : masa.address,
-      env.RESERVE_WALLET || owner.address
+      env.RESERVE_WALLET || admin.address
     ]
   ];
 
@@ -104,12 +104,12 @@ const func: DeployFunction = async ({
     }
   }
 
-  const signer = env.OWNER
+  const signer = env.ADMIN
     ? new ethers.Wallet(
         getPrivateKey(network.name),
         ethers.getDefaultProvider(network.name)
       )
-    : owner;
+    : admin;
 
   const soulLinker = await ethers.getContractAt(
     "SoulLinker",

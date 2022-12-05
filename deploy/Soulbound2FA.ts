@@ -9,7 +9,7 @@ import {
   WETH_GOERLI
 } from "../src/constants";
 
-let owner: SignerWithAddress;
+let admin: SignerWithAddress;
 
 const func: DeployFunction = async ({
   // @ts-ignore
@@ -26,7 +26,7 @@ const func: DeployFunction = async ({
   // const currentNonce: number = await ethers.provider.getTransactionCount(deployer);
   // to solve REPLACEMENT_UNDERPRICED, when needed
 
-  [, owner] = await ethers.getSigners();
+  [, admin] = await ethers.getSigners();
   const env = getEnvParams(network.name);
   const baseUri = `${env.BASE_URI}/2fa/`;
 
@@ -62,7 +62,7 @@ const func: DeployFunction = async ({
   }
 
   const constructorArguments = [
-    env.OWNER || owner.address,
+    env.ADMIN || admin.address,
     baseUri,
     soulboundIdentityDeployed.address,
     "0", // 0 USDC, with 6 decimals
@@ -73,7 +73,7 @@ const func: DeployFunction = async ({
       network.name == "hardhat" || network.name == "goerli"
         ? MASA_GOERLI // MASA
         : masa.address,
-      env.RESERVE_WALLET || owner.address
+      env.RESERVE_WALLET || admin.address
     ]
   ];
 
