@@ -270,7 +270,7 @@ function hasRole(bytes32 role, address account) external view returns (bool)
 ### mint
 
 ```solidity
-function mint(address paymentMethod, uint256 identityId) external nonpayable returns (uint256)
+function mint(address paymentMethod, uint256 identityId, address authorityAddress, uint256 signatureDate, bytes signature) external nonpayable returns (uint256)
 ```
 
 Mints a new SBT
@@ -283,6 +283,9 @@ Mints a new SBT
 |---|---|---|
 | paymentMethod | address | Address of token that user want to pay |
 | identityId | uint256 | TokenId of the identity to mint the NFT to |
+| authorityAddress | address | undefined |
+| signatureDate | uint256 | undefined |
+| signature | bytes | undefined |
 
 #### Returns
 
@@ -293,7 +296,7 @@ Mints a new SBT
 ### mint
 
 ```solidity
-function mint(address paymentMethod, address to) external nonpayable returns (uint256)
+function mint(address paymentMethod, address to, address authorityAddress, uint256 signatureDate, bytes signature) external nonpayable returns (uint256)
 ```
 
 Mints a new SBT
@@ -306,6 +309,9 @@ Mints a new SBT
 |---|---|---|
 | paymentMethod | address | Address of token that user want to pay |
 | to | address | The address to mint the SBT to |
+| authorityAddress | address | undefined |
+| signatureDate | uint256 | undefined |
+| signature | bytes | undefined |
 
 #### Returns
 
@@ -908,6 +914,27 @@ event RoleRevoked(bytes32 indexed role, address indexed account, address indexed
 | role `indexed` | bytes32 | undefined |
 | account `indexed` | address | undefined |
 | sender `indexed` | address | undefined |
+
+### Soulbound2FAMinted
+
+```solidity
+event Soulbound2FAMinted(uint256 tokenId, uint256 identityId, address authorityAddress, uint256 signatureDate, address paymentMethod, uint256 mintingPrice)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId  | uint256 | undefined |
+| identityId  | uint256 | undefined |
+| authorityAddress  | address | undefined |
+| signatureDate  | uint256 | undefined |
+| paymentMethod  | address | undefined |
+| mintingPrice  | uint256 | undefined |
 
 
 
