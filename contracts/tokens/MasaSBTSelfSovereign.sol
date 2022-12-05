@@ -2,7 +2,8 @@
 pragma solidity ^0.8.7;
 
 import "../interfaces/ISoulboundIdentity.sol";
-import "./MasaSBTLinkedPayable.sol";
+import "../dex/PaymentGateway.sol";
+import "./MasaSBT.sol";
 
 /// @title MasaSBTSelfSovereign
 /// @author Masa Finance
@@ -11,8 +12,12 @@ import "./MasaSBTLinkedPayable.sol";
 /// Adds a payment gateway to let minting paying a fee
 /// Adds a self-sovereign protocol to let minting using an authority signature
 /// @dev Implementation of https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763 Soulbound token.
-abstract contract MasaSBTSelfSovereign is MasaSBTLinkedPayable {
+abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT {
     /* ========== STATE VARIABLES =========================================== */
+
+    ISoulboundIdentity public soulboundIdentity;
+
+    uint256 public mintingPrice; // price in stable coin
 
     mapping(address => bool) public authorities;
 
@@ -36,18 +41,39 @@ abstract contract MasaSBTSelfSovereign is MasaSBTLinkedPayable {
         uint256 _mintingPrice,
         PaymentParams memory paymentParams
     )
-        MasaSBTLinkedPayable(
-            admin,
-            name,
-            symbol,
-            baseTokenURI,
-            _soulboundIdentity,
-            _mintingPrice,
-            paymentParams
-        )
-    {}
+        PaymentGateway(admin, paymentParams)
+        MasaSBT(admin, name, symbol, baseTokenURI)
+    {
+        require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
+
+        soulboundIdentity = _soulboundIdentity;
+        mintingPrice = _mintingPrice;
+    }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
+
+    /// @notice Sets the SoulboundIdentity contract address linked to this SBT
+    /// @dev The caller must be the admin to call this function
+    /// @param _soulboundIdentity Address of the SoulboundIdentity contract
+    function setSoulboundIdentity(ISoulboundIdentity _soulboundIdentity)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
+        require(soulboundIdentity != _soulboundIdentity, "SAME_VALUE");
+        soulboundIdentity = _soulboundIdentity;
+    }
+
+    /// @notice Sets the price of minting in stable coin
+    /// @dev The caller must have the admin to call this function
+    /// @param _mintingPrice New price of minting in stable coin
+    function setMintingPrice(uint256 _mintingPrice)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        require(mintingPrice != _mintingPrice, "SAME_VALUE");
+        mintingPrice = _mintingPrice;
+    }
 
     /// @notice Adds a new authority to the list of authorities
     /// @dev The caller must have the admin to call this function
@@ -65,6 +91,14 @@ abstract contract MasaSBTSelfSovereign is MasaSBTLinkedPayable {
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
     /* ========== VIEWS ===================================================== */
+
+    /// @notice Returns the identityId owned by the given token
+    /// @param tokenId Id of the token
+    /// @return Id of the identity
+    function getIdentityId(uint256 tokenId) external view returns (uint256) {
+        address owner = super.ownerOf(tokenId);
+        return soulboundIdentity.tokenOfOwner(owner);
+    }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
 

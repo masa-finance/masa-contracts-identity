@@ -44,6 +44,22 @@ function MINTER_ROLE() external view returns (bytes32)
 |---|---|---|
 | _0 | bytes32 | undefined |
 
+### addAuthority
+
+```solidity
+function addAuthority(address _authority) external nonpayable
+```
+
+Adds a new authority to the list of authorities
+
+*The caller must have the admin to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _authority | address | New authority to add |
+
 ### addErc20Token
 
 ```solidity
@@ -59,6 +75,28 @@ Adds a new ERC20 token as a valid payment method
 | Name | Type | Description |
 |---|---|---|
 | _erc20token | address | New ERC20 token to add |
+
+### authorities
+
+```solidity
+function authorities(address) external view returns (bool)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bool | undefined |
 
 ### balanceOf
 
