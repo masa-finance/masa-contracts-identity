@@ -117,7 +117,7 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
                 keccak256(
                     abi.encode(
                         keccak256(
-                            "SoulboundCreditScore(uint256 identityId,address authorityAddress,uint256 signatureDate)"
+                            "MintCreditScore(uint256 identityId,address authorityAddress,uint256 signatureDate)"
                         ),
                         identityId,
                         authorityAddress,

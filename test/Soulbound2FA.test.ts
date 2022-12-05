@@ -185,7 +185,7 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
   });
 
   describe("tokenUri", () => {
-    it("should fail to transfer because its soulbound", async () => {
+    it("should get a valid token URI from its tokenId", async () => {
       const mintTx = await soulbound2FA
         .connect(owner)
         ["mint(address,address)"](
