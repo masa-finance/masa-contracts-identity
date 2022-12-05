@@ -30,6 +30,7 @@ let soulLinker: SoulLinker;
 let owner: SignerWithAddress;
 let address1: SignerWithAddress;
 let address2: SignerWithAddress;
+let authority: SignerWithAddress;
 
 let ownerIdentityId: number;
 let readerIdentityId: number;
@@ -39,7 +40,7 @@ const data = '{"data1","data2"}';
 const signatureDate = Math.floor(Date.now() / 1000);
 const expirationDate = Math.floor(Date.now() / 1000) + 60 * 15;
 
-const signTypedData = async (
+const signLink = async (
   readerIdentityId: number,
   ownerIdentityId: number,
   token: string,
@@ -82,9 +83,42 @@ const signTypedData = async (
   return signature;
 };
 
+const signMintCreditScore = async (
+  identityId: number,
+  authoritySigner: SignerWithAddress
+) => {
+  const chainId = await getChainId();
+
+  const signature = await authoritySigner._signTypedData(
+    // Domain
+    {
+      name: "SoulboundCreditScore",
+      version: "1.0.0",
+      chainId: chainId,
+      verifyingContract: soulboundCreditScore.address
+    },
+    // Types
+    {
+      MintCreditScore: [
+        { name: "identityId", type: "uint256" },
+        { name: "authorityAddress", type: "address" },
+        { name: "signatureDate", type: "uint256" }
+      ]
+    },
+    // Value
+    {
+      identityId: identityId,
+      authorityAddress: authoritySigner.address,
+      signatureDate: signatureDate
+    }
+  );
+
+  return signature;
+};
+
 describe("Soul Linker", () => {
   before(async () => {
-    [, owner, address1, address2] = await ethers.getSigners();
+    [, owner, address1, address2, authority] = await ethers.getSigners();
   });
 
   beforeEach(async () => {
@@ -124,10 +158,24 @@ describe("Soul Linker", () => {
 
     readerIdentityId = mintReceipt.events![0].args![1].toNumber();
 
+    // we add authority account
+    await soulboundCreditScore.addAuthority(authority.address);
+    
     // we mint credit score SBT for address1
+    const signatureMintCreditScore = await signMintCreditScore(
+      ownerIdentityId,
+      authority
+    );
+
     mintTx = await soulboundCreditScore
-      .connect(owner)
-      ["mint(address,address)"](ethers.constants.AddressZero, address1.address);
+      .connect(address1)
+      ["mint(address,address,address,uint256,bytes)"](
+        ethers.constants.AddressZero,
+        address1.address,
+        authority.address,
+        signatureDate,
+        signatureMintCreditScore
+      );
     mintReceipt = await mintTx.wait();
 
     creditScore1 = mintReceipt.events![0].args![1].toNumber();
@@ -308,7 +356,7 @@ describe("Soul Linker", () => {
 
   describe("addPermission", () => {
     it("addPermission must work with a valid signature", async () => {
-      const signature = await signTypedData(
+      const signature = await signLink(
         readerIdentityId,
         ownerIdentityId,
         soulboundCreditScore.address,
@@ -377,7 +425,7 @@ describe("Soul Linker", () => {
       await soulLinker.connect(owner).setAddPermissionPriceMASA(10);
       expect(await soulLinker.addPermissionPriceMASA()).to.be.equal(10);
 
-      const signature = await signTypedData(
+      const signature = await signLink(
         readerIdentityId,
         ownerIdentityId,
         soulboundCreditScore.address,
@@ -444,7 +492,7 @@ describe("Soul Linker", () => {
     });
 
     it("addPermission won't work with an invalid signature", async () => {
-      const signature = await signTypedData(
+      const signature = await signLink(
         ownerIdentityId,
         ownerIdentityId,
         soulboundCreditScore.address,
@@ -490,7 +538,7 @@ describe("Soul Linker", () => {
 
   describe("revokePermission", () => {
     it("non owner of data can't call revokePermission", async () => {
-      const signature = await signTypedData(
+      const signature = await signLink(
         readerIdentityId,
         ownerIdentityId,
         soulboundCreditScore.address,
@@ -544,7 +592,7 @@ describe("Soul Linker", () => {
     });
 
     it("owner of data can call revokePermission", async () => {
-      const signature = await signTypedData(
+      const signature = await signLink(
         readerIdentityId,
         ownerIdentityId,
         soulboundCreditScore.address,

@@ -29,7 +29,7 @@ const signatureDate = Math.floor(Date.now() / 1000);
 
 let signature: string;
 
-const signTypedData = async (
+const signMintCreditScore = async (
   identityId: number,
   authoritySigner: SignerWithAddress
 ) => {
@@ -100,7 +100,7 @@ describe("Soulbound Credit Score", () => {
     // we add authority account
     await soulboundCreditScore.addAuthority(authority.address);
 
-    signature = await signTypedData(identityId1, authority);
+    signature = await signMintCreditScore(identityId1, authority);
   });
 
   describe("owner functions", () => {
