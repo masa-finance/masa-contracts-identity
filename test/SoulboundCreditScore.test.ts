@@ -1,7 +1,7 @@
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 import { solidity } from "ethereum-waffle";
-import { ethers, deployments } from "hardhat";
+import { ethers, deployments, getChainId } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
   SoulboundCreditScore,
@@ -21,12 +21,47 @@ let soulboundCreditScore: SoulboundCreditScore;
 let owner: SignerWithAddress;
 let address1: SignerWithAddress;
 let address2: SignerWithAddress;
+let authority: SignerWithAddress;
 
 let identityId1: number;
 
+const signatureDate = Math.floor(Date.now() / 1000);
+
+let signature: string;
+
+const signTypedData = async (identityId: number, authorityAddress: string) => {
+  const chainId = await getChainId();
+
+  const signature = await address1._signTypedData(
+    // Domain
+    {
+      name: "SoulboundCreditScore",
+      version: "1.0.0",
+      chainId: chainId,
+      verifyingContract: soulboundCreditScore.address
+    },
+    // Types
+    {
+      Link: [
+        { name: "identityId", type: "uint256" },
+        { name: "authorityAddress", type: "address" },
+        { name: "signatureDate", type: "uint256" }
+      ]
+    },
+    // Value
+    {
+      identityId: identityId,
+      authorityAddress: authorityAddress,
+      signatureDate: signatureDate
+    }
+  );
+
+  return signature;
+};
+
 describe("Soulbound Credit Score", () => {
   before(async () => {
-    [, owner, address1, address2] = await ethers.getSigners();
+    [, owner, address1, address2, authority] = await ethers.getSigners();
   });
 
   beforeEach(async () => {
@@ -58,6 +93,8 @@ describe("Soulbound Credit Score", () => {
     const mintReceipt = await mintTx.wait();
 
     identityId1 = mintReceipt.events![0].args![1].toNumber();
+
+    signature = await signTypedData(identityId1, authority.address);
   });
 
   describe("owner functions", () => {
@@ -92,16 +129,25 @@ describe("Soulbound Credit Score", () => {
     it("should mint from owner address", async () => {
       await soulboundCreditScore
         .connect(owner)
-        ["mint(address,address)"](
+        ["mint(address,address,address,uint256,bytes)"](
           ethers.constants.AddressZero,
-          address1.address
+          address1.address,
+          authority.address,
+          signatureDate,
+          signature
         );
     });
 
     it("should mint from owner identity", async () => {
       const mintTx = await soulboundCreditScore
         .connect(owner)
-        ["mint(address,uint256)"](ethers.constants.AddressZero, identityId1);
+        ["mint(address,uint256,address,uint256,bytes)"](
+          ethers.constants.AddressZero,
+          identityId1,
+          authority.address,
+          signatureDate,
+          signature
+        );
       const mintReceipt = await mintTx.wait();
 
       const tokenId = mintReceipt.events![0].args![1].toNumber();
@@ -114,15 +160,21 @@ describe("Soulbound Credit Score", () => {
     it("should mint twice", async () => {
       await soulboundCreditScore
         .connect(owner)
-        ["mint(address,address)"](
+        ["mint(address,address,address,uint256,bytes)"](
           ethers.constants.AddressZero,
-          address1.address
+          address1.address,
+          authority.address,
+          signatureDate,
+          signature
         );
       await soulboundCreditScore
         .connect(owner)
-        ["mint(address,address)"](
+        ["mint(address,address,address,uint256,bytes)"](
           ethers.constants.AddressZero,
-          address1.address
+          address1.address,
+          authority.address,
+          signatureDate,
+          signature
         );
 
       expect(await soulboundCreditScore.totalSupply()).to.equal(2);
@@ -134,9 +186,12 @@ describe("Soulbound Credit Score", () => {
       await expect(
         soulboundCreditScore
           .connect(address1)
-          ["mint(address,address)"](
+          ["mint(address,address,address,uint256,bytes)"](
             ethers.constants.AddressZero,
-            address1.address
+            address1.address,
+            authority.address,
+            signatureDate,
+            signature
           )
       ).to.be.rejected;
     });
@@ -145,9 +200,12 @@ describe("Soulbound Credit Score", () => {
       await expect(
         soulboundCreditScore
           .connect(owner)
-          ["mint(address,address)"](
+          ["mint(address,address,address,uint256,bytes)"](
             ethers.constants.AddressZero,
-            address2.address
+            address2.address,
+            authority.address,
+            signatureDate,
+            signature
           )
       ).to.be.rejected;
     });
@@ -158,9 +216,12 @@ describe("Soulbound Credit Score", () => {
       // we mint
       let mintTx = await soulboundCreditScore
         .connect(owner)
-        ["mint(address,address)"](
+        ["mint(address,address,address,uint256,bytes)"](
           ethers.constants.AddressZero,
-          address1.address
+          address1.address,
+          authority.address,
+          signatureDate,
+          signature
         );
       let mintReceipt = await mintTx.wait();
       const tokenId1 = mintReceipt.events![0].args![1].toNumber();
@@ -168,9 +229,12 @@ describe("Soulbound Credit Score", () => {
       // we mint again
       mintTx = await soulboundCreditScore
         .connect(owner)
-        ["mint(address,address)"](
+        ["mint(address,address,address,uint256,bytes)"](
           ethers.constants.AddressZero,
-          address1.address
+          address1.address,
+          authority.address,
+          signatureDate,
+          signature
         );
       mintReceipt = await mintTx.wait();
       const tokenId2 = mintReceipt.events![0].args![1].toNumber();
@@ -206,9 +270,12 @@ describe("Soulbound Credit Score", () => {
     it("should fail to transfer because its soulbound", async () => {
       const mintTx = await soulboundCreditScore
         .connect(owner)
-        ["mint(address,address)"](
+        ["mint(address,address,address,uint256,bytes)"](
           ethers.constants.AddressZero,
-          address1.address
+          address1.address,
+          authority.address,
+          signatureDate,
+          signature
         );
 
       const mintReceipt = await mintTx.wait();
