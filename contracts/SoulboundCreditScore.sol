@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
-import "./tokens/MasaSBTLinked.sol";
+import "./tokens/MasaSBTLinkedPayable.sol";
 
 /// @title Soulbound Credit Score
 /// @author Masa Finance
 /// @notice Soulbound token that represents a credit score.
 /// @dev Soulbound credit score, that inherits from the SBT contract.
-contract SoulboundCreditScore is MasaSBTLinked {
+contract SoulboundCreditScore is MasaSBTLinkedPayable {
     /* ========== STATE VARIABLES =========================================== */
 
     /* ========== INITIALIZE ================================================ */
@@ -26,7 +26,7 @@ contract SoulboundCreditScore is MasaSBTLinked {
         uint256 _mintingPrice,
         PaymentParams memory paymentParams
     )
-        MasaSBTLinked(
+        MasaSBTLinkedPayable(
             admin,
             "Masa Credit Score",
             "MCS",
