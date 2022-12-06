@@ -240,6 +240,25 @@ describe("Soulbound Credit Score", () => {
           )
       ).to.be.revertedWith("NOT_AUTHORIZED");
     });
+
+    it("should fail to mint with invalid signature", async () => {
+      const signatureNonAuthority = await signMintCreditScore(
+        identityId1,
+        address1,
+      );
+
+      await expect(
+        soulboundCreditScore
+          .connect(address1)
+          ["mint(address,uint256,address,uint256,bytes)"](
+            ethers.constants.AddressZero,
+            identityId1,
+            authority.address,
+            signatureDate,
+            signatureNonAuthority
+          )
+      ).to.be.revertedWith("INVALID_SIGNATURE");
+    });
   });
 
   describe("burn", () => {
