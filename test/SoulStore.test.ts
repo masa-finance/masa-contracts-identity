@@ -509,7 +509,7 @@ describe("Soul Store", () => {
           ARWEAVE_LINK,
           { value: priceInETH.div(2) }
         )
-      ).to.be.rejectedWith("INVALID_PAYMENT_AMOUNT");
+      ).to.be.rejectedWith("INSUFFICIENT_ETH_AMOUNT");
     });
 
     it("we can't purchase an identity and name with stable coin if we don't have funds", async () => {
@@ -676,7 +676,7 @@ describe("Soul Store", () => {
           address1.address,
           { value: priceInETH.div(2) }
         )
-      ).to.be.rejectedWith("INVALID_PAYMENT_AMOUNT");
+      ).to.be.rejectedWith("INSUFFICIENT_ETH_AMOUNT");
     });
 
     it("we can't purchase a name with stable coin if we don't have funds", async () => {

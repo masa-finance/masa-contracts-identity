@@ -199,7 +199,7 @@ abstract contract PaymentGateway is Ownable {
                 wrappedNativeToken,
                 amountInStableCoin
             );
-            require(msg.value >= swapAmout, "INVALID_PAYMENT_AMOUNT");
+            require(msg.value >= swapAmout, "INSUFFICIENT_ETH_AMOUNT");
             (bool success, ) = payable(reserveWallet).call{value: swapAmout}(
                 ""
             );
