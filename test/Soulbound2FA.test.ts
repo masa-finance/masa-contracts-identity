@@ -20,7 +20,6 @@ let soulbound2FA: Soulbound2FA;
 
 let owner: SignerWithAddress;
 let address1: SignerWithAddress;
-let address2: SignerWithAddress;
 let authority: SignerWithAddress;
 
 let identityId1: number;
@@ -64,7 +63,7 @@ const signMintCreditScore = async (
 
 describe("Soulbound Two-factor authentication (2FA)", () => {
   before(async () => {
-    [, owner, address1, address2, authority] = await ethers.getSigners();
+    [, owner, address1, authority] = await ethers.getSigners();
   });
 
   beforeEach(async () => {
