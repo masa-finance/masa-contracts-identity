@@ -179,7 +179,7 @@ contract SoulStore is PaymentGateway {
             return mintingPrice;
         } else if (paymentMethod == address(0)) {
             return _convertFromStableCoin(wrappedNativeToken, mintingPrice);
-        } else if (paymentMethod == utilityToken || erc20token[paymentMethod]) {
+        } else if (paymentMethod == masaToken || erc20token[paymentMethod]) {
             return _convertFromStableCoin(paymentMethod, mintingPrice);
         } else {
             revert("INVALID_PAYMENT_METHOD");

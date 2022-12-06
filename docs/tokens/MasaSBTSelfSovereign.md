@@ -188,7 +188,7 @@ Returns the identityId owned by the given token
 ### getPaymentMethods
 
 ```solidity
-function getPaymentMethods() external view returns (address _nativeToken, address _stableCoin, address _utilityToken, address[] _erc20tokens)
+function getPaymentMethods() external view returns (address _nativeToken, address _stableCoin, address _masaToken, address[] _erc20tokens)
 ```
 
 Returns all available payment methods
@@ -202,7 +202,7 @@ Returns all available payment methods
 |---|---|---|
 | _nativeToken | address | Address of the native token (ETH) |
 | _stableCoin | address | Address of the stable coin (USDC) |
-| _utilityToken | address | Address of the utility token ($MASA) |
+| _masaToken | address | Address of the utility token ($MASA) |
 | _erc20tokens | address[] | Array of all ERC20 tokens |
 
 ### getRoleAdmin
@@ -266,6 +266,23 @@ function hasRole(bytes32 role, address account) external view returns (bool)
 | Name | Type | Description |
 |---|---|---|
 | _0 | bool | undefined |
+
+### masaToken
+
+```solidity
+function masaToken() external view returns (address)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
 
 ### mintingPrice
 
@@ -418,6 +435,22 @@ function revokeRole(bytes32 role, address account) external nonpayable
 | role | bytes32 | undefined |
 | account | address | undefined |
 
+### setMasaToken
+
+```solidity
+function setMasaToken(address _masaToken) external nonpayable
+```
+
+Sets the utility token to pay the fee in ($MASA)
+
+*The caller must have the owner to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _masaToken | address | New utility token to pay the fee in |
+
 ### setMintingPrice
 
 ```solidity
@@ -497,22 +530,6 @@ Sets the swap router address
 | Name | Type | Description |
 |---|---|---|
 | _swapRouter | address | New swap router address |
-
-### setUtilityToken
-
-```solidity
-function setUtilityToken(address _utilityToken) external nonpayable
-```
-
-Sets the utility token to pay the fee in ($MASA)
-
-*The caller must have the owner to call this function*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _utilityToken | address | New utility token to pay the fee in |
 
 ### setWrappedNativeToken
 
@@ -719,23 +736,6 @@ function transferOwnership(address newOwner) external nonpayable
 | Name | Type | Description |
 |---|---|---|
 | newOwner | address | undefined |
-
-### utilityToken
-
-```solidity
-function utilityToken() external view returns (address)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | address | undefined |
 
 ### wrappedNativeToken
 

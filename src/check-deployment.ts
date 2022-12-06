@@ -118,7 +118,7 @@ async function main() {
   console.log(
     `SoulStore.SoulboundIdentity: ${await soulStore.soulboundIdentity()}`
   );
-  console.log(`SoulStore.utilityToken: ${await soulStore.utilityToken()}`);
+  console.log(`SoulStore.masaToken: ${await soulStore.masaToken()}`);
   console.log(`SoulStore.stableCoin: ${await soulStore.stableCoin()}`);
   console.log(
     `SoulStore.wrappedNativeToken: ${await soulStore.wrappedNativeToken()}`

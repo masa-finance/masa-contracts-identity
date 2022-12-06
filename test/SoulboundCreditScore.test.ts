@@ -225,7 +225,7 @@ describe("Soulbound Credit Score", () => {
     it("should fail to mint with non-authority signature", async () => {
       const signatureNonAuthority = await signMintCreditScore(
         identityId1,
-        address1,
+        address1
       );
 
       await expect(
@@ -244,7 +244,7 @@ describe("Soulbound Credit Score", () => {
     it("should fail to mint with invalid signature", async () => {
       const signatureNonAuthority = await signMintCreditScore(
         identityId1,
-        address1,
+        address1
       );
 
       await expect(
@@ -258,6 +258,31 @@ describe("Soulbound Credit Score", () => {
             signatureNonAuthority
           )
       ).to.be.revertedWith("INVALID_SIGNATURE");
+    });
+  });
+
+  describe("mint paying a minting fee", () => {
+    beforeEach(async () => {
+      await soulboundCreditScore.connect(owner).setMintingPrice(1); // 1 USD
+    });
+
+    it("should mint from final user", async () => {
+      const mintTx = await soulboundCreditScore
+        .connect(address1)
+        ["mint(address,uint256,address,uint256,bytes)"](
+          ethers.constants.AddressZero,
+          identityId1,
+          authority.address,
+          signatureDate,
+          signature
+        );
+      const mintReceipt = await mintTx.wait();
+
+      const tokenId = mintReceipt.events![0].args![1].toNumber();
+
+      expect(await soulboundCreditScore.getIdentityId(tokenId)).to.equal(
+        identityId1
+      );
     });
   });
 
