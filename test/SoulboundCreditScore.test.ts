@@ -221,6 +221,25 @@ describe("Soulbound Credit Score", () => {
         identityId1
       );
     });
+
+    it("should fail to mint with non-authority signature", async () => {
+      const signatureNonAuthority = await signMintCreditScore(
+        identityId1,
+        address1,
+      );
+
+      await expect(
+        soulboundCreditScore
+          .connect(address1)
+          ["mint(address,uint256,address,uint256,bytes)"](
+            ethers.constants.AddressZero,
+            identityId1,
+            address1.address,
+            signatureDate,
+            signatureNonAuthority
+          )
+      ).to.be.revertedWith("NOT_AUTHORIZED");
+    });
   });
 
   describe("burn", () => {
