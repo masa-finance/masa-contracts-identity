@@ -184,6 +184,29 @@ describe("Soul Store", () => {
     });
   });
 
+  describe("test pausable", () => {
+    it("should pause", async () => {
+      await soulStore.connect(owner).pause();
+
+      expect(await soulStore.paused()).to.be.true;
+    });
+
+    it("should unpause", async () => {
+      await soulStore.connect(owner).pause();
+      await soulStore.connect(owner).unpause();
+
+      expect(await soulStore.paused()).to.be.false;
+    });
+
+    it("should fail to pause from non owner", async () => {
+      await expect(soulStore.connect(address1).pause()).to.be.rejected;
+    });
+
+    it("should fail to unpause from non owner", async () => {
+      await expect(soulStore.connect(address1).unpause()).to.be.rejected;
+    });
+  });
+
   describe("purchase info", () => {
     it("we can get name purchase info for 1 and 2 years", async () => {
       const priceInStableCoin1 = await soulStore.getPriceForMintingName(
