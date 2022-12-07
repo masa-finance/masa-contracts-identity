@@ -53,7 +53,7 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
         address authorityAddress,
         uint256 signatureDate,
         bytes calldata signature
-    ) public virtual returns (uint256) {
+    ) public payable virtual returns (uint256) {
         address to = soulboundIdentity.ownerOf(identityId);
         require(to == _msgSender(), "CALLER_NOT_OWNER");
 
@@ -90,7 +90,7 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
         address authorityAddress,
         uint256 signatureDate,
         bytes calldata signature
-    ) public virtual returns (uint256) {
+    ) public payable virtual returns (uint256) {
         uint256 identityId = soulboundIdentity.tokenOfOwner(to);
 
         return
