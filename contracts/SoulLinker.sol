@@ -146,7 +146,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
 
     /// @notice Unpauses the smart contract
     /// @dev The caller must have the owner to call this function
-    function unPause() public onlyOwner {
+    function unpause() public onlyOwner {
         _unpause();
     }
 

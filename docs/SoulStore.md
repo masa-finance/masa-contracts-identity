@@ -495,10 +495,10 @@ function transferOwnership(address newOwner) external nonpayable
 |---|---|---|
 | newOwner | address | undefined |
 
-### unPause
+### unpause
 
 ```solidity
-function unPause() external nonpayable
+function unpause() external nonpayable
 ```
 
 Unpauses the smart contract
