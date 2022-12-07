@@ -169,19 +169,20 @@ describe("Soulbound Credit Score", () => {
           signatureDate,
           signature
         );
-      await soulboundCreditScore
-        .connect(address1)
-        ["mint(address,address,address,uint256,bytes)"](
-          ethers.constants.AddressZero,
-          address1.address,
-          authority.address,
-          signatureDate,
-          signature
-        );
+      await expect(
+        soulboundCreditScore
+          .connect(address1)
+          ["mint(address,address,address,uint256,bytes)"](
+            ethers.constants.AddressZero,
+            address1.address,
+            authority.address,
+            signatureDate,
+            signature
+          )
+      ).to.be.revertedWith("CREDITSCORE_ALREADY_CREATED");
 
-      expect(await soulboundCreditScore.totalSupply()).to.equal(2);
+      expect(await soulboundCreditScore.totalSupply()).to.equal(1);
       expect(await soulboundCreditScore.tokenByIndex(0)).to.equal(0);
-      expect(await soulboundCreditScore.tokenByIndex(1)).to.equal(1);
     });
 
     it("should mint from final user address", async () => {
@@ -354,41 +355,16 @@ describe("Soulbound Credit Score", () => {
           signature
         );
       let mintReceipt = await mintTx.wait();
-      const tokenId1 = mintReceipt.events![0].args![1].toNumber();
-
-      // we mint again
-      mintTx = await soulboundCreditScore
-        .connect(address1)
-        ["mint(address,address,address,uint256,bytes)"](
-          ethers.constants.AddressZero,
-          address1.address,
-          authority.address,
-          signatureDate,
-          signature
-        );
-      mintReceipt = await mintTx.wait();
-      const tokenId2 = mintReceipt.events![0].args![1].toNumber();
-
-      expect(
-        await soulboundCreditScore.balanceOf(address1.address)
-      ).to.be.equal(2);
-      expect(
-        await soulboundCreditScore.balanceOf(address1.address)
-      ).to.be.equal(2);
-      expect(
-        await soulboundCreditScore["ownerOf(uint256)"](tokenId1)
-      ).to.be.equal(address1.address);
-      expect(
-        await soulboundCreditScore["ownerOf(uint256)"](tokenId2)
-      ).to.be.equal(address1.address);
-
-      await soulboundCreditScore.connect(address1).burn(tokenId1);
+      const tokenId = mintReceipt.events![0].args![1].toNumber();
 
       expect(
         await soulboundCreditScore.balanceOf(address1.address)
       ).to.be.equal(1);
+      expect(
+        await soulboundCreditScore["ownerOf(uint256)"](tokenId)
+      ).to.be.equal(address1.address);
 
-      await soulboundCreditScore.connect(address1).burn(tokenId2);
+      await soulboundCreditScore.connect(address1).burn(tokenId);
 
       expect(
         await soulboundCreditScore.balanceOf(address1.address)
