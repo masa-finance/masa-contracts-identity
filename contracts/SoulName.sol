@@ -71,7 +71,7 @@ contract SoulName is MasaNFT, ISoulName {
     /// @param _soulboundIdentity Address of the SoulboundIdentity contract
     function setSoulboundIdentity(ISoulboundIdentity _soulboundIdentity)
         external
-        onlyRole(DEFAULT_ADMIN_ROLE)
+        onlyOwner
     {
         require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
         require(soulboundIdentity != _soulboundIdentity, "SAME_VALUE");
@@ -81,10 +81,7 @@ contract SoulName is MasaNFT, ISoulName {
     /// @notice Sets the extension of the soul name
     /// @dev The caller must have the admin to call this function
     /// @param _extension Extension of the soul name
-    function setExtension(string memory _extension)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setExtension(string memory _extension) external onlyOwner {
         require(
             keccak256(abi.encodePacked((extension))) !=
                 keccak256(abi.encodePacked((_extension))),
@@ -96,10 +93,7 @@ contract SoulName is MasaNFT, ISoulName {
     /// @notice Sets the URI of the smart contract metadata
     /// @dev The caller must have the admin to call this function
     /// @param _contractURI URI of the smart contract metadata
-    function setContractURI(string memory _contractURI)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setContractURI(string memory _contractURI) external onlyOwner {
         require(
             keccak256(abi.encodePacked((contractURI))) !=
                 keccak256(abi.encodePacked((_contractURI))),
