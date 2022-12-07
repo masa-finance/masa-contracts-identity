@@ -175,6 +175,34 @@ function owner() external view returns (address)
 |---|---|---|
 | _0 | address | undefined |
 
+### pause
+
+```solidity
+function pause() external nonpayable
+```
+
+Pauses the smart contract
+
+*The caller must have the owner to call this function*
+
+
+### paused
+
+```solidity
+function paused() external view returns (bool)
+```
+
+
+
+*Returns true if the contract is paused, and false otherwise.*
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bool | undefined |
+
 ### purchaseIdentity
 
 ```solidity
@@ -467,6 +495,17 @@ function transferOwnership(address newOwner) external nonpayable
 |---|---|---|
 | newOwner | address | undefined |
 
+### unPause
+
+```solidity
+function unPause() external nonpayable
+```
+
+Unpauses the smart contract
+
+*The caller must have the owner to call this function*
+
+
 ### utilityToken
 
 ```solidity
@@ -522,6 +561,22 @@ event OwnershipTransferred(address indexed previousOwner, address indexed newOwn
 | previousOwner `indexed` | address | undefined |
 | newOwner `indexed` | address | undefined |
 
+### Paused
+
+```solidity
+event Paused(address account)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| account  | address | undefined |
+
 ### SoulNamePurchased
 
 ```solidity
@@ -576,6 +631,22 @@ event SoulboundIdentityPurchased(address indexed account, uint256 tokenId)
 |---|---|---|
 | account `indexed` | address | undefined |
 | tokenId  | uint256 | undefined |
+
+### Unpaused
+
+```solidity
+event Unpaused(address account)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| account  | address | undefined |
 
 
 
