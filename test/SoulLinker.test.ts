@@ -315,20 +315,17 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const priceInUtilityToken = await soulLinker.getPriceForAddPermission(
-        MASA_GOERLI
-      );
+      const { price, paymentMethodUsed } =
+        await soulLinker.getPriceForAddPermission(MASA_GOERLI);
 
       // set allowance for soul store
-      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
-      await masa
-        .connect(address1)
-        .approve(soulLinker.address, priceInUtilityToken);
+      const masa: ERC20 = ERC20__factory.connect(paymentMethodUsed, owner);
+      await masa.connect(address1).approve(soulLinker.address, price);
 
       await soulLinker
         .connect(address1)
         .addPermission(
-          MASA_GOERLI,
+          paymentMethodUsed,
           readerIdentityId,
           ownerIdentityId,
           soulboundCreditScore.address,
@@ -387,21 +384,18 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const priceInUtilityToken = await soulLinker.getPriceForAddPermission(
-        MASA_GOERLI
-      );
-      expect(priceInUtilityToken).to.be.equal(10);
+      const { price, paymentMethodUsed } =
+        await soulLinker.getPriceForAddPermission(MASA_GOERLI);
+      expect(price).to.be.equal(10);
 
       // set allowance for soul store
-      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
-      await masa
-        .connect(address1)
-        .approve(soulLinker.address, priceInUtilityToken);
+      const masa: ERC20 = ERC20__factory.connect(paymentMethodUsed, owner);
+      await masa.connect(address1).approve(soulLinker.address, price);
 
       await soulLinker
         .connect(address1)
         .addPermission(
-          MASA_GOERLI,
+          paymentMethodUsed,
           readerIdentityId,
           ownerIdentityId,
           soulboundCreditScore.address,
@@ -457,21 +451,18 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const priceInUtilityToken = await soulLinker.getPriceForAddPermission(
-        MASA_GOERLI
-      );
+      const { price, paymentMethodUsed } =
+        await soulLinker.getPriceForAddPermission(MASA_GOERLI);
 
       // set allowance for soul store
-      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
-      await masa
-        .connect(address1)
-        .approve(soulLinker.address, priceInUtilityToken);
+      const masa: ERC20 = ERC20__factory.connect(paymentMethodUsed, owner);
+      await masa.connect(address1).approve(soulLinker.address, price);
 
       await expect(
         soulLinker
           .connect(address1)
           .addPermission(
-            MASA_GOERLI,
+            paymentMethodUsed,
             readerIdentityId,
             ownerIdentityId,
             soulboundCreditScore.address,
@@ -506,20 +497,17 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const priceInUtilityToken = await soulLinker.getPriceForAddPermission(
-        MASA_GOERLI
-      );
+      const { price, paymentMethodUsed } =
+        await soulLinker.getPriceForAddPermission(MASA_GOERLI);
 
       // set allowance for soul store
-      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
-      await masa
-        .connect(address1)
-        .approve(soulLinker.address, priceInUtilityToken);
+      const masa: ERC20 = ERC20__factory.connect(paymentMethodUsed, owner);
+      await masa.connect(address1).approve(soulLinker.address, price);
 
       await soulLinker
         .connect(address1)
         .addPermission(
-          MASA_GOERLI,
+          paymentMethodUsed,
           readerIdentityId,
           ownerIdentityId,
           soulboundCreditScore.address,
@@ -563,20 +551,17 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const priceInUtilityToken = await soulLinker.getPriceForAddPermission(
-        MASA_GOERLI
-      );
+      const { price, paymentMethodUsed } =
+        await soulLinker.getPriceForAddPermission(MASA_GOERLI);
 
       // set allowance for soul store
-      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
-      await masa
-        .connect(address1)
-        .approve(soulLinker.address, priceInUtilityToken);
+      const masa: ERC20 = ERC20__factory.connect(paymentMethodUsed, owner);
+      await masa.connect(address1).approve(soulLinker.address, price);
 
       await soulLinker
         .connect(address1)
         .addPermission(
-          MASA_GOERLI,
+          paymentMethodUsed,
           readerIdentityId,
           ownerIdentityId,
           soulboundCreditScore.address,
