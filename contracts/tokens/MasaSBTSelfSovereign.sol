@@ -108,6 +108,26 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
         return soulboundIdentity.tokenOfOwner(owner);
     }
 
+    /// @notice Returns the price for minting
+    /// @dev Returns current pricing for minting
+    /// @param paymentMethod Address of token that user want to pay
+    /// @return Current price for minting in the given payment method
+    function getMintingPrice(address paymentMethod)
+        public
+        view
+        returns (uint256)
+    {
+        if (paymentMethod == address(0)) {
+            return _convertFromStableCoin(wrappedNativeToken, mintingPrice);
+        } else if (paymentMethod == stableCoin && erc20token[paymentMethod]) {
+            return mintingPrice;
+        } else if (erc20token[paymentMethod]) {
+            return _convertFromStableCoin(paymentMethod, mintingPrice);
+        } else {
+            revert("INVALID_PAYMENT_METHOD");
+        }
+    }
+
     /* ========== PRIVATE FUNCTIONS ========================================= */
 
     function _verify(
