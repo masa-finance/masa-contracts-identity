@@ -2,6 +2,7 @@
 pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
 
 import "./dex/PaymentGateway.sol";
 import "./interfaces/ISoulboundIdentity.sol";
@@ -12,7 +13,7 @@ import "./interfaces/ISoulName.sol";
 /// @notice Soul Store, that can mint new Soulbound Identities and Soul Name NFTs, paying a fee
 /// @dev From this smart contract we can mint new Soulbound Identities and Soul Name NFTs.
 /// This minting can be done paying a fee in ETH, USDC or $MASA
-contract SoulStore is PaymentGateway {
+contract SoulStore is PaymentGateway, Pausable {
     using SafeMath for uint256;
 
     /* ========== STATE VARIABLES ========== */
@@ -29,30 +30,13 @@ contract SoulStore is PaymentGateway {
     /// @param owner Owner of the smart contract
     /// @param _soulBoundIdentity Address of the Soulbound identity contract
     /// @param _nameRegistrationPricePerYear Price of the default name registering in stable coin per year
-    /// @param _swapRouter Swap router address
-    /// @param _wrappedNativeToken Wrapped native token address
-    /// @param _stableCoin Stable coin to pay the fee in (USDC)
-    /// @param _utilityToken Utility token to pay the fee in ($MASA)
-    /// @param _reserveWallet Wallet that will receive the fee
+    /// @param paymentParams Payment gateway params
     constructor(
         address owner,
         ISoulboundIdentity _soulBoundIdentity,
         uint256 _nameRegistrationPricePerYear,
-        address _swapRouter,
-        address _wrappedNativeToken,
-        address _stableCoin,
-        address _utilityToken,
-        address _reserveWallet
-    )
-        PaymentGateway(
-            owner,
-            _swapRouter,
-            _wrappedNativeToken,
-            _stableCoin,
-            _utilityToken,
-            _reserveWallet
-        )
-    {
+        PaymentParams memory paymentParams
+    ) PaymentGateway(owner, paymentParams) {
         require(address(_soulBoundIdentity) != address(0), "ZERO_ADDRESS");
 
         soulboundIdentity = _soulBoundIdentity;
@@ -93,6 +77,18 @@ contract SoulStore is PaymentGateway {
         ] = _nameRegistrationPricePerYear;
     }
 
+    /// @notice Pauses the smart contract
+    /// @dev The caller must have the owner to call this function
+    function pause() public onlyOwner {
+        _pause();
+    }
+
+    /// @notice Unpauses the smart contract
+    /// @dev The caller must have the owner to call this function
+    function unpause() public onlyOwner {
+        _unpause();
+    }
+
     /* ========== MUTATIVE FUNCTIONS ========== */
 
     /// @notice Mints a new Soulbound Identity and Name purchasing it
@@ -108,7 +104,7 @@ contract SoulStore is PaymentGateway {
         string memory name,
         uint256 yearsPeriod,
         string memory _tokenURI
-    ) external payable returns (uint256) {
+    ) external payable whenNotPaused returns (uint256) {
         _pay(
             paymentMethod,
             getNameRegistrationPricePerYear(name).mul(yearsPeriod)
@@ -127,7 +123,12 @@ contract SoulStore is PaymentGateway {
     /// @notice Mints a new Soulbound Identity purchasing it
     /// @dev This function allows the purchase of a soulbound identity for free
     /// @return TokenId of the new soulbound identity
-    function purchaseIdentity() external payable returns (uint256) {
+    function purchaseIdentity()
+        external
+        payable
+        whenNotPaused
+        returns (uint256)
+    {
         // finalize purchase
         return _mintSoulboundIdentity(_msgSender());
     }
@@ -147,7 +148,7 @@ contract SoulStore is PaymentGateway {
         uint256 yearsPeriod,
         string memory _tokenURI,
         address to
-    ) external payable returns (uint256) {
+    ) external payable whenNotPaused returns (uint256) {
         _pay(
             paymentMethod,
             getNameRegistrationPricePerYear(name).mul(yearsPeriod)
@@ -192,11 +193,11 @@ contract SoulStore is PaymentGateway {
             yearsPeriod
         );
 
-        if (paymentMethod == stableCoin) {
-            return mintingPrice;
-        } else if (paymentMethod == address(0)) {
+        if (paymentMethod == address(0)) {
             return _convertFromStableCoin(wrappedNativeToken, mintingPrice);
-        } else if (paymentMethod == utilityToken || erc20token[paymentMethod]) {
+        } else if (paymentMethod == stableCoin && erc20token[paymentMethod]) {
+            return mintingPrice;
+        } else if (erc20token[paymentMethod]) {
             return _convertFromStableCoin(paymentMethod, mintingPrice);
         } else {
             revert("INVALID_PAYMENT_METHOD");

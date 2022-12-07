@@ -4,6 +4,7 @@ pragma solidity ^0.8.7;
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
 
 import "./dex/PaymentGateway.sol";
 import "./interfaces/ISoulboundIdentity.sol";
@@ -11,7 +12,7 @@ import "./interfaces/ISoulboundIdentity.sol";
 /// @title Soul linker
 /// @author Masa Finance
 /// @notice Soul linker smart contract that let add links to a Soulbound token.
-contract SoulLinker is PaymentGateway, EIP712 {
+contract SoulLinker is PaymentGateway, EIP712, Pausable {
     /* ========== STATE VARIABLES =========================================== */
 
     ISoulboundIdentity public soulboundIdentity;
@@ -43,32 +44,14 @@ contract SoulLinker is PaymentGateway, EIP712 {
     /// @param _soulboundIdentity Soulbound identity smart contract
     /// @param _addPermissionPrice Store permission price in stable coin
     /// @param _addPermissionPriceMASA Store permission price in $MASA
-    /// @param _swapRouter Swap router address
-    /// @param _wrappedNativeToken Wrapped native token address
-    /// @param _stableCoin Stable coin to pay the fee in (USDC)
-    /// @param _utilityToken Utility token to pay the fee in ($MASA)
-    /// @param _reserveWallet Wallet that will receive the fee
+    /// @param paymentParams Payment gateway params
     constructor(
         address owner,
         ISoulboundIdentity _soulboundIdentity,
         uint256 _addPermissionPrice,
         uint256 _addPermissionPriceMASA,
-        address _swapRouter,
-        address _wrappedNativeToken,
-        address _stableCoin,
-        address _utilityToken,
-        address _reserveWallet
-    )
-        EIP712("SoulLinker", "1.0.0")
-        PaymentGateway(
-            owner,
-            _swapRouter,
-            _wrappedNativeToken,
-            _stableCoin,
-            _utilityToken,
-            _reserveWallet
-        )
-    {
+        PaymentParams memory paymentParams
+    ) EIP712("SoulLinker", "1.0.0") PaymentGateway(owner, paymentParams) {
         require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
 
         soulboundIdentity = _soulboundIdentity;
@@ -137,6 +120,18 @@ contract SoulLinker is PaymentGateway, EIP712 {
         addPermissionPriceMASA = _addPermissionPriceMASA;
     }
 
+    /// @notice Pauses the smart contract
+    /// @dev The caller must have the owner to call this function
+    function pause() public onlyOwner {
+        _pause();
+    }
+
+    /// @notice Unpauses the smart contract
+    /// @dev The caller must have the owner to call this function
+    function unpause() public onlyOwner {
+        _unpause();
+    }
+
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
     /// @notice Stores the permission, validating the signature of the given read link request
@@ -159,7 +154,7 @@ contract SoulLinker is PaymentGateway, EIP712 {
         uint256 signatureDate,
         uint256 expirationDate,
         bytes calldata signature
-    ) external {
+    ) external whenNotPaused {
         require(linkedSBT[token], "SBT_NOT_LINKED");
 
         address identityOwner = soulboundIdentity.ownerOf(ownerIdentityId);
@@ -225,7 +220,7 @@ contract SoulLinker is PaymentGateway, EIP712 {
         address token,
         uint256 tokenId,
         uint256 signatureDate
-    ) external {
+    ) external whenNotPaused {
         address identityOwner = soulboundIdentity.ownerOf(ownerIdentityId);
         address tokenOwner = IERC721Enumerable(token).ownerOf(tokenId);
 
@@ -382,9 +377,13 @@ contract SoulLinker is PaymentGateway, EIP712 {
         view
         returns (uint256 price, address paymentMethodUsed)
     {
-        if (addPermissionPriceMASA > 0 && utilityToken != address(0)) {
+        if (
+            addPermissionPriceMASA > 0 &&
+            masaToken != address(0) &&
+            erc20token[masaToken]
+        ) {
             // if there is a price in $MASA, return it without conversion rate
-            return (addPermissionPriceMASA, utilityToken);
+            return (addPermissionPriceMASA, masaToken);
         } else {
             // return $MASA with conversion rate
             return (

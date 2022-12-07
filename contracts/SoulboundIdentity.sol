@@ -3,13 +3,13 @@ pragma solidity ^0.8.7;
 
 import "./interfaces/ISoulboundIdentity.sol";
 import "./interfaces/ISoulName.sol";
-import "./tokens/MasaSBT.sol";
+import "./tokens/MasaSBTAuthority.sol";
 
 /// @title Soulbound Identity
 /// @author Masa Finance
 /// @notice Soulbound token that represents an identity.
 /// @dev Soulbound identity, that inherits from the SBT contract.
-contract SoulboundIdentity is MasaSBT, ISoulboundIdentity {
+contract SoulboundIdentity is MasaSBTAuthority, ISoulboundIdentity {
     /* ========== STATE VARIABLES =========================================== */
 
     ISoulName public soulName;
@@ -18,18 +18,21 @@ contract SoulboundIdentity is MasaSBT, ISoulboundIdentity {
 
     /// @notice Creates a new soulbound identity
     /// @dev Creates a new soulbound identity, inheriting from the SBT contract.
-    /// @param owner Owner of the smart contract
+    /// @param admin Administrator of the smart contract
     /// @param baseTokenURI Base URI of the token
-    constructor(address owner, string memory baseTokenURI)
-        MasaSBT(owner, "Masa Identity", "MID", baseTokenURI)
+    constructor(address admin, string memory baseTokenURI)
+        MasaSBTAuthority(admin, "Masa Identity", "MID", baseTokenURI)
     {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
     /// @notice Sets the SoulName contract address linked to this identity
-    /// @dev The caller must have the owner to call this function
+    /// @dev The caller must have the admin to call this function
     /// @param _soulName Address of the SoulName contract
-    function setSoulName(ISoulName _soulName) external onlyOwner {
+    function setSoulName(ISoulName _soulName)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
         require(address(_soulName) != address(0), "ZERO_ADDRESS");
         require(soulName != _soulName, "SAME_VALUE");
         soulName = _soulName;
@@ -39,21 +42,17 @@ contract SoulboundIdentity is MasaSBT, ISoulboundIdentity {
 
     /// @notice Mints a new soulbound identity
     /// @dev The caller can only mint one identity per address
-    /// @param to Address of the owner of the new identity
-    function mint(address to)
-        public
-        override(MasaSBT, ISoulboundIdentity)
-        returns (uint256)
-    {
+    /// @param to Address of the admin of the new identity
+    function mint(address to) public override returns (uint256) {
         // Soulbound identity already created!
         require(balanceOf(to) < 1, "SB_IDENTITY_ALREADY_CREATED");
 
-        return super.mint(to);
+        return _mintWithCounter(to);
     }
 
     /// @notice Mints a new soulbound identity with a SoulName associated to it
     /// @dev The caller can only mint one identity per address, and the name must be unique
-    /// @param to Address of the owner of the new identity
+    /// @param to Address of the admin of the new identity
     /// @param name Name of the new identity
     /// @param yearsPeriod Years of validity of the name
     /// @param _tokenURI URI of the NFT
@@ -167,7 +166,7 @@ contract SoulboundIdentity is MasaSBT, ISoulboundIdentity {
     /// @return sbtName Soul name, in upper/lower case and extension
     /// @return linked `true` if the soul name is linked, `false` otherwise
     /// @return identityId Identity id of the soul name
-    /// @return tokenId SoulName id id of the soul name
+    /// @return tokenId SoulName id of the soul name
     /// @return expirationDate Expiration date of the soul name
     /// @return active `true` if the soul name is active, `false` otherwise
     function getTokenData(string memory name)

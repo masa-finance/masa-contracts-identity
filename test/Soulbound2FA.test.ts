@@ -1,7 +1,7 @@
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 import { solidity } from "ethereum-waffle";
-import { ethers, deployments } from "hardhat";
+import { ethers, deployments, getChainId } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
   Soulbound2FA,
@@ -20,13 +20,50 @@ let soulbound2FA: Soulbound2FA;
 
 let owner: SignerWithAddress;
 let address1: SignerWithAddress;
-let address2: SignerWithAddress;
+let authority: SignerWithAddress;
 
 let identityId1: number;
 
+const signatureDate = Math.floor(Date.now() / 1000);
+
+let signature: string;
+
+const signMintCreditScore = async (
+  identityId: number,
+  authoritySigner: SignerWithAddress
+) => {
+  const chainId = await getChainId();
+
+  const signature = await authoritySigner._signTypedData(
+    // Domain
+    {
+      name: "Soulbound2FA",
+      version: "1.0.0",
+      chainId: chainId,
+      verifyingContract: soulbound2FA.address
+    },
+    // Types
+    {
+      Mint2FA: [
+        { name: "identityId", type: "uint256" },
+        { name: "authorityAddress", type: "address" },
+        { name: "signatureDate", type: "uint256" }
+      ]
+    },
+    // Value
+    {
+      identityId: identityId,
+      authorityAddress: authoritySigner.address,
+      signatureDate: signatureDate
+    }
+  );
+
+  return signature;
+};
+
 describe("Soulbound Two-factor authentication (2FA)", () => {
   before(async () => {
-    [, owner, address1, address2] = await ethers.getSigners();
+    [, owner, address1, authority] = await ethers.getSigners();
   });
 
   beforeEach(async () => {
@@ -55,6 +92,11 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
     const mintReceipt = await mintTx.wait();
 
     identityId1 = mintReceipt.events![0].args![1].toNumber();
+
+    // we add authority account
+    await soulbound2FA.addAuthority(authority.address);
+
+    signature = await signMintCreditScore(identityId1, authority);
   });
 
   describe("owner functions", () => {
@@ -82,14 +124,69 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
   });
 
   describe("mint", () => {
-    it("should mint from owner address", async () => {
-      await soulbound2FA.connect(owner)["mint(address)"](address1.address);
+    it("should fail to mint from owner address", async () => {
+      await expect(
+        soulbound2FA
+          .connect(owner)
+          ["mint(address,address,address,uint256,bytes)"](
+            ethers.constants.AddressZero,
+            address1.address,
+            authority.address,
+            signatureDate,
+            signature
+          )
+      ).to.be.revertedWith("CALLER_NOT_OWNER");
     });
 
-    it("should mint from owner identity", async () => {
+    it("should fail to mint from owner identity", async () => {
+      await expect(
+        soulbound2FA
+          .connect(owner)
+          ["mint(address,uint256,address,uint256,bytes)"](
+            ethers.constants.AddressZero,
+            identityId1,
+            authority.address,
+            signatureDate,
+            signature
+          )
+      ).to.be.revertedWith("CALLER_NOT_OWNER");
+    });
+
+    it("should mint twice", async () => {
+      await soulbound2FA
+        .connect(address1)
+        ["mint(address,address,address,uint256,bytes)"](
+          ethers.constants.AddressZero,
+          address1.address,
+          authority.address,
+          signatureDate,
+          signature
+        );
+      await soulbound2FA
+        .connect(address1)
+        ["mint(address,address,address,uint256,bytes)"](
+          ethers.constants.AddressZero,
+          address1.address,
+          authority.address,
+          signatureDate,
+          signature
+        );
+
+      expect(await soulbound2FA.totalSupply()).to.equal(2);
+      expect(await soulbound2FA.tokenByIndex(0)).to.equal(0);
+      expect(await soulbound2FA.tokenByIndex(1)).to.equal(1);
+    });
+
+    it("should mint from final user address", async () => {
       const mintTx = await soulbound2FA
-        .connect(owner)
-        ["mint(uint256)"](identityId1);
+        .connect(address1)
+        ["mint(address,address,address,uint256,bytes)"](
+          ethers.constants.AddressZero,
+          address1.address,
+          authority.address,
+          signatureDate,
+          signature
+        );
       const mintReceipt = await mintTx.wait();
 
       const tokenId = mintReceipt.events![0].args![1].toNumber();
@@ -97,25 +194,21 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
       expect(await soulbound2FA.getIdentityId(tokenId)).to.equal(identityId1);
     });
 
-    it("should mint twice", async () => {
-      await soulbound2FA.connect(owner)["mint(address)"](address1.address);
-      await soulbound2FA.connect(owner)["mint(address)"](address1.address);
+    it("should mint from final user identity", async () => {
+      const mintTx = await soulbound2FA
+        .connect(address1)
+        ["mint(address,uint256,address,uint256,bytes)"](
+          ethers.constants.AddressZero,
+          identityId1,
+          authority.address,
+          signatureDate,
+          signature
+        );
+      const mintReceipt = await mintTx.wait();
 
-      expect(await soulbound2FA.totalSupply()).to.equal(2);
-      expect(await soulbound2FA.tokenByIndex(0)).to.equal(0);
-      expect(await soulbound2FA.tokenByIndex(1)).to.equal(1);
-    });
+      const tokenId = mintReceipt.events![0].args![1].toNumber();
 
-    it("should fail to mint from non minter", async () => {
-      await expect(
-        soulbound2FA.connect(address1)["mint(address)"](address1.address)
-      ).to.be.rejected;
-    });
-
-    it("should fail to mint to address without identity", async () => {
-      await expect(
-        soulbound2FA.connect(owner)["mint(address)"](address2.address)
-      ).to.be.rejected;
+      expect(await soulbound2FA.getIdentityId(tokenId)).to.equal(identityId1);
     });
   });
 
@@ -123,18 +216,31 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
     it("should burn", async () => {
       // we mint
       let mintTx = await soulbound2FA
-        .connect(owner)
-        ["mint(address)"](address1.address);
+        .connect(address1)
+        ["mint(address,address,address,uint256,bytes)"](
+          ethers.constants.AddressZero,
+          address1.address,
+          authority.address,
+          signatureDate,
+          signature
+        );
       let mintReceipt = await mintTx.wait();
       const tokenId1 = mintReceipt.events![0].args![1].toNumber();
 
       // we mint again
       mintTx = await soulbound2FA
-        .connect(owner)
-        ["mint(address)"](address1.address);
+        .connect(address1)
+        ["mint(address,address,address,uint256,bytes)"](
+          ethers.constants.AddressZero,
+          address1.address,
+          authority.address,
+          signatureDate,
+          signature
+        );
       mintReceipt = await mintTx.wait();
       const tokenId2 = mintReceipt.events![0].args![1].toNumber();
 
+      expect(await soulbound2FA.balanceOf(address1.address)).to.be.equal(2);
       expect(await soulbound2FA.balanceOf(address1.address)).to.be.equal(2);
       expect(await soulbound2FA["ownerOf(uint256)"](tokenId1)).to.be.equal(
         address1.address
@@ -154,10 +260,16 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
   });
 
   describe("tokenUri", () => {
-    it("should fail to transfer because its soulbound", async () => {
+    it("should get a valid token URI from its tokenId", async () => {
       const mintTx = await soulbound2FA
-        .connect(owner)
-        ["mint(address)"](address1.address);
+        .connect(address1)
+        ["mint(address,address,address,uint256,bytes)"](
+          ethers.constants.AddressZero,
+          address1.address,
+          authority.address,
+          signatureDate,
+          signature
+        );
 
       const mintReceipt = await mintTx.wait();
       const tokenId = mintReceipt.events![0].args![1].toNumber();

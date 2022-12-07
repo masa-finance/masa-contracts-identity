@@ -35,19 +35,19 @@ abstract contract MasaNFT is
 
     /// @notice Creates a new NFT
     /// @dev Creates a new Non-fungible token
-    /// @param owner Owner of the smart contract
+    /// @param admin Administrator of the smart contract
     /// @param name Name of the token
     /// @param symbol Symbol of the token
     /// @param baseTokenURI Base URI of the token
     constructor(
-        address owner,
+        address admin,
         string memory name,
         string memory symbol,
         string memory baseTokenURI
     ) ERC721(name, symbol) {
-        Ownable.transferOwnership(owner);
-        _grantRole(DEFAULT_ADMIN_ROLE, owner);
-        _grantRole(MINTER_ROLE, owner);
+        Ownable.transferOwnership(admin);
+        _grantRole(DEFAULT_ADMIN_ROLE, admin);
+        _grantRole(MINTER_ROLE, admin);
 
         _baseTokenURI = baseTokenURI;
     }

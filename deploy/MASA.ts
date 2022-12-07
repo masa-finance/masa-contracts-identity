@@ -3,7 +3,7 @@ import { getEnvParams } from "../src/utils/EnvParams";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
 
-let owner: SignerWithAddress;
+let admin: SignerWithAddress;
 
 const func: DeployFunction = async ({
   // @ts-ignore
@@ -20,7 +20,7 @@ const func: DeployFunction = async ({
   // const currentNonce: number = await ethers.provider.getTransactionCount(deployer);
   // to solve REPLACEMENT_UNDERPRICED, when needed
 
-  [, owner] = await ethers.getSigners();
+  [, admin] = await ethers.getSigners();
   const env = getEnvParams(network.name);
 
   const constructorArguments = [];
@@ -51,7 +51,7 @@ const func: DeployFunction = async ({
 
   const masa = await ethers.getContractAt("MASA", masaDeploymentResult.address);
   await masa.transfer(
-    env.OWNER || owner.address,
+    env.ADMIN || admin.address,
     ethers.utils.parseEther("1000")
   );
 };
