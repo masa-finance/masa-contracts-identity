@@ -740,7 +740,11 @@ describe("Soul Store", () => {
 
       const erc20tokens = await soulStore.getErc20Tokens();
 
-      expect(erc20tokens).to.be.deep.equal([DAI_GOERLI]);
+      expect(erc20tokens).to.be.deep.equal([
+        USDC_GOERLI,
+        MASA_GOERLI,
+        DAI_GOERLI
+      ]);
     });
 
     it("should fail to add ERC-20 token from non owner", async () => {
