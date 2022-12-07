@@ -202,6 +202,28 @@ Returns the identityId owned by the given token
 |---|---|---|
 | _0 | uint256 | Id of the identity |
 
+### getMintingPrice
+
+```solidity
+function getMintingPrice(address paymentMethod) external view returns (uint256)
+```
+
+Returns the price for minting
+
+*Returns current pricing for minting*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| paymentMethod | address | Address of token that user want to pay |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | Current price for minting in the given payment method |
+
 ### getRoleAdmin
 
 ```solidity
