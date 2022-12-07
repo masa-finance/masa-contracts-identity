@@ -3,6 +3,7 @@ pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
+import "./libraries/Utils.sol";
 import "./dex/PaymentGateway.sol";
 import "./interfaces/ISoulboundIdentity.sol";
 import "./interfaces/ISoulName.sol";
@@ -168,8 +169,8 @@ contract SoulStore is PaymentGateway {
         view
         returns (uint256)
     {
-        uint256 bytelength = bytes(nameLength).length;
-        uint256 price = nameRegistrationPricePerYear[bytelength];
+        uint256 strLength = Utils.utfStringLength(nameLength);
+        uint256 price = nameRegistrationPricePerYear[strLength];
         if (price == 0) {
             // if not found, return the default price
             price = nameRegistrationPricePerYear[0];
