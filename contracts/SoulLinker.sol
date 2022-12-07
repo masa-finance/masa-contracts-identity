@@ -43,32 +43,14 @@ contract SoulLinker is PaymentGateway, EIP712 {
     /// @param _soulboundIdentity Soulbound identity smart contract
     /// @param _addPermissionPrice Store permission price in stable coin
     /// @param _addPermissionPriceMASA Store permission price in $MASA
-    /// @param _swapRouter Swap router address
-    /// @param _wrappedNativeToken Wrapped native token address
-    /// @param _stableCoin Stable coin to pay the fee in (USDC)
-    /// @param _utilityToken Utility token to pay the fee in ($MASA)
-    /// @param _reserveWallet Wallet that will receive the fee
+    /// @param paymentParams Payment gateway params
     constructor(
         address owner,
         ISoulboundIdentity _soulboundIdentity,
         uint256 _addPermissionPrice,
         uint256 _addPermissionPriceMASA,
-        address _swapRouter,
-        address _wrappedNativeToken,
-        address _stableCoin,
-        address _utilityToken,
-        address _reserveWallet
-    )
-        EIP712("SoulLinker", "1.0.0")
-        PaymentGateway(
-            owner,
-            _swapRouter,
-            _wrappedNativeToken,
-            _stableCoin,
-            _utilityToken,
-            _reserveWallet
-        )
-    {
+        PaymentParams memory paymentParams
+    ) EIP712("SoulLinker", "1.0.0") PaymentGateway(owner, paymentParams) {
         require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
 
         soulboundIdentity = _soulboundIdentity;
@@ -189,7 +171,7 @@ contract SoulLinker is PaymentGateway, EIP712 {
             _payWithMASA(addPermissionPriceMASA);
         } else {
             // pay with $MASA with conversion rate
-            _pay(utilityToken, addPermissionPrice);
+            _pay(masaToken, addPermissionPrice);
         }
 
         // token => tokenId => readerIdentityId => signatureDate => PermissionData
@@ -373,19 +355,19 @@ contract SoulLinker is PaymentGateway, EIP712 {
 
     /// @notice Returns the price for storing a permission
     /// @dev Returns the current pricing for storing a permission
-    /// @return priceInUtilityToken Current price of storing a permission in utility token ($MASA)
+    /// @return priceInMasaToken Current price of storing a permission in utility token ($MASA)
     function getPriceForAddPermission()
         public
         view
-        returns (uint256 priceInUtilityToken)
+        returns (uint256 priceInMasaToken)
     {
         if (addPermissionPriceMASA > 0) {
             // if there is a price in $MASA, return it without conversion rate
-            priceInUtilityToken = addPermissionPriceMASA;
+            priceInMasaToken = addPermissionPriceMASA;
         } else {
             // return $MASA with conversion rate
-            priceInUtilityToken = _convertFromStableCoin(
-                utilityToken,
+            priceInMasaToken = _convertFromStableCoin(
+                masaToken,
                 addPermissionPrice
             );
         }

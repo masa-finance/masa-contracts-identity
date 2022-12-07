@@ -90,6 +90,10 @@ describe("Soul Store", () => {
         value: ethers.utils.parseEther("10")
       }
     );
+
+    // we add payment methods
+    await soulStore.connect(owner).addErc20Token(USDC_GOERLI);
+    await soulStore.connect(owner).addErc20Token(MASA_GOERLI);
   });
 
   describe("owner functions", () => {
@@ -134,16 +138,15 @@ describe("Soul Store", () => {
         .to.be.rejected;
     });
 
-    it("should set UtilityToken from owner", async () => {
-      await soulStore.connect(owner).setUtilityToken(address1.address);
+    it("should set MasaToken from owner", async () => {
+      await soulStore.connect(owner).setMasaToken(address1.address);
 
-      expect(await soulStore.utilityToken()).to.be.equal(address1.address);
+      expect(await soulStore.masaToken()).to.be.equal(address1.address);
     });
 
-    it("should fail to set UtilityToken from non owner", async () => {
-      await expect(
-        soulStore.connect(address1).setUtilityToken(address1.address)
-      ).to.be.rejected;
+    it("should fail to set MasaToken from non owner", async () => {
+      await expect(soulStore.connect(address1).setMasaToken(address1.address))
+        .to.be.rejected;
     });
 
     it("should set ReserveWallet from owner", async () => {
@@ -196,15 +199,15 @@ describe("Soul Store", () => {
         SOUL_NAME,
         YEAR
       );
-      const priceInUtilityToken1 = await soulStore.getPriceForMintingName(
-        await soulStore.utilityToken(),
+      const priceInMasaToken1 = await soulStore.getPriceForMintingName(
+        await soulStore.masaToken(),
         SOUL_NAME,
         YEAR
       );
 
       expect(priceInStableCoin1).to.be.equal(MINTING_NAME_PRICE_5LETTERS);
       expect(priceInETH1).not.to.be.equal("0");
-      expect(priceInUtilityToken1).not.to.be.equal("0");
+      expect(priceInMasaToken1).not.to.be.equal("0");
 
       const priceInStableCoin2 = await soulStore.getPriceForMintingName(
         await soulStore.stableCoin(),
@@ -216,15 +219,15 @@ describe("Soul Store", () => {
         SOUL_NAME,
         YEAR * 2
       );
-      const priceInUtilityToken2 = await soulStore.getPriceForMintingName(
-        await soulStore.utilityToken(),
+      const priceInMasaToken2 = await soulStore.getPriceForMintingName(
+        await soulStore.masaToken(),
         SOUL_NAME,
         YEAR * 2
       );
 
       expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_5LETTERS * 2);
       expect(priceInETH2).not.to.be.equal(priceInETH1.mul(2));
-      expect(priceInUtilityToken2).not.to.be.equal(priceInUtilityToken1.mul(2));
+      expect(priceInMasaToken2).not.to.be.equal(priceInMasaToken1.mul(2));
     });
 
     it("we can get 1 letters name purchase info for 1 and 2 years", async () => {
@@ -240,15 +243,15 @@ describe("Soul Store", () => {
         SOUL_NAME_1LETTERS,
         YEAR
       );
-      const priceInUtilityToken1 = await soulStore.getPriceForMintingName(
-        await soulStore.utilityToken(),
+      const priceInMasaToken1 = await soulStore.getPriceForMintingName(
+        await soulStore.masaToken(),
         SOUL_NAME_1LETTERS,
         YEAR
       );
 
       expect(priceInStableCoin1).to.be.equal(MINTING_NAME_PRICE_1LETTERS);
       expect(priceInETH1).not.to.be.equal("0");
-      expect(priceInUtilityToken1).not.to.be.equal("0");
+      expect(priceInMasaToken1).not.to.be.equal("0");
 
       const priceInStableCoin2 = await soulStore.getPriceForMintingName(
         await soulStore.stableCoin(),
@@ -260,15 +263,15 @@ describe("Soul Store", () => {
         SOUL_NAME_1LETTERS,
         YEAR * 2
       );
-      const priceInUtilityToken2 = await soulStore.getPriceForMintingName(
-        await soulStore.utilityToken(),
+      const priceInMasaToken2 = await soulStore.getPriceForMintingName(
+        await soulStore.masaToken(),
         SOUL_NAME_1LETTERS,
         YEAR * 2
       );
 
       expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_1LETTERS * 2);
       expect(priceInETH2).not.to.be.equal(priceInETH1.mul(2));
-      expect(priceInUtilityToken2).not.to.be.equal(priceInUtilityToken1.mul(2));
+      expect(priceInMasaToken2).not.to.be.equal(priceInMasaToken1.mul(2));
     });
 
     it("we can get 2 letters name purchase info for 1 and 2 years", async () => {
@@ -284,15 +287,15 @@ describe("Soul Store", () => {
         SOUL_NAME_2LETTERS,
         YEAR
       );
-      const priceInUtilityToken1 = await soulStore.getPriceForMintingName(
-        await soulStore.utilityToken(),
+      const priceInMasaToken1 = await soulStore.getPriceForMintingName(
+        await soulStore.masaToken(),
         SOUL_NAME_2LETTERS,
         YEAR
       );
 
       expect(priceInStableCoin1).to.be.equal(MINTING_NAME_PRICE_2LETTERS);
       expect(priceInETH1).not.to.be.equal("0");
-      expect(priceInUtilityToken1).not.to.be.equal("0");
+      expect(priceInMasaToken1).not.to.be.equal("0");
 
       const priceInStableCoin2 = await soulStore.getPriceForMintingName(
         await soulStore.stableCoin(),
@@ -304,15 +307,15 @@ describe("Soul Store", () => {
         SOUL_NAME_2LETTERS,
         YEAR * 2
       );
-      const priceInUtilityToken2 = await soulStore.getPriceForMintingName(
-        await soulStore.utilityToken(),
+      const priceInMasaToken2 = await soulStore.getPriceForMintingName(
+        await soulStore.masaToken(),
         SOUL_NAME_2LETTERS,
         YEAR * 2
       );
 
       expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_2LETTERS * 2);
       expect(priceInETH2).not.to.be.equal(priceInETH1.mul(2));
-      expect(priceInUtilityToken2).not.to.be.equal(priceInUtilityToken1.mul(2));
+      expect(priceInMasaToken2).not.to.be.equal(priceInMasaToken1.mul(2));
     });
 
     it("we can get 3 letters name purchase info for 1 and 2 years", async () => {
@@ -328,15 +331,15 @@ describe("Soul Store", () => {
         SOUL_NAME_3LETTERS,
         YEAR
       );
-      const priceInUtilityToken1 = await soulStore.getPriceForMintingName(
-        await soulStore.utilityToken(),
+      const priceInMasaToken1 = await soulStore.getPriceForMintingName(
+        await soulStore.masaToken(),
         SOUL_NAME_3LETTERS,
         YEAR
       );
 
       expect(priceInStableCoin1).to.be.equal(MINTING_NAME_PRICE_3LETTERS);
       expect(priceInETH1).not.to.be.equal("0");
-      expect(priceInUtilityToken1).not.to.be.equal("0");
+      expect(priceInMasaToken1).not.to.be.equal("0");
 
       const priceInStableCoin2 = await soulStore.getPriceForMintingName(
         await soulStore.stableCoin(),
@@ -348,15 +351,15 @@ describe("Soul Store", () => {
         SOUL_NAME_3LETTERS,
         YEAR * 2
       );
-      const priceInUtilityToken2 = await soulStore.getPriceForMintingName(
-        await soulStore.utilityToken(),
+      const priceInMasaToken2 = await soulStore.getPriceForMintingName(
+        await soulStore.masaToken(),
         SOUL_NAME_3LETTERS,
         YEAR * 2
       );
 
       expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_3LETTERS * 2);
       expect(priceInETH2).not.to.be.equal(priceInETH1.mul(2));
-      expect(priceInUtilityToken2).not.to.be.equal(priceInUtilityToken1.mul(2));
+      expect(priceInMasaToken2).not.to.be.equal(priceInMasaToken1.mul(2));
     });
 
     it("we can get 4 letters name purchase info for 1 and 2 years", async () => {
@@ -372,15 +375,15 @@ describe("Soul Store", () => {
         SOUL_NAME_4LETTERS,
         YEAR
       );
-      const priceInUtilityToken1 = await soulStore.getPriceForMintingName(
-        await soulStore.utilityToken(),
+      const priceInMasaToken1 = await soulStore.getPriceForMintingName(
+        await soulStore.masaToken(),
         SOUL_NAME_4LETTERS,
         YEAR
       );
 
       expect(priceInStableCoin1).to.be.equal(MINTING_NAME_PRICE_4LETTERS);
       expect(priceInETH1).not.to.be.equal("0");
-      expect(priceInUtilityToken1).not.to.be.equal("0");
+      expect(priceInMasaToken1).not.to.be.equal("0");
 
       const priceInStableCoin2 = await soulStore.getPriceForMintingName(
         await soulStore.stableCoin(),
@@ -392,15 +395,15 @@ describe("Soul Store", () => {
         SOUL_NAME_4LETTERS,
         YEAR * 2
       );
-      const priceInUtilityToken2 = await soulStore.getPriceForMintingName(
-        await soulStore.utilityToken(),
+      const priceInMasaToken2 = await soulStore.getPriceForMintingName(
+        await soulStore.masaToken(),
         SOUL_NAME_4LETTERS,
         YEAR * 2
       );
 
       expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_4LETTERS * 2);
       expect(priceInETH2).not.to.be.equal(priceInETH1.mul(2));
-      expect(priceInUtilityToken2).not.to.be.equal(priceInUtilityToken1.mul(2));
+      expect(priceInMasaToken2).not.to.be.equal(priceInMasaToken1.mul(2));
     });
   });
 
@@ -466,17 +469,15 @@ describe("Soul Store", () => {
 
     it("we can purchase an identity and name with utility coin", async () => {
       const reserveWallet = await soulStore.reserveWallet();
-      const priceInUtilityToken = await soulStore.getPriceForMintingName(
-        await soulStore.utilityToken(),
+      const priceInMasaToken = await soulStore.getPriceForMintingName(
+        await soulStore.masaToken(),
         SOUL_NAME,
         YEAR
       );
 
       // set allowance for soul store
       const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
-      await masa
-        .connect(address1)
-        .approve(soulStore.address, priceInUtilityToken);
+      await masa.connect(address1).approve(soulStore.address, priceInMasaToken);
       const reserveWalletBalanceBefore = await masa.balanceOf(reserveWallet);
 
       await soulStore.connect(address1).purchaseIdentityAndName(
@@ -491,7 +492,7 @@ describe("Soul Store", () => {
       // we check that the reserve wallet received the stable coin
       expect(
         reserveWalletBalanceAfter.sub(reserveWalletBalanceBefore)
-      ).to.be.equal(priceInUtilityToken);
+      ).to.be.equal(priceInMasaToken);
     });
 
     it("we can't purchase an identity and name with ETH if we pay less", async () => {
@@ -509,7 +510,7 @@ describe("Soul Store", () => {
           ARWEAVE_LINK,
           { value: priceInETH.div(2) }
         )
-      ).to.be.rejectedWith("INVALID_PAYMENT_AMOUNT");
+      ).to.be.rejectedWith("INSUFFICIENT_ETH_AMOUNT");
     });
 
     it("we can't purchase an identity and name with stable coin if we don't have funds", async () => {
@@ -536,17 +537,15 @@ describe("Soul Store", () => {
     });
 
     it("we can't purchase an identity and name with utility coin if we don't have funds", async () => {
-      const priceInUtilityToken = await soulStore.getPriceForMintingName(
-        await soulStore.utilityToken(),
+      const priceInMasaToken = await soulStore.getPriceForMintingName(
+        await soulStore.masaToken(),
         SOUL_NAME,
         YEAR
       );
 
       // set allowance for soul store
       const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
-      await masa
-        .connect(address2)
-        .approve(soulStore.address, priceInUtilityToken);
+      await masa.connect(address2).approve(soulStore.address, priceInMasaToken);
 
       await expect(
         soulStore.connect(address2).purchaseIdentityAndName(
@@ -639,17 +638,15 @@ describe("Soul Store", () => {
     });
 
     it("we can purchase a name with utility coin", async () => {
-      const priceInUtilityToken = await soulStore.getPriceForMintingName(
-        await soulStore.utilityToken(),
+      const priceInMasaToken = await soulStore.getPriceForMintingName(
+        await soulStore.masaToken(),
         SOUL_NAME,
         YEAR
       );
 
       // set allowance for soul store
       const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
-      await masa
-        .connect(address1)
-        .approve(soulStore.address, priceInUtilityToken);
+      await masa.connect(address1).approve(soulStore.address, priceInMasaToken);
 
       await soulStore.connect(address1).purchaseName(
         MASA_GOERLI, // $MASA
@@ -676,7 +673,7 @@ describe("Soul Store", () => {
           address1.address,
           { value: priceInETH.div(2) }
         )
-      ).to.be.rejectedWith("INVALID_PAYMENT_AMOUNT");
+      ).to.be.rejectedWith("INSUFFICIENT_ETH_AMOUNT");
     });
 
     it("we can't purchase a name with stable coin if we don't have funds", async () => {
@@ -704,17 +701,15 @@ describe("Soul Store", () => {
     });
 
     it("we can't purchase a name with utility coin if we don't have funds", async () => {
-      const priceInUtilityToken = await soulStore.getPriceForMintingName(
-        await soulStore.utilityToken(),
+      const priceInMasaToken = await soulStore.getPriceForMintingName(
+        await soulStore.masaToken(),
         SOUL_NAME,
         YEAR
       );
 
       // set allowance for soul store
       const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
-      await masa
-        .connect(address2)
-        .approve(soulStore.address, priceInUtilityToken);
+      await masa.connect(address2).approve(soulStore.address, priceInMasaToken);
 
       await expect(
         soulStore.connect(address2).purchaseName(
@@ -743,13 +738,13 @@ describe("Soul Store", () => {
     it("should get all payment methods information", async () => {
       await soulStore.connect(owner).addErc20Token(DAI_GOERLI);
 
-      const { _nativeToken, _stableCoin, _utilityToken, _erc20tokens } =
-        await soulStore.getPaymentMethods();
+      const erc20tokens = await soulStore.getErc20Tokens();
 
-      expect(_nativeToken).to.be.equal(ethers.constants.AddressZero);
-      expect(_stableCoin).to.be.equal(USDC_GOERLI);
-      expect(_utilityToken).to.be.equal(MASA_GOERLI);
-      expect(_erc20tokens).to.be.deep.equal([DAI_GOERLI]);
+      expect(erc20tokens).to.be.deep.equal([
+        USDC_GOERLI,
+        MASA_GOERLI,
+        DAI_GOERLI
+      ]);
     });
 
     it("should fail to add ERC-20 token from non owner", async () => {

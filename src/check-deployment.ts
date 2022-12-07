@@ -18,8 +18,8 @@ import { SoulLinker } from "../typechain/contracts/SoulLinker";
  * main function
  */
 async function main() {
-  const [owner] = await ethers.getSigners();
-  const chainId = await owner.getChainId();
+  const [admin] = await ethers.getSigners();
+  const chainId = await admin.getChainId();
 
   const { address: masaAddress } = await deployments.get("MASA");
   const { address: soulboundIdentityAddress } = await deployments.get(
@@ -38,7 +38,7 @@ async function main() {
   console.log(
     "=============================================================================="
   );
-  console.log(`Account address: ${owner.address}`);
+  console.log(`Account address: ${admin.address}`);
   console.log(`ChainId: ${chainId}`);
 
   console.log("");
@@ -53,20 +53,20 @@ async function main() {
   console.log("");
 
   // create contract instances
-  const masa: ERC20 = ERC20__factory.connect(masaAddress, owner);
+  const masa: ERC20 = ERC20__factory.connect(masaAddress, admin);
   const soulboundIdentity: SoulboundIdentity =
-    SoulboundIdentity__factory.connect(soulboundIdentityAddress, owner);
-  const soulName: SoulName = SoulName__factory.connect(soulNameAddress, owner);
+    SoulboundIdentity__factory.connect(soulboundIdentityAddress, admin);
+  const soulName: SoulName = SoulName__factory.connect(soulNameAddress, admin);
   const soulLinker: SoulLinker = SoulLinker__factory.connect(
     soulLinkerAddress,
-    owner
+    admin
   );
   const soulStore: SoulStore = SoulStore__factory.connect(
     soulStoreAddress,
-    owner
+    admin
   );
 
-  console.log(`MASA balance: ${await masa.balanceOf(owner.address)}`);
+  console.log(`MASA balance: ${await masa.balanceOf(admin.address)}`);
   console.log("");
 
   const IDENTITY_MINTER_ROLE = await soulboundIdentity.MINTER_ROLE();
@@ -118,7 +118,7 @@ async function main() {
   console.log(
     `SoulStore.SoulboundIdentity: ${await soulStore.soulboundIdentity()}`
   );
-  console.log(`SoulStore.utilityToken: ${await soulStore.utilityToken()}`);
+  console.log(`SoulStore.masaToken: ${await soulStore.masaToken()}`);
   console.log(`SoulStore.stableCoin: ${await soulStore.stableCoin()}`);
   console.log(
     `SoulStore.wrappedNativeToken: ${await soulStore.wrappedNativeToken()}`

@@ -1,10 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 import "./SBT/SBT.sol";
@@ -15,20 +12,10 @@ import "./SBT/extensions/SBTBurnable.sol";
 /// @author Masa Finance
 /// @notice Soulbound token. Non-fungible token that is not transferable.
 /// @dev Implementation of https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763 Soulbound token.
-abstract contract MasaSBT is
-    SBT,
-    SBTEnumerable,
-    Ownable,
-    AccessControl,
-    SBTBurnable
-{
+abstract contract MasaSBT is SBT, SBTEnumerable, AccessControl, SBTBurnable {
     /* ========== STATE VARIABLES =========================================== */
 
     using Strings for uint256;
-    using Counters for Counters.Counter;
-
-    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
-    Counters.Counter private _tokenIdCounter;
 
     string private _baseTokenURI;
 
@@ -36,46 +23,24 @@ abstract contract MasaSBT is
 
     /// @notice Creates a new soulbound token
     /// @dev Creates a new soulbound token
-    /// @param owner Owner of the smart contract
+    /// @param admin Administrator of the smart contract
     /// @param name Name of the token
     /// @param symbol Symbol of the token
     /// @param baseTokenURI Base URI of the token
     constructor(
-        address owner,
+        address admin,
         string memory name,
         string memory symbol,
         string memory baseTokenURI
     ) SBT(name, symbol) {
-        Ownable.transferOwnership(owner);
-        _grantRole(DEFAULT_ADMIN_ROLE, owner);
-        _grantRole(MINTER_ROLE, owner);
+        _grantRole(DEFAULT_ADMIN_ROLE, admin);
 
         _baseTokenURI = baseTokenURI;
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
-    function _mintWithCounter(address to)
-        internal
-        onlyRole(MINTER_ROLE)
-        returns (uint256)
-    {
-        uint256 tokenId = _tokenIdCounter.current();
-        _tokenIdCounter.increment();
-        _mint(to, tokenId);
-
-        return tokenId;
-    }
-
     /* ========== MUTATIVE FUNCTIONS ======================================== */
-
-    /// @notice Mints a new SBT
-    /// @dev The caller must have the MINTER role
-    /// @param to The address to mint the SBT to
-    /// @return The SBT ID of the newly minted SBT
-    function mint(address to) public virtual returns (uint256) {
-        return _mintWithCounter(to);
-    }
 
     /* ========== VIEWS ===================================================== */
 
