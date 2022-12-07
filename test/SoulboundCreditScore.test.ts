@@ -340,6 +340,26 @@ describe("Soulbound Credit Score", () => {
         reserveWalletBalanceAfter.sub(reserveWalletBalanceBefore)
       ).to.be.equal(priceInETH);
     });
+
+    it("should fail to get minting info for invalid payment method", async () => {
+      await expect(
+        soulboundCreditScore.getMintingPrice(owner.address)
+      ).to.be.rejectedWith("INVALID_PAYMENT_METHOD");
+    });
+
+    it("we can't use an invalid payment method", async () => {
+      await expect(
+        soulboundCreditScore
+          .connect(address1)
+          ["mint(address,uint256,address,uint256,bytes)"](
+            address1.address, // invalid payment method
+            identityId1,
+            authority.address,
+            signatureDate,
+            signature
+          )
+      ).to.be.rejectedWith("INVALID_PAYMENT_METHOD");
+    });
   });
 
   describe("burn", () => {
