@@ -145,6 +145,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
     /// @param expirationDate Expiration date of the signature
     /// @param signature Signature of the read link request made by the owner
     function addPermission(
+        address paymentMethod,
         uint256 readerIdentityId,
         uint256 ownerIdentityId,
         address token,
@@ -184,7 +185,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
             _payWithMASA(addPermissionPriceMASA);
         } else {
             // pay with $MASA with conversion rate
-            _pay(masaToken, addPermissionPrice);
+            _pay(paymentMethod, addPermissionPrice);
         }
 
         // token => tokenId => readerIdentityId => signatureDate => PermissionData
@@ -368,20 +369,26 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
 
     /// @notice Returns the price for storing a permission
     /// @dev Returns the current pricing for storing a permission
-    /// @return priceInMasaToken Current price of storing a permission in utility token ($MASA)
-    function getPriceForAddPermission()
+    /// @param paymentMethod Address of token that user want to pay
+    /// @return price Current price of storing a permission
+    /// @return paymentMethodUsed Address of the token used to pay
+    function getPriceForAddPermission(address paymentMethod)
         public
         view
-        returns (uint256 priceInMasaToken)
+        returns (uint256 price, address paymentMethodUsed)
     {
-        if (addPermissionPriceMASA > 0) {
+        if (
+            addPermissionPriceMASA > 0 &&
+            masaToken != address(0) &&
+            erc20token[masaToken]
+        ) {
             // if there is a price in $MASA, return it without conversion rate
-            priceInMasaToken = addPermissionPriceMASA;
+            return (addPermissionPriceMASA, masaToken);
         } else {
             // return $MASA with conversion rate
-            priceInMasaToken = _convertFromStableCoin(
-                masaToken,
-                addPermissionPrice
+            return (
+                _convertFromStableCoin(paymentMethod, addPermissionPrice),
+                paymentMethod
             );
         }
     }
