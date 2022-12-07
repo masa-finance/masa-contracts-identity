@@ -4,11 +4,21 @@ import { solidity } from "ethereum-waffle";
 import { ethers, deployments, getChainId } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
+  ERC20,
+  ERC20__factory,
+  IUniswapRouter,
+  IUniswapRouter__factory,
   SoulboundCreditScore,
   SoulboundCreditScore__factory,
   SoulboundIdentity,
   SoulboundIdentity__factory
 } from "../typechain";
+import {
+  MASA_GOERLI,
+  SWAPROUTER_GOERLI,
+  USDC_GOERLI,
+  WETH_GOERLI
+} from "../src/constants";
 
 chai.use(chaiAsPromised);
 chai.use(solidity);
@@ -87,6 +97,36 @@ describe("Soulbound Credit Score", () => {
       soulboundCreditScoreAddress,
       owner
     );
+    const uniswapRouter: IUniswapRouter = IUniswapRouter__factory.connect(
+      SWAPROUTER_GOERLI,
+      owner
+    );
+
+    // we get stable coins for address1
+    await uniswapRouter.swapExactETHForTokens(
+      0,
+      [WETH_GOERLI, USDC_GOERLI],
+      address1.address,
+      Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
+      {
+        value: ethers.utils.parseEther("10")
+      }
+    );
+
+    // we get $MASA utility tokens for address1
+    await uniswapRouter.swapExactETHForTokens(
+      0,
+      [WETH_GOERLI, MASA_GOERLI],
+      address1.address,
+      Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
+      {
+        value: ethers.utils.parseEther("10")
+      }
+    );
+
+    // we add payment methods
+    await soulboundCreditScore.connect(owner).addErc20Token(USDC_GOERLI);
+    await soulboundCreditScore.connect(owner).addErc20Token(MASA_GOERLI);
 
     // we mint identity SBT
     const mintTx = await soulboundIdentity
@@ -267,7 +307,7 @@ describe("Soulbound Credit Score", () => {
       await soulboundCreditScore.connect(owner).setMintingPrice(1); // 1 USD
     });
 
-    it("should mint from final user address", async () => {
+    it("should mint from final user address paying with ETH", async () => {
       const reserveWallet = await soulboundCreditScore.reserveWallet();
       const priceInETH = await soulboundCreditScore.getMintingPrice(
         ethers.constants.AddressZero
@@ -304,7 +344,7 @@ describe("Soulbound Credit Score", () => {
       ).to.be.equal(priceInETH);
     });
 
-    it("should mint from final user identity", async () => {
+    it("should mint from final user identity paying with ETH", async () => {
       const reserveWallet = await soulboundCreditScore.reserveWallet();
       const priceInETH = await soulboundCreditScore.getMintingPrice(
         ethers.constants.AddressZero
@@ -339,6 +379,64 @@ describe("Soulbound Credit Score", () => {
       expect(
         reserveWalletBalanceAfter.sub(reserveWalletBalanceBefore)
       ).to.be.equal(priceInETH);
+    });
+
+    it("should mint from final user identity paying with stable coin", async () => {
+      const priceInStableCoin = await soulboundCreditScore.getMintingPrice(
+        USDC_GOERLI
+      );
+
+      // set allowance for soul store
+      const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, owner);
+      await usdc
+        .connect(address1)
+        .approve(soulboundCreditScore.address, priceInStableCoin);
+
+      const mintTx = await soulboundCreditScore
+        .connect(address1)
+        ["mint(address,uint256,address,uint256,bytes)"](
+          USDC_GOERLI,
+          identityId1,
+          authority.address,
+          signatureDate,
+          signature
+        );
+      const mintReceipt = await mintTx.wait();
+
+      const tokenId = mintReceipt.events![1].args![1].toNumber();
+
+      expect(await soulboundCreditScore.getIdentityId(tokenId)).to.equal(
+        identityId1
+      );
+    });
+
+    it("should mint from final user identity paying with $MASA coin", async () => {
+      const priceInStableCoin = await soulboundCreditScore.getMintingPrice(
+        MASA_GOERLI
+      );
+
+      // set allowance for soul store
+      const usdc: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
+      await usdc
+        .connect(address1)
+        .approve(soulboundCreditScore.address, priceInStableCoin);
+
+      const mintTx = await soulboundCreditScore
+        .connect(address1)
+        ["mint(address,uint256,address,uint256,bytes)"](
+          MASA_GOERLI,
+          identityId1,
+          authority.address,
+          signatureDate,
+          signature
+        );
+      const mintReceipt = await mintTx.wait();
+
+      const tokenId = mintReceipt.events![2].args![1].toNumber();
+
+      expect(await soulboundCreditScore.getIdentityId(tokenId)).to.equal(
+        identityId1
+      );
     });
 
     it("should fail to get minting info for invalid payment method", async () => {
