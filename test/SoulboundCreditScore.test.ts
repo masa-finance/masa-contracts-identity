@@ -266,15 +266,23 @@ describe("Soulbound Credit Score", () => {
       await soulboundCreditScore.connect(owner).setMintingPrice(1); // 1 USD
     });
 
-    it("should mint from final user", async () => {
+    it("should mint from final user address", async () => {
+      const reserveWallet = await soulboundCreditScore.reserveWallet();
+      const priceInETH = await soulboundCreditScore.getMintingPrice(
+        ethers.constants.AddressZero
+      );
+      const reserveWalletBalanceBefore = await ethers.provider.getBalance(
+        reserveWallet
+      );
+
       const mintTx = await soulboundCreditScore
-        .connect(address1)
-        ["mint(address,uint256,address,uint256,bytes)"](
+        .connect(address1)["mint(address,address,address,uint256,bytes)"](
           ethers.constants.AddressZero,
-          identityId1,
+          address1.address,
           authority.address,
           signatureDate,
-          signature
+          signature,
+          { value: priceInETH }
         );
       const mintReceipt = await mintTx.wait();
 
@@ -283,6 +291,51 @@ describe("Soulbound Credit Score", () => {
       expect(await soulboundCreditScore.getIdentityId(tokenId)).to.equal(
         identityId1
       );
+
+      const reserveWalletBalanceAfter = await ethers.provider.getBalance(
+        reserveWallet
+      );
+
+      // we check that the reserve wallet received the ETH
+      expect(
+        reserveWalletBalanceAfter.sub(reserveWalletBalanceBefore)
+      ).to.be.equal(priceInETH);
+    });
+
+    it("should mint from final user identity", async () => {
+      const reserveWallet = await soulboundCreditScore.reserveWallet();
+      const priceInETH = await soulboundCreditScore.getMintingPrice(
+        ethers.constants.AddressZero
+      );
+      const reserveWalletBalanceBefore = await ethers.provider.getBalance(
+        reserveWallet
+      );
+
+      const mintTx = await soulboundCreditScore
+        .connect(address1)["mint(address,uint256,address,uint256,bytes)"](
+          ethers.constants.AddressZero,
+          identityId1,
+          authority.address,
+          signatureDate,
+          signature,
+          { value: priceInETH }
+        );
+      const mintReceipt = await mintTx.wait();
+
+      const tokenId = mintReceipt.events![0].args![1].toNumber();
+
+      expect(await soulboundCreditScore.getIdentityId(tokenId)).to.equal(
+        identityId1
+      );
+
+      const reserveWalletBalanceAfter = await ethers.provider.getBalance(
+        reserveWallet
+      );
+
+      // we check that the reserve wallet received the ETH
+      expect(
+        reserveWalletBalanceAfter.sub(reserveWalletBalanceBefore)
+      ).to.be.equal(priceInETH);
     });
   });
 
