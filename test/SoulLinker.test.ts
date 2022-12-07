@@ -315,7 +315,9 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const priceInUtilityToken = await soulLinker.getPriceForAddPermission();
+      const priceInUtilityToken = await soulLinker.getPriceForAddPermission(
+        MASA_GOERLI
+      );
 
       // set allowance for soul store
       const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
@@ -326,6 +328,7 @@ describe("Soul Linker", () => {
       await soulLinker
         .connect(address1)
         .addPermission(
+          MASA_GOERLI,
           readerIdentityId,
           ownerIdentityId,
           soulboundCreditScore.address,
@@ -384,7 +387,9 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const priceInUtilityToken = await soulLinker.getPriceForAddPermission();
+      const priceInUtilityToken = await soulLinker.getPriceForAddPermission(
+        MASA_GOERLI
+      );
       expect(priceInUtilityToken).to.be.equal(10);
 
       // set allowance for soul store
@@ -396,6 +401,7 @@ describe("Soul Linker", () => {
       await soulLinker
         .connect(address1)
         .addPermission(
+          MASA_GOERLI,
           readerIdentityId,
           ownerIdentityId,
           soulboundCreditScore.address,
@@ -451,7 +457,9 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const priceInUtilityToken = await soulLinker.getPriceForAddPermission();
+      const priceInUtilityToken = await soulLinker.getPriceForAddPermission(
+        MASA_GOERLI
+      );
 
       // set allowance for soul store
       const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
@@ -463,6 +471,7 @@ describe("Soul Linker", () => {
         soulLinker
           .connect(address1)
           .addPermission(
+            MASA_GOERLI,
             readerIdentityId,
             ownerIdentityId,
             soulboundCreditScore.address,
@@ -497,7 +506,9 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const priceInUtilityToken = await soulLinker.getPriceForAddPermission();
+      const priceInUtilityToken = await soulLinker.getPriceForAddPermission(
+        MASA_GOERLI
+      );
 
       // set allowance for soul store
       const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
@@ -508,6 +519,7 @@ describe("Soul Linker", () => {
       await soulLinker
         .connect(address1)
         .addPermission(
+          MASA_GOERLI,
           readerIdentityId,
           ownerIdentityId,
           soulboundCreditScore.address,
@@ -551,7 +563,9 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const priceInUtilityToken = await soulLinker.getPriceForAddPermission();
+      const priceInUtilityToken = await soulLinker.getPriceForAddPermission(
+        MASA_GOERLI
+      );
 
       // set allowance for soul store
       const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
@@ -562,6 +576,7 @@ describe("Soul Linker", () => {
       await soulLinker
         .connect(address1)
         .addPermission(
+          MASA_GOERLI,
           readerIdentityId,
           ownerIdentityId,
           soulboundCreditScore.address,
