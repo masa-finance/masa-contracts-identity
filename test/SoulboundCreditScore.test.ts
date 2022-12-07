@@ -276,7 +276,8 @@ describe("Soulbound Credit Score", () => {
       );
 
       const mintTx = await soulboundCreditScore
-        .connect(address1)["mint(address,address,address,uint256,bytes)"](
+        .connect(address1)
+        ["mint(address,address,address,uint256,bytes)"](
           ethers.constants.AddressZero,
           address1.address,
           authority.address,
@@ -312,7 +313,8 @@ describe("Soulbound Credit Score", () => {
       );
 
       const mintTx = await soulboundCreditScore
-        .connect(address1)["mint(address,uint256,address,uint256,bytes)"](
+        .connect(address1)
+        ["mint(address,uint256,address,uint256,bytes)"](
           ethers.constants.AddressZero,
           identityId1,
           authority.address,
