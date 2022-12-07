@@ -167,7 +167,7 @@ contract SoulboundIdentity is MasaSBT, ISoulboundIdentity {
     /// @return sbtName Soul name, in upper/lower case and extension
     /// @return linked `true` if the soul name is linked, `false` otherwise
     /// @return identityId Identity id of the soul name
-    /// @return tokenId SoulName id id of the soul name
+    /// @return tokenId SoulName id of the soul name
     /// @return expirationDate Expiration date of the soul name
     /// @return active `true` if the soul name is active, `false` otherwise
     function getTokenData(string memory name)
