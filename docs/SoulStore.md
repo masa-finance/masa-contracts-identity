@@ -70,6 +70,23 @@ function erc20tokens(uint256) external view returns (address)
 |---|---|---|
 | _0 | address | undefined |
 
+### getErc20Tokens
+
+```solidity
+function getErc20Tokens() external view returns (address[])
+```
+
+Returns all available ERC 20 tokens
+
+*Returns the address of all available ERC 20 tokens*
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address[] | Array of all enabled ERC20 tokens |
+
 ### getNameRegistrationPricePerYear
 
 ```solidity
@@ -91,26 +108,6 @@ Returns the price of register a name per year in stable coin for an specific len
 | Name | Type | Description |
 |---|---|---|
 | _0 | uint256 | Price in stable coin for that name length |
-
-### getPaymentMethods
-
-```solidity
-function getPaymentMethods() external view returns (address _nativeToken, address _stableCoin, address _masaToken, address[] _erc20tokens)
-```
-
-Returns all available payment methods
-
-*Returns the address of all available payment methods*
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _nativeToken | address | Address of the native token (ETH) |
-| _stableCoin | address | Address of the stable coin (USDC) |
-| _masaToken | address | Address of the utility token ($MASA) |
-| _erc20tokens | address[] | Array of all ERC20 tokens |
 
 ### getPriceForMintingName
 
@@ -312,7 +309,7 @@ function setMasaToken(address _masaToken) external nonpayable
 
 Sets the utility token to pay the fee in ($MASA)
 
-*The caller must have the owner to call this function*
+*The caller must have the owner to call this function It can be set to address(0) to disable paying in $MASA*
 
 #### Parameters
 
