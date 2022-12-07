@@ -150,6 +150,7 @@ contract SoulLinker is PaymentGateway, EIP712 {
     /// @param expirationDate Expiration date of the signature
     /// @param signature Signature of the read link request made by the owner
     function addPermission(
+        address paymentMethod,
         uint256 readerIdentityId,
         uint256 ownerIdentityId,
         address token,
@@ -189,7 +190,7 @@ contract SoulLinker is PaymentGateway, EIP712 {
             _payWithMASA(addPermissionPriceMASA);
         } else {
             // pay with $MASA with conversion rate
-            _pay(utilityToken, addPermissionPrice);
+            _pay(paymentMethod, addPermissionPrice);
         }
 
         // token => tokenId => readerIdentityId => signatureDate => PermissionData
@@ -373,21 +374,19 @@ contract SoulLinker is PaymentGateway, EIP712 {
 
     /// @notice Returns the price for storing a permission
     /// @dev Returns the current pricing for storing a permission
+    /// @param paymentMethod Address of token that user want to pay
     /// @return priceInUtilityToken Current price of storing a permission in utility token ($MASA)
-    function getPriceForAddPermission()
+    function getPriceForAddPermission(address paymentMethod)
         public
         view
-        returns (uint256 priceInUtilityToken)
+        returns (uint256)
     {
         if (addPermissionPriceMASA > 0) {
             // if there is a price in $MASA, return it without conversion rate
-            priceInUtilityToken = addPermissionPriceMASA;
+            return addPermissionPriceMASA;
         } else {
             // return $MASA with conversion rate
-            priceInUtilityToken = _convertFromStableCoin(
-                utilityToken,
-                addPermissionPrice
-            );
+            return _convertFromStableCoin(paymentMethod, addPermissionPrice);
         }
     }
 
