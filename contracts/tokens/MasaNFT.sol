@@ -4,6 +4,7 @@ pragma solidity ^0.8.7;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
@@ -12,10 +13,11 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 /// @author Masa Finance
 /// @notice Non-fungible token is a token that is not fungible.
 /// @dev Implementation of https://eips.ethereum.org/EIPS/eip-721[ERC721] Non-Fungible Token Standard,
-/// that inherits from {ERC721Enumerable}, {AccessControl} and {ERC721Burnable}.
+/// that inherits from {ERC721Enumerable}, {Ownable}, {AccessControl} and {ERC721Burnable}.
 abstract contract MasaNFT is
     ERC721,
     ERC721Enumerable,
+    Ownable,
     AccessControl,
     ERC721Burnable
 {
@@ -43,6 +45,7 @@ abstract contract MasaNFT is
         string memory symbol,
         string memory baseTokenURI
     ) ERC721(name, symbol) {
+        Ownable.transferOwnership(admin);
         _grantRole(DEFAULT_ADMIN_ROLE, admin);
         _grantRole(MINTER_ROLE, admin);
 
