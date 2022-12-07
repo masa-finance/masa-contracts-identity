@@ -90,6 +90,10 @@ describe("Soul Store", () => {
         value: ethers.utils.parseEther("10")
       }
     );
+
+    // we add payment methods
+    await soulStore.connect(owner).addErc20Token(USDC_GOERLI);
+    await soulStore.connect(owner).addErc20Token(MASA_GOERLI);
   });
 
   describe("owner functions", () => {

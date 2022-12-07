@@ -195,6 +195,9 @@ describe("Soul Linker", () => {
         value: ethers.utils.parseEther("10")
       }
     );
+
+    // we add payment methods
+    await soulLinker.connect(owner).addErc20Token(MASA_GOERLI);
   });
 
   describe("owner functions", () => {
