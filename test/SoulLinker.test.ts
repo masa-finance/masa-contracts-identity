@@ -327,6 +327,29 @@ describe("Soul Linker", () => {
     });
   });
 
+  describe("test pausable", () => {
+    it("should pause", async () => {
+      await soulLinker.connect(owner).pause();
+
+      expect(await soulLinker.paused()).to.be.true;
+    });
+
+    it("should unpause", async () => {
+      await soulLinker.connect(owner).pause();
+      await soulLinker.connect(owner).unpause();
+
+      expect(await soulLinker.paused()).to.be.false;
+    });
+
+    it("should fail to pause from non owner", async () => {
+      await expect(soulLinker.connect(address1).pause()).to.be.rejected;
+    });
+
+    it("should fail to unpause from non owner", async () => {
+      await expect(soulLinker.connect(address1).unpause()).to.be.rejected;
+    });
+  });
+
   describe("read link information", () => {
     it("should get identity id", async () => {
       expect(

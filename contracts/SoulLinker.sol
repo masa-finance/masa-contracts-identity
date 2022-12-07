@@ -4,6 +4,7 @@ pragma solidity ^0.8.7;
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
 
 import "./dex/PaymentGateway.sol";
 import "./interfaces/ISoulboundIdentity.sol";
@@ -11,7 +12,7 @@ import "./interfaces/ISoulboundIdentity.sol";
 /// @title Soul linker
 /// @author Masa Finance
 /// @notice Soul linker smart contract that let add links to a Soulbound token.
-contract SoulLinker is PaymentGateway, EIP712 {
+contract SoulLinker is PaymentGateway, EIP712, Pausable {
     /* ========== STATE VARIABLES =========================================== */
 
     ISoulboundIdentity public soulboundIdentity;
@@ -119,6 +120,18 @@ contract SoulLinker is PaymentGateway, EIP712 {
         addPermissionPriceMASA = _addPermissionPriceMASA;
     }
 
+    /// @notice Pauses the smart contract
+    /// @dev The caller must have the owner to call this function
+    function pause() public onlyOwner {
+        _pause();
+    }
+
+    /// @notice Unpauses the smart contract
+    /// @dev The caller must have the owner to call this function
+    function unpause() public onlyOwner {
+        _unpause();
+    }
+
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
     /// @notice Stores the permission, validating the signature of the given read link request
@@ -140,7 +153,7 @@ contract SoulLinker is PaymentGateway, EIP712 {
         uint256 signatureDate,
         uint256 expirationDate,
         bytes calldata signature
-    ) external {
+    ) external whenNotPaused {
         require(linkedSBT[token], "SBT_NOT_LINKED");
 
         address identityOwner = soulboundIdentity.ownerOf(ownerIdentityId);
@@ -206,7 +219,7 @@ contract SoulLinker is PaymentGateway, EIP712 {
         address token,
         uint256 tokenId,
         uint256 signatureDate
-    ) external {
+    ) external whenNotPaused {
         address identityOwner = soulboundIdentity.ownerOf(ownerIdentityId);
         address tokenOwner = IERC721Enumerable(token).ownerOf(tokenId);
 

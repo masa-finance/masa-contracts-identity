@@ -2,6 +2,7 @@
 pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
 
 import "./dex/PaymentGateway.sol";
 import "./interfaces/ISoulboundIdentity.sol";
@@ -12,7 +13,7 @@ import "./interfaces/ISoulName.sol";
 /// @notice Soul Store, that can mint new Soulbound Identities and Soul Name NFTs, paying a fee
 /// @dev From this smart contract we can mint new Soulbound Identities and Soul Name NFTs.
 /// This minting can be done paying a fee in ETH, USDC or $MASA
-contract SoulStore is PaymentGateway {
+contract SoulStore is PaymentGateway, Pausable {
     using SafeMath for uint256;
 
     /* ========== STATE VARIABLES ========== */
@@ -76,6 +77,18 @@ contract SoulStore is PaymentGateway {
         ] = _nameRegistrationPricePerYear;
     }
 
+    /// @notice Pauses the smart contract
+    /// @dev The caller must have the owner to call this function
+    function pause() public onlyOwner {
+        _pause();
+    }
+
+    /// @notice Unpauses the smart contract
+    /// @dev The caller must have the owner to call this function
+    function unpause() public onlyOwner {
+        _unpause();
+    }
+
     /* ========== MUTATIVE FUNCTIONS ========== */
 
     /// @notice Mints a new Soulbound Identity and Name purchasing it
@@ -91,7 +104,7 @@ contract SoulStore is PaymentGateway {
         string memory name,
         uint256 yearsPeriod,
         string memory _tokenURI
-    ) external payable returns (uint256) {
+    ) external payable whenNotPaused returns (uint256) {
         _pay(
             paymentMethod,
             getNameRegistrationPricePerYear(name).mul(yearsPeriod)
@@ -110,7 +123,12 @@ contract SoulStore is PaymentGateway {
     /// @notice Mints a new Soulbound Identity purchasing it
     /// @dev This function allows the purchase of a soulbound identity for free
     /// @return TokenId of the new soulbound identity
-    function purchaseIdentity() external payable returns (uint256) {
+    function purchaseIdentity()
+        external
+        payable
+        whenNotPaused
+        returns (uint256)
+    {
         // finalize purchase
         return _mintSoulboundIdentity(_msgSender());
     }
@@ -130,7 +148,7 @@ contract SoulStore is PaymentGateway {
         uint256 yearsPeriod,
         string memory _tokenURI,
         address to
-    ) external payable returns (uint256) {
+    ) external payable whenNotPaused returns (uint256) {
         _pay(
             paymentMethod,
             getNameRegistrationPricePerYear(name).mul(yearsPeriod)
