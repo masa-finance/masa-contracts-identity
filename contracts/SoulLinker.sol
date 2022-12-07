@@ -375,18 +375,22 @@ contract SoulLinker is PaymentGateway, EIP712 {
     /// @notice Returns the price for storing a permission
     /// @dev Returns the current pricing for storing a permission
     /// @param paymentMethod Address of token that user want to pay
-    /// @return priceInUtilityToken Current price of storing a permission in utility token ($MASA)
+    /// @return price Current price of storing a permission
+    /// @return paymentMethodUsed Address of the token used to pay
     function getPriceForAddPermission(address paymentMethod)
         public
         view
-        returns (uint256)
+        returns (uint256 price, address paymentMethodUsed)
     {
-        if (addPermissionPriceMASA > 0) {
+        if (addPermissionPriceMASA > 0 && utilityToken != address(0)) {
             // if there is a price in $MASA, return it without conversion rate
-            return addPermissionPriceMASA;
+            return (addPermissionPriceMASA, utilityToken);
         } else {
             // return $MASA with conversion rate
-            return _convertFromStableCoin(paymentMethod, addPermissionPrice);
+            return (
+                _convertFromStableCoin(paymentMethod, addPermissionPrice),
+                paymentMethod
+            );
         }
     }
 
