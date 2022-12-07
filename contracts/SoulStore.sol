@@ -12,7 +12,7 @@ import "./interfaces/ISoulName.sol";
 /// @author Masa Finance
 /// @notice Soul Store, that can mint new Soulbound Identities and Soul Name NFTs, paying a fee
 /// @dev From this smart contract we can mint new Soulbound Identities and Soul Name NFTs.
-/// This minting can be done paying a fee in ETH, USDC or $MASA
+/// This minting can be done paying a fee in ETH, USDC or MASA
 contract SoulStore is PaymentGateway, Pausable {
     using SafeMath for uint256;
 
@@ -93,7 +93,7 @@ contract SoulStore is PaymentGateway, Pausable {
 
     /// @notice Mints a new Soulbound Identity and Name purchasing it
     /// @dev This function allows the purchase of a soulbound identity and name using
-    /// stable coin (USDC), native token (ETH) or utility token ($MASA)
+    /// stable coin (USDC), native token (ETH) or utility token (MASA)
     /// @param paymentMethod Address of token that user want to pay
     /// @param name Name of the new soul name
     /// @param yearsPeriod Years of validity of the name
@@ -135,7 +135,7 @@ contract SoulStore is PaymentGateway, Pausable {
 
     /// @notice Mints a new Soul Name purchasing it
     /// @dev This function allows the purchase of a soul name using
-    /// stable coin (USDC), native token (ETH) or utility token ($MASA)
+    /// stable coin (USDC), native token (ETH) or utility token (MASA)
     /// @param paymentMethod Address of token that user want to pay
     /// @param name Name of the new soul name
     /// @param yearsPeriod Years of validity of the name
