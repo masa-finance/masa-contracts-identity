@@ -187,7 +187,7 @@ describe("Soul Store", () => {
   describe("purchase info", () => {
     it("test getNameRegistrationPricePerYear() with ", async () => {
       const priceA = await soulStore.getNameRegistrationPricePerYear("1");
-      const priceB = await soulStore.getNameRegistrationPricePerYear("❤️");
+      const priceB = await soulStore.getNameRegistrationPricePerYear("😁");
 
       expect(priceA).to.be.equal(MINTING_NAME_PRICE_1LETTERS);
       expect(priceB).to.be.equal(MINTING_NAME_PRICE_1LETTERS);
