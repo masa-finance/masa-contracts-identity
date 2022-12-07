@@ -36,7 +36,7 @@ const func: DeployFunction = async ({
   let swapRouter: string;
   let wrappedNativeToken: string; // weth
   let stableCoin: string; // usdc
-  let masaCoin: string; // $masa
+  let masaCoin: string; // masa
 
   if (network.name == "mainnet") {
     // mainnet
