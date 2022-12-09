@@ -1,5 +1,5 @@
 import hre from "hardhat";
-import { getEnvParams } from "../src/utils/EnvParams";
+import { getEnvParams, getPrivateKey } from "../src/utils/EnvParams";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
 import {
@@ -106,6 +106,23 @@ const func: DeployFunction = async ({
       }
     }
   }
+
+  const signer = env.ADMIN
+    ? new ethers.Wallet(
+        getPrivateKey(network.name),
+        ethers.getDefaultProvider(network.name)
+      )
+    : admin;
+
+  const soulboundCreditScore = await ethers.getContractAt(
+    "SoulboundCreditScore",
+    soulboundCreditScoreDeploymentResult.address
+  );
+
+  // add authority to soulboundCreditScore
+  await soulboundCreditScore
+    .connect(signer)
+    .addAuthority(env.AUTHORITY_WALLET || admin.address);
 };
 
 func.tags = ["SoulboundCreditScore"];
