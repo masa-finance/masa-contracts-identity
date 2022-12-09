@@ -42,6 +42,12 @@ const networks: NetworksUserConfig = {
     gas: "auto", // 20000000
     gasPrice: 200000000000
     // blockGasLimit: 13000000
+  },
+  mainnet: {
+    url: getInfuraURL("mainnet"),
+    accounts: [getPrivateKey("mainnet")],
+    gas: "auto", // 20000000
+    gasPrice: 200000000000 //"auto"
   }
 };
 
