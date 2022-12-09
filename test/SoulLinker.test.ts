@@ -185,7 +185,7 @@ describe("Soul Linker", () => {
       owner
     );
 
-    // we get $MASA utility tokens for address1
+    // we get MASA utility tokens for address1
     await uniswapRouter.swapExactETHForTokens(
       0,
       [WETH_GOERLI, MASA_GOERLI],
@@ -446,7 +446,7 @@ describe("Soul Linker", () => {
       expect(dataWithPermissions).to.be.equal(data);
     });
 
-    it("addPermission must work paying with $MASA without an exchange rate", async () => {
+    it("addPermission must work paying with MASA without an exchange rate", async () => {
       await soulLinker.connect(owner).setAddPermissionPriceMASA(10);
       expect(await soulLinker.addPermissionPriceMASA()).to.be.equal(10);
 

@@ -22,7 +22,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
     address[] public linkedSBTs;
 
     uint256 public addPermissionPrice; // store permission price in stable coin
-    uint256 public addPermissionPriceMASA; // store permission price in $MASA
+    uint256 public addPermissionPriceMASA; // store permission price in MASA
 
     // token => tokenId => readerIdentityId => signatureDate => PermissionData
     mapping(address => mapping(uint256 => mapping(uint256 => mapping(uint256 => PermissionData))))
@@ -43,7 +43,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
     /// @param owner Owner of the smart contract
     /// @param _soulboundIdentity Soulbound identity smart contract
     /// @param _addPermissionPrice Store permission price in stable coin
-    /// @param _addPermissionPriceMASA Store permission price in $MASA
+    /// @param _addPermissionPriceMASA Store permission price in MASA
     /// @param paymentParams Payment gateway params
     constructor(
         address owner,
@@ -106,9 +106,9 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         addPermissionPrice = _addPermissionPrice;
     }
 
-    /// @notice Sets the price of store permission in $MASA
+    /// @notice Sets the price of store permission in MASA
     /// @dev The caller must have the owner to call this function
-    /// @param _addPermissionPriceMASA New price of the store permission in $MASA
+    /// @param _addPermissionPriceMASA New price of the store permission in MASA
     function setAddPermissionPriceMASA(uint256 _addPermissionPriceMASA)
         external
         onlyOwner
@@ -181,10 +181,10 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         );
 
         if (addPermissionPriceMASA > 0) {
-            // if there is a price in $MASA, pay it without conversion rate
+            // if there is a price in MASA, pay it without conversion rate
             _payWithMASA(addPermissionPriceMASA);
         } else {
-            // pay with $MASA with conversion rate
+            // pay with MASA with conversion rate
             _pay(paymentMethod, addPermissionPrice);
         }
 
@@ -382,10 +382,10 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
             masaToken != address(0) &&
             erc20token[masaToken]
         ) {
-            // if there is a price in $MASA, return it without conversion rate
+            // if there is a price in MASA, return it without conversion rate
             return (addPermissionPriceMASA, masaToken);
         } else {
-            // return $MASA with conversion rate
+            // return MASA with conversion rate
             return (
                 _convertFromStableCoin(paymentMethod, addPermissionPrice),
                 paymentMethod

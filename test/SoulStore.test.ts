@@ -69,7 +69,7 @@ describe("Soul Store", () => {
       }
     );
 
-    // we get $MASA utility tokens for address1
+    // we get MASA utility tokens for address1
     await uniswapRouter.swapExactETHForTokens(
       0,
       [WETH_GOERLI, MASA_GOERLI],
@@ -504,7 +504,7 @@ describe("Soul Store", () => {
       const reserveWalletBalanceBefore = await masa.balanceOf(reserveWallet);
 
       await soulStore.connect(address1).purchaseIdentityAndName(
-        MASA_GOERLI, // $MASA
+        MASA_GOERLI, // MASA
         SOUL_NAME,
         YEAR,
         ARWEAVE_LINK
@@ -572,7 +572,7 @@ describe("Soul Store", () => {
 
       await expect(
         soulStore.connect(address2).purchaseIdentityAndName(
-          MASA_GOERLI, // $MASA
+          MASA_GOERLI, // MASA
           SOUL_NAME,
           YEAR,
           ARWEAVE_LINK
@@ -672,7 +672,7 @@ describe("Soul Store", () => {
       await masa.connect(address1).approve(soulStore.address, priceInMasaToken);
 
       await soulStore.connect(address1).purchaseName(
-        MASA_GOERLI, // $MASA
+        MASA_GOERLI, // MASA
         SOUL_NAME,
         YEAR,
         ARWEAVE_LINK,
@@ -736,7 +736,7 @@ describe("Soul Store", () => {
 
       await expect(
         soulStore.connect(address2).purchaseName(
-          MASA_GOERLI, // $MASA
+          MASA_GOERLI, // MASA
           SOUL_NAME,
           YEAR,
           ARWEAVE_LINK,

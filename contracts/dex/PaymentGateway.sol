@@ -21,7 +21,7 @@ abstract contract PaymentGateway is Ownable {
         address swapRouter; // Swap router address
         address wrappedNativeToken; // Wrapped native token address
         address stableCoin; // Stable coin to pay the fee in (USDC)
-        address masaToken; // Utility token to pay the fee in ($MASA)
+        address masaToken; // Utility token to pay the fee in (MASA)
         address reserveWallet; // Wallet that will receive the fee
     }
 
@@ -31,7 +31,7 @@ abstract contract PaymentGateway is Ownable {
     address public wrappedNativeToken;
 
     address public stableCoin; // USDC. It also needs to be enabled as erc20token, if we want to pay in USDC
-    address public masaToken; // $MASA. It also needs to be enabled as erc20token, if we want to pay in $MASA
+    address public masaToken; // MASA. It also needs to be enabled as erc20token, if we want to pay in MASA
 
     // enabled ERC20 tokens
     mapping(address => bool) public erc20token;
@@ -93,9 +93,9 @@ abstract contract PaymentGateway is Ownable {
         stableCoin = _stableCoin;
     }
 
-    /// @notice Sets the utility token to pay the fee in ($MASA)
+    /// @notice Sets the utility token to pay the fee in (MASA)
     /// @dev The caller must have the owner to call this function
-    /// It can be set to address(0) to disable paying in $MASA
+    /// It can be set to address(0) to disable paying in MASA
     /// @param _masaToken New utility token to pay the fee in
     function setMasaToken(address _masaToken) external onlyOwner {
         require(masaToken != _masaToken, "SAME_VALUE");
@@ -197,7 +197,7 @@ abstract contract PaymentGateway is Ownable {
                 amountInStableCoin
             );
         } else if (erc20token[paymentMethod]) {
-            // ERC20 token, including $MASA
+            // ERC20 token, including MASA
             uint256 swapAmout = _convertFromStableCoin(
                 paymentMethod,
                 amountInStableCoin
@@ -217,7 +217,7 @@ abstract contract PaymentGateway is Ownable {
     /// performing any swap
     /// @param amountInMASA Price to be paid in MASA
     function _payWithMASA(uint256 amountInMASA) internal {
-        // $MASA
+        // MASA
         require(erc20token[masaToken], "INVALID_PAYMENT_METHOD");
 
         IERC20(masaToken).safeTransferFrom(
