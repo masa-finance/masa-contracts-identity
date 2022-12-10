@@ -192,18 +192,6 @@ describe("Soul Store", () => {
       expect(await soulStore.getNameRegistrationPricePerYear("😁")).to.be.equal(
         MINTING_NAME_PRICE_1LETTERS
       );
-      expect(await soulStore.getNameRegistrationPricePerYear("✋🏻")).to.be.equal(
-        MINTING_NAME_PRICE_1LETTERS
-      );
-      expect(await soulStore.getNameRegistrationPricePerYear("👨‍🎓")).to.be.equal(
-        MINTING_NAME_PRICE_1LETTERS
-      );
-      expect(await soulStore.getNameRegistrationPricePerYear("🧑🏾‍🌾")).to.be.equal(
-        MINTING_NAME_PRICE_1LETTERS
-      );
-      expect(await soulStore.getNameRegistrationPricePerYear("👨‍👨‍👦‍👦")).to.be.equal(
-        MINTING_NAME_PRICE_1LETTERS
-      );
     });
 
     it("we can get name purchase info for 1 and 2 years", async () => {
