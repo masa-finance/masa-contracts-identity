@@ -33,7 +33,10 @@ const func: DeployFunction = async ({
   const soulboundCreditScoreDeployed = await deployments.get(
     "SoulboundCreditScore"
   );
-  const soulbound2FADeployed = await deployments.get("Soulbound2FA");
+  let soulbound2FADeployed;
+  if (network.name !== "mainnet") {
+    soulbound2FADeployed = await deployments.get("Soulbound2FA");
+  }
 
   let swapRouter: string;
   let wrappedNativeToken: string; // weth
@@ -116,7 +119,9 @@ const func: DeployFunction = async ({
     .connect(signer)
     .addLinkedSBT(soulboundCreditScoreDeployed.address);
 
-  await soulLinker.connect(signer).addLinkedSBT(soulbound2FADeployed.address);
+  if (network.name !== "mainnet") {
+    await soulLinker.connect(signer).addLinkedSBT(soulbound2FADeployed.address);
+  }
 };
 
 func.tags = ["SoulLinker"];

@@ -115,6 +115,9 @@ const func: DeployFunction = async ({
     .addAuthority(env.AUTHORITY_WALLET || admin.address);
 };
 
+func.skip = async ({ network }) => {
+  return network.name === "mainnet";
+};
 func.tags = ["Soulbound2FA"];
 func.dependencies = ["SoulboundIdentity"];
 export default func;
