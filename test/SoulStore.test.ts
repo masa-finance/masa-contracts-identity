@@ -490,7 +490,7 @@ describe("Soul Store", () => {
       ).to.be.equal(priceInStableCoin);
     });
 
-    it("we can purchase an identity and name with $MASA coin", async () => {
+    it("we can purchase an identity and name with MASA coin", async () => {
       const reserveWallet = await soulStore.reserveWallet();
       const priceInMasaToken = await soulStore.getPriceForMintingName(
         await soulStore.masaToken(),
@@ -559,7 +559,7 @@ describe("Soul Store", () => {
       ).to.be.rejected;
     });
 
-    it("we can't purchase an identity and name with $MASA coin if we don't have funds", async () => {
+    it("we can't purchase an identity and name with MASA coin if we don't have funds", async () => {
       const priceInMasaToken = await soulStore.getPriceForMintingName(
         await soulStore.masaToken(),
         SOUL_NAME,
@@ -660,7 +660,7 @@ describe("Soul Store", () => {
       );
     });
 
-    it("we can purchase a name with $MASA coin", async () => {
+    it("we can purchase a name with MASA coin", async () => {
       const priceInMasaToken = await soulStore.getPriceForMintingName(
         await soulStore.masaToken(),
         SOUL_NAME,
@@ -723,7 +723,7 @@ describe("Soul Store", () => {
       ).to.be.rejected;
     });
 
-    it("we can't purchase a name with $MASA coin if we don't have funds", async () => {
+    it("we can't purchase a name with MASA coin if we don't have funds", async () => {
       const priceInMasaToken = await soulStore.getPriceForMintingName(
         await soulStore.masaToken(),
         SOUL_NAME,
