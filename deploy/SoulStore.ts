@@ -26,7 +26,6 @@ const func: DeployFunction = async ({
   [, admin] = await ethers.getSigners();
   const env = getEnvParams(network.name);
 
-  const masa = await deployments.get("MASA");
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
   const soulNameDeployed = await deployments.get("SoulName");
 
@@ -139,5 +138,5 @@ const func: DeployFunction = async ({
 };
 
 func.tags = ["SoulStore"];
-func.dependencies = ["MASA", "SoulboundIdentity", "SoulName"];
+func.dependencies = ["SoulboundIdentity", "SoulName"];
 export default func;

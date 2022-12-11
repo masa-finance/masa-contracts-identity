@@ -29,7 +29,6 @@ const func: DeployFunction = async ({
   [, admin] = await ethers.getSigners();
   const env = getEnvParams(network.name);
 
-  const masa = await deployments.get("MASA");
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
   const soulboundCreditScoreDeployed = await deployments.get(
     "SoulboundCreditScore"
@@ -122,7 +121,6 @@ const func: DeployFunction = async ({
 
 func.tags = ["SoulLinker"];
 func.dependencies = [
-  "MASA",
   "SoulboundIdentity",
   "SoulboundCreditScore",
   "Soulbound2FA"

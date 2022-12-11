@@ -30,7 +30,6 @@ const func: DeployFunction = async ({
   const env = getEnvParams(network.name);
   const baseUri = `${env.BASE_URI}/credit-score/`;
 
-  const masa = await deployments.get("MASA");
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
 
   let swapRouter: string;
@@ -120,5 +119,5 @@ const func: DeployFunction = async ({
 };
 
 func.tags = ["SoulboundCreditScore"];
-func.dependencies = ["MASA", "SoulboundIdentity"];
+func.dependencies = ["SoulboundIdentity"];
 export default func;
