@@ -4,8 +4,8 @@ import { solidity } from "ethereum-waffle";
 import { ethers, deployments } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
-  ERC20,
-  ERC20__factory,
+  IERC20,
+  IERC20__factory,
   IUniswapRouter,
   IUniswapRouter__factory,
   SoulStore,
@@ -469,7 +469,7 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, owner);
+      const usdc: IERC20 = IERC20__factory.connect(USDC_GOERLI, owner);
       await usdc
         .connect(address1)
         .approve(soulStore.address, priceInStableCoin);
@@ -499,7 +499,7 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
+      const masa: IERC20 = IERC20__factory.connect(MASA_GOERLI, owner);
       await masa.connect(address1).approve(soulStore.address, priceInMasaToken);
       const reserveWalletBalanceBefore = await masa.balanceOf(reserveWallet);
 
@@ -544,7 +544,7 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, owner);
+      const usdc: IERC20 = IERC20__factory.connect(USDC_GOERLI, owner);
       await usdc
         .connect(address2)
         .approve(soulStore.address, priceInStableCoin);
@@ -567,7 +567,7 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
+      const masa: IERC20 = IERC20__factory.connect(MASA_GOERLI, owner);
       await masa.connect(address2).approve(soulStore.address, priceInMasaToken);
 
       await expect(
@@ -646,7 +646,7 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, owner);
+      const usdc: IERC20 = IERC20__factory.connect(USDC_GOERLI, owner);
       await usdc
         .connect(address1)
         .approve(soulStore.address, priceInStableCoin);
@@ -668,7 +668,7 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
+      const masa: IERC20 = IERC20__factory.connect(MASA_GOERLI, owner);
       await masa.connect(address1).approve(soulStore.address, priceInMasaToken);
 
       await soulStore.connect(address1).purchaseName(
@@ -707,7 +707,7 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, owner);
+      const usdc: IERC20 = IERC20__factory.connect(USDC_GOERLI, owner);
       await usdc
         .connect(address2)
         .approve(soulStore.address, priceInStableCoin);
@@ -731,7 +731,7 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
+      const masa: IERC20 = IERC20__factory.connect(MASA_GOERLI, owner);
       await masa.connect(address2).approve(soulStore.address, priceInMasaToken);
 
       await expect(
@@ -804,7 +804,7 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const dai: ERC20 = ERC20__factory.connect(DAI_GOERLI, owner);
+      const dai: IERC20 = IERC20__factory.connect(DAI_GOERLI, owner);
       await dai.connect(address1).approve(soulStore.address, priceInDAI);
 
       await soulStore.connect(address1).purchaseName(

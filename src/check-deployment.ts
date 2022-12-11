@@ -2,8 +2,8 @@
 import "@nomiclabs/hardhat-ethers";
 import { deployments, ethers } from "hardhat";
 import {
-  ERC20,
-  ERC20__factory,
+  IERC20,
+  IERC20__factory,
   SoulboundIdentity,
   SoulboundIdentity__factory,
   SoulLinker__factory,
@@ -53,7 +53,7 @@ async function main() {
   console.log("");
 
   // create contract instances
-  const masa: ERC20 = ERC20__factory.connect(masaAddress, admin);
+  const masa: IERC20 = IERC20__factory.connect(masaAddress, admin);
   const soulboundIdentity: SoulboundIdentity =
     SoulboundIdentity__factory.connect(soulboundIdentityAddress, admin);
   const soulName: SoulName = SoulName__factory.connect(soulNameAddress, admin);

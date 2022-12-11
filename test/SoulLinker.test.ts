@@ -4,8 +4,8 @@ import { solidity } from "ethereum-waffle";
 import { ethers, deployments, getChainId } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
-  ERC20,
-  ERC20__factory,
+  IERC20,
+  IERC20__factory,
   IUniswapRouter,
   IUniswapRouter__factory,
   SoulboundCreditScore,
@@ -392,7 +392,7 @@ describe("Soul Linker", () => {
         await soulLinker.getPriceForAddPermission(MASA_GOERLI);
 
       // set allowance for soul store
-      const masa: ERC20 = ERC20__factory.connect(paymentMethodUsed, owner);
+      const masa: IERC20 = IERC20__factory.connect(paymentMethodUsed, owner);
       await masa.connect(address1).approve(soulLinker.address, price);
 
       await soulLinker
@@ -462,7 +462,7 @@ describe("Soul Linker", () => {
       expect(price).to.be.equal(10);
 
       // set allowance for soul store
-      const masa: ERC20 = ERC20__factory.connect(paymentMethodUsed, owner);
+      const masa: IERC20 = IERC20__factory.connect(paymentMethodUsed, owner);
       await masa.connect(address1).approve(soulLinker.address, price);
 
       await soulLinker
@@ -528,7 +528,7 @@ describe("Soul Linker", () => {
         await soulLinker.getPriceForAddPermission(MASA_GOERLI);
 
       // set allowance for soul store
-      const masa: ERC20 = ERC20__factory.connect(paymentMethodUsed, owner);
+      const masa: IERC20 = IERC20__factory.connect(paymentMethodUsed, owner);
       await masa.connect(address1).approve(soulLinker.address, price);
 
       await expect(
@@ -574,7 +574,7 @@ describe("Soul Linker", () => {
         await soulLinker.getPriceForAddPermission(MASA_GOERLI);
 
       // set allowance for soul store
-      const masa: ERC20 = ERC20__factory.connect(paymentMethodUsed, owner);
+      const masa: IERC20 = IERC20__factory.connect(paymentMethodUsed, owner);
       await masa.connect(address1).approve(soulLinker.address, price);
 
       await soulLinker
@@ -628,7 +628,7 @@ describe("Soul Linker", () => {
         await soulLinker.getPriceForAddPermission(MASA_GOERLI);
 
       // set allowance for soul store
-      const masa: ERC20 = ERC20__factory.connect(paymentMethodUsed, owner);
+      const masa: IERC20 = IERC20__factory.connect(paymentMethodUsed, owner);
       await masa.connect(address1).approve(soulLinker.address, price);
 
       await soulLinker
