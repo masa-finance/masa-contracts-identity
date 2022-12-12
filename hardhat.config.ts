@@ -40,6 +40,14 @@ const networks: NetworksUserConfig = {
     accounts: [getPrivateKey("mainnet")],
     gas: "auto", // 20000000
     gasPrice: 100000000000 //"auto"
+  },
+  alfajores: {
+    url: "https://alfajores-forno.celo-testnet.org", // Localhost (default: none)
+    accounts: [getPrivateKey("alfajores")],
+    allowUnlimitedContractSize: true,
+    gas: "auto", // 20000000
+    gasPrice: 200000000000
+    // blockGasLimit: 13000000
   }
 };
 
