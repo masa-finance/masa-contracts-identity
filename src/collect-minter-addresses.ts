@@ -38,13 +38,28 @@ async function main() {
   console.log(
     "=============================================================================="
   );
-  console.log(`Account address: ${admin.address}`);
   console.log(`ChainId: ${chainId}`);
 
   console.log("");
 
   console.log(`SoulName addresses:              ${soulNameAddresses}`);
-  console.log("");
+  console.log(
+    "=============================================================================="
+  );
+
+  for (let c = 0; c < soulNameAddresses.length; c++) {
+    // create contract instances
+    const soulName: SoulName = SoulName__factory.connect(
+      soulNameAddresses[c],
+      admin
+    );
+    const totalSupply = await soulName.totalSupply();
+    console.log(`SoulName address ${soulNameAddresses[c]}, total supply: ${totalSupply}`);
+  }
+
+  console.log(
+    "=============================================================================="
+  );
 
   for (let c = 0; c < soulNameAddresses.length; c++) {
     console.log("");
