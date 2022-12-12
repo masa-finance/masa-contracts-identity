@@ -45,7 +45,7 @@ async function main() {
 
   console.log("");
 
-  console.log(`SoulName addresses:              ${soulboundIdentityAddresses}`);
+  console.log(`SoulboundIdentity addresses:              ${soulboundIdentityAddresses}`);
   console.log(
     "=============================================================================="
   );
@@ -58,7 +58,7 @@ async function main() {
     );
     const totalSupply = await soulboundIdentity.totalSupply();
     console.log(
-      `SoulName address ${soulboundIdentityAddresses[c]}, total supply: ${totalSupply}`
+      `SoulboundIdentity address ${soulboundIdentityAddresses[c]}, total supply: ${totalSupply}`
     );
   }
 
@@ -71,7 +71,7 @@ async function main() {
 
     // create contract instances
     console.log(
-      `SoulName address:                ${soulboundIdentityAddresses[c]}`
+      `SoulboundIdentity address:                ${soulboundIdentityAddresses[c]}`
     );
     const soulboundIdentity: SoulName = SoulName__factory.connect(
       soulboundIdentityAddresses[c],
