@@ -50,7 +50,7 @@ async function main() {
     );
 
     const totalSupply = await soulName.totalSupply();
-    console.log(`Total supply: ${totalSupply.toNumber()}`);
+    console.log(`Total supply: ${totalSupply}`);
     for (let i = 0; i < totalSupply.toNumber(); i++) {
       const eventFilter = soulName.filters.Transfer(
         ethers.constants.AddressZero,
@@ -59,7 +59,7 @@ async function main() {
       );
       const events = await soulName.queryFilter(eventFilter);
 
-      console.log(`${events[0].args.tokenId},${events[0].args.to}`);
+      console.log(`${events[0].args.tokenId},${totalSupply},${events[0].args.to}`);
     }
   }
 }
