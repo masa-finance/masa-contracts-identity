@@ -13,7 +13,14 @@ async function main() {
   let soulNameAddresses;
   if (chainId == 44787) {
     // alfajores
-    soulNameAddresses = ["0x39A600828FdA30C77B0222167e161F5933Ccd2BE"];
+    soulNameAddresses = [
+      "0x4f9CaE6dB46Fcbc261F3524aF2A835858F75Efb0",
+      "0xc07D389E7af03137775B9103d47429cd15502ACb",
+      "0x59bF21389179fE2D3a23CE95541E24F374aa9b6D",
+      "0xe734549eC4BE6002413210A9BEB8a5dfB3820187",
+      "0x39A600828FdA30C77B0222167e161F5933Ccd2BE",
+      "0xd965221E2Fb6448736F9B4BBc35dd9A3e3BF660a"
+    ];
   } else if (chainId == 5) {
     // goerli
     soulNameAddresses = [
