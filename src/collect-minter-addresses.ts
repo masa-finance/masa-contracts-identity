@@ -50,6 +50,8 @@ async function main() {
     );
 
     const totalSupply = await soulName.totalSupply();
+    console.log(`Name: ${await soulName.name()}`);
+    console.log(`Symbol: ${await soulName.symbol()}`);
     console.log(`Total supply: ${totalSupply}`);
     for (let i = 0; i < totalSupply.toNumber(); i++) {
       const eventFilter = soulName.filters.Transfer(
