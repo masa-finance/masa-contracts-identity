@@ -1,13 +1,10 @@
 /* eslint-disable no-console */
 import "@nomiclabs/hardhat-ethers";
-import { deployments, ethers } from "hardhat";
+import { ethers } from "hardhat";
 import {
-  ERC20,
-  ERC20__factory,
   SoulName,
   SoulName__factory,
 } from "../typechain";
-import { SoulLinker } from "../typechain/contracts/SoulLinker";
 
 /**
  * main function
@@ -42,7 +39,14 @@ async function main() {
 
   console.log("");
 
-  console.log(await soulName.filters.Transfer());
+  const totalSupply = await soulName.totalSupply();
+  console.log(`Total supply: ${totalSupply.toNumber()}`);
+  for (let i = 0; i < totalSupply.toNumber(); i++) {
+    const eventFilter = soulName.filters.Transfer(ethers.constants.AddressZero, null, i);
+    const events = await soulName.queryFilter(eventFilter);
+
+    console.log(`${events[0].args.tokenId},${events[0].args.to}`);
+  }
 }
 
 main()
