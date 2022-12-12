@@ -10,28 +10,31 @@ async function main() {
   const [admin] = await ethers.getSigners();
   const chainId = await admin.getChainId();
 
-  let soulNameAddresses;
+  let soulboundIdentityAddresses;
   if (chainId == 44787) {
     // alfajores
-    soulNameAddresses = [
-      "0x4f9CaE6dB46Fcbc261F3524aF2A835858F75Efb0",
-      "0xc07D389E7af03137775B9103d47429cd15502ACb",
-      "0x59bF21389179fE2D3a23CE95541E24F374aa9b6D",
-      "0xe734549eC4BE6002413210A9BEB8a5dfB3820187",
-      "0x39A600828FdA30C77B0222167e161F5933Ccd2BE",
-      "0xd965221E2Fb6448736F9B4BBc35dd9A3e3BF660a"
+    soulboundIdentityAddresses = [
+      "0xBDc0F2e51bedaB31258BE0c0bd8fCf141bccd193",
+      "0x4e1c9E9ce5af7CB87E32f979B5288a1C6A6A1E5C",
+      "0x514b35F067Bc78589986832d3c25caA9a4dD9fC7",
+      "0xeFd998D31Ef7f0d54c6C960AEA29A8628CD704d8",
+      "0x41a3cE7EA192D4b746CD7F2b7F8701aD4964C3c5",
+      "0xD0f3C1361d8Fba40CbC85cC546c38511b510dedd",
+      "0x1be6c425d17380D0BCF62099a27BE4e9c5cF8719",
+      "0x1471A7d3914a38e7488111001e50eCc29D627166",
+      "0xadAC98BB4f783Fea5478D496c777677521Ce305a"
     ];
   } else if (chainId == 5) {
     // goerli
-    soulNameAddresses = [
-      "0xB4Ca4a32199520F726EDD680042A8d9d26B4de06",
-      "0x15987A0417D14cc6f3554166bCB4A590f6891B18",
-      "0xf4B9De884175f1b2A6A383a64D02E88C850e94fF",
-      "0x1b8333B8b87978A789482E391101aE41A9fB53FF",
-      "0xE465bE522317753B432a31173430fA366F108CC1",
-      "0xF8A4cE70d457F6343B77A17806C140bc25575Dc8",
-      "0x3f80F551459440524caeC9fce97fFB4B3F6BFFC0",
-      "0x9A89eaEFf5eBfeBCcDA9E446230A4739f2329967"
+    soulboundIdentityAddresses = [
+      "0x270265B1c6b31ae53f75BC2f6a5D5F7f422BB9e8",
+      "0xB10ddc662BD561f0B26A8B555e15C71430a74fAa",
+      "0x83A5492f28CD7D2d5aA7A8b9c0Cf926f639Dd612",
+      "0x6B87e5baB74c0b68e392817Ab2c6abf69DB0F5EC",
+      "0x607af050D66AA9Bc54a051D7a0C68F254b6745Fc",
+      "0xe7a4CaFA517cF82e90b42fB1cEE1437f4bb205F2",
+      "0xF8625D0131116A13BC2e8d5953f6ed8A3F7C7353",
+      "0x8aEB3A8D6bdFC68BFFe1aC03833D9522857f0db4"
     ];
   }
 
@@ -42,48 +45,54 @@ async function main() {
 
   console.log("");
 
-  console.log(`SoulName addresses:              ${soulNameAddresses}`);
+  console.log(`SoulName addresses:              ${soulboundIdentityAddresses}`);
   console.log(
     "=============================================================================="
   );
 
-  for (let c = 0; c < soulNameAddresses.length; c++) {
+  for (let c = 0; c < soulboundIdentityAddresses.length; c++) {
     // create contract instances
-    const soulName: SoulName = SoulName__factory.connect(
-      soulNameAddresses[c],
+    const soulboundIdentity: SoulName = SoulName__factory.connect(
+      soulboundIdentityAddresses[c],
       admin
     );
-    const totalSupply = await soulName.totalSupply();
-    console.log(`SoulName address ${soulNameAddresses[c]}, total supply: ${totalSupply}`);
+    const totalSupply = await soulboundIdentity.totalSupply();
+    console.log(
+      `SoulName address ${soulboundIdentityAddresses[c]}, total supply: ${totalSupply}`
+    );
   }
 
   console.log(
     "=============================================================================="
   );
 
-  for (let c = 0; c < soulNameAddresses.length; c++) {
+  for (let c = 0; c < soulboundIdentityAddresses.length; c++) {
     console.log("");
 
     // create contract instances
-    console.log(`SoulName address:                ${soulNameAddresses[c]}`);
-    const soulName: SoulName = SoulName__factory.connect(
-      soulNameAddresses[c],
+    console.log(
+      `SoulName address:                ${soulboundIdentityAddresses[c]}`
+    );
+    const soulboundIdentity: SoulName = SoulName__factory.connect(
+      soulboundIdentityAddresses[c],
       admin
     );
 
-    const totalSupply = await soulName.totalSupply();
-    console.log(`Name: ${await soulName.name()}`);
-    console.log(`Symbol: ${await soulName.symbol()}`);
+    const totalSupply = await soulboundIdentity.totalSupply();
+    console.log(`Name: ${await soulboundIdentity.name()}`);
+    console.log(`Symbol: ${await soulboundIdentity.symbol()}`);
     console.log(`Total supply: ${totalSupply}`);
     for (let i = 0; i < totalSupply.toNumber(); i++) {
-      const eventFilter = soulName.filters.Transfer(
+      const eventFilter = soulboundIdentity.filters.Transfer(
         ethers.constants.AddressZero,
         null,
         i
       );
-      const events = await soulName.queryFilter(eventFilter);
+      const events = await soulboundIdentity.queryFilter(eventFilter);
 
-      console.log(`${events[0].args.tokenId},${totalSupply},${events[0].args.to}`);
+      console.log(
+        `${events[0].args.tokenId},${totalSupply},${events[0].args.to}`
+      );
     }
   }
 }
