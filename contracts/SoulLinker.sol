@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
@@ -12,7 +13,7 @@ import "./interfaces/ISoulboundIdentity.sol";
 /// @title Soul linker
 /// @author Masa Finance
 /// @notice Soul linker smart contract that let add links to a Soulbound token.
-contract SoulLinker is PaymentGateway, EIP712, Pausable {
+contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
     /* ========== STATE VARIABLES =========================================== */
 
     ISoulboundIdentity public soulboundIdentity;
@@ -154,7 +155,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         uint256 signatureDate,
         uint256 expirationDate,
         bytes calldata signature
-    ) external whenNotPaused {
+    ) external whenNotPaused nonReentrant {
         require(linkedSBT[token], "SBT_NOT_LINKED");
 
         address identityOwner = soulboundIdentity.ownerOf(ownerIdentityId);

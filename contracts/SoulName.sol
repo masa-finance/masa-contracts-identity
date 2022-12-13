@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 import "./libraries/Utils.sol";
@@ -13,7 +14,7 @@ import "./tokens/MasaNFT.sol";
 /// @notice SoulName NFT that points to a Soulbound identity token
 /// @dev SoulName NFT, that inherits from the NFT contract, and points to a Soulbound identity token.
 /// It has an extension, and stores all the information about the identity names.
-contract SoulName is MasaNFT, ISoulName {
+contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     /* ========== STATE VARIABLES ========== */
     using SafeMath for uint256;
 
@@ -115,7 +116,7 @@ contract SoulName is MasaNFT, ISoulName {
         string memory name,
         uint256 yearsPeriod,
         string memory _tokenURI
-    ) public override returns (uint256) {
+    ) public override nonReentrant returns (uint256) {
         require(isAvailable(name), "NAME_ALREADY_EXISTS");
         require(bytes(name).length > 0, "ZERO_LENGTH_NAME");
         require(yearsPeriod > 0, "ZERO_YEARS_PERIOD");

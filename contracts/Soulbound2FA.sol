@@ -1,13 +1,15 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+
 import "./tokens/MasaSBTSelfSovereign.sol";
 
 /// @title Soulbound Two-factor authentication (2FA)
 /// @author Masa Finance
 /// @notice Soulbound token that represents a Two-factor authentication (2FA)
 /// @dev Soulbound 2FA, that inherits from the SBT contract.
-contract Soulbound2FA is MasaSBTSelfSovereign {
+contract Soulbound2FA is MasaSBTSelfSovereign, ReentrancyGuard {
     /* ========== STATE VARIABLES =========================================== */
 
     /* ========== INITIALIZE ================================================ */
@@ -53,7 +55,7 @@ contract Soulbound2FA is MasaSBTSelfSovereign {
         address authorityAddress,
         uint256 signatureDate,
         bytes calldata signature
-    ) public payable virtual returns (uint256) {
+    ) public payable virtual nonReentrant returns (uint256) {
         address to = soulboundIdentity.ownerOf(identityId);
         require(to == _msgSender(), "CALLER_NOT_OWNER");
 

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 
@@ -13,7 +14,7 @@ import "./interfaces/ISoulName.sol";
 /// @notice Soul Store, that can mint new Soulbound Identities and Soul Name NFTs, paying a fee
 /// @dev From this smart contract we can mint new Soulbound Identities and Soul Name NFTs.
 /// This minting can be done paying a fee in ETH, USDC or MASA
-contract SoulStore is PaymentGateway, Pausable {
+contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard {
     using SafeMath for uint256;
 
     /* ========== STATE VARIABLES ========== */
@@ -104,7 +105,7 @@ contract SoulStore is PaymentGateway, Pausable {
         string memory name,
         uint256 yearsPeriod,
         string memory _tokenURI
-    ) external payable whenNotPaused returns (uint256) {
+    ) external payable whenNotPaused nonReentrant returns (uint256) {
         _pay(
             paymentMethod,
             getNameRegistrationPricePerYear(name).mul(yearsPeriod)
@@ -125,8 +126,8 @@ contract SoulStore is PaymentGateway, Pausable {
     /// @return TokenId of the new soulbound identity
     function purchaseIdentity()
         external
-        payable
         whenNotPaused
+        nonReentrant
         returns (uint256)
     {
         // finalize purchase
@@ -148,7 +149,7 @@ contract SoulStore is PaymentGateway, Pausable {
         uint256 yearsPeriod,
         string memory _tokenURI,
         address to
-    ) external payable whenNotPaused returns (uint256) {
+    ) external payable whenNotPaused nonReentrant returns (uint256) {
         _pay(
             paymentMethod,
             getNameRegistrationPricePerYear(name).mul(yearsPeriod)
