@@ -228,8 +228,8 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
         require(identityOwner == tokenOwner, "IDENTITY_OWNER_NOT_TOKEN_OWNER");
         require(identityOwner == _msgSender(), "CALLER_NOT_OWNER");
         require(
-            _permissions[token][tokenId][readerIdentityId][signatureDate]
-                .isRevoked == false,
+            !_permissions[token][tokenId][readerIdentityId][signatureDate]
+                .isRevoked,
             "PERMISSION_ALREADY_REVOKED"
         );
 
@@ -363,7 +363,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
             permission.expirationDate >= block.timestamp,
             "VALID_PERIOD_EXPIRED"
         );
-        require(permission.isRevoked == false, "PERMISSION_REVOKED");
+        require(!permission.isRevoked, "PERMISSION_REVOKED");
 
         return permission.data;
     }

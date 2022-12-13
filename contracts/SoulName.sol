@@ -409,7 +409,7 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
             _exists(tokenId),
             "ERC721URIStorage: URI set of nonexistent token"
         );
-        require(_URIs[_tokenURI] == false, "URI_ALREADY_EXISTS");
+        require(!_URIs[_tokenURI], "URI_ALREADY_EXISTS");
 
         _tokenURIs[tokenId] = _tokenURI;
         _URIs[_tokenURI] = true;

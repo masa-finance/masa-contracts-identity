@@ -11,7 +11,11 @@ import "./tokens/MasaSBTAuthority.sol";
 /// @author Masa Finance
 /// @notice Soulbound token that represents an identity.
 /// @dev Soulbound identity, that inherits from the SBT contract.
-contract SoulboundIdentity is MasaSBTAuthority, ISoulboundIdentity, ReentrancyGuard {
+contract SoulboundIdentity is
+    MasaSBTAuthority,
+    ISoulboundIdentity,
+    ReentrancyGuard
+{
     /* ========== STATE VARIABLES =========================================== */
 
     ISoulName public soulName;
@@ -63,7 +67,14 @@ contract SoulboundIdentity is MasaSBTAuthority, ISoulboundIdentity, ReentrancyGu
         string memory name,
         uint256 yearsPeriod,
         string memory _tokenURI
-    ) public payable override soulNameAlreadySet nonReentrant returns (uint256) {
+    )
+        public
+        payable
+        override
+        soulNameAlreadySet
+        nonReentrant
+        returns (uint256)
+    {
         uint256 identityId = mint(to);
         soulName.mint(to, name, yearsPeriod, _tokenURI);
 
