@@ -49,7 +49,7 @@ contract SoulboundIdentity is
     /// @notice Mints a new soulbound identity
     /// @dev The caller can only mint one identity per address
     /// @param to Address of the admin of the new identity
-    function mint(address to) public override nonReentrant returns (uint256) {
+    function mint(address to) public override returns (uint256) {
         // Soulbound identity already created!
         require(balanceOf(to) < 1, "SB_IDENTITY_ALREADY_CREATED");
 
