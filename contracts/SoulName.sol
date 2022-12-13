@@ -149,7 +149,10 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     /// @dev The caller must be the owner or an approved address of the soul name.
     /// @param tokenId TokenId of the soul name
     /// @param yearsPeriod Years of validity of the name
-    function renewYearsPeriod(uint256 tokenId, uint256 yearsPeriod) public {
+    function renewYearsPeriod(uint256 tokenId, uint256 yearsPeriod)
+        public
+        nonReentrant
+    {
         // ERC721: caller is not token owner nor approved
         require(
             _isApprovedOrOwner(_msgSender(), tokenId),
