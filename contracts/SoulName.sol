@@ -116,7 +116,7 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         string memory name,
         uint256 yearsPeriod,
         string memory _tokenURI
-    ) public override nonReentrant returns (uint256) {
+    ) external override nonReentrant returns (uint256) {
         require(isAvailable(name), "NAME_ALREADY_EXISTS");
         require(bytes(name).length > 0, "ZERO_LENGTH_NAME");
         require(yearsPeriod > 0, "ZERO_YEARS_PERIOD");
@@ -349,7 +349,7 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     /// @param name Name of the soul name
     /// @return URI of the soulname associated to a name
     function tokenURI(string memory name)
-        public
+        external
         view
         virtual
         returns (string memory)

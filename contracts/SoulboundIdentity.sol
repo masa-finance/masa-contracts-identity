@@ -67,7 +67,7 @@ contract SoulboundIdentity is
         string memory name,
         uint256 yearsPeriod,
         string memory _tokenURI
-    ) public override soulNameAlreadySet nonReentrant returns (uint256) {
+    ) external override soulNameAlreadySet nonReentrant returns (uint256) {
         uint256 identityId = mint(to);
         soulName.mint(to, name, yearsPeriod, _tokenURI);
 
@@ -79,14 +79,14 @@ contract SoulboundIdentity is
     /// @notice Returns the address of the SoulName contract linked to this identity
     /// @dev This function returns the address of the SoulName contract linked to this identity
     /// @return Address of the SoulName contract
-    function getSoulName() public view override returns (ISoulName) {
+    function getSoulName() external view override returns (ISoulName) {
         return soulName;
     }
 
     /// @notice Returns the extension of the soul name
     /// @dev This function returns the extension of the soul name
     /// @return Extension of the soul name
-    function getExtension() public view returns (string memory) {
+    function getExtension() external view returns (string memory) {
         return soulName.getExtension();
     }
 
@@ -108,7 +108,7 @@ contract SoulboundIdentity is
     /// @param name Name of the soul name
     /// @return Address of the owner of the identity
     function ownerOf(string memory name)
-        public
+        external
         view
         soulNameAlreadySet
         returns (address)
@@ -122,7 +122,7 @@ contract SoulboundIdentity is
     /// @param name Name of the soul name
     /// @return URI of the identity associated to a soul name
     function tokenURI(string memory name)
-        public
+        external
         view
         soulNameAlreadySet
         returns (string memory)
@@ -135,7 +135,7 @@ contract SoulboundIdentity is
     /// @dev This function returns the token URI of the identity owned by an account
     /// @param owner Address of the owner of the identity
     /// @return URI of the identity owned by the account
-    function tokenURI(address owner) public view returns (string memory) {
+    function tokenURI(address owner) external view returns (string memory) {
         uint256 tokenId = tokenOfOwner(owner);
         return super.tokenURI(tokenId);
     }
@@ -158,7 +158,7 @@ contract SoulboundIdentity is
     /// @param name Name of the soul name
     /// @return available `true` if the soul name is available, `false` otherwise
     function isAvailable(string memory name)
-        public
+        external
         view
         soulNameAlreadySet
         returns (bool available)

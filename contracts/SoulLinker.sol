@@ -123,13 +123,13 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
 
     /// @notice Pauses the smart contract
     /// @dev The caller must have the owner to call this function
-    function pause() public onlyOwner {
+    function pause() external onlyOwner {
         _pause();
     }
 
     /// @notice Unpauses the smart contract
     /// @dev The caller must have the owner to call this function
-    function unpause() public onlyOwner {
+    function unpause() external onlyOwner {
         _unpause();
     }
 
@@ -311,7 +311,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
         address token,
         uint256 tokenId,
         uint256 readerIdentityId
-    ) public view returns (uint256[] memory) {
+    ) external view returns (uint256[] memory) {
         return _permissionSignatureDates[token][tokenId][readerIdentityId];
     }
 
@@ -326,7 +326,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
         uint256 tokenId,
         uint256 readerIdentityId,
         uint256 signatureDate
-    ) public view returns (PermissionData memory) {
+    ) external view returns (PermissionData memory) {
         return _permissions[token][tokenId][readerIdentityId][signatureDate];
     }
 
@@ -374,7 +374,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
     /// @return price Current price of storing a permission
     /// @return paymentMethodUsed Address of the token used to pay
     function getPriceForAddPermission(address paymentMethod)
-        public
+        external
         view
         returns (uint256 price, address paymentMethodUsed)
     {

@@ -93,7 +93,7 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign, ReentrancyGuard {
         address authorityAddress,
         uint256 signatureDate,
         bytes calldata signature
-    ) public payable virtual returns (uint256) {
+    ) external payable virtual returns (uint256) {
         uint256 identityId = soulboundIdentity.tokenOfOwner(to);
 
         return

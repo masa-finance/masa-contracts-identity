@@ -189,7 +189,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard {
         address paymentMethod,
         string memory name,
         uint256 yearsPeriod
-    ) public view returns (uint256) {
+    ) external view returns (uint256) {
         uint256 mintingPrice = getNameRegistrationPricePerYear(name).mul(
             yearsPeriod
         );

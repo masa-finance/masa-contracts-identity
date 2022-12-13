@@ -113,7 +113,7 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
     /// @param paymentMethod Address of token that user want to pay
     /// @return Current price for minting in the given payment method
     function getMintingPrice(address paymentMethod)
-        public
+        external
         view
         returns (uint256)
     {
