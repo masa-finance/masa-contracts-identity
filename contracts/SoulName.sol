@@ -263,7 +263,7 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         tokenId = _getTokenId(name);
         address _owner = ownerOf(tokenId);
         bool _linked = soulboundIdentity.balanceOf(_owner) > 0;
-        uint256 _identityId;
+        uint256 _identityId = 0;
         if (_linked) {
             _identityId = soulboundIdentity.tokenOfOwner(_owner);
         }
@@ -319,7 +319,7 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         override
         returns (string[] memory sbtNames)
     {
-        uint256 results;
+        uint256 results = 0;
         uint256 balance = balanceOf(owner);
 
         for (uint256 i = 0; i < balance; i++) {
@@ -330,7 +330,7 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         }
 
         string[] memory _sbtNames = new string[](results);
-        uint256 index;
+        uint256 index = 0;
 
         for (uint256 i = 0; i < balance; i++) {
             uint256 tokenId = tokenOfOwnerByIndex(owner, i);
