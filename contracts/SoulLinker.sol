@@ -221,7 +221,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
         address token,
         uint256 tokenId,
         uint256 signatureDate
-    ) external whenNotPaused nonReentrant {
+    ) external whenNotPaused {
         address identityOwner = soulboundIdentity.ownerOf(ownerIdentityId);
         address tokenOwner = IERC721Enumerable(token).ownerOf(tokenId);
 
