@@ -1,0 +1,647 @@
+'npx hardhat compile --force' running
+Generating typings for: 47 artifacts in dir: typechain for target: ethers-v5
+Successfully generated 118 typings!
+Compiled 47 Solidity files successfully
+✅ Generated documentation for 47 contracts
+
+[91m
+Reentrancy in SoulboundCreditScore.mint(address,uint256,address,uint256,bytes) (contracts/SoulboundCreditScore.sol#50-81):
+	External calls:
+	- _pay(paymentMethod,mintingPrice) (contracts/SoulboundCreditScore.sol#67)
+		- returndata = address(token).functionCall(data,SafeERC20: low-level call failed) (node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol#110)
+		- (success,returndata) = target.call{value: value}(data) (node_modules/@openzeppelin/contracts/utils/Address.sol#137)
+		- (success) = address(reserveWallet).call{value: swapAmout}() (contracts/dex/PaymentGateway.sol#182-184)
+		- (success,None) = address(msg.sender).call{value: refund}() (contracts/dex/PaymentGateway.sol#189)
+		- IERC20(paymentMethod).safeTransferFrom(msg.sender,reserveWallet,amountInStableCoin) (contracts/dex/PaymentGateway.sol#194-198)
+		- IERC20(paymentMethod).safeTransferFrom(msg.sender,reserveWallet,swapAmout_scope_0) (contracts/dex/PaymentGateway.sol#205-209)
+	External calls sending eth:
+	- _pay(paymentMethod,mintingPrice) (contracts/SoulboundCreditScore.sol#67)
+		- (success,returndata) = target.call{value: value}(data) (node_modules/@openzeppelin/contracts/utils/Address.sol#137)
+		- (success) = address(reserveWallet).call{value: swapAmout}() (contracts/dex/PaymentGateway.sol#182-184)
+		- (success,None) = address(msg.sender).call{value: refund}() (contracts/dex/PaymentGateway.sol#189)
+	State variables written after the call(s):
+	- tokenId = _mintWithCounter(to) (contracts/SoulboundCreditScore.sol#69)
+		- _balances[to] += 1 (contracts/tokens/SBT/SBT.sol#171)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities[0m
+[93m
+Contract locking ether found:
+	Contract SoulboundIdentity (contracts/SoulboundIdentity.sol#12-227) has payable functions:
+	 - ISoulboundIdentity.mintIdentityWithName(address,string,uint256,string) (contracts/interfaces/ISoulboundIdentity.sol#11-16)
+	 - SoulboundIdentity.mintIdentityWithName(address,string,uint256,string) (contracts/SoulboundIdentity.sol#59-69)
+	But does not have a function to withdraw the ether
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#contracts-that-lock-ether[0m
+[93m
+Reentrancy in SoulName.mint(address,string,uint256,string) (contracts/SoulName.sol#113-145):
+	External calls:
+	- tokenId = _mintWithCounter(to) (contracts/SoulName.sol#132)
+		- IERC721Receiver(to).onERC721Received(_msgSender(),from,tokenId,data) (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#401-412)
+	State variables written after the call(s):
+	- nameData[lowercaseName].tokenId = tokenId (contracts/SoulName.sol#141)
+	- nameData[lowercaseName].exists = true (contracts/SoulName.sol#142)
+	- tokenData[tokenId].name = name (contracts/SoulName.sol#135)
+	- tokenData[tokenId].expirationDate = block.timestamp.add(YEAR.mul(yearsPeriod)) (contracts/SoulName.sol#136-138)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-1[0m
+[93m
+SoulName.getSoulNames(address).index (contracts/SoulName.sol#332) is a local variable never initialized
+SoulName.getSoulNames(address).results (contracts/SoulName.sol#321) is a local variable never initialized
+SoulName.getTokenData(string)._identityId (contracts/SoulName.sol#265) is a local variable never initialized
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#uninitialized-local-variables[0m
+[93m
+ERC721._checkOnERC721Received(address,address,uint256,bytes) (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#394-416) ignores return value by IERC721Receiver(to).onERC721Received(_msgSender(),from,tokenId,data) (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#401-412)
+SoulboundIdentity.mintIdentityWithName(address,string,uint256,string) (contracts/SoulboundIdentity.sol#59-69) ignores return value by soulName.mint(to,name,yearsPeriod,_tokenURI) (contracts/SoulboundIdentity.sol#66)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#unused-return[0m
+[92m
+SoulLinker.constructor(address,ISoulboundIdentity,uint256,uint256,PaymentGateway.PaymentParams).owner (contracts/SoulLinker.sol#49) shadows:
+	- Ownable.owner() (node_modules/@openzeppelin/contracts/access/Ownable.sol#43-45) (function)
+SoulLinker.getIdentityId(address,uint256).owner (contracts/SoulLinker.sol#260) shadows:
+	- Ownable.owner() (node_modules/@openzeppelin/contracts/access/Ownable.sol#43-45) (function)
+SoulLinker.getSBTLinks(uint256,address).owner (contracts/SoulLinker.sol#275) shadows:
+	- Ownable.owner() (node_modules/@openzeppelin/contracts/access/Ownable.sol#43-45) (function)
+SoulLinker.getSBTLinks(address,address).owner (contracts/SoulLinker.sol#285) shadows:
+	- Ownable.owner() (node_modules/@openzeppelin/contracts/access/Ownable.sol#43-45) (function)
+SoulLinker._verify(bytes32,bytes,address).owner (contracts/SoulLinker.sol#439) shadows:
+	- Ownable.owner() (node_modules/@openzeppelin/contracts/access/Ownable.sol#43-45) (function)
+SoulName.mint(address,string,uint256,string).name (contracts/SoulName.sol#115) shadows:
+	- ERC721.name() (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#79-81) (function)
+	- IERC721Metadata.name() (node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol#16) (function)
+SoulName.isAvailable(string).name (contracts/SoulName.sol#225) shadows:
+	- ERC721.name() (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#79-81) (function)
+	- IERC721Metadata.name() (node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol#16) (function)
+SoulName.getTokenData(string).name (contracts/SoulName.sol#249) shadows:
+	- ERC721.name() (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#79-81) (function)
+	- IERC721Metadata.name() (node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol#16) (function)
+SoulName.getTokenData(string)._owner (contracts/SoulName.sol#263) shadows:
+	- Ownable._owner (node_modules/@openzeppelin/contracts/access/Ownable.sol#21) (state variable)
+SoulName.getTokenId(string).name (contracts/SoulName.sol#286) shadows:
+	- ERC721.name() (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#79-81) (function)
+	- IERC721Metadata.name() (node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol#16) (function)
+SoulName.getSoulNames(uint256)._owner (contracts/SoulName.sol#306) shadows:
+	- Ownable._owner (node_modules/@openzeppelin/contracts/access/Ownable.sol#21) (state variable)
+SoulName.getSoulNames(address).owner (contracts/SoulName.sol#315) shadows:
+	- Ownable.owner() (node_modules/@openzeppelin/contracts/access/Ownable.sol#43-45) (function)
+SoulName.tokenURI(string).name (contracts/SoulName.sol#350) shadows:
+	- ERC721.name() (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#79-81) (function)
+	- IERC721Metadata.name() (node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol#16) (function)
+SoulName._getName(string).name (contracts/SoulName.sol#392) shadows:
+	- ERC721.name() (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#79-81) (function)
+	- IERC721Metadata.name() (node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol#16) (function)
+SoulName._getTokenId(string).name (contracts/SoulName.sol#396) shadows:
+	- ERC721.name() (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#79-81) (function)
+	- IERC721Metadata.name() (node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol#16) (function)
+SoulStore.constructor(address,ISoulboundIdentity,uint256,PaymentGateway.PaymentParams).owner (contracts/SoulStore.sol#35) shadows:
+	- Ownable.owner() (node_modules/@openzeppelin/contracts/access/Ownable.sol#43-45) (function)
+Soulbound2FA.constructor(address,string,ISoulboundIdentity,uint256,PaymentGateway.PaymentParams).soulboundIdentity (contracts/Soulbound2FA.sol#25) shadows:
+	- MasaSBTSelfSovereign.soulboundIdentity (contracts/tokens/MasaSBTSelfSovereign.sol#26) (state variable)
+SoulboundCreditScore.constructor(address,string,ISoulboundIdentity,uint256,PaymentGateway.PaymentParams).soulboundIdentity (contracts/SoulboundCreditScore.sol#25) shadows:
+	- MasaSBTSelfSovereign.soulboundIdentity (contracts/tokens/MasaSBTSelfSovereign.sol#26) (state variable)
+SoulboundIdentity.mintIdentityWithName(address,string,uint256,string).name (contracts/SoulboundIdentity.sol#61) shadows:
+	- SBT.name() (contracts/tokens/SBT/SBT.sol#85-87) (function)
+	- ISBTMetadata.name() (contracts/tokens/SBT/extensions/ISBTMetadata.sol#13) (function)
+SoulboundIdentity.ownerOf(string).name (contracts/SoulboundIdentity.sol#104) shadows:
+	- SBT.name() (contracts/tokens/SBT/SBT.sol#85-87) (function)
+	- ISBTMetadata.name() (contracts/tokens/SBT/extensions/ISBTMetadata.sol#13) (function)
+SoulboundIdentity.tokenURI(string).name (contracts/SoulboundIdentity.sol#118) shadows:
+	- SBT.name() (contracts/tokens/SBT/SBT.sol#85-87) (function)
+	- ISBTMetadata.name() (contracts/tokens/SBT/extensions/ISBTMetadata.sol#13) (function)
+SoulboundIdentity.isAvailable(string).name (contracts/SoulboundIdentity.sol#154) shadows:
+	- SBT.name() (contracts/tokens/SBT/SBT.sol#85-87) (function)
+	- ISBTMetadata.name() (contracts/tokens/SBT/extensions/ISBTMetadata.sol#13) (function)
+SoulboundIdentity.getTokenData(string).name (contracts/SoulboundIdentity.sol#172) shadows:
+	- SBT.name() (contracts/tokens/SBT/SBT.sol#85-87) (function)
+	- ISBTMetadata.name() (contracts/tokens/SBT/extensions/ISBTMetadata.sol#13) (function)
+PaymentGateway.constructor(address,PaymentGateway.PaymentParams).owner (contracts/dex/PaymentGateway.sol#49) shadows:
+	- Ownable.owner() (node_modules/@openzeppelin/contracts/access/Ownable.sol#43-45) (function)
+MasaNFT.constructor(address,string,string,string).name (contracts/tokens/MasaNFT.sol#44) shadows:
+	- ERC721.name() (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#79-81) (function)
+	- IERC721Metadata.name() (node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol#16) (function)
+MasaNFT.constructor(address,string,string,string).symbol (contracts/tokens/MasaNFT.sol#45) shadows:
+	- ERC721.symbol() (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#86-88) (function)
+	- IERC721Metadata.symbol() (node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol#21) (function)
+MasaSBT.constructor(address,string,string,string).name (contracts/tokens/MasaSBT.sol#32) shadows:
+	- SBT.name() (contracts/tokens/SBT/SBT.sol#85-87) (function)
+	- ISBTMetadata.name() (contracts/tokens/SBT/extensions/ISBTMetadata.sol#13) (function)
+MasaSBT.constructor(address,string,string,string).symbol (contracts/tokens/MasaSBT.sol#33) shadows:
+	- SBT.symbol() (contracts/tokens/SBT/SBT.sol#92-94) (function)
+	- ISBTMetadata.symbol() (contracts/tokens/SBT/extensions/ISBTMetadata.sol#18) (function)
+MasaSBTAuthority.constructor(address,string,string,string).name (contracts/tokens/MasaSBTAuthority.sol#30) shadows:
+	- SBT.name() (contracts/tokens/SBT/SBT.sol#85-87) (function)
+	- ISBTMetadata.name() (contracts/tokens/SBT/extensions/ISBTMetadata.sol#13) (function)
+MasaSBTAuthority.constructor(address,string,string,string).symbol (contracts/tokens/MasaSBTAuthority.sol#31) shadows:
+	- SBT.symbol() (contracts/tokens/SBT/SBT.sol#92-94) (function)
+	- ISBTMetadata.symbol() (contracts/tokens/SBT/extensions/ISBTMetadata.sol#18) (function)
+MasaSBTSelfSovereign.constructor(address,string,string,string,ISoulboundIdentity,uint256,PaymentGateway.PaymentParams).name (contracts/tokens/MasaSBTSelfSovereign.sol#45) shadows:
+	- SBT.name() (contracts/tokens/SBT/SBT.sol#85-87) (function)
+	- ISBTMetadata.name() (contracts/tokens/SBT/extensions/ISBTMetadata.sol#13) (function)
+MasaSBTSelfSovereign.constructor(address,string,string,string,ISoulboundIdentity,uint256,PaymentGateway.PaymentParams).symbol (contracts/tokens/MasaSBTSelfSovereign.sol#46) shadows:
+	- SBT.symbol() (contracts/tokens/SBT/SBT.sol#92-94) (function)
+	- ISBTMetadata.symbol() (contracts/tokens/SBT/extensions/ISBTMetadata.sol#18) (function)
+MasaSBTSelfSovereign.getIdentityId(uint256).owner (contracts/tokens/MasaSBTSelfSovereign.sol#107) shadows:
+	- Ownable.owner() (node_modules/@openzeppelin/contracts/access/Ownable.sol#43-45) (function)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#local-variable-shadowing[0m
+[92m
+SoulLinker.setAddPermissionPrice(uint256) (contracts/SoulLinker.sol#101-107) should emit an event for: 
+	- addPermissionPrice = _addPermissionPrice (contracts/SoulLinker.sol#106) 
+SoulLinker.setAddPermissionPriceMASA(uint256) (contracts/SoulLinker.sol#112-121) should emit an event for: 
+	- addPermissionPriceMASA = _addPermissionPriceMASA (contracts/SoulLinker.sol#120) 
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#missing-events-arithmetic[0m
+[92m
+SoulLinker.getSBTLinks(address,address) (contracts/SoulLinker.sol#285-302) has external calls inside a loop: sbtLinks[i] = IERC721Enumerable(token).tokenOfOwnerByIndex(owner,i) (contracts/SoulLinker.sol#295-298)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation/#calls-inside-a-loop[0m
+[92m
+Variable 'ERC721._checkOnERC721Received(address,address,uint256,bytes).retval (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#401)' in ERC721._checkOnERC721Received(address,address,uint256,bytes) (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#394-416) potentially used before declaration: retval == IERC721Receiver.onERC721Received.selector (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#402)
+Variable 'ERC721._checkOnERC721Received(address,address,uint256,bytes).reason (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#403)' in ERC721._checkOnERC721Received(address,address,uint256,bytes) (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#394-416) potentially used before declaration: reason.length == 0 (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#404)
+Variable 'ERC721._checkOnERC721Received(address,address,uint256,bytes).reason (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#403)' in ERC721._checkOnERC721Received(address,address,uint256,bytes) (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#394-416) potentially used before declaration: revert(uint256,uint256)(32 + reason,mload(uint256)(reason)) (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#409)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#pre-declaration-usage-of-local-variables[0m
+[92m
+Reentrancy in SoulLinker.addPermission(address,uint256,uint256,address,uint256,string,uint256,uint256,bytes) (contracts/SoulLinker.sol#147-208):
+	External calls:
+	- _payWithMASA(addPermissionPriceMASA) (contracts/SoulLinker.sol#185)
+		- returndata = address(token).functionCall(data,SafeERC20: low-level call failed) (node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol#110)
+		- IERC20(masaToken).safeTransferFrom(msg.sender,reserveWallet,amountInMASA) (contracts/dex/PaymentGateway.sol#223-227)
+		- (success,returndata) = target.call{value: value}(data) (node_modules/@openzeppelin/contracts/utils/Address.sol#137)
+	- _pay(paymentMethod,addPermissionPrice) (contracts/SoulLinker.sol#188)
+		- returndata = address(token).functionCall(data,SafeERC20: low-level call failed) (node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol#110)
+		- (success,returndata) = target.call{value: value}(data) (node_modules/@openzeppelin/contracts/utils/Address.sol#137)
+		- (success) = address(reserveWallet).call{value: swapAmout}() (contracts/dex/PaymentGateway.sol#182-184)
+		- (success,None) = address(msg.sender).call{value: refund}() (contracts/dex/PaymentGateway.sol#189)
+		- IERC20(paymentMethod).safeTransferFrom(msg.sender,reserveWallet,amountInStableCoin) (contracts/dex/PaymentGateway.sol#194-198)
+		- IERC20(paymentMethod).safeTransferFrom(msg.sender,reserveWallet,swapAmout_scope_0) (contracts/dex/PaymentGateway.sol#205-209)
+	External calls sending eth:
+	- _payWithMASA(addPermissionPriceMASA) (contracts/SoulLinker.sol#185)
+		- (success,returndata) = target.call{value: value}(data) (node_modules/@openzeppelin/contracts/utils/Address.sol#137)
+	- _pay(paymentMethod,addPermissionPrice) (contracts/SoulLinker.sol#188)
+		- (success,returndata) = target.call{value: value}(data) (node_modules/@openzeppelin/contracts/utils/Address.sol#137)
+		- (success) = address(reserveWallet).call{value: swapAmout}() (contracts/dex/PaymentGateway.sol#182-184)
+		- (success,None) = address(msg.sender).call{value: refund}() (contracts/dex/PaymentGateway.sol#189)
+	State variables written after the call(s):
+	- _permissionSignatureDates[token][tokenId][readerIdentityId].push(signatureDate) (contracts/SoulLinker.sol#195-197)
+	- _permissions[token][tokenId][readerIdentityId][signatureDate] = PermissionData(ownerIdentityId,data,expirationDate,false) (contracts/SoulLinker.sol#192-194)
+Reentrancy in SoulName.mint(address,string,uint256,string) (contracts/SoulName.sol#113-145):
+	External calls:
+	- tokenId = _mintWithCounter(to) (contracts/SoulName.sol#132)
+		- IERC721Receiver(to).onERC721Received(_msgSender(),from,tokenId,data) (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#401-412)
+	State variables written after the call(s):
+	- _setTokenURI(tokenId,_tokenURI) (contracts/SoulName.sol#133)
+		- _URIs[_tokenURI] = true (contracts/SoulName.sol#414)
+	- _setTokenURI(tokenId,_tokenURI) (contracts/SoulName.sol#133)
+		- _tokenURIs[tokenId] = _tokenURI (contracts/SoulName.sol#413)
+Reentrancy in Soulbound2FA.mint(address,uint256,address,uint256,bytes) (contracts/Soulbound2FA.sol#50-80):
+	External calls:
+	- _pay(paymentMethod,mintingPrice) (contracts/Soulbound2FA.sol#66)
+		- returndata = address(token).functionCall(data,SafeERC20: low-level call failed) (node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol#110)
+		- (success,returndata) = target.call{value: value}(data) (node_modules/@openzeppelin/contracts/utils/Address.sol#137)
+		- (success) = address(reserveWallet).call{value: swapAmout}() (contracts/dex/PaymentGateway.sol#182-184)
+		- (success,None) = address(msg.sender).call{value: refund}() (contracts/dex/PaymentGateway.sol#189)
+		- IERC20(paymentMethod).safeTransferFrom(msg.sender,reserveWallet,amountInStableCoin) (contracts/dex/PaymentGateway.sol#194-198)
+		- IERC20(paymentMethod).safeTransferFrom(msg.sender,reserveWallet,swapAmout_scope_0) (contracts/dex/PaymentGateway.sol#205-209)
+	External calls sending eth:
+	- _pay(paymentMethod,mintingPrice) (contracts/Soulbound2FA.sol#66)
+		- (success,returndata) = target.call{value: value}(data) (node_modules/@openzeppelin/contracts/utils/Address.sol#137)
+		- (success) = address(reserveWallet).call{value: swapAmout}() (contracts/dex/PaymentGateway.sol#182-184)
+		- (success,None) = address(msg.sender).call{value: refund}() (contracts/dex/PaymentGateway.sol#189)
+	State variables written after the call(s):
+	- tokenId = _mintWithCounter(to) (contracts/Soulbound2FA.sol#68)
+		- _allTokens.push(tokenId) (contracts/tokens/SBT/extensions/SBTEnumerable.sol#132)
+		- _allTokens[tokenIndex] = lastTokenId (contracts/tokens/SBT/extensions/SBTEnumerable.sol#182)
+		- _allTokens.pop() (contracts/tokens/SBT/extensions/SBTEnumerable.sol#187)
+	- tokenId = _mintWithCounter(to) (contracts/Soulbound2FA.sol#68)
+		- _allTokensIndex[tokenId] = _allTokens.length (contracts/tokens/SBT/extensions/SBTEnumerable.sol#131)
+		- _allTokensIndex[lastTokenId] = tokenIndex (contracts/tokens/SBT/extensions/SBTEnumerable.sol#183)
+		- delete _allTokensIndex[tokenId] (contracts/tokens/SBT/extensions/SBTEnumerable.sol#186)
+	- tokenId = _mintWithCounter(to) (contracts/Soulbound2FA.sol#68)
+		- _balances[to] += 1 (contracts/tokens/SBT/SBT.sol#171)
+	- tokenId = _mintWithCounter(to) (contracts/Soulbound2FA.sol#68)
+		- _ownedTokens[to][length] = tokenId (contracts/tokens/SBT/extensions/SBTEnumerable.sol#122)
+		- _ownedTokens[from][tokenIndex] = lastTokenId (contracts/tokens/SBT/extensions/SBTEnumerable.sol#156)
+		- delete _ownedTokens[from][lastTokenIndex] (contracts/tokens/SBT/extensions/SBTEnumerable.sol#162)
+	- tokenId = _mintWithCounter(to) (contracts/Soulbound2FA.sol#68)
+		- _ownedTokensIndex[tokenId] = length (contracts/tokens/SBT/extensions/SBTEnumerable.sol#123)
+		- _ownedTokensIndex[lastTokenId] = tokenIndex (contracts/tokens/SBT/extensions/SBTEnumerable.sol#157)
+		- delete _ownedTokensIndex[tokenId] (contracts/tokens/SBT/extensions/SBTEnumerable.sol#161)
+	- tokenId = _mintWithCounter(to) (contracts/Soulbound2FA.sol#68)
+		- _owners[tokenId] = to (contracts/tokens/SBT/SBT.sol#172)
+Reentrancy in SoulboundCreditScore.mint(address,uint256,address,uint256,bytes) (contracts/SoulboundCreditScore.sol#50-81):
+	External calls:
+	- _pay(paymentMethod,mintingPrice) (contracts/SoulboundCreditScore.sol#67)
+		- returndata = address(token).functionCall(data,SafeERC20: low-level call failed) (node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol#110)
+		- (success,returndata) = target.call{value: value}(data) (node_modules/@openzeppelin/contracts/utils/Address.sol#137)
+		- (success) = address(reserveWallet).call{value: swapAmout}() (contracts/dex/PaymentGateway.sol#182-184)
+		- (success,None) = address(msg.sender).call{value: refund}() (contracts/dex/PaymentGateway.sol#189)
+		- IERC20(paymentMethod).safeTransferFrom(msg.sender,reserveWallet,amountInStableCoin) (contracts/dex/PaymentGateway.sol#194-198)
+		- IERC20(paymentMethod).safeTransferFrom(msg.sender,reserveWallet,swapAmout_scope_0) (contracts/dex/PaymentGateway.sol#205-209)
+	External calls sending eth:
+	- _pay(paymentMethod,mintingPrice) (contracts/SoulboundCreditScore.sol#67)
+		- (success,returndata) = target.call{value: value}(data) (node_modules/@openzeppelin/contracts/utils/Address.sol#137)
+		- (success) = address(reserveWallet).call{value: swapAmout}() (contracts/dex/PaymentGateway.sol#182-184)
+		- (success,None) = address(msg.sender).call{value: refund}() (contracts/dex/PaymentGateway.sol#189)
+	State variables written after the call(s):
+	- tokenId = _mintWithCounter(to) (contracts/SoulboundCreditScore.sol#69)
+		- _allTokens.push(tokenId) (contracts/tokens/SBT/extensions/SBTEnumerable.sol#132)
+		- _allTokens[tokenIndex] = lastTokenId (contracts/tokens/SBT/extensions/SBTEnumerable.sol#182)
+		- _allTokens.pop() (contracts/tokens/SBT/extensions/SBTEnumerable.sol#187)
+	- tokenId = _mintWithCounter(to) (contracts/SoulboundCreditScore.sol#69)
+		- _allTokensIndex[tokenId] = _allTokens.length (contracts/tokens/SBT/extensions/SBTEnumerable.sol#131)
+		- _allTokensIndex[lastTokenId] = tokenIndex (contracts/tokens/SBT/extensions/SBTEnumerable.sol#183)
+		- delete _allTokensIndex[tokenId] (contracts/tokens/SBT/extensions/SBTEnumerable.sol#186)
+	- tokenId = _mintWithCounter(to) (contracts/SoulboundCreditScore.sol#69)
+		- _ownedTokens[to][length] = tokenId (contracts/tokens/SBT/extensions/SBTEnumerable.sol#122)
+		- _ownedTokens[from][tokenIndex] = lastTokenId (contracts/tokens/SBT/extensions/SBTEnumerable.sol#156)
+		- delete _ownedTokens[from][lastTokenIndex] (contracts/tokens/SBT/extensions/SBTEnumerable.sol#162)
+	- tokenId = _mintWithCounter(to) (contracts/SoulboundCreditScore.sol#69)
+		- _ownedTokensIndex[tokenId] = length (contracts/tokens/SBT/extensions/SBTEnumerable.sol#123)
+		- _ownedTokensIndex[lastTokenId] = tokenIndex (contracts/tokens/SBT/extensions/SBTEnumerable.sol#157)
+		- delete _ownedTokensIndex[tokenId] (contracts/tokens/SBT/extensions/SBTEnumerable.sol#161)
+	- tokenId = _mintWithCounter(to) (contracts/SoulboundCreditScore.sol#69)
+		- _owners[tokenId] = to (contracts/tokens/SBT/SBT.sol#172)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-2[0m
+[92m
+Reentrancy in SoulStore._mintSoulName(address,string,uint256,string) (contracts/SoulStore.sol#258-272):
+	External calls:
+	- tokenId = soulName.mint(to,name,yearsPeriod,_tokenURI) (contracts/SoulStore.sol#267)
+	Event emitted after the call(s):
+	- SoulNamePurchased(to,tokenId,name,yearsPeriod) (contracts/SoulStore.sol#269)
+Reentrancy in SoulStore._mintSoulboundIdentity(address) (contracts/SoulStore.sol#241-248):
+	External calls:
+	- tokenId = soulboundIdentity.mint(to) (contracts/SoulStore.sol#243)
+	Event emitted after the call(s):
+	- SoulboundIdentityPurchased(to,tokenId) (contracts/SoulStore.sol#245)
+Reentrancy in SoulStore._mintSoulboundIdentityAndName(address,string,uint256,string) (contracts/SoulStore.sol#217-234):
+	External calls:
+	- tokenId = soulboundIdentity.mintIdentityWithName(to,name,yearsPeriod,_tokenURI) (contracts/SoulStore.sol#224-229)
+	Event emitted after the call(s):
+	- SoulboundIdentityAndNamePurchased(to,tokenId,name,yearsPeriod) (contracts/SoulStore.sol#231)
+Reentrancy in SoulLinker.addPermission(address,uint256,uint256,address,uint256,string,uint256,uint256,bytes) (contracts/SoulLinker.sol#147-208):
+	External calls:
+	- _payWithMASA(addPermissionPriceMASA) (contracts/SoulLinker.sol#185)
+		- returndata = address(token).functionCall(data,SafeERC20: low-level call failed) (node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol#110)
+		- IERC20(masaToken).safeTransferFrom(msg.sender,reserveWallet,amountInMASA) (contracts/dex/PaymentGateway.sol#223-227)
+		- (success,returndata) = target.call{value: value}(data) (node_modules/@openzeppelin/contracts/utils/Address.sol#137)
+	- _pay(paymentMethod,addPermissionPrice) (contracts/SoulLinker.sol#188)
+		- returndata = address(token).functionCall(data,SafeERC20: low-level call failed) (node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol#110)
+		- (success,returndata) = target.call{value: value}(data) (node_modules/@openzeppelin/contracts/utils/Address.sol#137)
+		- (success) = address(reserveWallet).call{value: swapAmout}() (contracts/dex/PaymentGateway.sol#182-184)
+		- (success,None) = address(msg.sender).call{value: refund}() (contracts/dex/PaymentGateway.sol#189)
+		- IERC20(paymentMethod).safeTransferFrom(msg.sender,reserveWallet,amountInStableCoin) (contracts/dex/PaymentGateway.sol#194-198)
+		- IERC20(paymentMethod).safeTransferFrom(msg.sender,reserveWallet,swapAmout_scope_0) (contracts/dex/PaymentGateway.sol#205-209)
+	External calls sending eth:
+	- _payWithMASA(addPermissionPriceMASA) (contracts/SoulLinker.sol#185)
+		- (success,returndata) = target.call{value: value}(data) (node_modules/@openzeppelin/contracts/utils/Address.sol#137)
+	- _pay(paymentMethod,addPermissionPrice) (contracts/SoulLinker.sol#188)
+		- (success,returndata) = target.call{value: value}(data) (node_modules/@openzeppelin/contracts/utils/Address.sol#137)
+		- (success) = address(reserveWallet).call{value: swapAmout}() (contracts/dex/PaymentGateway.sol#182-184)
+		- (success,None) = address(msg.sender).call{value: refund}() (contracts/dex/PaymentGateway.sol#189)
+	Event emitted after the call(s):
+	- PermissionAdded(readerIdentityId,ownerIdentityId,token,tokenId,data,signatureDate,expirationDate) (contracts/SoulLinker.sol#199-207)
+Reentrancy in Soulbound2FA.mint(address,uint256,address,uint256,bytes) (contracts/Soulbound2FA.sol#50-80):
+	External calls:
+	- _pay(paymentMethod,mintingPrice) (contracts/Soulbound2FA.sol#66)
+		- returndata = address(token).functionCall(data,SafeERC20: low-level call failed) (node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol#110)
+		- (success,returndata) = target.call{value: value}(data) (node_modules/@openzeppelin/contracts/utils/Address.sol#137)
+		- (success) = address(reserveWallet).call{value: swapAmout}() (contracts/dex/PaymentGateway.sol#182-184)
+		- (success,None) = address(msg.sender).call{value: refund}() (contracts/dex/PaymentGateway.sol#189)
+		- IERC20(paymentMethod).safeTransferFrom(msg.sender,reserveWallet,amountInStableCoin) (contracts/dex/PaymentGateway.sol#194-198)
+		- IERC20(paymentMethod).safeTransferFrom(msg.sender,reserveWallet,swapAmout_scope_0) (contracts/dex/PaymentGateway.sol#205-209)
+	External calls sending eth:
+	- _pay(paymentMethod,mintingPrice) (contracts/Soulbound2FA.sol#66)
+		- (success,returndata) = target.call{value: value}(data) (node_modules/@openzeppelin/contracts/utils/Address.sol#137)
+		- (success) = address(reserveWallet).call{value: swapAmout}() (contracts/dex/PaymentGateway.sol#182-184)
+		- (success,None) = address(msg.sender).call{value: refund}() (contracts/dex/PaymentGateway.sol#189)
+	Event emitted after the call(s):
+	- Mint(to,tokenId) (contracts/tokens/SBT/SBT.sol#174)
+		- tokenId = _mintWithCounter(to) (contracts/Soulbound2FA.sol#68)
+	- Soulbound2FAMinted(tokenId,identityId,authorityAddress,signatureDate,paymentMethod,mintingPrice) (contracts/Soulbound2FA.sol#70-77)
+Reentrancy in SoulboundCreditScore.mint(address,uint256,address,uint256,bytes) (contracts/SoulboundCreditScore.sol#50-81):
+	External calls:
+	- _pay(paymentMethod,mintingPrice) (contracts/SoulboundCreditScore.sol#67)
+		- returndata = address(token).functionCall(data,SafeERC20: low-level call failed) (node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol#110)
+		- (success,returndata) = target.call{value: value}(data) (node_modules/@openzeppelin/contracts/utils/Address.sol#137)
+		- (success) = address(reserveWallet).call{value: swapAmout}() (contracts/dex/PaymentGateway.sol#182-184)
+		- (success,None) = address(msg.sender).call{value: refund}() (contracts/dex/PaymentGateway.sol#189)
+		- IERC20(paymentMethod).safeTransferFrom(msg.sender,reserveWallet,amountInStableCoin) (contracts/dex/PaymentGateway.sol#194-198)
+		- IERC20(paymentMethod).safeTransferFrom(msg.sender,reserveWallet,swapAmout_scope_0) (contracts/dex/PaymentGateway.sol#205-209)
+	External calls sending eth:
+	- _pay(paymentMethod,mintingPrice) (contracts/SoulboundCreditScore.sol#67)
+		- (success,returndata) = target.call{value: value}(data) (node_modules/@openzeppelin/contracts/utils/Address.sol#137)
+		- (success) = address(reserveWallet).call{value: swapAmout}() (contracts/dex/PaymentGateway.sol#182-184)
+		- (success,None) = address(msg.sender).call{value: refund}() (contracts/dex/PaymentGateway.sol#189)
+	Event emitted after the call(s):
+	- Mint(to,tokenId) (contracts/tokens/SBT/SBT.sol#174)
+		- tokenId = _mintWithCounter(to) (contracts/SoulboundCreditScore.sol#69)
+	- SoulboundCreditScoreMinted(tokenId,identityId,authorityAddress,signatureDate,paymentMethod,mintingPrice) (contracts/SoulboundCreditScore.sol#71-78)
+Reentrancy in SoulStore.purchaseIdentityAndName(address,string,uint256,string) (contracts/SoulStore.sol#102-121):
+	External calls:
+	- _pay(paymentMethod,getNameRegistrationPricePerYear(name).mul(yearsPeriod)) (contracts/SoulStore.sol#108-111)
+		- returndata = address(token).functionCall(data,SafeERC20: low-level call failed) (node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol#110)
+		- (success,returndata) = target.call{value: value}(data) (node_modules/@openzeppelin/contracts/utils/Address.sol#137)
+		- (success) = address(reserveWallet).call{value: swapAmout}() (contracts/dex/PaymentGateway.sol#182-184)
+		- (success,None) = address(msg.sender).call{value: refund}() (contracts/dex/PaymentGateway.sol#189)
+		- IERC20(paymentMethod).safeTransferFrom(msg.sender,reserveWallet,amountInStableCoin) (contracts/dex/PaymentGateway.sol#194-198)
+		- IERC20(paymentMethod).safeTransferFrom(msg.sender,reserveWallet,swapAmout_scope_0) (contracts/dex/PaymentGateway.sol#205-209)
+	- _mintSoulboundIdentityAndName(_msgSender(),name,yearsPeriod,_tokenURI) (contracts/SoulStore.sol#114-120)
+		- tokenId = soulboundIdentity.mintIdentityWithName(to,name,yearsPeriod,_tokenURI) (contracts/SoulStore.sol#224-229)
+	External calls sending eth:
+	- _pay(paymentMethod,getNameRegistrationPricePerYear(name).mul(yearsPeriod)) (contracts/SoulStore.sol#108-111)
+		- (success,returndata) = target.call{value: value}(data) (node_modules/@openzeppelin/contracts/utils/Address.sol#137)
+		- (success) = address(reserveWallet).call{value: swapAmout}() (contracts/dex/PaymentGateway.sol#182-184)
+		- (success,None) = address(msg.sender).call{value: refund}() (contracts/dex/PaymentGateway.sol#189)
+	Event emitted after the call(s):
+	- SoulboundIdentityAndNamePurchased(to,tokenId,name,yearsPeriod) (contracts/SoulStore.sol#231)
+		- _mintSoulboundIdentityAndName(_msgSender(),name,yearsPeriod,_tokenURI) (contracts/SoulStore.sol#114-120)
+Reentrancy in SoulStore.purchaseName(address,string,uint256,string,address) (contracts/SoulStore.sol#145-159):
+	External calls:
+	- _pay(paymentMethod,getNameRegistrationPricePerYear(name).mul(yearsPeriod)) (contracts/SoulStore.sol#152-155)
+		- returndata = address(token).functionCall(data,SafeERC20: low-level call failed) (node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol#110)
+		- (success,returndata) = target.call{value: value}(data) (node_modules/@openzeppelin/contracts/utils/Address.sol#137)
+		- (success) = address(reserveWallet).call{value: swapAmout}() (contracts/dex/PaymentGateway.sol#182-184)
+		- (success,None) = address(msg.sender).call{value: refund}() (contracts/dex/PaymentGateway.sol#189)
+		- IERC20(paymentMethod).safeTransferFrom(msg.sender,reserveWallet,amountInStableCoin) (contracts/dex/PaymentGateway.sol#194-198)
+		- IERC20(paymentMethod).safeTransferFrom(msg.sender,reserveWallet,swapAmout_scope_0) (contracts/dex/PaymentGateway.sol#205-209)
+	- _mintSoulName(to,name,yearsPeriod,_tokenURI) (contracts/SoulStore.sol#158)
+		- tokenId = soulName.mint(to,name,yearsPeriod,_tokenURI) (contracts/SoulStore.sol#267)
+	External calls sending eth:
+	- _pay(paymentMethod,getNameRegistrationPricePerYear(name).mul(yearsPeriod)) (contracts/SoulStore.sol#152-155)
+		- (success,returndata) = target.call{value: value}(data) (node_modules/@openzeppelin/contracts/utils/Address.sol#137)
+		- (success) = address(reserveWallet).call{value: swapAmout}() (contracts/dex/PaymentGateway.sol#182-184)
+		- (success,None) = address(msg.sender).call{value: refund}() (contracts/dex/PaymentGateway.sol#189)
+	Event emitted after the call(s):
+	- SoulNamePurchased(to,tokenId,name,yearsPeriod) (contracts/SoulStore.sol#269)
+		- _mintSoulName(to,name,yearsPeriod,_tokenURI) (contracts/SoulStore.sol#158)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-3[0m
+[92m
+SoulLinker.addPermission(address,uint256,uint256,address,uint256,string,uint256,uint256,bytes) (contracts/SoulLinker.sol#147-208) uses timestamp for comparisons
+	Dangerous comparisons:
+	- require(bool,string)(expirationDate >= block.timestamp,VALID_PERIOD_EXPIRED) (contracts/SoulLinker.sol#165)
+SoulLinker.validatePermission(uint256,uint256,address,uint256,uint256) (contracts/SoulLinker.sol#341-368) uses timestamp for comparisons
+	Dangerous comparisons:
+	- require(bool,string)(permission.expirationDate >= block.timestamp,VALID_PERIOD_EXPIRED) (contracts/SoulLinker.sol#361-364)
+SoulName.renewYearsPeriod(uint256,uint256) (contracts/SoulName.sol#151-184) uses timestamp for comparisons
+	Dangerous comparisons:
+	- tokenData[tokenId].expirationDate < block.timestamp (contracts/SoulName.sol#169)
+SoulName.isAvailable(string) (contracts/SoulName.sol#225-238) uses timestamp for comparisons
+	Dangerous comparisons:
+	- tokenData[tokenId].expirationDate < block.timestamp (contracts/SoulName.sol#234)
+SoulName.getTokenData(string) (contracts/SoulName.sol#249-280) uses timestamp for comparisons
+	Dangerous comparisons:
+	- (_getName(_tokenData.name),_linked,_identityId,tokenId,_tokenData.expirationDate,_tokenData.expirationDate >= block.timestamp) (contracts/SoulName.sol#272-279)
+SoulName.getSoulNames(address) (contracts/SoulName.sol#315-344) uses timestamp for comparisons
+	Dangerous comparisons:
+	- tokenData[tokenId].expirationDate >= block.timestamp (contracts/SoulName.sol#326)
+	- tokenData[tokenId_scope_1].expirationDate >= block.timestamp (contracts/SoulName.sol#336)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#block-timestamp[0m
+[92m
+ERC721._checkOnERC721Received(address,address,uint256,bytes) (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#394-416) uses assembly
+	- INLINE ASM (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#408-410)
+Address.verifyCallResult(bool,bytes,string) (node_modules/@openzeppelin/contracts/utils/Address.sol#201-221) uses assembly
+	- INLINE ASM (node_modules/@openzeppelin/contracts/utils/Address.sol#213-216)
+ECDSA.tryRecover(bytes32,bytes) (node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol#57-74) uses assembly
+	- INLINE ASM (node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol#65-69)
+Utils.toSlice(string) (contracts/libraries/Utils.sol#33-39) uses assembly
+	- INLINE ASM (contracts/libraries/Utils.sol#35-37)
+Utils.startsWith(string,string) (contracts/libraries/Utils.sol#41-68) uses assembly
+	- INLINE ASM (contracts/libraries/Utils.sol#58-66)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#assembly-usage[0m
+[92m
+SoulLinker.revokePermission(uint256,uint256,address,uint256,uint256) (contracts/SoulLinker.sol#217-246) compares to a boolean constant:
+	-require(bool,string)(_permissions[token][tokenId][readerIdentityId][signatureDate].isRevoked == false,PERMISSION_ALREADY_REVOKED) (contracts/SoulLinker.sol#229-233)
+SoulLinker.validatePermission(uint256,uint256,address,uint256,uint256) (contracts/SoulLinker.sol#341-368) compares to a boolean constant:
+	-require(bool,string)(permission.isRevoked == false,PERMISSION_REVOKED) (contracts/SoulLinker.sol#365)
+SoulName._setTokenURI(uint256,string) (contracts/SoulName.sol#403-415) compares to a boolean constant:
+	-require(bool,string)(_URIs[_tokenURI] == false,URI_ALREADY_EXISTS) (contracts/SoulName.sol#411)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#boolean-equality[0m
+[92m
+Different versions of Solidity are used:
+	- Version used: ['^0.8.0', '^0.8.1', '^0.8.7']
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/access/AccessControl.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/access/IAccessControl.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/access/Ownable.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/security/Pausable.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC20/extensions/draft-IERC20Permit.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC721/IERC721.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol#4)
+	- ^0.8.1 (node_modules/@openzeppelin/contracts/utils/Address.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/utils/Context.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/utils/Counters.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/utils/Strings.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/utils/introspection/ERC165.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/utils/introspection/IERC165.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/utils/math/SafeMath.sol#4)
+	- ^0.8.7 (contracts/SoulLinker.sol#2)
+	- ^0.8.7 (contracts/SoulName.sol#2)
+	- ^0.8.7 (contracts/SoulStore.sol#2)
+	- ^0.8.7 (contracts/Soulbound2FA.sol#2)
+	- ^0.8.7 (contracts/SoulboundCreditScore.sol#2)
+	- ^0.8.7 (contracts/SoulboundIdentity.sol#2)
+	- ^0.8.7 (contracts/dex/PaymentGateway.sol#2)
+	- ^0.8.7 (contracts/interfaces/ISoulName.sol#2)
+	- ^0.8.7 (contracts/interfaces/ISoulboundIdentity.sol#2)
+	- ^0.8.7 (contracts/interfaces/dex/IUniswapRouter.sol#2)
+	- ^0.8.7 (contracts/libraries/Utils.sol#2)
+	- ^0.8.7 (contracts/tokens/MASA.sol#2)
+	- ^0.8.7 (contracts/tokens/MasaNFT.sol#2)
+	- ^0.8.7 (contracts/tokens/MasaSBT.sol#2)
+	- ^0.8.7 (contracts/tokens/MasaSBTAuthority.sol#2)
+	- ^0.8.7 (contracts/tokens/MasaSBTSelfSovereign.sol#2)
+	- ^0.8.7 (contracts/tokens/SBT/ISBT.sol#2)
+	- ^0.8.7 (contracts/tokens/SBT/SBT.sol#2)
+	- ^0.8.7 (contracts/tokens/SBT/extensions/ISBTEnumerable.sol#2)
+	- ^0.8.7 (contracts/tokens/SBT/extensions/ISBTMetadata.sol#2)
+	- ^0.8.7 (contracts/tokens/SBT/extensions/SBTBurnable.sol#2)
+	- ^0.8.7 (contracts/tokens/SBT/extensions/SBTEnumerable.sol#2)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#different-pragma-directives-are-used[0m
+[92m
+PaymentGateway.removeErc20Token(address) (contracts/dex/PaymentGateway.sol#119-131) has costly operations inside a loop:
+	- erc20tokens.pop() (contracts/dex/PaymentGateway.sol#127)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#costly-operations-inside-a-loop[0m
+[92m
+SBT._baseURI() (contracts/tokens/SBT/SBT.sol#120-122) is never used and should be removed
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#dead-code[0m
+[92m
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/access/AccessControl.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/access/IAccessControl.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/access/Ownable.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/security/Pausable.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC20/extensions/draft-IERC20Permit.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC721/IERC721.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol#4) allows old versions
+Pragma version^0.8.1 (node_modules/@openzeppelin/contracts/utils/Address.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/utils/Context.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/utils/Counters.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/utils/Strings.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/utils/introspection/ERC165.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/utils/introspection/IERC165.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/utils/math/SafeMath.sol#4) allows old versions
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#incorrect-versions-of-solidity[0m
+[92m
+Low level call in Address.sendValue(address,uint256) (node_modules/@openzeppelin/contracts/utils/Address.sol#60-65):
+	- (success) = recipient.call{value: amount}() (node_modules/@openzeppelin/contracts/utils/Address.sol#63)
+Low level call in Address.functionCallWithValue(address,bytes,uint256,string) (node_modules/@openzeppelin/contracts/utils/Address.sol#128-139):
+	- (success,returndata) = target.call{value: value}(data) (node_modules/@openzeppelin/contracts/utils/Address.sol#137)
+Low level call in Address.functionStaticCall(address,bytes,string) (node_modules/@openzeppelin/contracts/utils/Address.sol#157-166):
+	- (success,returndata) = target.staticcall(data) (node_modules/@openzeppelin/contracts/utils/Address.sol#164)
+Low level call in Address.functionDelegateCall(address,bytes,string) (node_modules/@openzeppelin/contracts/utils/Address.sol#184-193):
+	- (success,returndata) = target.delegatecall(data) (node_modules/@openzeppelin/contracts/utils/Address.sol#191)
+Low level call in PaymentGateway._pay(address,uint256) (contracts/dex/PaymentGateway.sol#173-213):
+	- (success) = address(reserveWallet).call{value: swapAmout}() (contracts/dex/PaymentGateway.sol#182-184)
+	- (success,None) = address(msg.sender).call{value: refund}() (contracts/dex/PaymentGateway.sol#189)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#low-level-calls[0m
+[92m
+Function IERC20Permit.DOMAIN_SEPARATOR() (node_modules/@openzeppelin/contracts/token/ERC20/extensions/draft-IERC20Permit.sol#59) is not in mixedCase
+Variable EIP712._CACHED_DOMAIN_SEPARATOR (node_modules/@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol#31) is not in mixedCase
+Variable EIP712._CACHED_CHAIN_ID (node_modules/@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol#32) is not in mixedCase
+Variable EIP712._CACHED_THIS (node_modules/@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol#33) is not in mixedCase
+Variable EIP712._HASHED_NAME (node_modules/@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol#35) is not in mixedCase
+Variable EIP712._HASHED_VERSION (node_modules/@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol#36) is not in mixedCase
+Variable EIP712._TYPE_HASH (node_modules/@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol#37) is not in mixedCase
+Parameter SoulLinker.setSoulboundIdentity(ISoulboundIdentity)._soulboundIdentity (contracts/SoulLinker.sol#68) is not in mixedCase
+Parameter SoulLinker.setAddPermissionPrice(uint256)._addPermissionPrice (contracts/SoulLinker.sol#101) is not in mixedCase
+Parameter SoulLinker.setAddPermissionPriceMASA(uint256)._addPermissionPriceMASA (contracts/SoulLinker.sol#112) is not in mixedCase
+Parameter SoulName.setSoulboundIdentity(ISoulboundIdentity)._soulboundIdentity (contracts/SoulName.sol#72) is not in mixedCase
+Parameter SoulName.setExtension(string)._extension (contracts/SoulName.sol#84) is not in mixedCase
+Parameter SoulName.setContractURI(string)._contractURI (contracts/SoulName.sol#96) is not in mixedCase
+Parameter SoulName.mint(address,string,uint256,string)._tokenURI (contracts/SoulName.sol#117) is not in mixedCase
+Variable SoulName._URIs (contracts/SoulName.sol#31) is not in mixedCase
+Parameter SoulStore.setSoulboundIdentity(ISoulboundIdentity)._soulboundIdentity (contracts/SoulStore.sol#52) is not in mixedCase
+Parameter SoulStore.setNameRegistrationPricePerYear(uint256,uint256)._nameLength (contracts/SoulStore.sol#67) is not in mixedCase
+Parameter SoulStore.setNameRegistrationPricePerYear(uint256,uint256)._nameRegistrationPricePerYear (contracts/SoulStore.sol#68) is not in mixedCase
+Parameter SoulStore.purchaseIdentityAndName(address,string,uint256,string)._tokenURI (contracts/SoulStore.sol#106) is not in mixedCase
+Parameter SoulStore.purchaseName(address,string,uint256,string,address)._tokenURI (contracts/SoulStore.sol#149) is not in mixedCase
+Parameter SoulboundIdentity.setSoulName(ISoulName)._soulName (contracts/SoulboundIdentity.sol#32) is not in mixedCase
+Parameter SoulboundIdentity.mintIdentityWithName(address,string,uint256,string)._tokenURI (contracts/SoulboundIdentity.sol#63) is not in mixedCase
+Parameter PaymentGateway.setSwapRouter(address)._swapRouter (contracts/dex/PaymentGateway.sol#69) is not in mixedCase
+Parameter PaymentGateway.setWrappedNativeToken(address)._wrappedNativeToken (contracts/dex/PaymentGateway.sol#78) is not in mixedCase
+Parameter PaymentGateway.setStableCoin(address)._stableCoin (contracts/dex/PaymentGateway.sol#90) is not in mixedCase
+Parameter PaymentGateway.setMasaToken(address)._masaToken (contracts/dex/PaymentGateway.sol#100) is not in mixedCase
+Parameter PaymentGateway.addErc20Token(address)._erc20token (contracts/dex/PaymentGateway.sol#108) is not in mixedCase
+Parameter PaymentGateway.removeErc20Token(address)._erc20token (contracts/dex/PaymentGateway.sol#119) is not in mixedCase
+Parameter PaymentGateway.setReserveWallet(address)._reserveWallet (contracts/dex/PaymentGateway.sol#136) is not in mixedCase
+Struct Utils.slice (contracts/libraries/Utils.sol#8-11) is not in CapWords
+Parameter Utils.toLowerCase(string)._str (contracts/libraries/Utils.sol#13) is not in mixedCase
+Parameter MasaSBTSelfSovereign.setSoulboundIdentity(ISoulboundIdentity)._soulboundIdentity (contracts/tokens/MasaSBTSelfSovereign.sol#66) is not in mixedCase
+Parameter MasaSBTSelfSovereign.setMintingPrice(uint256)._mintingPrice (contracts/tokens/MasaSBTSelfSovereign.sol#78) is not in mixedCase
+Parameter MasaSBTSelfSovereign.addAuthority(address)._authority (contracts/tokens/MasaSBTSelfSovereign.sol#89) is not in mixedCase
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#conformance-to-solidity-naming-conventions[0m
+[92m
+Variable PaymentGateway.removeErc20Token(address)._erc20token (contracts/dex/PaymentGateway.sol#119) is too similar to PaymentGateway.erc20tokens (contracts/dex/PaymentGateway.sol#38)
+Variable PaymentGateway.addErc20Token(address)._erc20token (contracts/dex/PaymentGateway.sol#108) is too similar to PaymentGateway.erc20tokens (contracts/dex/PaymentGateway.sol#38)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#variable-names-are-too-similar[0m
+[92m
+MASA.constructor() (contracts/tokens/MASA.sol#7-9) uses literals with too many digits:
+	- _mint(msg.sender,1000000e18) (contracts/tokens/MASA.sol#8)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#too-many-digits[0m
+[92m
+grantRole(bytes32,address) should be declared external:
+	- AccessControl.grantRole(bytes32,address) (node_modules/@openzeppelin/contracts/access/AccessControl.sol#144-146)
+revokeRole(bytes32,address) should be declared external:
+	- AccessControl.revokeRole(bytes32,address) (node_modules/@openzeppelin/contracts/access/AccessControl.sol#159-161)
+renounceRole(bytes32,address) should be declared external:
+	- AccessControl.renounceRole(bytes32,address) (node_modules/@openzeppelin/contracts/access/AccessControl.sol#179-183)
+renounceOwnership() should be declared external:
+	- Ownable.renounceOwnership() (node_modules/@openzeppelin/contracts/access/Ownable.sol#61-63)
+name() should be declared external:
+	- ERC20.name() (node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol#62-64)
+symbol() should be declared external:
+	- ERC20.symbol() (node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol#70-72)
+decimals() should be declared external:
+	- ERC20.decimals() (node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol#87-89)
+totalSupply() should be declared external:
+	- ERC20.totalSupply() (node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol#94-96)
+balanceOf(address) should be declared external:
+	- ERC20.balanceOf(address) (node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol#101-103)
+transfer(address,uint256) should be declared external:
+	- ERC20.transfer(address,uint256) (node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol#113-117)
+approve(address,uint256) should be declared external:
+	- ERC20.approve(address,uint256) (node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol#136-140)
+transferFrom(address,address,uint256) should be declared external:
+	- ERC20.transferFrom(address,address,uint256) (node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol#158-167)
+increaseAllowance(address,uint256) should be declared external:
+	- ERC20.increaseAllowance(address,uint256) (node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol#181-185)
+decreaseAllowance(address,uint256) should be declared external:
+	- ERC20.decreaseAllowance(address,uint256) (node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol#201-210)
+name() should be declared external:
+	- ERC721.name() (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#79-81)
+symbol() should be declared external:
+	- ERC721.symbol() (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#86-88)
+approve(address,uint256) should be declared external:
+	- ERC721.approve(address,uint256) (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#112-122)
+setApprovalForAll(address,bool) should be declared external:
+	- ERC721.setApprovalForAll(address,bool) (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#136-138)
+transferFrom(address,address,uint256) should be declared external:
+	- ERC721.transferFrom(address,address,uint256) (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#150-159)
+safeTransferFrom(address,address,uint256) should be declared external:
+	- ERC721.safeTransferFrom(address,address,uint256) (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#164-170)
+tokenByIndex(uint256) should be declared external:
+	- ERC721Enumerable.tokenByIndex(uint256) (node_modules/@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol#52-55)
+pause() should be declared external:
+	- SoulLinker.pause() (contracts/SoulLinker.sol#125-127)
+unpause() should be declared external:
+	- SoulLinker.unpause() (contracts/SoulLinker.sol#131-133)
+getPermissionSignatureDates(address,uint256,uint256) should be declared external:
+	- SoulLinker.getPermissionSignatureDates(address,uint256,uint256) (contracts/SoulLinker.sol#309-315)
+getPermissionInfo(address,uint256,uint256,uint256) should be declared external:
+	- SoulLinker.getPermissionInfo(address,uint256,uint256,uint256) (contracts/SoulLinker.sol#323-330)
+getPriceForAddPermission(address) should be declared external:
+	- SoulLinker.getPriceForAddPermission(address) (contracts/SoulLinker.sol#375-394)
+mint(address,string,uint256,string) should be declared external:
+	- SoulName.mint(address,string,uint256,string) (contracts/SoulName.sol#113-145)
+renewYearsPeriod(uint256,uint256) should be declared external:
+	- SoulName.renewYearsPeriod(uint256,uint256) (contracts/SoulName.sol#151-184)
+tokenURI(string) should be declared external:
+	- SoulName.tokenURI(string) (contracts/SoulName.sol#350-358)
+pause() should be declared external:
+	- SoulStore.pause() (contracts/SoulStore.sol#82-84)
+unpause() should be declared external:
+	- SoulStore.unpause() (contracts/SoulStore.sol#88-90)
+getPriceForMintingName(address,string,uint256) should be declared external:
+	- SoulStore.getPriceForMintingName(address,string,uint256) (contracts/SoulStore.sol#187-205)
+mint(address,address,address,uint256,bytes) should be declared external:
+	- Soulbound2FA.mint(address,address,address,uint256,bytes) (contracts/Soulbound2FA.sol#87-104)
+mint(address,address,address,uint256,bytes) should be declared external:
+	- SoulboundCreditScore.mint(address,address,address,uint256,bytes) (contracts/SoulboundCreditScore.sol#88-105)
+mintIdentityWithName(address,string,uint256,string) should be declared external:
+	- SoulboundIdentity.mintIdentityWithName(address,string,uint256,string) (contracts/SoulboundIdentity.sol#59-69)
+getSoulName() should be declared external:
+	- SoulboundIdentity.getSoulName() (contracts/SoulboundIdentity.sol#76-78)
+getExtension() should be declared external:
+	- SoulboundIdentity.getExtension() (contracts/SoulboundIdentity.sol#83-85)
+ownerOf(string) should be declared external:
+	- SoulboundIdentity.ownerOf(string) (contracts/SoulboundIdentity.sol#104-112)
+tokenURI(string) should be declared external:
+	- SoulboundIdentity.tokenURI(string) (contracts/SoulboundIdentity.sol#118-126)
+tokenURI(address) should be declared external:
+	- SoulboundIdentity.tokenURI(address) (contracts/SoulboundIdentity.sol#132-135)
+isAvailable(string) should be declared external:
+	- SoulboundIdentity.isAvailable(string) (contracts/SoulboundIdentity.sol#154-161)
+getMintingPrice(address) should be declared external:
+	- MasaSBTSelfSovereign.getMintingPrice(address) (contracts/tokens/MasaSBTSelfSovereign.sol#115-129)
+name() should be declared external:
+	- SBT.name() (contracts/tokens/SBT/SBT.sol#85-87)
+symbol() should be declared external:
+	- SBT.symbol() (contracts/tokens/SBT/SBT.sol#92-94)
+burn(uint256) should be declared external:
+	- SBTBurnable.burn(uint256) (contracts/tokens/SBT/extensions/SBTBurnable.sol#20-27)
+tokenByIndex(uint256) should be declared external:
+	- SBTEnumerable.tokenByIndex(uint256) (contracts/tokens/SBT/extensions/SBTEnumerable.sol#67-79)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#public-function-that-could-be-declared-external[0m
+. analyzed (47 contracts with 78 detectors), 189 result(s) found

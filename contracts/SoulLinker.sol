@@ -381,7 +381,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
         if (
             addPermissionPriceMASA > 0 &&
             masaToken != address(0) &&
-            erc20token[masaToken]
+            erc20Token[masaToken]
         ) {
             // if there is a price in MASA, return it without conversion rate
             return (addPermissionPriceMASA, masaToken);

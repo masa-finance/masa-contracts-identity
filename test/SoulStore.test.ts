@@ -755,15 +755,15 @@ describe("Soul Store", () => {
     it("should add ERC-20 token from owner", async () => {
       await soulStore.connect(owner).addErc20Token(DAI_GOERLI);
 
-      expect(await soulStore.erc20token(DAI_GOERLI)).to.be.true;
+      expect(await soulStore.erc20Token(DAI_GOERLI)).to.be.true;
     });
 
     it("should get all payment methods information", async () => {
       await soulStore.connect(owner).addErc20Token(DAI_GOERLI);
 
-      const erc20tokens = await soulStore.getErc20Tokens();
+      const erc20Tokens = await soulStore.getErc20Tokens();
 
-      expect(erc20tokens).to.be.deep.equal([
+      expect(erc20Tokens).to.be.deep.equal([
         USDC_GOERLI,
         MASA_GOERLI,
         DAI_GOERLI
@@ -778,17 +778,17 @@ describe("Soul Store", () => {
     it("should remove ERC-20 token from owner", async () => {
       await soulStore.connect(owner).addErc20Token(DAI_GOERLI);
 
-      expect(await soulStore.erc20token(DAI_GOERLI)).to.be.true;
+      expect(await soulStore.erc20Token(DAI_GOERLI)).to.be.true;
 
       await soulStore.connect(owner).removeErc20Token(DAI_GOERLI);
 
-      expect(await soulStore.erc20token(DAI_GOERLI)).to.be.false;
+      expect(await soulStore.erc20Token(DAI_GOERLI)).to.be.false;
     });
 
     it("should fail to remove ERC-20 token from non owner", async () => {
       await soulStore.connect(owner).addErc20Token(DAI_GOERLI);
 
-      expect(await soulStore.erc20token(DAI_GOERLI)).to.be.true;
+      expect(await soulStore.erc20Token(DAI_GOERLI)).to.be.true;
 
       await expect(soulStore.connect(address1).removeErc20Token(DAI_GOERLI)).to
         .be.rejected;

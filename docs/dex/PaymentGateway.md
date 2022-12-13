@@ -13,7 +13,7 @@ Smart contract to call a Dex AMM smart contract to pay to a reserve wallet recip
 ### addErc20Token
 
 ```solidity
-function addErc20Token(address _erc20token) external nonpayable
+function addErc20Token(address _erc20Token) external nonpayable
 ```
 
 Adds a new ERC20 token as a valid payment method
@@ -24,12 +24,12 @@ Adds a new ERC20 token as a valid payment method
 
 | Name | Type | Description |
 |---|---|---|
-| _erc20token | address | New ERC20 token to add |
+| _erc20Token | address | New ERC20 token to add |
 
-### erc20token
+### erc20Token
 
 ```solidity
-function erc20token(address) external view returns (bool)
+function erc20Token(address) external view returns (bool)
 ```
 
 
@@ -48,10 +48,10 @@ function erc20token(address) external view returns (bool)
 |---|---|---|
 | _0 | bool | undefined |
 
-### erc20tokens
+### erc20Tokens
 
 ```solidity
-function erc20tokens(uint256) external view returns (address)
+function erc20Tokens(uint256) external view returns (address)
 ```
 
 
@@ -124,7 +124,7 @@ function owner() external view returns (address)
 ### removeErc20Token
 
 ```solidity
-function removeErc20Token(address _erc20token) external nonpayable
+function removeErc20Token(address _erc20Token) external nonpayable
 ```
 
 Removes an ERC20 token as a valid payment method
@@ -135,7 +135,7 @@ Removes an ERC20 token as a valid payment method
 
 | Name | Type | Description |
 |---|---|---|
-| _erc20token | address | ERC20 token to remove |
+| _erc20Token | address | ERC20 token to remove |
 
 ### renounceOwnership
 

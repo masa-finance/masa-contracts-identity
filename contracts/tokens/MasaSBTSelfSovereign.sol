@@ -119,9 +119,9 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
     {
         if (paymentMethod == address(0)) {
             return _convertFromStableCoin(wrappedNativeToken, mintingPrice);
-        } else if (paymentMethod == stableCoin && erc20token[paymentMethod]) {
+        } else if (paymentMethod == stableCoin && erc20Token[paymentMethod]) {
             return mintingPrice;
-        } else if (erc20token[paymentMethod]) {
+        } else if (erc20Token[paymentMethod]) {
             return _convertFromStableCoin(paymentMethod, mintingPrice);
         } else {
             revert("INVALID_PAYMENT_METHOD");
