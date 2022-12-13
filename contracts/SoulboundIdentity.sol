@@ -67,14 +67,7 @@ contract SoulboundIdentity is
         string memory name,
         uint256 yearsPeriod,
         string memory _tokenURI
-    )
-        public
-        payable
-        override
-        soulNameAlreadySet
-        nonReentrant
-        returns (uint256)
-    {
+    ) public override soulNameAlreadySet nonReentrant returns (uint256) {
         uint256 identityId = mint(to);
         soulName.mint(to, name, yearsPeriod, _tokenURI);
 
