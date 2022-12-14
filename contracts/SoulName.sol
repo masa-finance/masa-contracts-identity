@@ -3,6 +3,7 @@ pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
+import "./libraries/Errors.sol";
 import "./libraries/Utils.sol";
 import "./interfaces/ISoulboundIdentity.sol";
 import "./interfaces/ISoulName.sol";
@@ -150,10 +151,8 @@ contract SoulName is MasaNFT, ISoulName {
     /// @param yearsPeriod Years of validity of the name
     function renewYearsPeriod(uint256 tokenId, uint256 yearsPeriod) public {
         // ERC721: caller is not token owner nor approved
-        require(
-            _isApprovedOrOwner(_msgSender(), tokenId),
-            "ERC721_CALLER_NOT_OWNER"
-        );
+        if (!_isApprovedOrOwner(_msgSender(), tokenId))
+            revert CallerNotOwner(_msgSender());
         require(yearsPeriod > 0, "ZERO_YEARS_PERIOD");
 
         // check that the last registered tokenId for that name is the current token

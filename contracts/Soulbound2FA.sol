@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
+import "./libraries/Errors.sol";
 import "./tokens/MasaSBTSelfSovereign.sol";
 
 /// @title Soulbound Two-factor authentication (2FA)
@@ -55,7 +56,7 @@ contract Soulbound2FA is MasaSBTSelfSovereign {
         bytes calldata signature
     ) public payable virtual returns (uint256) {
         address to = soulboundIdentity.ownerOf(identityId);
-        require(to == _msgSender(), "CALLER_NOT_OWNER");
+        if (to != _msgSender()) revert CallerNotOwner(_msgSender());
 
         _verify(
             _hash(identityId, authorityAddress, signatureDate),

@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 
+import "./libraries/Errors.sol";
 import "./dex/PaymentGateway.sol";
 import "./interfaces/ISoulboundIdentity.sol";
 
@@ -161,7 +162,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         address tokenOwner = IERC721Enumerable(token).ownerOf(tokenId);
 
         require(identityOwner == tokenOwner, "IDENTITY_OWNER_NOT_TOKEN_OWNER");
-        require(identityOwner == _msgSender(), "CALLER_NOT_OWNER");
+        if (identityOwner != _msgSender()) revert CallerNotOwner(_msgSender());
         require(expirationDate >= block.timestamp, "VALID_PERIOD_EXPIRED");
         require(
             _verify(
@@ -225,7 +226,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         address tokenOwner = IERC721Enumerable(token).ownerOf(tokenId);
 
         require(identityOwner == tokenOwner, "IDENTITY_OWNER_NOT_TOKEN_OWNER");
-        require(identityOwner == _msgSender(), "CALLER_NOT_OWNER");
+        if (identityOwner != _msgSender()) revert CallerNotOwner(_msgSender());
         require(
             _permissions[token][tokenId][readerIdentityId][signatureDate]
                 .isRevoked == false,

@@ -959,6 +959,22 @@ event Soulbound2FAMinted(uint256 tokenId, uint256 identityId, address authorityA
 
 ## Errors
 
+### CallerNotOwner
+
+```solidity
+error CallerNotOwner(address caller)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| caller | address | undefined |
+
 ### InvalidPaymentMethod
 
 ```solidity

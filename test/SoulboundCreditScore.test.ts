@@ -182,7 +182,7 @@ describe("Soulbound Credit Score", () => {
             signatureDate,
             signature
           )
-      ).to.be.revertedWith("CALLER_NOT_OWNER");
+      ).to.be.revertedWith("CallerNotOwner");
     });
 
     it("should fail to mint from owner identity", async () => {
@@ -196,7 +196,7 @@ describe("Soulbound Credit Score", () => {
             signatureDate,
             signature
           )
-      ).to.be.revertedWith("CALLER_NOT_OWNER");
+      ).to.be.revertedWith("CallerNotOwner");
     });
 
     it("should mint twice", async () => {
