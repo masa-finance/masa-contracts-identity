@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
+import "../libraries/Errors.sol";
 import "../interfaces/dex/IUniswapRouter.sol";
 
 /// @title Pay using a Decentralized automated market maker (AMM) when needed
@@ -208,7 +209,7 @@ abstract contract PaymentGateway is Ownable {
                 swapAmout
             );
         } else {
-            revert("INVALID_PAYMENT_METHOD");
+            revert InvalidPaymentMethod(paymentMethod);
         }
     }
 

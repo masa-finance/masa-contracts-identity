@@ -957,3 +957,22 @@ event SoulboundCreditScoreMinted(uint256 tokenId, uint256 identityId, address au
 
 
 
+## Errors
+
+### InvalidPaymentMethod
+
+```solidity
+error InvalidPaymentMethod(address paymentMethod)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| paymentMethod | address | undefined |
+
+

@@ -957,3 +957,22 @@ event Soulbound2FAMinted(uint256 tokenId, uint256 identityId, address authorityA
 
 
 
+## Errors
+
+### InvalidPaymentMethod
+
+```solidity
+error InvalidPaymentMethod(address paymentMethod)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| paymentMethod | address | undefined |
+
+

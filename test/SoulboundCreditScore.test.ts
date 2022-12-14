@@ -442,7 +442,7 @@ describe("Soulbound Credit Score", () => {
     it("should fail to get minting info for invalid payment method", async () => {
       await expect(
         soulboundCreditScore.getMintingPrice(owner.address)
-      ).to.be.rejectedWith("INVALID_PAYMENT_METHOD");
+      ).to.be.rejectedWith("InvalidPaymentMethod");
     });
 
     it("we can't use an invalid payment method", async () => {
@@ -456,7 +456,7 @@ describe("Soulbound Credit Score", () => {
             signatureDate,
             signature
           )
-      ).to.be.rejectedWith("INVALID_PAYMENT_METHOD");
+      ).to.be.rejectedWith("InvalidPaymentMethod");
     });
   });
 
