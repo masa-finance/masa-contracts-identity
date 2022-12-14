@@ -234,7 +234,7 @@ describe("Soul Name", () => {
 
     it("getTokenId with a non existing name", async () => {
       await expect(soulName.getTokenId("fakeName")).to.be.rejectedWith(
-        "NAME_NOT_FOUND"
+        "NameNotFound"
       );
     });
 
@@ -274,7 +274,7 @@ describe("Soul Name", () => {
 
     it("getTokenData with a non existing name", async () => {
       await expect(soulName.getTokenData("fakeName")).to.be.rejectedWith(
-        "NAME_NOT_FOUND"
+        "NameNotFound"
       );
     });
 
@@ -371,7 +371,7 @@ describe("Soul Name", () => {
 
       await expect(await soulName.isAvailable(SOUL_NAME1)).to.be.equal(true);
       await expect(soulName.getTokenData("soulNameTest1")).to.be.rejectedWith(
-        "NAME_NOT_FOUND"
+        "NameNotFound"
       );
       await expect(await soulName["getSoulNames(uint256)"](identityId1)).to.be
         .empty;
@@ -486,7 +486,7 @@ describe("Soul Name", () => {
       // the first owner of the soul name tries to renew the period and fails
       await expect(
         soulName.connect(address1).renewYearsPeriod(nameId, YEAR)
-      ).to.be.rejectedWith("NAME_REGISTERED_BY_OTHER_ACCOUNT");
+      ).to.be.rejectedWith("NameRegisteredByOtherAccount");
     });
   });
 

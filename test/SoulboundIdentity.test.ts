@@ -289,7 +289,7 @@ describe("Soulbound Identity", () => {
     it("getTokenData with a non existing name", async () => {
       await expect(
         soulboundIdentity.getTokenData("fakeName")
-      ).to.be.rejectedWith("NAME_NOT_FOUND");
+      ).to.be.rejectedWith("NameNotFound");
     });
 
     it("getSoulNames(uint256) returns array of SBT names in lower case", async () => {
