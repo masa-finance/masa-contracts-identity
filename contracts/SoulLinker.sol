@@ -80,7 +80,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
     /// @param token Address of the SBT contract
     function addLinkedSBT(address token) external onlyOwner {
         if (address(token) == address(0)) revert ZeroAddress();
-        require(!linkedSBT[token], "SBT_ALREADY_LINKED");
+        if (linkedSBT[token]) revert SBTAlreadyLinked(token);
 
         linkedSBT[token] = true;
         linkedSBTs.push(token);
@@ -90,7 +90,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
     /// @dev The caller must be the owner to call this function
     /// @param token Address of the SBT contract
     function removeLinkedSBT(address token) external onlyOwner {
-        require(linkedSBT[token], "SBT_NOT_LINKED");
+        if (!linkedSBT[token]) revert SBTNotLinked(token);
 
         linkedSBT[token] = false;
         _removeLinkedSBT(token);
@@ -154,14 +154,16 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         uint256 expirationDate,
         bytes calldata signature
     ) external whenNotPaused {
-        require(linkedSBT[token], "SBT_NOT_LINKED");
+        if (!linkedSBT[token]) revert SBTNotLinked(token);
 
         address identityOwner = soulboundIdentity.ownerOf(ownerIdentityId);
         address tokenOwner = IERC721Enumerable(token).ownerOf(tokenId);
 
-        require(identityOwner == tokenOwner, "IDENTITY_OWNER_NOT_TOKEN_OWNER");
+        if (identityOwner != tokenOwner)
+            revert IdentityOwnerNotTokenOwner(tokenId, ownerIdentityId);
         if (identityOwner != _msgSender()) revert CallerNotOwner(_msgSender());
-        require(expirationDate >= block.timestamp, "VALID_PERIOD_EXPIRED");
+        if (expirationDate < block.timestamp)
+            revert ValidPeriodExpired(expirationDate);
         if (
             !_verify(
                 _hash(
@@ -222,13 +224,13 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         address identityOwner = soulboundIdentity.ownerOf(ownerIdentityId);
         address tokenOwner = IERC721Enumerable(token).ownerOf(tokenId);
 
-        require(identityOwner == tokenOwner, "IDENTITY_OWNER_NOT_TOKEN_OWNER");
+        if (identityOwner != tokenOwner)
+            revert IdentityOwnerNotTokenOwner(tokenId, ownerIdentityId);
         if (identityOwner != _msgSender()) revert CallerNotOwner(_msgSender());
-        require(
+        if (
             _permissions[token][tokenId][readerIdentityId][signatureDate]
-                .isRevoked == false,
-            "PERMISSION_ALREADY_REVOKED"
-        );
+                .isRevoked
+        ) revert PermissionAlreadyRevoked();
 
         // token => tokenId => readerIdentityId => signatureDate => PermissionData
         _permissions[token][tokenId][readerIdentityId][signatureDate]
@@ -269,7 +271,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         view
         returns (uint256[] memory)
     {
-        require(linkedSBT[token], "SBT_NOT_LINKED");
+        if (!linkedSBT[token]) revert SBTNotLinked(token);
         address owner = soulboundIdentity.ownerOf(identityId);
 
         return getSBTLinks(owner, token);
@@ -285,7 +287,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         view
         returns (uint256[] memory)
     {
-        require(linkedSBT[token], "SBT_NOT_LINKED");
+        if (!linkedSBT[token]) revert SBTNotLinked(token);
 
         uint256 links = IERC721Enumerable(token).balanceOf(owner);
         uint256[] memory sbtLinks = new uint256[](links);
@@ -343,7 +345,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         uint256 tokenId,
         uint256 signatureDate
     ) external view returns (string memory) {
-        require(linkedSBT[token], "SBT_NOT_LINKED");
+        if (!linkedSBT[token]) revert SBTNotLinked(token);
 
         address identityReader = soulboundIdentity.ownerOf(readerIdentityId);
         address identityOwner = soulboundIdentity.ownerOf(ownerIdentityId);
@@ -353,14 +355,14 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
             readerIdentityId
         ][signatureDate];
 
-        require(identityOwner == tokenOwner, "IDENTITY_OWNER_NOT_TOKEN_OWNER");
-        require(identityReader == _msgSender(), "CALLER_NOT_READER");
-        require(permission.expirationDate > 0, "PERMISSION_DOES_NOT_EXIST");
-        require(
-            permission.expirationDate >= block.timestamp,
-            "VALID_PERIOD_EXPIRED"
-        );
-        require(permission.isRevoked == false, "PERMISSION_REVOKED");
+        if (identityOwner != tokenOwner)
+            revert IdentityOwnerNotTokenOwner(tokenId, ownerIdentityId);
+        if (identityReader != _msgSender())
+            revert CallerNotReader(_msgSender());
+        if (permission.expirationDate == 0) revert PermissionDoesNotExist();
+        if (permission.expirationDate < block.timestamp)
+            revert ValidPeriodExpired(permission.expirationDate);
+        if (permission.isRevoked) revert PermissionAlreadyRevoked();
 
         return permission.data;
     }

@@ -863,6 +863,39 @@ error CallerNotOwner(address caller)
 |---|---|---|
 | caller | address | undefined |
 
+### CallerNotReader
+
+```solidity
+error CallerNotReader(address caller)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| caller | address | undefined |
+
+### IdentityOwnerNotTokenOwner
+
+```solidity
+error IdentityOwnerNotTokenOwner(uint256 tokenId, uint256 ownerIdentityId)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId | uint256 | undefined |
+| ownerIdentityId | uint256 | undefined |
+
 ### InsufficientEthAmount
 
 ```solidity
@@ -938,6 +971,28 @@ error NonExistingErc20Token(address erc20token)
 |---|---|---|
 | erc20token | address | undefined |
 
+### PermissionAlreadyRevoked
+
+```solidity
+error PermissionAlreadyRevoked()
+```
+
+
+
+
+
+
+### PermissionDoesNotExist
+
+```solidity
+error PermissionDoesNotExist()
+```
+
+
+
+
+
+
 ### RefundFailed
 
 ```solidity
@@ -948,6 +1003,38 @@ error RefundFailed()
 
 
 
+
+### SBTAlreadyLinked
+
+```solidity
+error SBTAlreadyLinked(address token)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| token | address | undefined |
+
+### SBTNotLinked
+
+```solidity
+error SBTNotLinked(address token)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| token | address | undefined |
 
 ### SameValue
 
@@ -970,6 +1057,22 @@ error TransferFailed()
 
 
 
+
+### ValidPeriodExpired
+
+```solidity
+error ValidPeriodExpired(uint256 expirationDate)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| expirationDate | uint256 | undefined |
 
 ### ZeroAddress
 
