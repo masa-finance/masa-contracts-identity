@@ -53,7 +53,7 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
         PaymentGateway(admin, paymentParams)
         MasaSBT(admin, name, symbol, baseTokenURI)
     {
-        require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
+        if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
 
         soulboundIdentity = _soulboundIdentity;
         mintingPrice = _mintingPrice;
@@ -68,8 +68,8 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
-        require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
-        require(soulboundIdentity != _soulboundIdentity, "SAME_VALUE");
+        if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
+        if (soulboundIdentity == _soulboundIdentity) revert SameValue();
         soulboundIdentity = _soulboundIdentity;
     }
 
@@ -80,7 +80,7 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
-        require(mintingPrice != _mintingPrice, "SAME_VALUE");
+        if (mintingPrice == _mintingPrice) revert SameValue();
         mintingPrice = _mintingPrice;
     }
 
@@ -91,7 +91,7 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
-        require(_authority != address(0), "ZERO_ADDRESS");
+        if (_authority == address(0)) revert ZeroAddress();
         require(!authorities[_authority], "ALREADY_ADDED");
 
         authorities[_authority] = true;

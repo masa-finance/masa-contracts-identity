@@ -53,7 +53,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         uint256 _addPermissionPriceMASA,
         PaymentParams memory paymentParams
     ) EIP712("SoulLinker", "1.0.0") PaymentGateway(owner, paymentParams) {
-        require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
+        if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
 
         soulboundIdentity = _soulboundIdentity;
 
@@ -70,8 +70,8 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         external
         onlyOwner
     {
-        require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
-        require(soulboundIdentity != _soulboundIdentity, "SAME_VALUE");
+        if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
+        if (soulboundIdentity == _soulboundIdentity) revert SameValue();
         soulboundIdentity = _soulboundIdentity;
     }
 
@@ -79,7 +79,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
     /// @dev The caller must be the owner to call this function
     /// @param token Address of the SBT contract
     function addLinkedSBT(address token) external onlyOwner {
-        require(address(token) != address(0), "ZERO_ADDRESS");
+        if (address(token) == address(0)) revert ZeroAddress();
         require(!linkedSBT[token], "SBT_ALREADY_LINKED");
 
         linkedSBT[token] = true;
@@ -103,7 +103,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         external
         onlyOwner
     {
-        require(addPermissionPrice != _addPermissionPrice, "SAME_VALUE");
+        if (addPermissionPrice == _addPermissionPrice) revert SameValue();
         addPermissionPrice = _addPermissionPrice;
     }
 
@@ -114,10 +114,8 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         external
         onlyOwner
     {
-        require(
-            addPermissionPriceMASA != _addPermissionPriceMASA,
-            "SAME_VALUE"
-        );
+        if (addPermissionPriceMASA == _addPermissionPriceMASA)
+            revert SameValue();
         addPermissionPriceMASA = _addPermissionPriceMASA;
     }
 

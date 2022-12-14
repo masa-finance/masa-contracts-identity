@@ -58,7 +58,7 @@ contract SoulName is MasaNFT, ISoulName {
         string memory _extension,
         string memory _contractURI
     ) MasaNFT(admin, "Masa Soul Name", "MSN", "") {
-        require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
+        if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
 
         soulboundIdentity = _soulboundIdentity;
         extension = _extension;
@@ -74,8 +74,8 @@ contract SoulName is MasaNFT, ISoulName {
         external
         onlyOwner
     {
-        require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
-        require(soulboundIdentity != _soulboundIdentity, "SAME_VALUE");
+        if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
+        if (soulboundIdentity == _soulboundIdentity) revert SameValue();
         soulboundIdentity = _soulboundIdentity;
     }
 
@@ -83,11 +83,10 @@ contract SoulName is MasaNFT, ISoulName {
     /// @dev The caller must have the admin to call this function
     /// @param _extension Extension of the soul name
     function setExtension(string memory _extension) external onlyOwner {
-        require(
-            keccak256(abi.encodePacked((extension))) !=
-                keccak256(abi.encodePacked((_extension))),
-            "SAME_VALUE"
-        );
+        if (
+            keccak256(abi.encodePacked((extension))) ==
+            keccak256(abi.encodePacked((_extension)))
+        ) revert SameValue();
         extension = _extension;
     }
 
@@ -95,11 +94,10 @@ contract SoulName is MasaNFT, ISoulName {
     /// @dev The caller must have the admin to call this function
     /// @param _contractURI URI of the smart contract metadata
     function setContractURI(string memory _contractURI) external onlyOwner {
-        require(
-            keccak256(abi.encodePacked((contractURI))) !=
-                keccak256(abi.encodePacked((_contractURI))),
-            "SAME_VALUE"
-        );
+        if (
+            keccak256(abi.encodePacked((contractURI))) ==
+            keccak256(abi.encodePacked((_contractURI)))
+        ) revert SameValue();
         contractURI = _contractURI;
     }
 

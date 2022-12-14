@@ -48,10 +48,11 @@ abstract contract PaymentGateway is Ownable {
     /// @param owner Owner of the smart contract
     /// @param paymentParams Payment params
     constructor(address owner, PaymentParams memory paymentParams) {
-        require(paymentParams.swapRouter != address(0), "ZERO_ADDRESS");
-        require(paymentParams.wrappedNativeToken != address(0), "ZERO_ADDRESS");
-        require(paymentParams.stableCoin != address(0), "ZERO_ADDRESS");
-        require(paymentParams.reserveWallet != address(0), "ZERO_ADDRESS");
+        if (paymentParams.swapRouter == address(0)) revert ZeroAddress();
+        if (paymentParams.wrappedNativeToken == address(0))
+            revert ZeroAddress();
+        if (paymentParams.stableCoin == address(0)) revert ZeroAddress();
+        if (paymentParams.reserveWallet == address(0)) revert ZeroAddress();
 
         Ownable.transferOwnership(owner);
 
@@ -68,8 +69,8 @@ abstract contract PaymentGateway is Ownable {
     /// @dev The caller must have the owner to call this function
     /// @param _swapRouter New swap router address
     function setSwapRouter(address _swapRouter) external onlyOwner {
-        require(_swapRouter != address(0), "ZERO_ADDRESS");
-        require(swapRouter != _swapRouter, "SAME_VALUE");
+        if (_swapRouter == address(0)) revert ZeroAddress();
+        if (swapRouter == _swapRouter) revert SameValue();
         swapRouter = _swapRouter;
     }
 
@@ -80,8 +81,8 @@ abstract contract PaymentGateway is Ownable {
         external
         onlyOwner
     {
-        require(_wrappedNativeToken != address(0), "ZERO_ADDRESS");
-        require(wrappedNativeToken != _wrappedNativeToken, "SAME_VALUE");
+        if (_wrappedNativeToken == address(0)) revert ZeroAddress();
+        if (wrappedNativeToken == _wrappedNativeToken) revert SameValue();
         wrappedNativeToken = _wrappedNativeToken;
     }
 
@@ -89,8 +90,8 @@ abstract contract PaymentGateway is Ownable {
     /// @dev The caller must have the owner to call this function
     /// @param _stableCoin New stable coin to pay the fee in
     function setStableCoin(address _stableCoin) external onlyOwner {
-        require(_stableCoin != address(0), "ZERO_ADDRESS");
-        require(stableCoin != _stableCoin, "SAME_VALUE");
+        if (_stableCoin == address(0)) revert ZeroAddress();
+        if (stableCoin == _stableCoin) revert SameValue();
         stableCoin = _stableCoin;
     }
 
@@ -99,7 +100,7 @@ abstract contract PaymentGateway is Ownable {
     /// It can be set to address(0) to disable paying in MASA
     /// @param _masaToken New utility token to pay the fee in
     function setMasaToken(address _masaToken) external onlyOwner {
-        require(masaToken != _masaToken, "SAME_VALUE");
+        if (masaToken == _masaToken) revert SameValue();
         masaToken = _masaToken;
     }
 
@@ -107,7 +108,7 @@ abstract contract PaymentGateway is Ownable {
     /// @dev The caller must have the owner to call this function
     /// @param _erc20token New ERC20 token to add
     function addErc20Token(address _erc20token) external onlyOwner {
-        require(_erc20token != address(0), "ZERO_ADDRESS");
+        if (_erc20token == address(0)) revert ZeroAddress();
         require(!erc20token[_erc20token], "ALREADY_ADDED");
 
         erc20token[_erc20token] = true;
@@ -118,7 +119,7 @@ abstract contract PaymentGateway is Ownable {
     /// @dev The caller must have the owner to call this function
     /// @param _erc20token ERC20 token to remove
     function removeErc20Token(address _erc20token) external onlyOwner {
-        require(_erc20token != address(0), "ZERO_ADDRESS");
+        if (_erc20token == address(0)) revert ZeroAddress();
         require(erc20token[_erc20token], "NOT_EXISITING_ERC20TOKEN");
 
         erc20token[_erc20token] = false;
@@ -135,8 +136,8 @@ abstract contract PaymentGateway is Ownable {
     /// @dev Let change the reserve walled. It can be triggered by an authorized account.
     /// @param _reserveWallet New reserve wallet
     function setReserveWallet(address _reserveWallet) external onlyOwner {
-        require(_reserveWallet != address(0), "ZERO_ADDRESS");
-        require(_reserveWallet != reserveWallet, "SAME_VALUE");
+        if (_reserveWallet == address(0)) revert ZeroAddress();
+        if (_reserveWallet == reserveWallet) revert SameValue();
         reserveWallet = _reserveWallet;
     }
 

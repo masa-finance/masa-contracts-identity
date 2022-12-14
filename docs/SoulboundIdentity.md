@@ -729,3 +729,17 @@ event RoleRevoked(bytes32 indexed role, address indexed account, address indexed
 
 
 
+## Errors
+
+### ZeroAddress
+
+```solidity
+error ZeroAddress()
+```
+
+
+
+
+
+
+

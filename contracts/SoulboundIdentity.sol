@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
+import "./libraries/Errors.sol";
 import "./interfaces/ISoulboundIdentity.sol";
 import "./interfaces/ISoulName.sol";
 import "./tokens/MasaSBTAuthority.sol";
@@ -33,8 +34,8 @@ contract SoulboundIdentity is MasaSBTAuthority, ISoulboundIdentity {
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
-        require(address(_soulName) != address(0), "ZERO_ADDRESS");
-        require(soulName != _soulName, "SAME_VALUE");
+        if (address(_soulName) == address(0)) revert ZeroAddress();
+        if (soulName == _soulName) revert SameValue();
         soulName = _soulName;
     }
 
