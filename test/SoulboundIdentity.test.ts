@@ -179,6 +179,7 @@ describe("Soulbound Identity", () => {
       expect(await soulboundIdentity["ownerOf(uint256)"](tokenId)).to.be.equal(
         someone.address
       );
+      expect(await soulboundIdentity.exists(tokenId)).to.be.true;
 
       await soulboundIdentity.connect(someone).burn(tokenId);
 
