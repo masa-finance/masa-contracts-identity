@@ -162,7 +162,7 @@ describe("Soulbound Identity", () => {
             YEAR,
             ARWEAVE_LINK
           )
-      ).to.be.rejectedWith("NAME_ALREADY_EXISTS");
+      ).to.be.rejectedWith("NameAlreadyExists");
     });
   });
 

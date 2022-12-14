@@ -115,13 +115,11 @@ contract SoulName is MasaNFT, ISoulName {
         uint256 yearsPeriod,
         string memory _tokenURI
     ) public override returns (uint256) {
-        require(isAvailable(name), "NAME_ALREADY_EXISTS");
-        require(bytes(name).length > 0, "ZERO_LENGTH_NAME");
-        require(yearsPeriod > 0, "ZERO_YEARS_PERIOD");
-        require(
-            soulboundIdentity.balanceOf(to) > 0,
-            "ADDRESS_DOES_NOT_HAVE_IDENTITY"
-        );
+        if (!isAvailable(name)) revert NameAlreadyExists(name);
+        if (bytes(name).length == 0) revert ZeroLengthName(name);
+        if (yearsPeriod == 0) revert ZeroYearsPeriod(yearsPeriod);
+        if (soulboundIdentity.balanceOf(to) == 0)
+            revert AddressDoesNotHaveIdentity(to);
         if (
             !Utils.startsWith(_tokenURI, "ar://") &&
             !Utils.startsWith(_tokenURI, "ipfs://")
@@ -150,16 +148,14 @@ contract SoulName is MasaNFT, ISoulName {
         // ERC721: caller is not token owner nor approved
         if (!_isApprovedOrOwner(_msgSender(), tokenId))
             revert CallerNotOwner(_msgSender());
-        require(yearsPeriod > 0, "ZERO_YEARS_PERIOD");
+        if (yearsPeriod == 0) revert ZeroYearsPeriod(yearsPeriod);
 
         // check that the last registered tokenId for that name is the current token
         string memory lowercaseName = Utils.toLowerCase(
             tokenData[tokenId].name
         );
-        require(
-            nameData[lowercaseName].tokenId == tokenId,
-            "NAME_REGISTERED_BY_OTHER_ACCOUNT"
-        );
+        if (nameData[lowercaseName].tokenId != tokenId)
+            revert NameRegisteredByOtherAccount(lowercaseName, tokenId);
 
         // check if the name is expired
         if (tokenData[tokenId].expirationDate < block.timestamp) {
@@ -183,7 +179,7 @@ contract SoulName is MasaNFT, ISoulName {
     /// @dev The caller must be the owner or an approved address of the soul name.
     /// @param tokenId TokenId of the soul name to burn
     function burn(uint256 tokenId) public override {
-        require(_exists(tokenId), "TOKEN_NOT_FOUND");
+        if (!_exists(tokenId)) revert TokenNotFound(tokenId);
 
         string memory lowercaseName = Utils.toLowerCase(
             tokenData[tokenId].name
@@ -391,7 +387,7 @@ contract SoulName is MasaNFT, ISoulName {
 
     function _getTokenId(string memory name) private view returns (uint256) {
         string memory lowercaseName = Utils.toLowerCase(name);
-        require(nameData[lowercaseName].exists, "NAME_NOT_FOUND");
+        if (!nameData[lowercaseName].exists) revert NameNotFound(name);
 
         return nameData[lowercaseName].tokenId;
     }
@@ -400,11 +396,8 @@ contract SoulName is MasaNFT, ISoulName {
         internal
         virtual
     {
-        require(
-            _exists(tokenId),
-            "ERC721URIStorage: URI set of nonexistent token"
-        );
-        require(_URIs[_tokenURI] == false, "URI_ALREADY_EXISTS");
+        if (!_exists(tokenId)) revert TokenNotFound(tokenId);
+        if (_URIs[_tokenURI]) revert URIAlreadyExists(_tokenURI);
 
         _tokenURIs[tokenId] = _tokenURI;
         _URIs[_tokenURI] = true;
