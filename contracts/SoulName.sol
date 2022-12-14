@@ -202,8 +202,8 @@ contract SoulName is MasaNFT, ISoulName {
         }
 
         if (bytes(_tokenURIs[tokenId]).length != 0) {
-            delete _tokenURIs[tokenId];
             _URIs[_tokenURIs[tokenId]] = false;
+            delete _tokenURIs[tokenId];
         }
 
         super.burn(tokenId);
