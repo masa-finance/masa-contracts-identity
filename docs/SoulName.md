@@ -1026,6 +1026,22 @@ error CallerNotOwner(address caller)
 |---|---|---|
 | caller | address | undefined |
 
+### InvalidTokenURI
+
+```solidity
+error InvalidTokenURI(string tokenURI)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenURI | string | undefined |
+
 ### SameValue
 
 ```solidity

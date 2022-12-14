@@ -913,6 +913,38 @@ error InvalidPaymentMethod(address paymentMethod)
 |---|---|---|
 | paymentMethod | address | undefined |
 
+### InvalidToken
+
+```solidity
+error InvalidToken(address token)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| token | address | undefined |
+
+### NonExistingErc20Token
+
+```solidity
+error NonExistingErc20Token(address erc20token)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| erc20token | address | undefined |
+
 ### SameValue
 
 ```solidity

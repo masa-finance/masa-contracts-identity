@@ -348,6 +348,22 @@ error AlreadyAdded()
 
 
 
+### NonExistingErc20Token
+
+```solidity
+error NonExistingErc20Token(address erc20token)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| erc20token | address | undefined |
+
 ### SameValue
 
 ```solidity

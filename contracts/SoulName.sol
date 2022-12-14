@@ -122,11 +122,10 @@ contract SoulName is MasaNFT, ISoulName {
             soulboundIdentity.balanceOf(to) > 0,
             "ADDRESS_DOES_NOT_HAVE_IDENTITY"
         );
-        require(
-            Utils.startsWith(_tokenURI, "ar://") ||
-                Utils.startsWith(_tokenURI, "ipfs://"),
-            "INVALID_TOKEN_URI"
-        );
+        if (
+            !Utils.startsWith(_tokenURI, "ar://") &&
+            !Utils.startsWith(_tokenURI, "ipfs://")
+        ) revert InvalidTokenURI(_tokenURI);
 
         uint256 tokenId = _mintWithCounter(to);
         _setTokenURI(tokenId, _tokenURI);

@@ -660,6 +660,22 @@ error AlreadyAdded()
 
 
 
+### InsufficientEthAmount
+
+```solidity
+error InsufficientEthAmount(uint256 amount)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| amount | uint256 | undefined |
+
 ### InvalidPaymentMethod
 
 ```solidity
@@ -676,10 +692,64 @@ error InvalidPaymentMethod(address paymentMethod)
 |---|---|---|
 | paymentMethod | address | undefined |
 
+### InvalidToken
+
+```solidity
+error InvalidToken(address token)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| token | address | undefined |
+
+### NonExistingErc20Token
+
+```solidity
+error NonExistingErc20Token(address erc20token)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| erc20token | address | undefined |
+
+### RefundFailed
+
+```solidity
+error RefundFailed()
+```
+
+
+
+
+
+
 ### SameValue
 
 ```solidity
 error SameValue()
+```
+
+
+
+
+
+
+### TransferFailed
+
+```solidity
+error TransferFailed()
 ```
 
 

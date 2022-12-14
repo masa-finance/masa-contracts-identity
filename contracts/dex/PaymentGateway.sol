@@ -120,7 +120,7 @@ abstract contract PaymentGateway is Ownable {
     /// @param _erc20token ERC20 token to remove
     function removeErc20Token(address _erc20token) external onlyOwner {
         if (_erc20token == address(0)) revert ZeroAddress();
-        require(erc20token[_erc20token], "NOT_EXISITING_ERC20TOKEN");
+        if (!erc20token[_erc20token]) revert NonExistingErc20Token(_erc20token);
 
         erc20token[_erc20token] = false;
         for (uint256 i = 0; i < erc20tokens.length; i++) {
@@ -159,11 +159,10 @@ abstract contract PaymentGateway is Ownable {
         view
         returns (uint256)
     {
-        require(
-            (token == wrappedNativeToken || erc20token[token]) &&
-                token != stableCoin,
-            "INVALID_TOKEN"
-        );
+        if (
+            (token != wrappedNativeToken && !erc20token[token]) ||
+            token == stableCoin
+        ) revert InvalidToken(token);
         return _estimateSwapAmount(token, stableCoin, amount);
     }
 
@@ -176,20 +175,21 @@ abstract contract PaymentGateway is Ownable {
         if (amountInStableCoin == 0) return;
         if (paymentMethod == address(0)) {
             // ETH
-            uint256 swapAmout = _convertFromStableCoin(
+            uint256 swapAmount = _convertFromStableCoin(
                 wrappedNativeToken,
                 amountInStableCoin
             );
-            require(msg.value >= swapAmout, "INSUFFICIENT_ETH_AMOUNT");
-            (bool success, ) = payable(reserveWallet).call{value: swapAmout}(
+            if (msg.value < swapAmount)
+                revert InsufficientEthAmount(swapAmount);
+            (bool success, ) = payable(reserveWallet).call{value: swapAmount}(
                 ""
             );
-            require(success, "TRANSFER_FAILED");
-            if (msg.value > swapAmout) {
+            if (!success) revert TransferFailed();
+            if (msg.value > swapAmount) {
                 // return diff
-                uint256 refund = msg.value.sub(swapAmout);
+                uint256 refund = msg.value.sub(swapAmount);
                 (success, ) = payable(msg.sender).call{value: refund}("");
-                require(success);
+                if (!success) revert RefundFailed();
             }
         } else if (paymentMethod == stableCoin && erc20token[paymentMethod]) {
             // USDC
@@ -200,14 +200,14 @@ abstract contract PaymentGateway is Ownable {
             );
         } else if (erc20token[paymentMethod]) {
             // ERC20 token, including MASA
-            uint256 swapAmout = _convertFromStableCoin(
+            uint256 swapAmount = _convertFromStableCoin(
                 paymentMethod,
                 amountInStableCoin
             );
             IERC20(paymentMethod).safeTransferFrom(
                 msg.sender,
                 reserveWallet,
-                swapAmout
+                swapAmount
             );
         } else {
             revert InvalidPaymentMethod(paymentMethod);
@@ -220,7 +220,7 @@ abstract contract PaymentGateway is Ownable {
     /// @param amountInMASA Price to be paid in MASA
     function _payWithMASA(uint256 amountInMASA) internal {
         // MASA
-        require(erc20token[masaToken], "INVALID_PAYMENT_METHOD");
+        if (!erc20token[masaToken]) revert InvalidPaymentMethod(masaToken);
 
         IERC20(masaToken).safeTransferFrom(
             msg.sender,

@@ -986,6 +986,22 @@ error CallerNotOwner(address caller)
 |---|---|---|
 | caller | address | undefined |
 
+### InsufficientEthAmount
+
+```solidity
+error InsufficientEthAmount(uint256 amount)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| amount | uint256 | undefined |
+
 ### InvalidPaymentMethod
 
 ```solidity
@@ -1013,6 +1029,38 @@ error InvalidSignature()
 
 
 
+### InvalidToken
+
+```solidity
+error InvalidToken(address token)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| token | address | undefined |
+
+### NonExistingErc20Token
+
+```solidity
+error NonExistingErc20Token(address erc20token)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| erc20token | address | undefined |
+
 ### NotAuthorized
 
 ```solidity
@@ -1029,10 +1077,32 @@ error NotAuthorized(address signer)
 |---|---|---|
 | signer | address | undefined |
 
+### RefundFailed
+
+```solidity
+error RefundFailed()
+```
+
+
+
+
+
+
 ### SameValue
 
 ```solidity
 error SameValue()
+```
+
+
+
+
+
+
+### TransferFailed
+
+```solidity
+error TransferFailed()
 ```
 
 
