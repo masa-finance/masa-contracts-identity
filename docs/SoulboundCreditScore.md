@@ -959,6 +959,17 @@ event SoulboundCreditScoreMinted(uint256 tokenId, uint256 identityId, address au
 
 ## Errors
 
+### AlreadyAdded
+
+```solidity
+error AlreadyAdded()
+```
+
+
+
+
+
+
 ### CallerNotOwner
 
 ```solidity
@@ -975,6 +986,22 @@ error CallerNotOwner(address caller)
 |---|---|---|
 | caller | address | undefined |
 
+### CreditScoreAlreadyCreated
+
+```solidity
+error CreditScoreAlreadyCreated(address to)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| to | address | undefined |
+
 ### InvalidPaymentMethod
 
 ```solidity
@@ -990,6 +1017,33 @@ error InvalidPaymentMethod(address paymentMethod)
 | Name | Type | Description |
 |---|---|---|
 | paymentMethod | address | undefined |
+
+### InvalidSignature
+
+```solidity
+error InvalidSignature()
+```
+
+
+
+
+
+
+### NotAuthorized
+
+```solidity
+error NotAuthorized(address signer)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| signer | address | undefined |
 
 ### SameValue
 

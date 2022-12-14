@@ -162,8 +162,8 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         require(identityOwner == tokenOwner, "IDENTITY_OWNER_NOT_TOKEN_OWNER");
         if (identityOwner != _msgSender()) revert CallerNotOwner(_msgSender());
         require(expirationDate >= block.timestamp, "VALID_PERIOD_EXPIRED");
-        require(
-            _verify(
+        if (
+            !_verify(
                 _hash(
                     readerIdentityId,
                     ownerIdentityId,
@@ -175,9 +175,8 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
                 ),
                 signature,
                 identityOwner
-            ),
-            "INVALID_SIGNATURE"
-        );
+            )
+        ) revert InvalidSignature();
 
         if (addPermissionPriceMASA > 0) {
             // if there is a price in MASA, pay it without conversion rate

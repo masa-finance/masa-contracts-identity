@@ -46,7 +46,7 @@ contract SoulboundIdentity is MasaSBTAuthority, ISoulboundIdentity {
     /// @param to Address of the admin of the new identity
     function mint(address to) public override returns (uint256) {
         // Soulbound identity already created!
-        require(balanceOf(to) < 1, "SB_IDENTITY_ALREADY_CREATED");
+        if (balanceOf(to) > 0) revert IdentityAlreadyCreated(to);
 
         return _mintWithCounter(to);
     }
@@ -220,7 +220,7 @@ contract SoulboundIdentity is MasaSBTAuthority, ISoulboundIdentity {
     /* ========== MODIFIERS ================================================= */
 
     modifier soulNameAlreadySet() {
-        require(address(soulName) != address(0), "SOULNAME_CONTRACT_NOT_SET");
+        if (address(soulName) == address(0)) revert SoulNameContractNotSet();
         _;
     }
 

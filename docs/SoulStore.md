@@ -649,6 +649,17 @@ event Unpaused(address account)
 
 ## Errors
 
+### AlreadyAdded
+
+```solidity
+error AlreadyAdded()
+```
+
+
+
+
+
+
 ### InvalidPaymentMethod
 
 ```solidity

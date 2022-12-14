@@ -109,7 +109,7 @@ abstract contract PaymentGateway is Ownable {
     /// @param _erc20token New ERC20 token to add
     function addErc20Token(address _erc20token) external onlyOwner {
         if (_erc20token == address(0)) revert ZeroAddress();
-        require(!erc20token[_erc20token], "ALREADY_ADDED");
+        if (erc20token[_erc20token]) revert AlreadyAdded();
 
         erc20token[_erc20token] = true;
         erc20tokens.push(_erc20token);

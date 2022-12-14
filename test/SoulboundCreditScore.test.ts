@@ -219,7 +219,7 @@ describe("Soulbound Credit Score", () => {
             signatureDate,
             signature
           )
-      ).to.be.revertedWith("CREDITSCORE_ALREADY_CREATED");
+      ).to.be.revertedWith("CreditScoreAlreadyCreated");
 
       expect(await soulboundCreditScore.totalSupply()).to.equal(1);
       expect(await soulboundCreditScore.tokenByIndex(0)).to.equal(0);
@@ -279,7 +279,7 @@ describe("Soulbound Credit Score", () => {
             signatureDate,
             signatureNonAuthority
           )
-      ).to.be.revertedWith("NOT_AUTHORIZED");
+      ).to.be.revertedWith("NotAuthorized");
     });
 
     it("should fail to mint with invalid signature", async () => {
@@ -298,7 +298,7 @@ describe("Soulbound Credit Score", () => {
             signatureDate,
             signatureNonAuthority
           )
-      ).to.be.revertedWith("INVALID_SIGNATURE");
+      ).to.be.revertedWith("InvalidSignature");
     });
   });
 

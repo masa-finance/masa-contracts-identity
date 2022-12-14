@@ -959,6 +959,17 @@ event Soulbound2FAMinted(uint256 tokenId, uint256 identityId, address authorityA
 
 ## Errors
 
+### AlreadyAdded
+
+```solidity
+error AlreadyAdded()
+```
+
+
+
+
+
+
 ### CallerNotOwner
 
 ```solidity
@@ -990,6 +1001,33 @@ error InvalidPaymentMethod(address paymentMethod)
 | Name | Type | Description |
 |---|---|---|
 | paymentMethod | address | undefined |
+
+### InvalidSignature
+
+```solidity
+error InvalidSignature()
+```
+
+
+
+
+
+
+### NotAuthorized
+
+```solidity
+error NotAuthorized(address signer)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| signer | address | undefined |
 
 ### SameValue
 

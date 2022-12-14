@@ -92,7 +92,7 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
         if (_authority == address(0)) revert ZeroAddress();
-        require(!authorities[_authority], "ALREADY_ADDED");
+        if (authorities[_authority]) revert AlreadyAdded();
 
         authorities[_authority] = true;
     }
@@ -137,8 +137,8 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
         address signer
     ) internal view {
         address _signer = ECDSA.recover(digest, signature);
-        require(_signer == signer, "INVALID_SIGNATURE");
-        require(authorities[_signer], "NOT_AUTHORIZED");
+        if (_signer != signer) revert InvalidSignature();
+        if (!authorities[_signer]) revert NotAuthorized(_signer);
     }
 
     function _mintWithCounter(address to) internal virtual returns (uint256) {

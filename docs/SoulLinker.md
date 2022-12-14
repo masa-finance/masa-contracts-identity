@@ -836,6 +836,17 @@ event Unpaused(address account)
 
 ## Errors
 
+### AlreadyAdded
+
+```solidity
+error AlreadyAdded()
+```
+
+
+
+
+
+
 ### CallerNotOwner
 
 ```solidity
@@ -867,6 +878,17 @@ error InvalidPaymentMethod(address paymentMethod)
 | Name | Type | Description |
 |---|---|---|
 | paymentMethod | address | undefined |
+
+### InvalidSignature
+
+```solidity
+error InvalidSignature()
+```
+
+
+
+
+
 
 ### SameValue
 

@@ -57,7 +57,7 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
     ) public payable virtual returns (uint256) {
         address to = soulboundIdentity.ownerOf(identityId);
         if (to != _msgSender()) revert CallerNotOwner(_msgSender());
-        require(balanceOf(to) < 1, "CREDITSCORE_ALREADY_CREATED");
+        if (balanceOf(to) > 0) revert CreditScoreAlreadyCreated(to);
 
         _verify(
             _hash(identityId, authorityAddress, signatureDate),

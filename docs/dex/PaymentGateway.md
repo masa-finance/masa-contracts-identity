@@ -337,6 +337,17 @@ event OwnershipTransferred(address indexed previousOwner, address indexed newOwn
 
 ## Errors
 
+### AlreadyAdded
+
+```solidity
+error AlreadyAdded()
+```
+
+
+
+
+
+
 ### SameValue
 
 ```solidity
