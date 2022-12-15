@@ -29,7 +29,7 @@ Adds an SBT to the list of linked SBTs
 ### addPermission
 
 ```solidity
-function addPermission(address paymentMethod, uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, string data, uint256 signatureDate, uint256 expirationDate, bytes signature) external nonpayable
+function addPermission(address paymentMethod, uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, string data, uint256 signatureDate, uint256 expirationDate, bytes signature) external payable
 ```
 
 Stores the permission, validating the signature of the given read link request

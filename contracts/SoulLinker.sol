@@ -154,7 +154,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         uint256 signatureDate,
         uint256 expirationDate,
         bytes calldata signature
-    ) external whenNotPaused {
+    ) external payable whenNotPaused {
         require(linkedSBT[token], "SBT_NOT_LINKED");
 
         address identityOwner = soulboundIdentity.ownerOf(ownerIdentityId);
