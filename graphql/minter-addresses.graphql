@@ -1,0 +1,20 @@
+query ($network: EthereumNetwork!,$contract: String!,$event: String!, $limit: Int!, $offset: Int!) {
+  ethereum(network: $network) {
+    smartContractEvents(
+      options: {asc: "block.height", limit: $limit, offset: $offset}
+      smartContractEvent: {is: $event}
+      smartContractAddress: {is: $contract}
+    ) {
+      block {
+        height
+        timestamp {
+          time
+        }
+      }
+      arguments {
+        value
+        argument
+      }
+    }
+  }
+}

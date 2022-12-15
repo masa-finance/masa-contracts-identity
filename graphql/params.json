@@ -1,0 +1,7 @@
+{
+  "network": "goerli",
+  "contract":"0xB10ddc662BD561f0B26A8B555e15C71430a74fAa",
+  "event":"Mint",
+  "limit":100,
+  "offset":0
+}
