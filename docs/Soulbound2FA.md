@@ -179,6 +179,28 @@ function enabledPaymentMethods(uint256) external view returns (address)
 |---|---|---|
 | _0 | address | undefined |
 
+### exists
+
+```solidity
+function exists(uint256 tokenId) external view returns (bool)
+```
+
+Returns true if the token exists
+
+*Returns true if the token has been minted*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId | uint256 | Token to check |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bool | True if the token exists |
+
 ### getEnabledPaymentMethods
 
 ```solidity

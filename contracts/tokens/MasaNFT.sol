@@ -70,6 +70,14 @@ abstract contract MasaNFT is
 
     /* ========== VIEWS ===================================================== */
 
+    /// @notice Returns true if the token exists
+    /// @dev Returns true if the token has been minted
+    /// @param tokenId Token to check
+    /// @return True if the token exists
+    function exists(uint256 tokenId) external view returns (bool) {
+        return _exists(tokenId);
+    }
+
     /// @notice A distinct Uniform Resource Identifier (URI) for a given asset.
     /// @dev Throws if `_tokenId` is not a valid NFT. URIs are defined in RFC
     ///  3986. The URI may point to a JSON file that conforms to the "ERC721
