@@ -26,6 +26,7 @@
     "solhint": "solhint contracts/**/*.sol",
     "release": "GITHUB_TOKEN=$(grep GITHUB_TOKEN .env | cut -d '=' -f2) release-it",
     "check-deployment:goerli": "hardhat run --network goerli src/check-deployment.ts",
+    "minter-addresses:alfajores": "hardhat run --network alfajores src/minter-addresses-alfajores.ts",
     "minter-addresses:goerli": "hardhat run --network goerli src/minter-addresses-goerli.ts"
   },
   "dependencies": {
