@@ -1,10 +1,63 @@
 /* eslint-disable no-console */
 import "@nomiclabs/hardhat-ethers";
 import { ethers } from "hardhat";
-import {
-  SoulboundIdentity,
-  SoulboundIdentity__factory
-} from "../typechain";
+import { SoulboundIdentity, SoulboundIdentity__factory } from "../typechain";
+import { GraphQLClient, gql } from "graphql-request";
+import { getSecretParam } from "./utils/EnvParams";
+
+const eventQuery = gql`
+  query (
+    $network: EthereumNetwork!
+    $contract: String!
+    $event: String!
+    $limit: Int!
+    $offset: Int!
+  ) {
+    ethereum(network: $network) {
+      smartContractEvents(
+        options: { asc: "block.height", limit: $limit, offset: $offset }
+        smartContractEvent: { is: $event }
+        smartContractAddress: { is: $contract }
+      ) {
+        block {
+          height
+          timestamp {
+            time
+          }
+        }
+        arguments {
+          value
+          argument
+        }
+      }
+    }
+  }
+`;
+
+const getMinterAddresses = async (
+  chainId: number,
+  smartContractAddress: string,
+  event: string
+) => {
+  const BITQUERY_ENDPOINT = "https://graphql.bitquery.io/";
+  const bitqueryApiKey = getSecretParam("BITQUERY_API_KEY");
+
+  const graphQLClient = new GraphQLClient(BITQUERY_ENDPOINT, {
+    headers: {
+      "Content-Type": "application/json",
+      "X-API-KEY": bitqueryApiKey
+    }
+  });
+
+  const data = await graphQLClient.request(eventQuery, {
+    network: chainId == 44787 ? "alfajores" : "goerli",
+    contract: smartContractAddress,
+    event: event,
+    limit: 10000,
+    offset: 0
+  });
+  return data;
+};
 
 /**
  * main function
@@ -19,27 +72,27 @@ async function main() {
   if (chainId == 44787) {
     // alfajores
     soulboundIdentityAddresses = [
-      "0xBDc0F2e51bedaB31258BE0c0bd8fCf141bccd193",
-      "0x4e1c9E9ce5af7CB87E32f979B5288a1C6A6A1E5C",
-      "0x514b35F067Bc78589986832d3c25caA9a4dD9fC7",
-      "0xeFd998D31Ef7f0d54c6C960AEA29A8628CD704d8",
-      "0x41a3cE7EA192D4b746CD7F2b7F8701aD4964C3c5",
-      "0xD0f3C1361d8Fba40CbC85cC546c38511b510dedd",
-      "0x1be6c425d17380D0BCF62099a27BE4e9c5cF8719",
-      "0x1471A7d3914a38e7488111001e50eCc29D627166",
-      "0xadAC98BB4f783Fea5478D496c777677521Ce305a"
+      ["0xBDc0F2e51bedaB31258BE0c0bd8fCf141bccd193", "Transfer"],
+      ["0x4e1c9E9ce5af7CB87E32f979B5288a1C6A6A1E5C", "Transfer"],
+      ["0x514b35F067Bc78589986832d3c25caA9a4dD9fC7", "Transfer"],
+      ["0xeFd998D31Ef7f0d54c6C960AEA29A8628CD704d8", "Transfer"],
+      ["0x41a3cE7EA192D4b746CD7F2b7F8701aD4964C3c5", "Transfer"],
+      ["0xD0f3C1361d8Fba40CbC85cC546c38511b510dedd", "Transfer"],
+      ["0x1be6c425d17380D0BCF62099a27BE4e9c5cF8719", "Transfer"],
+      ["0x1471A7d3914a38e7488111001e50eCc29D627166", "Transfer"],
+      ["0xadAC98BB4f783Fea5478D496c777677521Ce305a", "Transfer"]
     ];
   } else if (chainId == 5) {
     // goerli
     soulboundIdentityAddresses = [
-      "0x270265B1c6b31ae53f75BC2f6a5D5F7f422BB9e8",
-      "0xB10ddc662BD561f0B26A8B555e15C71430a74fAa",
-      "0x83A5492f28CD7D2d5aA7A8b9c0Cf926f639Dd612",
-      "0x6B87e5baB74c0b68e392817Ab2c6abf69DB0F5EC",
-      "0x607af050D66AA9Bc54a051D7a0C68F254b6745Fc",
-      "0xe7a4CaFA517cF82e90b42fB1cEE1437f4bb205F2",
-      "0xF8625D0131116A13BC2e8d5953f6ed8A3F7C7353",
-      "0x8aEB3A8D6bdFC68BFFe1aC03833D9522857f0db4"
+      ["0x270265B1c6b31ae53f75BC2f6a5D5F7f422BB9e8", "Mint"],
+      ["0xB10ddc662BD561f0B26A8B555e15C71430a74fAa", "Mint"],
+      ["0x83A5492f28CD7D2d5aA7A8b9c0Cf926f639Dd612", "Mint"],
+      ["0x6B87e5baB74c0b68e392817Ab2c6abf69DB0F5EC", "Transfer"],
+      ["0x607af050D66AA9Bc54a051D7a0C68F254b6745Fc", "Transfer"],
+      ["0xe7a4CaFA517cF82e90b42fB1cEE1437f4bb205F2", "Transfer"],
+      ["0xF8625D0131116A13BC2e8d5953f6ed8A3F7C7353", "Transfer"],
+      ["0x8aEB3A8D6bdFC68BFFe1aC03833D9522857f0db4", "Transfer"]
     ];
   }
 
@@ -56,41 +109,48 @@ async function main() {
 
   for (let c = 0; c < soulboundIdentityAddresses.length; c++) {
     // create contract instances
-    const soulboundIdentity: SoulboundIdentity = SoulboundIdentity__factory.connect(
-      soulboundIdentityAddresses[c],
-      admin
-    );
+    const soulboundIdentity: SoulboundIdentity =
+      SoulboundIdentity__factory.connect(
+        soulboundIdentityAddresses[c][0],
+        admin
+      );
 
     const totalSupply = await soulboundIdentity.totalSupply();
     totalMintedTokens += totalSupply.toNumber();
     console.log(
-      `SoulboundIdentity address ${soulboundIdentityAddresses[c]}, total supply: ${totalSupply}`
+      `SoulboundIdentity address ${soulboundIdentityAddresses[c][0]}, total supply: ${totalSupply}`
     );
   }
 
   console.log(
     "=============================================================================="
   );
-  console.log(
-    `Total supply of Identity SBTs: ${totalMintedTokens}`
-  );
+  console.log(`Total supply of Identity SBTs: ${totalMintedTokens}`);
   console.log(
     "=============================================================================="
   );
 
   for (let c = 0; c < soulboundIdentityAddresses.length; c++) {
     console.log(
-      `SoulboundIdentity address: ${soulboundIdentityAddresses[c]}`
+      `SoulboundIdentity address: ${soulboundIdentityAddresses[c][0]}`
     );
     // create contract instance
-    const soulboundIdentity: SoulboundIdentity = SoulboundIdentity__factory.connect(
-      soulboundIdentityAddresses[c],
-      admin
-    );
+    const soulboundIdentity: SoulboundIdentity =
+      SoulboundIdentity__factory.connect(
+        soulboundIdentityAddresses[c][0],
+        admin
+      );
     const totalSupply = await soulboundIdentity.totalSupply();
     console.log(`Name: ${await soulboundIdentity.name()}`);
     console.log(`Symbol: ${await soulboundIdentity.symbol()}`);
     console.log(`Total supply: ${totalSupply}`);
+
+    const data = await getMinterAddresses(
+      chainId,
+      soulboundIdentityAddresses[c][0],
+      soulboundIdentityAddresses[c][1]
+    );
+    console.log(data);
 
     /*for (let i = 7069; i < totalSupply.toNumber(); i++) {
       const eventFilter = soulboundIdentity.filters.Transfer(
