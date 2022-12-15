@@ -197,6 +197,9 @@ describe("Soul Linker", () => {
     );
 
     // we add payment methods
+    await soulLinker
+      .connect(owner)
+      .enablePaymentMethod(ethers.constants.AddressZero);
     await soulLinker.connect(owner).enablePaymentMethod(MASA_GOERLI);
   });
 
@@ -477,6 +480,70 @@ describe("Soul Linker", () => {
           signatureDate,
           expirationDate,
           signature
+        );
+
+      const permissionSignatureDates =
+        await soulLinker.getPermissionSignatureDates(
+          soulboundCreditScore.address,
+          creditScore1,
+          readerIdentityId
+        );
+      expect(permissionSignatureDates[0]).to.be.equal(signatureDate);
+
+      const {
+        ownerIdentityId: ownerIdentityIdInfo,
+        data: dataInfo,
+        expirationDate: expirationDateInfo,
+        isRevoked: isRevokedInfo
+      } = await soulLinker.getPermissionInfo(
+        soulboundCreditScore.address,
+        creditScore1,
+        readerIdentityId,
+        signatureDate
+      );
+      expect(ownerIdentityIdInfo).to.be.equal(ownerIdentityId);
+      expect(dataInfo).to.be.equal(data);
+      expect(expirationDateInfo).to.be.equal(expirationDate);
+      expect(isRevokedInfo).to.be.equal(false);
+
+      const dataWithPermissions = await soulLinker
+        .connect(address2)
+        .validatePermission(
+          readerIdentityId,
+          ownerIdentityId,
+          soulboundCreditScore.address,
+          creditScore1,
+          signatureDate
+        );
+
+      expect(dataWithPermissions).to.be.equal(data);
+    });
+
+    it("addPermission must work paying with ETH", async () => {
+      const signature = await signLink(
+        readerIdentityId,
+        ownerIdentityId,
+        soulboundCreditScore.address,
+        creditScore1
+      );
+
+      const { price } = await soulLinker.getPriceForAddPermission(
+        ethers.constants.AddressZero
+      );
+
+      await soulLinker
+        .connect(address1)
+        .addPermission(
+          ethers.constants.AddressZero,
+          readerIdentityId,
+          ownerIdentityId,
+          soulboundCreditScore.address,
+          creditScore1,
+          data,
+          signatureDate,
+          expirationDate,
+          signature,
+          { value: price }
         );
 
       const permissionSignatureDates =
