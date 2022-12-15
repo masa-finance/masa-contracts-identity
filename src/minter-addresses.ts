@@ -14,6 +14,8 @@ async function main() {
   const chainId = await admin.getChainId();
 
   let soulboundIdentityAddresses;
+  let totalMintedTokens = 0;
+
   if (chainId == 44787) {
     // alfajores
     soulboundIdentityAddresses = [
@@ -45,11 +47,8 @@ async function main() {
     "=============================================================================="
   );
   console.log(`ChainId: ${chainId}`);
-
-  console.log("");
-
   console.log(
-    `SoulboundIdentity addresses:              ${soulboundIdentityAddresses}`
+    `SoulboundIdentity addresses count: ${soulboundIdentityAddresses.length}`
   );
   console.log(
     "=============================================================================="
@@ -63,11 +62,18 @@ async function main() {
     );
 
     const totalSupply = await soulboundIdentity.totalSupply();
+    totalMintedTokens += totalSupply.toNumber();
     console.log(
       `SoulboundIdentity address ${soulboundIdentityAddresses[c]}, total supply: ${totalSupply}`
     );
   }
 
+  console.log(
+    "=============================================================================="
+  );
+  console.log(
+    `Total supply of Identity SBTs: ${totalMintedTokens}`
+  );
   console.log(
     "=============================================================================="
   );
