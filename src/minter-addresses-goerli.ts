@@ -136,7 +136,7 @@ async function main() {
 
     let numArguments = soulboundIdentityAddresses[c][1] == "Mint" ? 2 : 3;
     let offset = 0;
-    const stepCount = 100;
+    const stepCount = 10000;
 
     while (offset < totalSupply.toNumber()) {
       const events = await getMintingEvents(
