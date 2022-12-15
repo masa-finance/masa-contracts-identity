@@ -125,8 +125,8 @@ describe("Soulbound Credit Score", () => {
     );
 
     // we add payment methods
-    await soulboundCreditScore.connect(owner).addErc20Token(USDC_GOERLI);
-    await soulboundCreditScore.connect(owner).addErc20Token(MASA_GOERLI);
+    await soulboundCreditScore.connect(owner).enablePaymentMethod(USDC_GOERLI);
+    await soulboundCreditScore.connect(owner).enablePaymentMethod(MASA_GOERLI);
 
     // we mint identity SBT
     const mintTx = await soulboundIdentity
