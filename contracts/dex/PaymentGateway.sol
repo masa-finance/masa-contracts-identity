@@ -30,12 +30,12 @@ abstract contract PaymentGateway is Ownable {
     address public swapRouter;
     address public wrappedNativeToken;
 
-    address public stableCoin; // USDC. It also needs to be enabled as erc20token, if we want to pay in USDC
-    address public masaToken; // MASA. It also needs to be enabled as erc20token, if we want to pay in MASA
+    address public stableCoin; // USDC. It also needs to be enabled as payment method, if we want to pay in USDC
+    address public masaToken; // MASA. It also needs to be enabled as payment method, if we want to pay in MASA
 
-    // enabled ERC20 tokens
+    // enabled payment methods: ETH and ERC20 tokens
     mapping(address => bool) public erc20token;
-    address[] public erc20tokens;
+    address[] public enabledPaymentMethods;
 
     address public reserveWallet;
 
@@ -110,7 +110,7 @@ abstract contract PaymentGateway is Ownable {
         require(!erc20token[_erc20token], "ALREADY_ADDED");
 
         erc20token[_erc20token] = true;
-        erc20tokens.push(_erc20token);
+        enabledPaymentMethods.push(_erc20token);
     }
 
     /// @notice Removes an ERC20 token as a valid payment method
@@ -121,10 +121,10 @@ abstract contract PaymentGateway is Ownable {
         require(erc20token[_erc20token], "NOT_EXISITING_ERC20TOKEN");
 
         erc20token[_erc20token] = false;
-        for (uint256 i = 0; i < erc20tokens.length; i++) {
-            if (erc20tokens[i] == _erc20token) {
-                erc20tokens[i] = erc20tokens[erc20tokens.length - 1];
-                erc20tokens.pop();
+        for (uint256 i = 0; i < enabledPaymentMethods.length; i++) {
+            if (enabledPaymentMethods[i] == _erc20token) {
+                enabledPaymentMethods[i] = enabledPaymentMethods[enabledPaymentMethods.length - 1];
+                enabledPaymentMethods.pop();
                 break;
             }
         }
@@ -146,8 +146,8 @@ abstract contract PaymentGateway is Ownable {
     /// @notice Returns all available ERC 20 tokens
     /// @dev Returns the address of all available ERC 20 tokens
     /// @return Array of all enabled ERC20 tokens
-    function getErc20Tokens() external view returns (address[] memory) {
-        return erc20tokens;
+    function getEnabledPaymentMethods() external view returns (address[] memory) {
+        return enabledPaymentMethods;
     }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
