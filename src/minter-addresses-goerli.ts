@@ -34,10 +34,12 @@ const eventQuery = gql`
   }
 `;
 
-const getMinterAddresses = async (
+const getMintingEvents = async (
   chainId: number,
   smartContractAddress: string,
-  event: string
+  event: string,
+  limit: number,
+  offset: number
 ) => {
   const BITQUERY_ENDPOINT = "https://graphql.bitquery.io/";
   const bitqueryApiKey = getSecretParam("BITQUERY_API_KEY");
@@ -53,10 +55,10 @@ const getMinterAddresses = async (
     network: chainId == 5 ? "goerli" : "",
     contract: smartContractAddress,
     event: event,
-    limit: 10000,
-    offset: 0
+    limit: limit,
+    offset: offset
   });
-  return data;
+  return data.ethereum.smartContractEvents;
 };
 
 /**
@@ -132,12 +134,14 @@ async function main() {
     console.log(`Symbol: ${await soulboundIdentity.symbol()}`);
     console.log(`Total supply: ${totalSupply}`);
 
-    const data = await getMinterAddresses(
+    const events = await getMintingEvents(
       chainId,
       soulboundIdentityAddresses[c][0],
-      soulboundIdentityAddresses[c][1]
+      soulboundIdentityAddresses[c][1],
+      100,
+      0
     );
-    console.log(data);
+    console.log(events);
 
     /*for (let i = 7069; i < totalSupply.toNumber(); i++) {
       const eventFilter = soulboundIdentity.filters.Transfer(
