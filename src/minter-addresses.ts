@@ -78,25 +78,21 @@ async function main() {
     "=============================================================================="
   );
 
-  /* for (let c = 0; c < soulboundIdentityAddresses.length; c++) {
-    console.log("");
-
-    // create contract instances
+  for (let c = 0; c < soulboundIdentityAddresses.length; c++) {
     console.log(
-      `SoulboundIdentity address:                ${soulboundIdentityAddresses[c]}`
+      `SoulboundIdentity address: ${soulboundIdentityAddresses[c]}`
     );
-    const soulboundIdentity: SoulName = SoulName__factory.connect(
+    // create contract instance
+    const soulboundIdentity: SoulboundIdentity = SoulboundIdentity__factory.connect(
       soulboundIdentityAddresses[c],
       admin
     );
-    const soulboundIdentityNew: SoulboundIdentity =
-      SoulboundIdentity__factory.connect(soulboundIdentityAddresses[c], admin);
-
     const totalSupply = await soulboundIdentity.totalSupply();
     console.log(`Name: ${await soulboundIdentity.name()}`);
     console.log(`Symbol: ${await soulboundIdentity.symbol()}`);
     console.log(`Total supply: ${totalSupply}`);
-    for (let i = 7069; i < totalSupply.toNumber(); i++) {
+
+    /*for (let i = 7069; i < totalSupply.toNumber(); i++) {
       const eventFilter = soulboundIdentity.filters.Transfer(
         ethers.constants.AddressZero,
         null,
@@ -119,8 +115,11 @@ async function main() {
           );
         }
       }
-    }
-  } */
+    }*/
+    console.log(
+      "=============================================================================="
+    );
+  }
 }
 
 main()
