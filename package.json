@@ -50,6 +50,8 @@
     "chai-ethers": "^0.0.1",
     "envfile": "^6.17.0",
     "ethereum-waffle": "^3.4.4",
+    "graphql": "^16.6.0",
+    "graphql-request": "^5.0.0",
     "hardhat": "^2.10.1",
     "hardhat-deploy": "^0.11.12",
     "hardhat-deploy-ethers": "^0.3.0-beta.13",
