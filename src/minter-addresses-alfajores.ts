@@ -62,9 +62,7 @@ async function main() {
   );
 
   for (let c = 0; c < soulboundIdentityAddresses.length; c++) {
-    console.log(
-      `SoulboundIdentity address: ${soulboundIdentityAddresses[c]}`
-    );
+    console.log(`SoulboundIdentity address: ${soulboundIdentityAddresses[c]}`);
     // create contract instance
     const soulboundIdentity: SoulName = SoulName__factory.connect(
       soulboundIdentityAddresses[c],

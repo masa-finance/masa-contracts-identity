@@ -138,35 +138,21 @@ async function main() {
       chainId,
       soulboundIdentityAddresses[c][0],
       soulboundIdentityAddresses[c][1],
-      100,
+      3,
       0
     );
-    console.log(events);
-
-    /*for (let i = 7069; i < totalSupply.toNumber(); i++) {
-      const eventFilter = soulboundIdentity.filters.Transfer(
-        ethers.constants.AddressZero,
-        null,
-        i
-      );
-      const events = await soulboundIdentity.queryFilter(eventFilter);
-
-      if (events && events.length > 0) {
+    for (let i = 0; i < events.length; i++) {
+      for (let j = 0; j < events[i].arguments.length; j += 3) {
         console.log(
-          `${events[0].args.tokenId},${totalSupply},${events[0].args.to}`
+          `tokenId: ${events[i].arguments[j].value}, owner: ${
+            events[i].arguments[j + 1].value
+          } ${events[i].arguments[j + 2].value}`
         );
-      } else {
-        // New SBT smart contract
-        const eventFilter = soulboundIdentityNew.filters.Mint(null, i);
-        const events = await soulboundIdentityNew.queryFilter(eventFilter);
-
-        if (events && events.length > 0) {
-          console.log(
-            `${events[0].args._tokenId},${totalSupply},${events[0].args._owner}`
-          );
-        }
       }
-    }*/
+    }
+
+    // console.log(events);
+
     console.log(
       "=============================================================================="
     );
