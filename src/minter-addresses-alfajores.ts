@@ -10,6 +10,9 @@ async function main() {
   const [admin] = await ethers.getSigners();
   const chainId = await admin.getChainId();
 
+  // list of accounts that have minted, without duplicates
+  const accounts = {};
+
   let soulboundIdentityAddresses;
   let totalMintedTokens = 0;
 
@@ -88,6 +91,9 @@ async function main() {
         console.log(
           `${events[0].args.tokenId},${totalSupply},${events[0].args.to}`
         );
+        if (accounts[events[0].args.to] == null) {
+          accounts[events[0].args.to] = true;
+        }
       } else {
         isEnded = true;
       }
@@ -96,6 +102,11 @@ async function main() {
     console.log(
       "=============================================================================="
     );
+  }
+
+  const accountKeys = Object.keys(accounts);
+  for (let i = 0; i < accountKeys.length; i++) {
+    console.log(accountKeys[i])
   }
 }
 
