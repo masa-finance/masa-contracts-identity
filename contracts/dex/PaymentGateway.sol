@@ -186,7 +186,7 @@ abstract contract PaymentGateway is Ownable {
         if (paymentMethod == address(0)) {
             // ETH
             uint256 swapAmout = _convertFromStableCoin(
-                wrappedNativeToken,
+                paymentMethod,
                 amountInStableCoin
             );
             require(msg.value >= swapAmout, "INSUFFICIENT_ETH_AMOUNT");
