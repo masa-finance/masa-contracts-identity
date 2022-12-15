@@ -30,12 +30,12 @@ abstract contract PaymentGateway is Ownable {
     address public swapRouter;
     address public wrappedNativeToken;
 
-    address public stableCoin; // USDC. It also needs to be enabled as erc20token, if we want to pay in USDC
-    address public masaToken; // MASA. It also needs to be enabled as erc20token, if we want to pay in MASA
+    address public stableCoin; // USDC. It also needs to be enabled as payment method, if we want to pay in USDC
+    address public masaToken; // MASA. It also needs to be enabled as payment method, if we want to pay in MASA
 
-    // enabled ERC20 tokens
-    mapping(address => bool) public erc20token;
-    address[] public erc20tokens;
+    // enabled payment methods: ETH and ERC20 tokens
+    mapping(address => bool) public enabledPaymentMethod;
+    address[] public enabledPaymentMethods;
 
     address public reserveWallet;
 
@@ -102,29 +102,32 @@ abstract contract PaymentGateway is Ownable {
         masaToken = _masaToken;
     }
 
-    /// @notice Adds a new ERC20 token as a valid payment method
+    /// @notice Adds a new token as a valid payment method
     /// @dev The caller must have the owner to call this function
-    /// @param _erc20token New ERC20 token to add
-    function addErc20Token(address _erc20token) external onlyOwner {
-        require(_erc20token != address(0), "ZERO_ADDRESS");
-        require(!erc20token[_erc20token], "ALREADY_ADDED");
+    /// @param _paymentMethod New token to add
+    function enablePaymentMethod(address _paymentMethod) external onlyOwner {
+        require(!enabledPaymentMethod[_paymentMethod], "ALREADY_ADDED");
 
-        erc20token[_erc20token] = true;
-        erc20tokens.push(_erc20token);
+        enabledPaymentMethod[_paymentMethod] = true;
+        enabledPaymentMethods.push(_paymentMethod);
     }
 
-    /// @notice Removes an ERC20 token as a valid payment method
+    /// @notice Removes a token as a valid payment method
     /// @dev The caller must have the owner to call this function
-    /// @param _erc20token ERC20 token to remove
-    function removeErc20Token(address _erc20token) external onlyOwner {
-        require(_erc20token != address(0), "ZERO_ADDRESS");
-        require(erc20token[_erc20token], "NOT_EXISITING_ERC20TOKEN");
+    /// @param _paymentMethod Token to remove
+    function disablePaymentMethod(address _paymentMethod) external onlyOwner {
+        require(
+            enabledPaymentMethod[_paymentMethod],
+            "NOT_EXISITING_PAYMENT_METHOD"
+        );
 
-        erc20token[_erc20token] = false;
-        for (uint256 i = 0; i < erc20tokens.length; i++) {
-            if (erc20tokens[i] == _erc20token) {
-                erc20tokens[i] = erc20tokens[erc20tokens.length - 1];
-                erc20tokens.pop();
+        enabledPaymentMethod[_paymentMethod] = false;
+        for (uint256 i = 0; i < enabledPaymentMethods.length; i++) {
+            if (enabledPaymentMethods[i] == _paymentMethod) {
+                enabledPaymentMethods[i] = enabledPaymentMethods[
+                    enabledPaymentMethods.length - 1
+                ];
+                enabledPaymentMethods.pop();
                 break;
             }
         }
@@ -143,11 +146,15 @@ abstract contract PaymentGateway is Ownable {
 
     /* ========== VIEWS ===================================================== */
 
-    /// @notice Returns all available ERC 20 tokens
-    /// @dev Returns the address of all available ERC 20 tokens
-    /// @return Array of all enabled ERC20 tokens
-    function getErc20Tokens() external view returns (address[] memory) {
-        return erc20tokens;
+    /// @notice Returns all available payment methods
+    /// @dev Returns the address of all available payment methods
+    /// @return Array of all enabled payment methods
+    function getEnabledPaymentMethods()
+        external
+        view
+        returns (address[] memory)
+    {
+        return enabledPaymentMethods;
     }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
@@ -158,11 +165,14 @@ abstract contract PaymentGateway is Ownable {
         returns (uint256)
     {
         require(
-            (token == wrappedNativeToken || erc20token[token]) &&
-                token != stableCoin,
+            enabledPaymentMethod[token] && token != stableCoin,
             "INVALID_TOKEN"
         );
-        return _estimateSwapAmount(token, stableCoin, amount);
+        if (token == address(0)) {
+            return _estimateSwapAmount(wrappedNativeToken, stableCoin, amount);
+        } else {
+            return _estimateSwapAmount(token, stableCoin, amount);
+        }
     }
 
     /// @notice Performs the payment in any payment method
@@ -172,10 +182,11 @@ abstract contract PaymentGateway is Ownable {
     /// @param amountInStableCoin Price to be paid in stable coin
     function _pay(address paymentMethod, uint256 amountInStableCoin) internal {
         if (amountInStableCoin == 0) return;
+        require(enabledPaymentMethod[paymentMethod], "INVALID_PAYMENT_METHOD");
         if (paymentMethod == address(0)) {
             // ETH
             uint256 swapAmout = _convertFromStableCoin(
-                wrappedNativeToken,
+                paymentMethod,
                 amountInStableCoin
             );
             require(msg.value >= swapAmout, "INSUFFICIENT_ETH_AMOUNT");
@@ -189,14 +200,14 @@ abstract contract PaymentGateway is Ownable {
                 (success, ) = payable(msg.sender).call{value: refund}("");
                 require(success);
             }
-        } else if (paymentMethod == stableCoin && erc20token[paymentMethod]) {
+        } else if (paymentMethod == stableCoin) {
             // USDC
             IERC20(paymentMethod).safeTransferFrom(
                 msg.sender,
                 reserveWallet,
                 amountInStableCoin
             );
-        } else if (erc20token[paymentMethod]) {
+        } else {
             // ERC20 token, including MASA
             uint256 swapAmout = _convertFromStableCoin(
                 paymentMethod,
@@ -207,8 +218,6 @@ abstract contract PaymentGateway is Ownable {
                 reserveWallet,
                 swapAmout
             );
-        } else {
-            revert("INVALID_PAYMENT_METHOD");
         }
     }
 
@@ -218,7 +227,7 @@ abstract contract PaymentGateway is Ownable {
     /// @param amountInMASA Price to be paid in MASA
     function _payWithMASA(uint256 amountInMASA) internal {
         // MASA
-        require(erc20token[masaToken], "INVALID_PAYMENT_METHOD");
+        require(enabledPaymentMethod[masaToken], "INVALID_PAYMENT_METHOD");
 
         IERC20(masaToken).safeTransferFrom(
             msg.sender,
