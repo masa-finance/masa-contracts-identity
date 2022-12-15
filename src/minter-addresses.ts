@@ -50,7 +50,7 @@ const getMinterAddresses = async (
   });
 
   const data = await graphQLClient.request(eventQuery, {
-    network: chainId == 44787 ? "alfajores" : "goerli",
+    network: chainId == 5 ? "goerli" : "",
     contract: smartContractAddress,
     event: event,
     limit: 10000,
@@ -69,20 +69,7 @@ async function main() {
   let soulboundIdentityAddresses;
   let totalMintedTokens = 0;
 
-  if (chainId == 44787) {
-    // alfajores
-    soulboundIdentityAddresses = [
-      ["0xBDc0F2e51bedaB31258BE0c0bd8fCf141bccd193", "Transfer"],
-      ["0x4e1c9E9ce5af7CB87E32f979B5288a1C6A6A1E5C", "Transfer"],
-      ["0x514b35F067Bc78589986832d3c25caA9a4dD9fC7", "Transfer"],
-      ["0xeFd998D31Ef7f0d54c6C960AEA29A8628CD704d8", "Transfer"],
-      ["0x41a3cE7EA192D4b746CD7F2b7F8701aD4964C3c5", "Transfer"],
-      ["0xD0f3C1361d8Fba40CbC85cC546c38511b510dedd", "Transfer"],
-      ["0x1be6c425d17380D0BCF62099a27BE4e9c5cF8719", "Transfer"],
-      ["0x1471A7d3914a38e7488111001e50eCc29D627166", "Transfer"],
-      ["0xadAC98BB4f783Fea5478D496c777677521Ce305a", "Transfer"]
-    ];
-  } else if (chainId == 5) {
+  if (chainId == 5) {
     // goerli
     soulboundIdentityAddresses = [
       ["0x270265B1c6b31ae53f75BC2f6a5D5F7f422BB9e8", "Mint"],
