@@ -68,6 +68,9 @@ async function main() {
   const [admin] = await ethers.getSigners();
   const chainId = await admin.getChainId();
 
+  // list of accounts that have minted, without duplicates
+  const accounts = {};
+
   let soulboundIdentityAddresses;
   let totalMintedTokens = 0;
 
@@ -157,12 +160,18 @@ async function main() {
                   events[i].arguments[j].value
                 }`
               );
+              if (accounts[events[i].arguments[j].value] == null) {
+                accounts[events[i].arguments[j].value] = true;
+              }
             } else {
               console.log(
                 `${events[i].arguments[j + 2].value},${
                   events[i].arguments[j + 1].value
                 }`
               );
+              if (accounts[events[i].arguments[j + 1].value] == null) {
+                accounts[events[i].arguments[j + 1].value] = true;
+              }
             }
           }
         }
@@ -177,6 +186,11 @@ async function main() {
     console.log(
       "=============================================================================="
     );
+  }
+
+  const accountKeys = Object.keys(accounts);
+  for (let i = 0; i < accountKeys.length; i++) {
+    console.log(accountKeys[i])
   }
 }
 
