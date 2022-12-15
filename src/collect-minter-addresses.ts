@@ -1,7 +1,12 @@
 /* eslint-disable no-console */
 import "@nomiclabs/hardhat-ethers";
 import { ethers } from "hardhat";
-import { SoulName, SoulName__factory } from "../typechain";
+import {
+  SoulboundIdentity,
+  SoulboundIdentity__factory,
+  SoulName,
+  SoulName__factory
+} from "../typechain";
 
 /**
  * main function
@@ -27,14 +32,14 @@ async function main() {
   } else if (chainId == 5) {
     // goerli
     soulboundIdentityAddresses = [
-      "0x270265B1c6b31ae53f75BC2f6a5D5F7f422BB9e8",
-      "0xB10ddc662BD561f0B26A8B555e15C71430a74fAa",
-      "0x83A5492f28CD7D2d5aA7A8b9c0Cf926f639Dd612",
-      "0x6B87e5baB74c0b68e392817Ab2c6abf69DB0F5EC",
-      "0x607af050D66AA9Bc54a051D7a0C68F254b6745Fc",
-      "0xe7a4CaFA517cF82e90b42fB1cEE1437f4bb205F2",
-      "0xF8625D0131116A13BC2e8d5953f6ed8A3F7C7353",
-      "0x8aEB3A8D6bdFC68BFFe1aC03833D9522857f0db4"
+      // "0x270265B1c6b31ae53f75BC2f6a5D5F7f422BB9e8",
+      "0xB10ddc662BD561f0B26A8B555e15C71430a74fAa"
+      // "0x83A5492f28CD7D2d5aA7A8b9c0Cf926f639Dd612",
+      // "0x6B87e5baB74c0b68e392817Ab2c6abf69DB0F5EC",
+      // "0x607af050D66AA9Bc54a051D7a0C68F254b6745Fc",
+      // "0xe7a4CaFA517cF82e90b42fB1cEE1437f4bb205F2",
+      // "0xF8625D0131116A13BC2e8d5953f6ed8A3F7C7353"
+      // "0x8aEB3A8D6bdFC68BFFe1aC03833D9522857f0db4"
     ];
   }
 
@@ -45,7 +50,9 @@ async function main() {
 
   console.log("");
 
-  console.log(`SoulboundIdentity addresses:              ${soulboundIdentityAddresses}`);
+  console.log(
+    `SoulboundIdentity addresses:              ${soulboundIdentityAddresses}`
+  );
   console.log(
     "=============================================================================="
   );
@@ -56,6 +63,7 @@ async function main() {
       soulboundIdentityAddresses[c],
       admin
     );
+
     const totalSupply = await soulboundIdentity.totalSupply();
     console.log(
       `SoulboundIdentity address ${soulboundIdentityAddresses[c]}, total supply: ${totalSupply}`
@@ -77,12 +85,14 @@ async function main() {
       soulboundIdentityAddresses[c],
       admin
     );
+    const soulboundIdentityNew: SoulboundIdentity =
+      SoulboundIdentity__factory.connect(soulboundIdentityAddresses[c], admin);
 
     const totalSupply = await soulboundIdentity.totalSupply();
     console.log(`Name: ${await soulboundIdentity.name()}`);
     console.log(`Symbol: ${await soulboundIdentity.symbol()}`);
     console.log(`Total supply: ${totalSupply}`);
-    for (let i = 0; i < totalSupply.toNumber(); i++) {
+    for (let i = 7069; i < totalSupply.toNumber(); i++) {
       const eventFilter = soulboundIdentity.filters.Transfer(
         ethers.constants.AddressZero,
         null,
@@ -90,9 +100,21 @@ async function main() {
       );
       const events = await soulboundIdentity.queryFilter(eventFilter);
 
-      console.log(
-        `${events[0].args.tokenId},${totalSupply},${events[0].args.to}`
-      );
+      if (events && events.length > 0) {
+        console.log(
+          `${events[0].args.tokenId},${totalSupply},${events[0].args.to}`
+        );
+      } else {
+        // New SBT smart contract
+        const eventFilter = soulboundIdentityNew.filters.Mint(null, i);
+        const events = await soulboundIdentityNew.queryFilter(eventFilter);
+
+        if (events && events.length > 0) {
+          console.log(
+            `${events[0].args._tokenId},${totalSupply},${events[0].args._owner}`
+          );
+        }
+      }
     }
   }
 }
