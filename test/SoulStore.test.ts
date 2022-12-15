@@ -92,6 +92,9 @@ describe("Soul Store", () => {
     );
 
     // we add payment methods
+    await soulStore
+      .connect(owner)
+      .enablePaymentMethod(ethers.constants.AddressZero);
     await soulStore.connect(owner).enablePaymentMethod(USDC_GOERLI);
     await soulStore.connect(owner).enablePaymentMethod(MASA_GOERLI);
   });
