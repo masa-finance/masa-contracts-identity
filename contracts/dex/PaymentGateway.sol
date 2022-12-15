@@ -106,7 +106,6 @@ abstract contract PaymentGateway is Ownable {
     /// @dev The caller must have the owner to call this function
     /// @param _paymentMethod New token to add
     function enablePaymentMethod(address _paymentMethod) external onlyOwner {
-        require(_paymentMethod != address(0), "ZERO_ADDRESS");
         require(!enabledPaymentMethod[_paymentMethod], "ALREADY_ADDED");
 
         enabledPaymentMethod[_paymentMethod] = true;
@@ -117,10 +116,9 @@ abstract contract PaymentGateway is Ownable {
     /// @dev The caller must have the owner to call this function
     /// @param _paymentMethod Token to remove
     function disablePaymentMethod(address _paymentMethod) external onlyOwner {
-        require(_paymentMethod != address(0), "ZERO_ADDRESS");
         require(
             enabledPaymentMethod[_paymentMethod],
-            "NOT_EXISITING_ERC20TOKEN"
+            "NOT_EXISITING_PAYMENT_METHOD"
         );
 
         enabledPaymentMethod[_paymentMethod] = false;
@@ -167,11 +165,14 @@ abstract contract PaymentGateway is Ownable {
         returns (uint256)
     {
         require(
-            (token == wrappedNativeToken || enabledPaymentMethod[token]) &&
-                token != stableCoin,
+            enabledPaymentMethod[token] && token != stableCoin,
             "INVALID_TOKEN"
         );
-        return _estimateSwapAmount(token, stableCoin, amount);
+        if (token == address(0)) {
+            return _estimateSwapAmount(wrappedNativeToken, stableCoin, amount);
+        } else {
+            return _estimateSwapAmount(token, stableCoin, amount);
+        }
     }
 
     /// @notice Performs the payment in any payment method
@@ -181,6 +182,7 @@ abstract contract PaymentGateway is Ownable {
     /// @param amountInStableCoin Price to be paid in stable coin
     function _pay(address paymentMethod, uint256 amountInStableCoin) internal {
         if (amountInStableCoin == 0) return;
+        require(enabledPaymentMethod[paymentMethod], "INVALID_PAYMENT_METHOD");
         if (paymentMethod == address(0)) {
             // ETH
             uint256 swapAmout = _convertFromStableCoin(
@@ -198,16 +200,14 @@ abstract contract PaymentGateway is Ownable {
                 (success, ) = payable(msg.sender).call{value: refund}("");
                 require(success);
             }
-        } else if (
-            paymentMethod == stableCoin && enabledPaymentMethod[paymentMethod]
-        ) {
+        } else if (paymentMethod == stableCoin) {
             // USDC
             IERC20(paymentMethod).safeTransferFrom(
                 msg.sender,
                 reserveWallet,
                 amountInStableCoin
             );
-        } else if (enabledPaymentMethod[paymentMethod]) {
+        } else {
             // ERC20 token, including MASA
             uint256 swapAmout = _convertFromStableCoin(
                 paymentMethod,
@@ -218,8 +218,6 @@ abstract contract PaymentGateway is Ownable {
                 reserveWallet,
                 swapAmout
             );
-        } else {
-            revert("INVALID_PAYMENT_METHOD");
         }
     }
 
