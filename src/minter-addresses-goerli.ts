@@ -135,10 +135,11 @@ async function main() {
     console.log(`Total supply: ${totalSupply}`);
 
     let numArguments = soulboundIdentityAddresses[c][1] == "Mint" ? 2 : 3;
+    let isEnded = false;
     let offset = 0;
     const stepCount = 10000;
 
-    while (offset < totalSupply.toNumber()) {
+    while (!isEnded) {
       const events = await getMintingEvents(
         chainId,
         soulboundIdentityAddresses[c][0],
@@ -147,22 +148,26 @@ async function main() {
         offset
       );
 
-      for (let i = 0; i < events.length; i++) {
-        for (let j = 0; j < events[i].arguments.length; j += numArguments) {
-          if (soulboundIdentityAddresses[c][1] == "Mint") {
-            console.log(
-              `${events[i].arguments[j + 1].value},${
-                events[i].arguments[j].value
-              }`
-            );
-          } else {
-            console.log(
-              `${events[i].arguments[j + 2].value},${
-                events[i].arguments[j + 1].value
-              }`
-            );
+      if (events.length > 0) {
+        for (let i = 0; i < events.length; i++) {
+          for (let j = 0; j < events[i].arguments.length; j += numArguments) {
+            if (soulboundIdentityAddresses[c][1] == "Mint") {
+              console.log(
+                `${events[i].arguments[j + 1].value},${
+                  events[i].arguments[j].value
+                }`
+              );
+            } else {
+              console.log(
+                `${events[i].arguments[j + 2].value},${
+                  events[i].arguments[j + 1].value
+                }`
+              );
+            }
           }
         }
+      } else {
+        isEnded = true;
       }
       offset += stepCount;
     }

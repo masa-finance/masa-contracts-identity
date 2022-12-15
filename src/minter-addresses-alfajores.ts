@@ -75,6 +75,7 @@ async function main() {
 
     let isEnded = false;
     let i = 0;
+
     while (!isEnded) {
       const eventFilter = soulboundIdentity.filters.Transfer(
         ethers.constants.AddressZero,
