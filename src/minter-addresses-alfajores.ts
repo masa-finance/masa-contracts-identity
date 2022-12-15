@@ -73,7 +73,9 @@ async function main() {
     console.log(`Symbol: ${await soulboundIdentity.symbol()}`);
     console.log(`Total supply: ${totalSupply}`);
 
-    for (let i = 0; i < totalSupply.toNumber(); i++) {
+    let isEnded = false;
+    let i = 0;
+    while (!isEnded) {
       const eventFilter = soulboundIdentity.filters.Transfer(
         ethers.constants.AddressZero,
         null,
@@ -81,9 +83,14 @@ async function main() {
       );
       const events = await soulboundIdentity.queryFilter(eventFilter);
 
-      console.log(
-        `${events[0].args.tokenId},${totalSupply},${events[0].args.to}`
-      );
+      if (events.length != 0) {
+        console.log(
+          `${events[0].args.tokenId},${totalSupply},${events[0].args.to}`
+        );
+      } else {
+        isEnded = true;
+      }
+      i++;
     }
     console.log(
       "=============================================================================="
