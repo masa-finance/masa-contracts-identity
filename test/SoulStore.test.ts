@@ -758,7 +758,7 @@ describe("Soul Store", () => {
     it("should add ERC-20 token from owner", async () => {
       await soulStore.connect(owner).enablePaymentMethod(DAI_GOERLI);
 
-      expect(await soulStore.enablePaymentMethod(DAI_GOERLI)).to.be.true;
+      expect(await soulStore.enabledPaymentMethod(DAI_GOERLI)).to.be.true;
     });
 
     it("should get all payment methods information", async () => {
@@ -767,6 +767,7 @@ describe("Soul Store", () => {
       const enabledPaymentMethods = await soulStore.getEnabledPaymentMethods();
 
       expect(enabledPaymentMethods).to.be.deep.equal([
+        ethers.constants.AddressZero,
         USDC_GOERLI,
         MASA_GOERLI,
         DAI_GOERLI
@@ -783,7 +784,7 @@ describe("Soul Store", () => {
 
       expect(await soulStore.enabledPaymentMethod(DAI_GOERLI)).to.be.true;
 
-      await soulStore.connect(owner).enablePaymentMethod(DAI_GOERLI);
+      await soulStore.connect(owner).disablePaymentMethod(DAI_GOERLI);
 
       expect(await soulStore.enabledPaymentMethod(DAI_GOERLI)).to.be.false;
     });
