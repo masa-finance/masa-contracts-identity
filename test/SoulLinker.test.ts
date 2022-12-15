@@ -436,7 +436,7 @@ describe("Soul Linker", () => {
       expect(isRevokedInfo).to.be.equal(false);
 
       const dataWithPermissions = await soulLinker
-        .connect(linkReceiver)
+        .connect(someone)
         .validatePermission(
           readerIdentityId,
           ownerIdentityId,
@@ -506,7 +506,7 @@ describe("Soul Linker", () => {
       expect(isRevokedInfo).to.be.equal(false);
 
       const dataWithPermissions = await soulLinker
-        .connect(linkReceiver)
+        .connect(someone)
         .validatePermission(
           readerIdentityId,
           ownerIdentityId,
@@ -551,7 +551,7 @@ describe("Soul Linker", () => {
 
       await expect(
         soulLinker
-          .connect(linkReceiver)
+          .connect(someone)
           .validatePermission(
             readerIdentityId,
             ownerIdentityId,
@@ -606,7 +606,7 @@ describe("Soul Linker", () => {
       ).to.be.rejected;
 
       const dataWithPermissions = await soulLinker
-        .connect(linkReceiver)
+        .connect(someone)
         .validatePermission(
           readerIdentityId,
           ownerIdentityId,
@@ -648,7 +648,7 @@ describe("Soul Linker", () => {
         );
 
       const dataWithPermissions = await soulLinker
-        .connect(linkReceiver)
+        .connect(someone)
         .validatePermission(
           readerIdentityId,
           ownerIdentityId,
@@ -671,7 +671,7 @@ describe("Soul Linker", () => {
 
       await expect(
         soulLinker
-          .connect(linkReceiver)
+          .connect(someone)
           .validatePermission(
             readerIdentityId,
             ownerIdentityId,
