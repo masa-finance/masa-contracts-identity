@@ -26,9 +26,9 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
 
     // token => tokenId => readerIdentityId => signatureDate => PermissionData
     mapping(address => mapping(uint256 => mapping(uint256 => mapping(uint256 => PermissionData))))
-        private _permissions;
+    private _permissions;
     mapping(address => mapping(uint256 => mapping(uint256 => uint256[])))
-        private _permissionSignatureDates;
+    private _permissionSignatureDates;
 
     struct PermissionData {
         uint256 ownerIdentityId;
@@ -158,10 +158,11 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         require(linkedSBT[token], "SBT_NOT_LINKED");
 
         address identityOwner = soulboundIdentity.ownerOf(ownerIdentityId);
+        address readerIdentityIdOwner = soulboundIdentity.ownerOf(readerIdentityId);
         address tokenOwner = IERC721Enumerable(token).ownerOf(tokenId);
 
         require(identityOwner == tokenOwner, "IDENTITY_OWNER_NOT_TOKEN_OWNER");
-        require(identityOwner == _msgSender(), "CALLER_NOT_OWNER");
+        require(readerIdentityIdOwner == _msgSender(), "CALLER_NOT_READER");
         require(expirationDate >= block.timestamp, "VALID_PERIOD_EXPIRED");
         require(
             _verify(

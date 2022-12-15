@@ -1,7 +1,7 @@
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 import { solidity } from "ethereum-waffle";
-import { ethers, deployments, getChainId } from "hardhat";
+import { deployments, ethers, getChainId } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
   ERC20,
@@ -28,8 +28,9 @@ let soulboundCreditScore: SoulboundCreditScore;
 let soulLinker: SoulLinker;
 
 let owner: SignerWithAddress;
-let address1: SignerWithAddress;
-let address2: SignerWithAddress;
+let someone: SignerWithAddress;
+let linkCreator: SignerWithAddress;
+let linkReceiver: SignerWithAddress;
 let authority: SignerWithAddress;
 
 let ownerIdentityId: number;
@@ -48,7 +49,7 @@ const signLink = async (
 ) => {
   const chainId = await getChainId();
 
-  const signature = await address1._signTypedData(
+  const signature = await linkCreator._signTypedData(
     // Domain
     {
       name: "SoulLinker",
@@ -118,7 +119,8 @@ const signMintCreditScore = async (
 
 describe("Soul Linker", () => {
   before(async () => {
-    [, owner, address1, address2, authority] = await ethers.getSigners();
+    [, owner, linkCreator, linkReceiver, authority, , , , someone] =
+      await ethers.getSigners();
   });
 
   beforeEach(async () => {
@@ -146,14 +148,16 @@ describe("Soul Linker", () => {
     );
     soulLinker = SoulLinker__factory.connect(soulLinkerAddress, owner);
 
-    // we mint identity SBT for address1
-    let mintTx = await soulboundIdentity.connect(owner).mint(address1.address);
+    // we mint identity SBT for linkCreator
+    let mintTx = await soulboundIdentity
+      .connect(owner)
+      .mint(linkCreator.address);
     let mintReceipt = await mintTx.wait();
 
     ownerIdentityId = mintReceipt.events![0].args![1].toNumber();
 
-    // we mint identity SBT for address2
-    mintTx = await soulboundIdentity.connect(owner).mint(address2.address);
+    // we mint identity SBT for linkReceiver
+    mintTx = await soulboundIdentity.connect(owner).mint(linkReceiver.address);
     mintReceipt = await mintTx.wait();
 
     readerIdentityId = mintReceipt.events![0].args![1].toNumber();
@@ -161,17 +165,17 @@ describe("Soul Linker", () => {
     // we add authority account
     await soulboundCreditScore.addAuthority(authority.address);
 
-    // we mint credit score SBT for address1
+    // we mint credit score SBT for linkCreator
     const signatureMintCreditScore = await signMintCreditScore(
       ownerIdentityId,
       authority
     );
 
     mintTx = await soulboundCreditScore
-      .connect(address1)
+      .connect(linkCreator)
       ["mint(address,address,address,uint256,bytes)"](
         ethers.constants.AddressZero,
-        address1.address,
+        linkCreator.address,
         authority.address,
         signatureDate,
         signatureMintCreditScore
@@ -185,11 +189,11 @@ describe("Soul Linker", () => {
       owner
     );
 
-    // we get MASA utility tokens for address1
+    // we get MASA utility tokens for linkReceiver
     await uniswapRouter.swapExactETHForTokens(
       0,
       [WETH_GOERLI, MASA_GOERLI],
-      address1.address,
+      linkReceiver.address,
       Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
       {
         value: ethers.utils.parseEther("10")
@@ -202,28 +206,26 @@ describe("Soul Linker", () => {
 
   describe("owner functions", () => {
     it("should set SoulboundIdentity from owner", async () => {
-      await soulLinker.connect(owner).setSoulboundIdentity(address1.address);
+      await soulLinker.connect(owner).setSoulboundIdentity(someone.address);
 
-      expect(await soulLinker.soulboundIdentity()).to.be.equal(
-        address1.address
-      );
+      expect(await soulLinker.soulboundIdentity()).to.be.equal(someone.address);
     });
 
     it("should fail to set SoulboundIdentity from non owner", async () => {
       await expect(
-        soulLinker.connect(address1).setSoulboundIdentity(address1.address)
+        soulLinker.connect(someone).setSoulboundIdentity(someone.address)
       ).to.be.rejected;
     });
 
     it("should add linked SBT from owner", async () => {
-      await soulLinker.connect(owner).addLinkedSBT(address1.address);
+      await soulLinker.connect(owner).addLinkedSBT(someone.address);
 
-      expect(await soulLinker.linkedSBT(address1.address)).to.be.true;
+      expect(await soulLinker.linkedSBT(someone.address)).to.be.true;
     });
 
     it("should fail to add linked SBT from non owner", async () => {
-      await expect(soulLinker.connect(address1).addLinkedSBT(address1.address))
-        .to.be.rejected;
+      await expect(soulLinker.connect(someone).addLinkedSBT(someone.address)).to
+        .be.rejected;
     });
 
     it("should fail to add already existing linked SBT from owner", async () => {
@@ -244,13 +246,13 @@ describe("Soul Linker", () => {
     it("should fail to remove linked SBT from non owner", async () => {
       await expect(
         soulLinker
-          .connect(address1)
+          .connect(someone)
           .removeLinkedSBT(soulboundCreditScore.address)
       ).to.be.rejected;
     });
 
     it("should fail to remove non existing linked SBT from owner", async () => {
-      await expect(soulLinker.connect(owner).removeLinkedSBT(address1.address))
+      await expect(soulLinker.connect(owner).removeLinkedSBT(someone.address))
         .to.be.rejected;
     });
 
@@ -263,66 +265,66 @@ describe("Soul Linker", () => {
 
     it("should fail to set MintingNamePrice from non owner", async () => {
       const newPrice = 100;
-      await expect(soulLinker.connect(address1).setAddPermissionPrice(newPrice))
+      await expect(soulLinker.connect(someone).setAddPermissionPrice(newPrice))
         .to.be.rejected;
     });
 
     it("should set StableCoin from owner", async () => {
-      await soulLinker.connect(owner).setStableCoin(address1.address);
+      await soulLinker.connect(owner).setStableCoin(someone.address);
 
-      expect(await soulLinker.stableCoin()).to.be.equal(address1.address);
+      expect(await soulLinker.stableCoin()).to.be.equal(someone.address);
     });
 
     it("should fail to set StableCoin from non owner", async () => {
-      await expect(soulLinker.connect(address1).setStableCoin(address1.address))
+      await expect(soulLinker.connect(someone).setStableCoin(someone.address))
         .to.be.rejected;
     });
 
     it("should set MasaToken from owner", async () => {
-      await soulLinker.connect(owner).setMasaToken(address1.address);
+      await soulLinker.connect(owner).setMasaToken(someone.address);
 
-      expect(await soulLinker.masaToken()).to.be.equal(address1.address);
+      expect(await soulLinker.masaToken()).to.be.equal(someone.address);
     });
 
     it("should fail to set MasaToken from non owner", async () => {
-      await expect(soulLinker.connect(address1).setMasaToken(address1.address))
-        .to.be.rejected;
+      await expect(soulLinker.connect(someone).setMasaToken(someone.address)).to
+        .be.rejected;
     });
 
     it("should set ReserveWallet from owner", async () => {
-      await soulLinker.connect(owner).setReserveWallet(address1.address);
+      await soulLinker.connect(owner).setReserveWallet(someone.address);
 
-      expect(await soulLinker.reserveWallet()).to.be.equal(address1.address);
+      expect(await soulLinker.reserveWallet()).to.be.equal(someone.address);
     });
 
     it("should fail to set ReserveWallet from non owner", async () => {
       await expect(
-        soulLinker.connect(address1).setReserveWallet(address1.address)
+        soulLinker.connect(someone).setReserveWallet(someone.address)
       ).to.be.rejected;
     });
 
     it("should set SwapRouter from owner", async () => {
-      await soulLinker.connect(owner).setSwapRouter(address1.address);
+      await soulLinker.connect(owner).setSwapRouter(someone.address);
 
-      expect(await soulLinker.swapRouter()).to.be.equal(address1.address);
+      expect(await soulLinker.swapRouter()).to.be.equal(someone.address);
     });
 
     it("should fail to set SwapRouter from non owner", async () => {
-      await expect(soulLinker.connect(address1).setSwapRouter(address1.address))
+      await expect(soulLinker.connect(someone).setSwapRouter(someone.address))
         .to.be.rejected;
     });
 
     it("should set WrappedNativeToken from owner", async () => {
-      await soulLinker.connect(owner).setWrappedNativeToken(address1.address);
+      await soulLinker.connect(owner).setWrappedNativeToken(someone.address);
 
       expect(await soulLinker.wrappedNativeToken()).to.be.equal(
-        address1.address
+        someone.address
       );
     });
 
     it("should fail to set WrappedNativeToken from non owner", async () => {
       await expect(
-        soulLinker.connect(address1).setWrappedNativeToken(address1.address)
+        soulLinker.connect(someone).setWrappedNativeToken(someone.address)
       ).to.be.rejected;
     });
   });
@@ -342,11 +344,11 @@ describe("Soul Linker", () => {
     });
 
     it("should fail to pause from non owner", async () => {
-      await expect(soulLinker.connect(address1).pause()).to.be.rejected;
+      await expect(soulLinker.connect(someone).pause()).to.be.rejected;
     });
 
     it("should fail to unpause from non owner", async () => {
-      await expect(soulLinker.connect(address1).unpause()).to.be.rejected;
+      await expect(soulLinker.connect(someone).unpause()).to.be.rejected;
     });
   });
 
@@ -372,7 +374,7 @@ describe("Soul Linker", () => {
     it("should get SBT links by owner address", async () => {
       expect(
         await soulLinker["getSBTLinks(address,address)"](
-          address1.address,
+          linkCreator.address,
           soulboundCreditScore.address
         )
       ).to.deep.equal([BigNumber.from(creditScore1)]);
@@ -393,10 +395,10 @@ describe("Soul Linker", () => {
 
       // set allowance for soul store
       const masa: ERC20 = ERC20__factory.connect(paymentMethodUsed, owner);
-      await masa.connect(address1).approve(soulLinker.address, price);
+      await masa.connect(linkReceiver).approve(soulLinker.address, price);
 
       await soulLinker
-        .connect(address1)
+        .connect(linkReceiver)
         .addPermission(
           paymentMethodUsed,
           readerIdentityId,
@@ -434,7 +436,7 @@ describe("Soul Linker", () => {
       expect(isRevokedInfo).to.be.equal(false);
 
       const dataWithPermissions = await soulLinker
-        .connect(address2)
+        .connect(linkReceiver)
         .validatePermission(
           readerIdentityId,
           ownerIdentityId,
@@ -463,10 +465,10 @@ describe("Soul Linker", () => {
 
       // set allowance for soul store
       const masa: ERC20 = ERC20__factory.connect(paymentMethodUsed, owner);
-      await masa.connect(address1).approve(soulLinker.address, price);
+      await masa.connect(linkReceiver).approve(soulLinker.address, price);
 
       await soulLinker
-        .connect(address1)
+        .connect(linkReceiver)
         .addPermission(
           paymentMethodUsed,
           readerIdentityId,
@@ -504,7 +506,7 @@ describe("Soul Linker", () => {
       expect(isRevokedInfo).to.be.equal(false);
 
       const dataWithPermissions = await soulLinker
-        .connect(address2)
+        .connect(linkReceiver)
         .validatePermission(
           readerIdentityId,
           ownerIdentityId,
@@ -529,11 +531,11 @@ describe("Soul Linker", () => {
 
       // set allowance for soul store
       const masa: ERC20 = ERC20__factory.connect(paymentMethodUsed, owner);
-      await masa.connect(address1).approve(soulLinker.address, price);
+      await masa.connect(linkReceiver).approve(soulLinker.address, price);
 
       await expect(
         soulLinker
-          .connect(address1)
+          .connect(linkReceiver)
           .addPermission(
             paymentMethodUsed,
             readerIdentityId,
@@ -549,7 +551,7 @@ describe("Soul Linker", () => {
 
       await expect(
         soulLinker
-          .connect(address2)
+          .connect(linkReceiver)
           .validatePermission(
             readerIdentityId,
             ownerIdentityId,
@@ -575,10 +577,10 @@ describe("Soul Linker", () => {
 
       // set allowance for soul store
       const masa: ERC20 = ERC20__factory.connect(paymentMethodUsed, owner);
-      await masa.connect(address1).approve(soulLinker.address, price);
+      await masa.connect(linkReceiver).approve(soulLinker.address, price);
 
       await soulLinker
-        .connect(address1)
+        .connect(linkReceiver)
         .addPermission(
           paymentMethodUsed,
           readerIdentityId,
@@ -593,7 +595,7 @@ describe("Soul Linker", () => {
 
       await expect(
         soulLinker
-          .connect(address2)
+          .connect(linkReceiver)
           .revokePermission(
             readerIdentityId,
             ownerIdentityId,
@@ -604,7 +606,7 @@ describe("Soul Linker", () => {
       ).to.be.rejected;
 
       const dataWithPermissions = await soulLinker
-        .connect(address2)
+        .connect(linkReceiver)
         .validatePermission(
           readerIdentityId,
           ownerIdentityId,
@@ -629,10 +631,10 @@ describe("Soul Linker", () => {
 
       // set allowance for soul store
       const masa: ERC20 = ERC20__factory.connect(paymentMethodUsed, owner);
-      await masa.connect(address1).approve(soulLinker.address, price);
+      await masa.connect(linkReceiver).approve(soulLinker.address, price);
 
       await soulLinker
-        .connect(address1)
+        .connect(linkReceiver)
         .addPermission(
           paymentMethodUsed,
           readerIdentityId,
@@ -646,7 +648,7 @@ describe("Soul Linker", () => {
         );
 
       const dataWithPermissions = await soulLinker
-        .connect(address2)
+        .connect(linkReceiver)
         .validatePermission(
           readerIdentityId,
           ownerIdentityId,
@@ -658,7 +660,7 @@ describe("Soul Linker", () => {
       expect(dataWithPermissions).to.be.equal(data);
 
       await soulLinker
-        .connect(address1)
+        .connect(linkCreator)
         .revokePermission(
           readerIdentityId,
           ownerIdentityId,
@@ -669,7 +671,7 @@ describe("Soul Linker", () => {
 
       await expect(
         soulLinker
-          .connect(address2)
+          .connect(linkReceiver)
           .validatePermission(
             readerIdentityId,
             ownerIdentityId,
