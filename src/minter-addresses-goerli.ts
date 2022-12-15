@@ -134,21 +134,37 @@ async function main() {
     console.log(`Symbol: ${await soulboundIdentity.symbol()}`);
     console.log(`Total supply: ${totalSupply}`);
 
-    const events = await getMintingEvents(
-      chainId,
-      soulboundIdentityAddresses[c][0],
-      soulboundIdentityAddresses[c][1],
-      3,
-      0
-    );
-    for (let i = 0; i < events.length; i++) {
-      for (let j = 0; j < events[i].arguments.length; j += 3) {
-        console.log(
-          `tokenId: ${events[i].arguments[j].value}, owner: ${
-            events[i].arguments[j + 1].value
-          } ${events[i].arguments[j + 2].value}`
-        );
+    let numArguments = soulboundIdentityAddresses[c][1] == "Mint" ? 2 : 3;
+    let offset = 0;
+    const stepCount = 100;
+
+    while (offset < totalSupply.toNumber()) {
+      const events = await getMintingEvents(
+        chainId,
+        soulboundIdentityAddresses[c][0],
+        soulboundIdentityAddresses[c][1],
+        stepCount,
+        offset
+      );
+
+      for (let i = 0; i < events.length; i++) {
+        for (let j = 0; j < events[i].arguments.length; j += numArguments) {
+          if (soulboundIdentityAddresses[c][1] == "Mint") {
+            console.log(
+              `${events[i].arguments[j + 1].value},${
+                events[i].arguments[j].value
+              }`
+            );
+          } else {
+            console.log(
+              `${events[i].arguments[j + 2].value},${
+                events[i].arguments[j + 1].value
+              }`
+            );
+          }
+        }
       }
+      offset += stepCount;
     }
 
     // console.log(events);
