@@ -181,7 +181,8 @@ abstract contract PaymentGateway is Ownable {
     /// @param amountInStableCoin Price to be paid in stable coin
     function _pay(address paymentMethod, uint256 amountInStableCoin) internal {
         if (amountInStableCoin == 0) return;
-        require(enabledPaymentMethod[paymentMethod], "INVALID_PAYMENT_METHOD");
+        if (!enabledPaymentMethod[paymentMethod])
+            revert InvalidPaymentMethod(paymentMethod);
         if (paymentMethod == address(0)) {
             // ETH
             uint256 swapAmount = _convertFromStableCoin(
