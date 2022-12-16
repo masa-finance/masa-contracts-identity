@@ -162,7 +162,7 @@ describe("Soulbound Identity", () => {
             YEAR,
             ARWEAVE_LINK
           )
-      ).to.be.rejectedWith("NAME_ALREADY_EXISTS");
+      ).to.be.rejectedWith("NameAlreadyExists");
     });
   });
 
@@ -288,9 +288,7 @@ describe("Soulbound Identity", () => {
     });
 
     it("getTokenData with a non existing name", async () => {
-      await expect(
-        soulboundIdentity.getTokenData("fakeName")
-      ).to.be.rejectedWith("NAME_NOT_FOUND");
+      await expect(soulboundIdentity.getTokenData("fakeName")).to.be.rejected;
     });
 
     it("getSoulNames(uint256) returns array of SBT names in lower case", async () => {

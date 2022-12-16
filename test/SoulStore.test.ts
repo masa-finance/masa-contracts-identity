@@ -536,7 +536,7 @@ describe("Soul Store", () => {
           ARWEAVE_LINK,
           { value: priceInETH.div(2) }
         )
-      ).to.be.rejectedWith("INSUFFICIENT_ETH_AMOUNT");
+      ).to.be.rejectedWith("InsufficientEthAmount");
     });
 
     it("we can't purchase an identity and name with stable coin if we don't have funds", async () => {
@@ -699,7 +699,7 @@ describe("Soul Store", () => {
           address1.address,
           { value: priceInETH.div(2) }
         )
-      ).to.be.rejectedWith("INSUFFICIENT_ETH_AMOUNT");
+      ).to.be.rejectedWith("InsufficientEthAmount");
     });
 
     it("we can't purchase a name with stable coin if we don't have funds", async () => {
@@ -825,7 +825,7 @@ describe("Soul Store", () => {
     it("should fail to get purchase info for invalid payment method", async () => {
       await expect(
         soulStore.getPriceForMintingName(owner.address, SOUL_NAME, YEAR)
-      ).to.be.rejectedWith("INVALID_PAYMENT_METHOD");
+      ).to.be.rejectedWith("InvalidPaymentMethod");
     });
 
     it("we can't use an invalid payment method", async () => {
@@ -836,7 +836,7 @@ describe("Soul Store", () => {
           YEAR,
           ARWEAVE_LINK
         )
-      ).to.be.rejectedWith("INVALID_PAYMENT_METHOD");
+      ).to.be.rejectedWith("InvalidPaymentMethod");
     });
   });
 });
