@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
+import "./libraries/Errors.sol";
 import "./tokens/MasaSBTSelfSovereign.sol";
 
 /// @title Soulbound Credit Score
@@ -55,8 +56,8 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
         bytes calldata signature
     ) public payable virtual returns (uint256) {
         address to = soulboundIdentity.ownerOf(identityId);
-        require(to == _msgSender(), "CALLER_NOT_OWNER");
-        require(balanceOf(to) < 1, "CREDITSCORE_ALREADY_CREATED");
+        if (to != _msgSender()) revert CallerNotOwner(_msgSender());
+        if (balanceOf(to) > 0) revert CreditScoreAlreadyCreated(to);
 
         _verify(
             _hash(identityId, authorityAddress, signatureDate),

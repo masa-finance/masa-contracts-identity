@@ -82,6 +82,28 @@ function burn(uint256 tokenId) external nonpayable
 |---|---|---|
 | tokenId | uint256 | undefined |
 
+### exists
+
+```solidity
+function exists(uint256 tokenId) external view returns (bool)
+```
+
+Returns true if the token exists
+
+*Returns true if the token has been minted*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId | uint256 | Token to check |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bool | True if the token exists |
+
 ### getExtension
 
 ```solidity
@@ -726,6 +748,58 @@ event RoleRevoked(bytes32 indexed role, address indexed account, address indexed
 | role `indexed` | bytes32 | undefined |
 | account `indexed` | address | undefined |
 | sender `indexed` | address | undefined |
+
+
+
+## Errors
+
+### IdentityAlreadyCreated
+
+```solidity
+error IdentityAlreadyCreated(address to)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| to | address | undefined |
+
+### SameValue
+
+```solidity
+error SameValue()
+```
+
+
+
+
+
+
+### SoulNameContractNotSet
+
+```solidity
+error SoulNameContractNotSet()
+```
+
+
+
+
+
+
+### ZeroAddress
+
+```solidity
+error ZeroAddress()
+```
+
+
+
+
 
 
 
