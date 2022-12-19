@@ -178,46 +178,28 @@ abstract contract PaymentGateway is Ownable {
     /// @dev This method will transfer the funds to the reserve wallet, performing
     /// the swap if necessary
     /// @param paymentMethod Address of token that user want to pay
-    /// @param amountInStableCoin Price to be paid in stable coin
-    function _pay(address paymentMethod, uint256 amountInStableCoin) internal {
-        if (amountInStableCoin == 0) return;
+    /// @param amount Price to be paid in the specified payment method
+    function _pay(address paymentMethod, uint256 amount) internal {
+        if (amount == 0) return;
         if (!enabledPaymentMethod[paymentMethod])
             revert InvalidPaymentMethod(paymentMethod);
         if (paymentMethod == address(0)) {
             // ETH
-            uint256 swapAmount = _convertFromStableCoin(
-                paymentMethod,
-                amountInStableCoin
-            );
-            if (msg.value < swapAmount)
-                revert InsufficientEthAmount(swapAmount);
-            (bool success, ) = payable(reserveWallet).call{value: swapAmount}(
-                ""
-            );
+            if (msg.value < amount) revert InsufficientEthAmount(amount);
+            (bool success, ) = payable(reserveWallet).call{value: amount}("");
             if (!success) revert TransferFailed();
-            if (msg.value > swapAmount) {
+            if (msg.value > amount) {
                 // return diff
-                uint256 refund = msg.value.sub(swapAmount);
+                uint256 refund = msg.value.sub(amount);
                 (success, ) = payable(msg.sender).call{value: refund}("");
                 if (!success) revert RefundFailed();
             }
-        } else if (paymentMethod == stableCoin) {
-            // USDC
-            IERC20(paymentMethod).safeTransferFrom(
-                msg.sender,
-                reserveWallet,
-                amountInStableCoin
-            );
         } else {
-            // ERC20 token, including MASA
-            uint256 swapAmount = _convertFromStableCoin(
-                paymentMethod,
-                amountInStableCoin
-            );
+            // ERC20 token, including MASA and USDC
             IERC20(paymentMethod).safeTransferFrom(
                 msg.sender,
                 reserveWallet,
-                swapAmount
+                amount
             );
         }
     }
