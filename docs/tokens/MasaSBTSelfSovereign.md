@@ -240,10 +240,10 @@ Returns the identityId owned by the given token
 |---|---|---|
 | _0 | uint256 | Id of the identity |
 
-### getMintingPrice
+### getMintPrice
 
 ```solidity
-function getMintingPrice(address paymentMethod) external view returns (uint256)
+function getMintPrice(address paymentMethod) external view returns (uint256)
 ```
 
 Returns the price for minting
@@ -341,10 +341,10 @@ function masaToken() external view returns (address)
 |---|---|---|
 | _0 | address | undefined |
 
-### mintingPrice
+### mintPrice
 
 ```solidity
-function mintingPrice() external view returns (uint256)
+function mintPrice() external view returns (uint256)
 ```
 
 
@@ -492,10 +492,10 @@ Sets the utility token to pay the fee in (MASA)
 |---|---|---|
 | _masaToken | address | New utility token to pay the fee in |
 
-### setMintingPrice
+### setMintPrice
 
 ```solidity
-function setMintingPrice(uint256 _mintingPrice) external nonpayable
+function setMintPrice(uint256 _mintPrice) external nonpayable
 ```
 
 Sets the price of minting in stable coin
@@ -506,7 +506,7 @@ Sets the price of minting in stable coin
 
 | Name | Type | Description |
 |---|---|---|
-| _mintingPrice | uint256 | New price of minting in stable coin |
+| _mintPrice | uint256 | New price of minting in stable coin |
 
 ### setReserveWallet
 

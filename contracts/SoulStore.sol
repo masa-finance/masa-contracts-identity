@@ -189,16 +189,16 @@ contract SoulStore is PaymentGateway, Pausable {
         string memory name,
         uint256 yearsPeriod
     ) public view returns (uint256) {
-        uint256 mintingPrice = getNameRegistrationPricePerYear(name).mul(
+        uint256 mintPrice = getNameRegistrationPricePerYear(name).mul(
             yearsPeriod
         );
 
         if (
             paymentMethod == stableCoin && enabledPaymentMethod[paymentMethod]
         ) {
-            return mintingPrice;
+            return mintPrice;
         } else if (enabledPaymentMethod[paymentMethod]) {
-            return _convertFromStableCoin(paymentMethod, mintingPrice);
+            return _convertFromStableCoin(paymentMethod, mintPrice);
         } else {
             revert InvalidPaymentMethod(paymentMethod);
         }
