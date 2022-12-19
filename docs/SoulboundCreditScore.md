@@ -410,6 +410,23 @@ function mintPrice() external view returns (uint256)
 |---|---|---|
 | _0 | uint256 | undefined |
 
+### mintPriceMASA
+
+```solidity
+function mintPriceMASA() external view returns (uint256)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
 ### name
 
 ```solidity
@@ -559,6 +576,22 @@ Sets the price of minting in stable coin
 | Name | Type | Description |
 |---|---|---|
 | _mintPrice | uint256 | New price of minting in stable coin |
+
+### setMintPriceMASA
+
+```solidity
+function setMintPriceMASA(uint256 _mintPriceMASA) external nonpayable
+```
+
+Sets the price of minting in MASA
+
+*The caller must have the admin to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _mintPriceMASA | uint256 | New price of minting in MASA |
 
 ### setReserveWallet
 

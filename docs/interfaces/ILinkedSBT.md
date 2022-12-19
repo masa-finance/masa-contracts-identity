@@ -66,40 +66,6 @@ Count all SBTs assigned to an owner
 |---|---|---|
 | _0 | uint256 | The number of SBTs owned by `_owner`, possibly zero |
 
-### mintPrice
-
-```solidity
-function mintPrice() external nonpayable returns (uint256)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | undefined |
-
-### mintPriceMASA
-
-```solidity
-function mintPriceMASA() external nonpayable returns (uint256)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | undefined |
-
 ### ownerOf
 
 ```solidity

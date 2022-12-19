@@ -27,6 +27,7 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
     ISoulboundIdentity public soulboundIdentity;
 
     uint256 public mintPrice; // price in stable coin
+    uint256 public mintPriceMASA; // price in MASA
 
     mapping(address => bool) public authorities;
 
@@ -39,7 +40,6 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
     /// @param symbol Symbol of the token
     /// @param baseTokenURI Base URI of the token
     /// @param _soulboundIdentity Address of the SoulboundIdentity contract
-    /// @param _mintPrice Price of minting in stable coin
     /// @param paymentParams Payment gateway params
     constructor(
         address admin,
@@ -47,7 +47,6 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
         string memory symbol,
         string memory baseTokenURI,
         ISoulboundIdentity _soulboundIdentity,
-        uint256 _mintPrice,
         PaymentParams memory paymentParams
     )
         PaymentGateway(admin, paymentParams)
@@ -56,7 +55,6 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
         if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
 
         soulboundIdentity = _soulboundIdentity;
-        mintPrice = _mintPrice;
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
@@ -82,6 +80,17 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
     {
         if (mintPrice == _mintPrice) revert SameValue();
         mintPrice = _mintPrice;
+    }
+
+    /// @notice Sets the price of minting in MASA
+    /// @dev The caller must have the admin to call this function
+    /// @param _mintPriceMASA New price of minting in MASA
+    function setMintPriceMASA(uint256 _mintPriceMASA)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        if (mintPriceMASA == _mintPriceMASA) revert SameValue();
+        mintPriceMASA = _mintPriceMASA;
     }
 
     /// @notice Adds a new authority to the list of authorities
@@ -114,7 +123,16 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
     /// @param paymentMethod Address of token that user want to pay
     /// @return Current price for minting in the given payment method
     function getMintPrice(address paymentMethod) public view returns (uint256) {
-        if (
+        if (mintPrice == 0 && mintPriceMASA == 0) {
+            return 0;
+        } else if (
+            paymentMethod == masaToken &&
+            enabledPaymentMethod[paymentMethod] &&
+            mintPriceMASA > 0
+        ) {
+            // price in MASA without conversion rate
+            return mintPriceMASA;
+        } else if (
             paymentMethod == stableCoin && enabledPaymentMethod[paymentMethod]
         ) {
             return mintPrice;

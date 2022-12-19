@@ -18,13 +18,11 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
     /// @param admin Administrator of the smart contract
     /// @param baseTokenURI Base URI of the token
     /// @param soulboundIdentity Address of the SoulboundIdentity contract
-    /// @param _mintPrice Price of minting in stable coin
     /// @param paymentParams Payment gateway params
     constructor(
         address admin,
         string memory baseTokenURI,
         ISoulboundIdentity soulboundIdentity,
-        uint256 _mintPrice,
         PaymentParams memory paymentParams
     )
         MasaSBTSelfSovereign(
@@ -33,7 +31,6 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
             "MCS",
             baseTokenURI,
             soulboundIdentity,
-            _mintPrice,
             paymentParams
         )
         EIP712("SoulboundCreditScore", "1.0.0")
@@ -65,7 +62,7 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
             authorityAddress
         );
 
-        _pay(paymentMethod, mintPrice);
+        _pay(paymentMethod, getMintPrice(paymentMethod));
 
         uint256 tokenId = _mintWithCounter(to);
 
