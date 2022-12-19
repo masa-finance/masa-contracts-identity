@@ -204,22 +204,6 @@ abstract contract PaymentGateway is Ownable {
         }
     }
 
-    /// @notice Performs the payment in MASA
-    /// @dev This method will transfer the funds to the reserve wallet, without
-    /// performing any swap
-    /// @param amountInMASA Price to be paid in MASA
-    function _payWithMASA(uint256 amountInMASA) internal {
-        // MASA
-        if (!enabledPaymentMethod[masaToken])
-            revert InvalidPaymentMethod(masaToken);
-
-        IERC20(masaToken).safeTransferFrom(
-            msg.sender,
-            reserveWallet,
-            amountInMASA
-        );
-    }
-
     function _estimateSwapAmount(
         address _fromToken,
         address _toToken,
