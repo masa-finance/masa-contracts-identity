@@ -3,7 +3,7 @@ pragma solidity ^0.8.7;
 
 import "../tokens/SBT/ISBT.sol";
 
-interface ISoulboundIdentity is ISBT {
+interface ILinkedSBT is ISBT {
     function mintPrice() external returns (uint256);
 
     function mintPriceMASA() external returns (uint256);
