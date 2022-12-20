@@ -192,41 +192,39 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         return soulboundIdentity.tokenOfOwner(owner);
     }
 
-    /// @notice Returns the list of linked SBTs by a given SBT token
-    /// @dev The token must be linked to this soul linker
+    /// @notice Returns the list of connected SBTs by a given SBT token
     /// @param identityId Id of the identity
     /// @param token Address of the SBT contract
-    /// @return List of linked SBTs
-    function getSBTLinks(uint256 identityId, address token)
+    /// @return List of connected SBTs
+    function getSBTConnections(uint256 identityId, address token)
         external
         view
         returns (uint256[] memory)
     {
         address owner = soulboundIdentity.ownerOf(identityId);
 
-        return getSBTLinks(owner, token);
+        return getSBTConnections(owner, token);
     }
 
-    /// @notice Returns the list of linked SBTs by a given SBT token
-    /// @dev The token must be linked to this soul linker
+    /// @notice Returns the list of connected SBTs by a given SBT token
     /// @param owner Address of the owner of the identity
     /// @param token Address of the SBT contract
-    /// @return List of linked SBTs
-    function getSBTLinks(address owner, address token)
+    /// @return List of connectec SBTs
+    function getSBTConnections(address owner, address token)
         public
         view
         returns (uint256[] memory)
     {
-        uint256 links = IERC721Enumerable(token).balanceOf(owner);
-        uint256[] memory sbtLinks = new uint256[](links);
-        for (uint256 i = 0; i < links; i++) {
-            sbtLinks[i] = IERC721Enumerable(token).tokenOfOwnerByIndex(
+        uint256 connections = IERC721Enumerable(token).balanceOf(owner);
+        uint256[] memory sbtConnections = new uint256[](connections);
+        for (uint256 i = 0; i < connections; i++) {
+            sbtConnections[i] = IERC721Enumerable(token).tokenOfOwnerByIndex(
                 owner,
                 i
             );
         }
 
-        return sbtLinks;
+        return sbtConnections;
     }
 
     /// @notice Returns the list of permission signature dates for a given SBT token and reader

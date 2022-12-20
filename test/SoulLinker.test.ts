@@ -324,18 +324,18 @@ describe("Soul Linker", () => {
       ).to.be.equal(ownerIdentityId);
     });
 
-    it("should get SBT links by identityId", async () => {
+    it("should get SBT connections by identityId", async () => {
       expect(
-        await soulLinker["getSBTLinks(uint256,address)"](
+        await soulLinker["getSBTConnections(uint256,address)"](
           ownerIdentityId,
           soulboundCreditScore.address
         )
       ).to.deep.equal([BigNumber.from(creditScore1)]);
     });
 
-    it("should get SBT links by owner address", async () => {
+    it("should get SBT connections by owner address", async () => {
       expect(
-        await soulLinker["getSBTLinks(address,address)"](
+        await soulLinker["getSBTConnections(address,address)"](
           dataOwner.address,
           soulboundCreditScore.address
         )

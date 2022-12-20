@@ -221,15 +221,15 @@ Returns the price for storing a permission
 |---|---|---|
 | _0 | uint256 | Current price for storing a permission |
 
-### getSBTLinks
+### getSBTConnections
 
 ```solidity
-function getSBTLinks(uint256 identityId, address token) external view returns (uint256[])
+function getSBTConnections(uint256 identityId, address token) external view returns (uint256[])
 ```
 
-Returns the list of linked SBTs by a given SBT token
+Returns the list of connected SBTs by a given SBT token
 
-*The token must be linked to this soul linker*
+
 
 #### Parameters
 
@@ -242,17 +242,17 @@ Returns the list of linked SBTs by a given SBT token
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256[] | List of linked SBTs |
+| _0 | uint256[] | List of connected SBTs |
 
-### getSBTLinks
+### getSBTConnections
 
 ```solidity
-function getSBTLinks(address owner, address token) external view returns (uint256[])
+function getSBTConnections(address owner, address token) external view returns (uint256[])
 ```
 
-Returns the list of linked SBTs by a given SBT token
+Returns the list of connected SBTs by a given SBT token
 
-*The token must be linked to this soul linker*
+
 
 #### Parameters
 
@@ -265,7 +265,7 @@ Returns the list of linked SBTs by a given SBT token
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256[] | List of linked SBTs |
+| _0 | uint256[] | List of connectec SBTs |
 
 ### masaToken
 
