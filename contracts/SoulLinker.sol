@@ -40,22 +40,15 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
     /// @notice Creates a new soul linker
     /// @param owner Owner of the smart contract
     /// @param _soulboundIdentity Soulbound identity smart contract
-    /// @param _addPermissionPrice Store permission price in stable coin
-    /// @param _addPermissionPriceMASA Store permission price in MASA
     /// @param paymentParams Payment gateway params
     constructor(
         address owner,
         ISoulboundIdentity _soulboundIdentity,
-        uint256 _addPermissionPrice,
-        uint256 _addPermissionPriceMASA,
         PaymentParams memory paymentParams
     ) EIP712("SoulLinker", "1.0.0") PaymentGateway(owner, paymentParams) {
         if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
 
         soulboundIdentity = _soulboundIdentity;
-
-        addPermissionPrice = _addPermissionPrice;
-        addPermissionPriceMASA = _addPermissionPriceMASA;
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */

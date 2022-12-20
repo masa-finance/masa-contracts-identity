@@ -68,8 +68,6 @@ const func: DeployFunction = async ({
   const constructorArguments = [
     env.ADMIN || admin.address,
     soulboundIdentityDeployed.address,
-    "1000000", // 1 USDC, with 6 decimals
-    0,
     [
       swapRouter,
       wrappedNativeToken,
