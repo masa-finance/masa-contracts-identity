@@ -19,13 +19,13 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
 
     ISoulboundIdentity public soulboundIdentity;
 
-    // token => tokenId => readerIdentityId => signatureDate => PermissionData
-    mapping(address => mapping(uint256 => mapping(uint256 => mapping(uint256 => PermissionData))))
-        private _permissions;
+    // token => tokenId => readerIdentityId => signatureDate => LinkData
+    mapping(address => mapping(uint256 => mapping(uint256 => mapping(uint256 => LinkData))))
+        private _links;
     mapping(address => mapping(uint256 => mapping(uint256 => uint256[])))
-        private _permissionSignatureDates;
+        private _linkSignatureDates;
 
-    struct PermissionData {
+    struct LinkData {
         uint256 ownerIdentityId;
         uint256 expirationDate;
         bool isRevoked;
@@ -75,7 +75,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
-    /// @notice Stores the permission, validating the signature of the given read link request
+    /// @notice Stores the link, validating the signature of the given read link request
     /// @dev The token must be linked to this soul linker
     /// @param readerIdentityId Id of the identity of the reader
     /// @param ownerIdentityId Id of the identity of the owner of the SBT
@@ -84,7 +84,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
     /// @param signatureDate Signature date of the signature
     /// @param expirationDate Expiration date of the signature
     /// @param signature Signature of the read link request made by the owner
-    function addPermission(
+    function addLink(
         address paymentMethod,
         uint256 readerIdentityId,
         uint256 ownerIdentityId,
@@ -118,17 +118,19 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
             )
         ) revert InvalidSignature();
 
-        _pay(paymentMethod, getPriceForAddPermission(paymentMethod, token));
+        _pay(paymentMethod, getPriceForAddLink(paymentMethod, token));
 
-        // token => tokenId => readerIdentityId => signatureDate => PermissionData
-        _permissions[token][tokenId][readerIdentityId][
-            signatureDate
-        ] = PermissionData(ownerIdentityId, expirationDate, false);
-        _permissionSignatureDates[token][tokenId][readerIdentityId].push(
+        // token => tokenId => readerIdentityId => signatureDate => LinkData
+        _links[token][tokenId][readerIdentityId][signatureDate] = LinkData(
+            ownerIdentityId,
+            expirationDate,
+            false
+        );
+        _linkSignatureDates[token][tokenId][readerIdentityId].push(
             signatureDate
         );
 
-        emit PermissionAdded(
+        emit LinkAdded(
             readerIdentityId,
             ownerIdentityId,
             token,
@@ -138,14 +140,14 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         );
     }
 
-    /// @notice Revokes the permission
+    /// @notice Revokes the link
     /// @dev The token must be linked to this soul linker
     /// @param readerIdentityId Id of the identity of the reader
     /// @param ownerIdentityId Id of the identity of the owner of the SBT
     /// @param token Address of the SBT contract
     /// @param tokenId Id of the token
     /// @param signatureDate Signature date of the signature
-    function revokePermission(
+    function revokeLink(
         uint256 readerIdentityId,
         uint256 ownerIdentityId,
         address token,
@@ -158,16 +160,14 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         if (ownerAddress != tokenOwner)
             revert IdentityOwnerNotTokenOwner(tokenId, ownerIdentityId);
         if (ownerAddress != _msgSender()) revert CallerNotOwner(_msgSender());
-        if (
-            _permissions[token][tokenId][readerIdentityId][signatureDate]
-                .isRevoked
-        ) revert PermissionAlreadyRevoked();
+        if (_links[token][tokenId][readerIdentityId][signatureDate].isRevoked)
+            revert LinkAlreadyRevoked();
 
-        // token => tokenId => readerIdentityId => signatureDate => PermissionData
-        _permissions[token][tokenId][readerIdentityId][signatureDate]
+        // token => tokenId => readerIdentityId => signatureDate => LinkData
+        _links[token][tokenId][readerIdentityId][signatureDate]
             .isRevoked = true;
 
-        emit PermissionRevoked(
+        emit LinkRevoked(
             readerIdentityId,
             ownerIdentityId,
             token,
@@ -227,44 +227,44 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         return sbtConnections;
     }
 
-    /// @notice Returns the list of permission signature dates for a given SBT token and reader
+    /// @notice Returns the list of link signature dates for a given SBT token and reader
     /// @param token Address of the SBT contract
     /// @param tokenId Id of the token
     /// @param readerIdentityId Id of the identity of the reader of the SBT
     /// @return List of linked SBTs
-    function getPermissionSignatureDates(
+    function getLinkSignatureDates(
         address token,
         uint256 tokenId,
         uint256 readerIdentityId
     ) public view returns (uint256[] memory) {
-        return _permissionSignatureDates[token][tokenId][readerIdentityId];
+        return _linkSignatureDates[token][tokenId][readerIdentityId];
     }
 
-    /// @notice Returns the information of permission dates for a given SBT token and reader
+    /// @notice Returns the information of link dates for a given SBT token and reader
     /// @param token Address of the SBT contract
     /// @param tokenId Id of the token
     /// @param readerIdentityId Id of the identity of the reader of the SBT
     /// @param signatureDate Signature date of the signature
-    /// @return permissionData List of linked SBTs
-    function getPermissionInfo(
+    /// @return linkData List of linked SBTs
+    function getLinkInfo(
         address token,
         uint256 tokenId,
         uint256 readerIdentityId,
         uint256 signatureDate
-    ) public view returns (PermissionData memory) {
-        return _permissions[token][tokenId][readerIdentityId][signatureDate];
+    ) public view returns (LinkData memory) {
+        return _links[token][tokenId][readerIdentityId][signatureDate];
     }
 
-    /// @notice Validates the permission of the given read link request and returns the
-    /// data that reader can read if the permission is valid
+    /// @notice Validates the link of the given read link request and returns the
+    /// data that reader can read if the link is valid
     /// @dev The token must be linked to this soul linker
     /// @param readerIdentityId Id of the identity of the reader
     /// @param ownerIdentityId Id of the identity of the owner of the SBT
     /// @param token Address of the SBT contract
     /// @param tokenId Id of the token
     /// @param signatureDate Signature date of the signature
-    /// @return True if the permission is valid
-    function validatePermission(
+    /// @return True if the link is valid
+    function validateLink(
         uint256 readerIdentityId,
         uint256 ownerIdentityId,
         address token,
@@ -275,52 +275,51 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         address ownerAddress = soulboundIdentity.ownerOf(ownerIdentityId);
         address tokenOwner = IERC721Enumerable(token).ownerOf(tokenId);
 
-        PermissionData memory permission = _permissions[token][tokenId][
-            readerIdentityId
-        ][signatureDate];
+        LinkData memory link = _links[token][tokenId][readerIdentityId][
+            signatureDate
+        ];
 
         if (ownerAddress != tokenOwner)
             revert IdentityOwnerNotTokenOwner(tokenId, ownerIdentityId);
         if (identityReader != _msgSender())
             revert CallerNotReader(_msgSender());
-        if (permission.expirationDate == 0) revert PermissionDoesNotExist();
-        if (permission.expirationDate < block.timestamp)
-            revert ValidPeriodExpired(permission.expirationDate);
-        if (permission.isRevoked) revert PermissionAlreadyRevoked();
+        if (link.expirationDate == 0) revert LinkDoesNotExist();
+        if (link.expirationDate < block.timestamp)
+            revert ValidPeriodExpired(link.expirationDate);
+        if (link.isRevoked) revert LinkAlreadyRevoked();
 
         return true;
     }
 
-    /// @notice Returns the price for storing a permission
-    /// @dev Returns the current pricing for storing a permission
+    /// @notice Returns the price for storing a link
+    /// @dev Returns the current pricing for storing a link
     /// @param paymentMethod Address of token that user want to pay
-    /// @param token Token that user want to store permission
-    /// @return Current price for storing a permission
-    function getPriceForAddPermission(address paymentMethod, address token)
+    /// @param token Token that user want to store link
+    /// @return Current price for storing a link
+    function getPriceForAddLink(address paymentMethod, address token)
         public
         view
         returns (uint256)
     {
-        uint256 addPermissionPrice = ILinkableSBT(token).addPermissionPrice();
-        uint256 addPermissionPriceMASA = ILinkableSBT(token)
-            .addPermissionPriceMASA();
-        if (addPermissionPrice == 0 && addPermissionPriceMASA == 0) {
+        uint256 addLinkPrice = ILinkableSBT(token).addLinkPrice();
+        uint256 addLinkPriceMASA = ILinkableSBT(token).addLinkPriceMASA();
+        if (addLinkPrice == 0 && addLinkPriceMASA == 0) {
             return 0;
         } else if (
             paymentMethod == masaToken &&
             enabledPaymentMethod[paymentMethod] &&
-            addPermissionPriceMASA > 0
+            addLinkPriceMASA > 0
         ) {
             // price in MASA without conversion rate
-            return addPermissionPriceMASA;
+            return addLinkPriceMASA;
         } else if (
             paymentMethod == stableCoin && enabledPaymentMethod[paymentMethod]
         ) {
             // stable coin
-            return addPermissionPrice;
+            return addLinkPrice;
         } else if (enabledPaymentMethod[paymentMethod]) {
             // ETH and ERC 20 token
-            return _convertFromStableCoin(paymentMethod, addPermissionPrice);
+            return _convertFromStableCoin(paymentMethod, addLinkPrice);
         } else {
             revert InvalidPaymentMethod(paymentMethod);
         }
@@ -366,7 +365,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
 
     /* ========== EVENTS ==================================================== */
 
-    event PermissionAdded(
+    event LinkAdded(
         uint256 readerIdentityId,
         uint256 ownerIdentityId,
         address token,
@@ -375,7 +374,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         uint256 expirationDate
     );
 
-    event PermissionRevoked(
+    event LinkRevoked(
         uint256 readerIdentityId,
         uint256 ownerIdentityId,
         address token,

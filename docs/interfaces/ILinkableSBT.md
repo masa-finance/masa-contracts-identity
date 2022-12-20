@@ -10,10 +10,10 @@
 
 ## Methods
 
-### addPermissionPrice
+### addLinkPrice
 
 ```solidity
-function addPermissionPrice() external view returns (uint256)
+function addLinkPrice() external view returns (uint256)
 ```
 
 
@@ -27,10 +27,10 @@ function addPermissionPrice() external view returns (uint256)
 |---|---|---|
 | _0 | uint256 | undefined |
 
-### addPermissionPriceMASA
+### addLinkPriceMASA
 
 ```solidity
-function addPermissionPriceMASA() external view returns (uint256)
+function addLinkPriceMASA() external view returns (uint256)
 ```
 
 

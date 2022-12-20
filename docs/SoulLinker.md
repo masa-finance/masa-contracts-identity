@@ -10,13 +10,13 @@ Soul linker smart contract that let add links to a Soulbound token.
 
 ## Methods
 
-### addPermission
+### addLink
 
 ```solidity
-function addPermission(address paymentMethod, uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, uint256 signatureDate, uint256 expirationDate, bytes signature) external payable
+function addLink(address paymentMethod, uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, uint256 signatureDate, uint256 expirationDate, bytes signature) external payable
 ```
 
-Stores the permission, validating the signature of the given read link request
+Stores the link, validating the signature of the given read link request
 
 *The token must be linked to this soul linker*
 
@@ -149,13 +149,13 @@ Returns the identityId owned by the given token
 |---|---|---|
 | _0 | uint256 | Id of the identity |
 
-### getPermissionInfo
+### getLinkInfo
 
 ```solidity
-function getPermissionInfo(address token, uint256 tokenId, uint256 readerIdentityId, uint256 signatureDate) external view returns (struct SoulLinker.PermissionData)
+function getLinkInfo(address token, uint256 tokenId, uint256 readerIdentityId, uint256 signatureDate) external view returns (struct SoulLinker.LinkData)
 ```
 
-Returns the information of permission dates for a given SBT token and reader
+Returns the information of link dates for a given SBT token and reader
 
 
 
@@ -172,15 +172,15 @@ Returns the information of permission dates for a given SBT token and reader
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | SoulLinker.PermissionData | permissionData List of linked SBTs |
+| _0 | SoulLinker.LinkData | linkData List of linked SBTs |
 
-### getPermissionSignatureDates
+### getLinkSignatureDates
 
 ```solidity
-function getPermissionSignatureDates(address token, uint256 tokenId, uint256 readerIdentityId) external view returns (uint256[])
+function getLinkSignatureDates(address token, uint256 tokenId, uint256 readerIdentityId) external view returns (uint256[])
 ```
 
-Returns the list of permission signature dates for a given SBT token and reader
+Returns the list of link signature dates for a given SBT token and reader
 
 
 
@@ -198,28 +198,28 @@ Returns the list of permission signature dates for a given SBT token and reader
 |---|---|---|
 | _0 | uint256[] | List of linked SBTs |
 
-### getPriceForAddPermission
+### getPriceForAddLink
 
 ```solidity
-function getPriceForAddPermission(address paymentMethod, address token) external view returns (uint256)
+function getPriceForAddLink(address paymentMethod, address token) external view returns (uint256)
 ```
 
-Returns the price for storing a permission
+Returns the price for storing a link
 
-*Returns the current pricing for storing a permission*
+*Returns the current pricing for storing a link*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
 | paymentMethod | address | Address of token that user want to pay |
-| token | address | Token that user want to store permission |
+| token | address | Token that user want to store link |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256 | Current price for storing a permission |
+| _0 | uint256 | Current price for storing a link |
 
 ### getSBTConnections
 
@@ -357,13 +357,13 @@ function reserveWallet() external view returns (address)
 |---|---|---|
 | _0 | address | undefined |
 
-### revokePermission
+### revokeLink
 
 ```solidity
-function revokePermission(uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, uint256 signatureDate) external nonpayable
+function revokeLink(uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, uint256 signatureDate) external nonpayable
 ```
 
-Revokes the permission
+Revokes the link
 
 *The token must be linked to this soul linker*
 
@@ -551,13 +551,13 @@ Unpauses the smart contract
 *The caller must have the owner to call this function*
 
 
-### validatePermission
+### validateLink
 
 ```solidity
-function validatePermission(uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, uint256 signatureDate) external view returns (bool)
+function validateLink(uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, uint256 signatureDate) external view returns (bool)
 ```
 
-Validates the permission of the given read link request and returns the data that reader can read if the permission is valid
+Validates the link of the given read link request and returns the data that reader can read if the link is valid
 
 *The token must be linked to this soul linker*
 
@@ -575,7 +575,7 @@ Validates the permission of the given read link request and returns the data tha
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | bool | True if the permission is valid |
+| _0 | bool | True if the link is valid |
 
 ### wrappedNativeToken
 
@@ -597,6 +597,47 @@ function wrappedNativeToken() external view returns (address)
 
 
 ## Events
+
+### LinkAdded
+
+```solidity
+event LinkAdded(uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, uint256 signatureDate, uint256 expirationDate)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| readerIdentityId  | uint256 | undefined |
+| ownerIdentityId  | uint256 | undefined |
+| token  | address | undefined |
+| tokenId  | uint256 | undefined |
+| signatureDate  | uint256 | undefined |
+| expirationDate  | uint256 | undefined |
+
+### LinkRevoked
+
+```solidity
+event LinkRevoked(uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, uint256 signatureDate)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| readerIdentityId  | uint256 | undefined |
+| ownerIdentityId  | uint256 | undefined |
+| token  | address | undefined |
+| tokenId  | uint256 | undefined |
+| signatureDate  | uint256 | undefined |
 
 ### OwnershipTransferred
 
@@ -630,47 +671,6 @@ event Paused(address account)
 | Name | Type | Description |
 |---|---|---|
 | account  | address | undefined |
-
-### PermissionAdded
-
-```solidity
-event PermissionAdded(uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, uint256 signatureDate, uint256 expirationDate)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| readerIdentityId  | uint256 | undefined |
-| ownerIdentityId  | uint256 | undefined |
-| token  | address | undefined |
-| tokenId  | uint256 | undefined |
-| signatureDate  | uint256 | undefined |
-| expirationDate  | uint256 | undefined |
-
-### PermissionRevoked
-
-```solidity
-event PermissionRevoked(uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, uint256 signatureDate)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| readerIdentityId  | uint256 | undefined |
-| ownerIdentityId  | uint256 | undefined |
-| token  | address | undefined |
-| tokenId  | uint256 | undefined |
-| signatureDate  | uint256 | undefined |
 
 ### Unpaused
 
@@ -811,6 +811,28 @@ error InvalidToken(address token)
 |---|---|---|
 | token | address | undefined |
 
+### LinkAlreadyRevoked
+
+```solidity
+error LinkAlreadyRevoked()
+```
+
+
+
+
+
+
+### LinkDoesNotExist
+
+```solidity
+error LinkDoesNotExist()
+```
+
+
+
+
+
+
 ### NonExistingErc20Token
 
 ```solidity
@@ -826,28 +848,6 @@ error NonExistingErc20Token(address erc20token)
 | Name | Type | Description |
 |---|---|---|
 | erc20token | address | undefined |
-
-### PermissionAlreadyRevoked
-
-```solidity
-error PermissionAlreadyRevoked()
-```
-
-
-
-
-
-
-### PermissionDoesNotExist
-
-```solidity
-error PermissionDoesNotExist()
-```
-
-
-
-
-
 
 ### RefundFailed
 

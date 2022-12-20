@@ -27,8 +27,8 @@ abstract contract MasaSBT is
 
     string private _baseTokenURI;
 
-    uint256 public override addPermissionPrice; // price in stable coin
-    uint256 public override addPermissionPriceMASA; // price in MASA
+    uint256 public override addLinkPrice; // price in stable coin
+    uint256 public override addLinkPriceMASA; // price in MASA
     uint256 public override readDataPrice; // price in stable coin
     uint256 public override readDataPriceMASA; // price in MASA
 
@@ -53,27 +53,26 @@ abstract contract MasaSBT is
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
-    /// @notice Sets the price for adding the permission in SoulLinker in stable coin
+    /// @notice Sets the price for adding the link in SoulLinker in stable coin
     /// @dev The caller must have the admin to call this function
-    /// @param _addPermissionPrice New price for adding the permission in SoulLinker in stable coin
-    function setAddPermissionPrice(uint256 _addPermissionPrice)
+    /// @param _addLinkPrice New price for adding the link in SoulLinker in stable coin
+    function setAddLinkPrice(uint256 _addLinkPrice)
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
-        if (addPermissionPrice == _addPermissionPrice) revert SameValue();
-        addPermissionPrice = _addPermissionPrice;
+        if (addLinkPrice == _addLinkPrice) revert SameValue();
+        addLinkPrice = _addLinkPrice;
     }
 
-    /// @notice Sets the price for adding the permission in SoulLinker in MASA
+    /// @notice Sets the price for adding the link in SoulLinker in MASA
     /// @dev The caller must have the admin to call this function
-    /// @param _addPermissionPriceMASA New price for adding the permission in SoulLinker in MASA
-    function setAddPermissionPriceMASA(uint256 _addPermissionPriceMASA)
+    /// @param _addLinkPriceMASA New price for adding the link in SoulLinker in MASA
+    function setAddLinkPriceMASA(uint256 _addLinkPriceMASA)
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
-        if (addPermissionPriceMASA == _addPermissionPriceMASA)
-            revert SameValue();
-        addPermissionPriceMASA = _addPermissionPriceMASA;
+        if (addLinkPriceMASA == _addLinkPriceMASA) revert SameValue();
+        addLinkPriceMASA = _addLinkPriceMASA;
     }
 
     /// @notice Sets the price for reading data in SoulLinker in stable coin

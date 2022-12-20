@@ -217,17 +217,15 @@ describe("Soul Linker", () => {
 
     it("should set NameRegistrationPricePerYear from owner", async () => {
       const newPrice = 100;
-      await soulboundCreditScore.connect(owner).setAddPermissionPrice(newPrice);
+      await soulboundCreditScore.connect(owner).setAddLinkPrice(newPrice);
 
-      expect(await soulboundCreditScore.addPermissionPrice()).to.be.equal(
-        newPrice
-      );
+      expect(await soulboundCreditScore.addLinkPrice()).to.be.equal(newPrice);
     });
 
     it("should fail to set MintingNamePrice from non owner", async () => {
       const newPrice = 100;
       await expect(
-        soulboundCreditScore.connect(someone).setAddPermissionPrice(newPrice)
+        soulboundCreditScore.connect(someone).setAddLinkPrice(newPrice)
       ).to.be.rejected;
     });
 
@@ -343,8 +341,8 @@ describe("Soul Linker", () => {
     });
   });
 
-  describe("addPermission", () => {
-    it("addPermission must work with a valid signature", async () => {
+  describe("addLink", () => {
+    it("addLink must work with a valid signature", async () => {
       const signature = await signLink(
         readerIdentityId,
         ownerIdentityId,
@@ -352,7 +350,7 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const price = await soulLinker.getPriceForAddPermission(
+      const price = await soulLinker.getPriceForAddLink(
         MASA_GOERLI,
         soulboundCreditScore.address
       );
@@ -363,7 +361,7 @@ describe("Soul Linker", () => {
 
       await soulLinker
         .connect(dataReader)
-        .addPermission(
+        .addLink(
           MASA_GOERLI,
           readerIdentityId,
           ownerIdentityId,
@@ -374,19 +372,18 @@ describe("Soul Linker", () => {
           signature
         );
 
-      const permissionSignatureDates =
-        await soulLinker.getPermissionSignatureDates(
-          soulboundCreditScore.address,
-          creditScore1,
-          readerIdentityId
-        );
+      const permissionSignatureDates = await soulLinker.getLinkSignatureDates(
+        soulboundCreditScore.address,
+        creditScore1,
+        readerIdentityId
+      );
       expect(permissionSignatureDates[0]).to.be.equal(signatureDate);
 
       const {
         ownerIdentityId: ownerIdentityIdInfo,
         expirationDate: expirationDateInfo,
         isRevoked: isRevokedInfo
-      } = await soulLinker.getPermissionInfo(
+      } = await soulLinker.getLinkInfo(
         soulboundCreditScore.address,
         creditScore1,
         readerIdentityId,
@@ -398,7 +395,7 @@ describe("Soul Linker", () => {
 
       const valid = await soulLinker
         .connect(dataReader)
-        .validatePermission(
+        .validateLink(
           readerIdentityId,
           ownerIdentityId,
           soulboundCreditScore.address,
@@ -409,11 +406,9 @@ describe("Soul Linker", () => {
       expect(valid).to.be.true;
     });
 
-    it("addPermission must work paying with MASA without an exchange rate", async () => {
-      await soulboundCreditScore.connect(owner).setAddPermissionPriceMASA(10);
-      expect(await soulboundCreditScore.addPermissionPriceMASA()).to.be.equal(
-        10
-      );
+    it("addLink must work paying with MASA without an exchange rate", async () => {
+      await soulboundCreditScore.connect(owner).setAddLinkPriceMASA(10);
+      expect(await soulboundCreditScore.addLinkPriceMASA()).to.be.equal(10);
 
       const signature = await signLink(
         readerIdentityId,
@@ -422,7 +417,7 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const price = await soulLinker.getPriceForAddPermission(
+      const price = await soulLinker.getPriceForAddLink(
         MASA_GOERLI,
         soulboundCreditScore.address
       );
@@ -434,7 +429,7 @@ describe("Soul Linker", () => {
 
       await soulLinker
         .connect(dataReader)
-        .addPermission(
+        .addLink(
           MASA_GOERLI,
           readerIdentityId,
           ownerIdentityId,
@@ -445,19 +440,18 @@ describe("Soul Linker", () => {
           signature
         );
 
-      const permissionSignatureDates =
-        await soulLinker.getPermissionSignatureDates(
-          soulboundCreditScore.address,
-          creditScore1,
-          readerIdentityId
-        );
+      const permissionSignatureDates = await soulLinker.getLinkSignatureDates(
+        soulboundCreditScore.address,
+        creditScore1,
+        readerIdentityId
+      );
       expect(permissionSignatureDates[0]).to.be.equal(signatureDate);
 
       const {
         ownerIdentityId: ownerIdentityIdInfo,
         expirationDate: expirationDateInfo,
         isRevoked: isRevokedInfo
-      } = await soulLinker.getPermissionInfo(
+      } = await soulLinker.getLinkInfo(
         soulboundCreditScore.address,
         creditScore1,
         readerIdentityId,
@@ -469,7 +463,7 @@ describe("Soul Linker", () => {
 
       const valid = await soulLinker
         .connect(dataReader)
-        .validatePermission(
+        .validateLink(
           readerIdentityId,
           ownerIdentityId,
           soulboundCreditScore.address,
@@ -480,7 +474,7 @@ describe("Soul Linker", () => {
       expect(valid).to.be.true;
     });
 
-    it("addPermission must work paying with ETH", async () => {
+    it("addLink must work paying with ETH", async () => {
       const signature = await signLink(
         readerIdentityId,
         ownerIdentityId,
@@ -488,14 +482,14 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const price = await soulLinker.getPriceForAddPermission(
+      const price = await soulLinker.getPriceForAddLink(
         ethers.constants.AddressZero,
         soulboundCreditScore.address
       );
 
       await soulLinker
         .connect(dataReader)
-        .addPermission(
+        .addLink(
           ethers.constants.AddressZero,
           readerIdentityId,
           ownerIdentityId,
@@ -507,19 +501,18 @@ describe("Soul Linker", () => {
           { value: price }
         );
 
-      const permissionSignatureDates =
-        await soulLinker.getPermissionSignatureDates(
-          soulboundCreditScore.address,
-          creditScore1,
-          readerIdentityId
-        );
+      const permissionSignatureDates = await soulLinker.getLinkSignatureDates(
+        soulboundCreditScore.address,
+        creditScore1,
+        readerIdentityId
+      );
       expect(permissionSignatureDates[0]).to.be.equal(signatureDate);
 
       const {
         ownerIdentityId: ownerIdentityIdInfo,
         expirationDate: expirationDateInfo,
         isRevoked: isRevokedInfo
-      } = await soulLinker.getPermissionInfo(
+      } = await soulLinker.getLinkInfo(
         soulboundCreditScore.address,
         creditScore1,
         readerIdentityId,
@@ -531,7 +524,7 @@ describe("Soul Linker", () => {
 
       const valid = await soulLinker
         .connect(dataReader)
-        .validatePermission(
+        .validateLink(
           readerIdentityId,
           ownerIdentityId,
           soulboundCreditScore.address,
@@ -542,7 +535,7 @@ describe("Soul Linker", () => {
       expect(valid).to.be.true;
     });
 
-    it("addPermission won't work with an invalid signature", async () => {
+    it("addLink won't work with an invalid signature", async () => {
       const signature = await signLink(
         ownerIdentityId,
         ownerIdentityId,
@@ -550,7 +543,7 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const price = await soulLinker.getPriceForAddPermission(
+      const price = await soulLinker.getPriceForAddLink(
         MASA_GOERLI,
         soulboundCreditScore.address
       );
@@ -562,7 +555,7 @@ describe("Soul Linker", () => {
       await expect(
         soulLinker
           .connect(dataReader)
-          .addPermission(
+          .addLink(
             MASA_GOERLI,
             readerIdentityId,
             ownerIdentityId,
@@ -577,7 +570,7 @@ describe("Soul Linker", () => {
       await expect(
         soulLinker
           .connect(dataReader)
-          .validatePermission(
+          .validateLink(
             readerIdentityId,
             ownerIdentityId,
             soulboundCreditScore.address,
@@ -588,8 +581,8 @@ describe("Soul Linker", () => {
     });
   });
 
-  describe("revokePermission", () => {
-    it("non owner of data can't call revokePermission", async () => {
+  describe("revokeLink", () => {
+    it("non owner of data can't call revokeLink", async () => {
       const signature = await signLink(
         readerIdentityId,
         ownerIdentityId,
@@ -597,7 +590,7 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const price = await soulLinker.getPriceForAddPermission(
+      const price = await soulLinker.getPriceForAddLink(
         MASA_GOERLI,
         soulboundCreditScore.address
       );
@@ -608,7 +601,7 @@ describe("Soul Linker", () => {
 
       await soulLinker
         .connect(dataReader)
-        .addPermission(
+        .addLink(
           MASA_GOERLI,
           readerIdentityId,
           ownerIdentityId,
@@ -622,7 +615,7 @@ describe("Soul Linker", () => {
       await expect(
         soulLinker
           .connect(dataReader)
-          .revokePermission(
+          .revokeLink(
             readerIdentityId,
             ownerIdentityId,
             soulboundCreditScore.address,
@@ -633,7 +626,7 @@ describe("Soul Linker", () => {
 
       const valid = await soulLinker
         .connect(dataReader)
-        .validatePermission(
+        .validateLink(
           readerIdentityId,
           ownerIdentityId,
           soulboundCreditScore.address,
@@ -644,7 +637,7 @@ describe("Soul Linker", () => {
       expect(valid).to.be.true;
     });
 
-    it("owner of data can call revokePermission", async () => {
+    it("owner of data can call revokeLink", async () => {
       const signature = await signLink(
         readerIdentityId,
         ownerIdentityId,
@@ -652,7 +645,7 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const price = await soulLinker.getPriceForAddPermission(
+      const price = await soulLinker.getPriceForAddLink(
         MASA_GOERLI,
         soulboundCreditScore.address
       );
@@ -663,7 +656,7 @@ describe("Soul Linker", () => {
 
       await soulLinker
         .connect(dataReader)
-        .addPermission(
+        .addLink(
           MASA_GOERLI,
           readerIdentityId,
           ownerIdentityId,
@@ -676,7 +669,7 @@ describe("Soul Linker", () => {
 
       const valid = await soulLinker
         .connect(dataReader)
-        .validatePermission(
+        .validateLink(
           readerIdentityId,
           ownerIdentityId,
           soulboundCreditScore.address,
@@ -688,7 +681,7 @@ describe("Soul Linker", () => {
 
       await soulLinker
         .connect(dataOwner)
-        .revokePermission(
+        .revokeLink(
           readerIdentityId,
           ownerIdentityId,
           soulboundCreditScore.address,
@@ -699,7 +692,7 @@ describe("Soul Linker", () => {
       await expect(
         soulLinker
           .connect(dataReader)
-          .validatePermission(
+          .validateLink(
             readerIdentityId,
             ownerIdentityId,
             soulboundCreditScore.address,

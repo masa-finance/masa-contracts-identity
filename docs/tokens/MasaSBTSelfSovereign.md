@@ -43,10 +43,10 @@ Adds a new authority to the list of authorities
 |---|---|---|
 | _authority | address | New authority to add |
 
-### addPermissionPrice
+### addLinkPrice
 
 ```solidity
-function addPermissionPrice() external view returns (uint256)
+function addLinkPrice() external view returns (uint256)
 ```
 
 
@@ -60,10 +60,10 @@ function addPermissionPrice() external view returns (uint256)
 |---|---|---|
 | _0 | uint256 | undefined |
 
-### addPermissionPriceMASA
+### addLinkPriceMASA
 
 ```solidity
-function addPermissionPriceMASA() external view returns (uint256)
+function addLinkPriceMASA() external view returns (uint256)
 ```
 
 
@@ -561,13 +561,13 @@ function revokeRole(bytes32 role, address account) external nonpayable
 | role | bytes32 | undefined |
 | account | address | undefined |
 
-### setAddPermissionPrice
+### setAddLinkPrice
 
 ```solidity
-function setAddPermissionPrice(uint256 _addPermissionPrice) external nonpayable
+function setAddLinkPrice(uint256 _addLinkPrice) external nonpayable
 ```
 
-Sets the price for adding the permission in SoulLinker in stable coin
+Sets the price for adding the link in SoulLinker in stable coin
 
 *The caller must have the admin to call this function*
 
@@ -575,15 +575,15 @@ Sets the price for adding the permission in SoulLinker in stable coin
 
 | Name | Type | Description |
 |---|---|---|
-| _addPermissionPrice | uint256 | New price for adding the permission in SoulLinker in stable coin |
+| _addLinkPrice | uint256 | New price for adding the link in SoulLinker in stable coin |
 
-### setAddPermissionPriceMASA
+### setAddLinkPriceMASA
 
 ```solidity
-function setAddPermissionPriceMASA(uint256 _addPermissionPriceMASA) external nonpayable
+function setAddLinkPriceMASA(uint256 _addLinkPriceMASA) external nonpayable
 ```
 
-Sets the price for adding the permission in SoulLinker in MASA
+Sets the price for adding the link in SoulLinker in MASA
 
 *The caller must have the admin to call this function*
 
@@ -591,7 +591,7 @@ Sets the price for adding the permission in SoulLinker in MASA
 
 | Name | Type | Description |
 |---|---|---|
-| _addPermissionPriceMASA | uint256 | New price for adding the permission in SoulLinker in MASA |
+| _addLinkPriceMASA | uint256 | New price for adding the link in SoulLinker in MASA |
 
 ### setMasaToken
 

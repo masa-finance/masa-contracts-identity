@@ -4,9 +4,9 @@ pragma solidity ^0.8.7;
 import "../tokens/SBT/ISBT.sol";
 
 interface ILinkableSBT is ISBT {
-    function addPermissionPrice() external view returns (uint256);
+    function addLinkPrice() external view returns (uint256);
 
-    function addPermissionPriceMASA() external view returns (uint256);
+    function addLinkPriceMASA() external view returns (uint256);
 
     function readDataPrice() external view returns (uint256);
 
