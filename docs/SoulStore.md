@@ -10,13 +10,13 @@ Soul Store, that can mint new Soulbound Identities and Soul Name NFTs, paying a 
 
 ## Methods
 
-### addErc20Token
+### disablePaymentMethod
 
 ```solidity
-function addErc20Token(address _erc20Token) external nonpayable
+function disablePaymentMethod(address _paymentMethod) external nonpayable
 ```
 
-Adds a new ERC20 token as a valid payment method
+Removes a token as a valid payment method
 
 *The caller must have the owner to call this function*
 
@@ -24,12 +24,28 @@ Adds a new ERC20 token as a valid payment method
 
 | Name | Type | Description |
 |---|---|---|
-| _erc20Token | address | New ERC20 token to add |
+| _paymentMethod | address | Token to remove |
 
-### erc20Token
+### enablePaymentMethod
 
 ```solidity
-function erc20Token(address) external view returns (bool)
+function enablePaymentMethod(address _paymentMethod) external nonpayable
+```
+
+Adds a new token as a valid payment method
+
+*The caller must have the owner to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _paymentMethod | address | New token to add |
+
+### enabledPaymentMethod
+
+```solidity
+function enabledPaymentMethod(address) external view returns (bool)
 ```
 
 
@@ -48,10 +64,10 @@ function erc20Token(address) external view returns (bool)
 |---|---|---|
 | _0 | bool | undefined |
 
-### erc20Tokens
+### enabledPaymentMethods
 
 ```solidity
-function erc20Tokens(uint256) external view returns (address)
+function enabledPaymentMethods(uint256) external view returns (address)
 ```
 
 
@@ -70,22 +86,22 @@ function erc20Tokens(uint256) external view returns (address)
 |---|---|---|
 | _0 | address | undefined |
 
-### getErc20Tokens
+### getEnabledPaymentMethods
 
 ```solidity
-function getErc20Tokens() external view returns (address[])
+function getEnabledPaymentMethods() external view returns (address[])
 ```
 
-Returns all available ERC 20 tokens
+Returns all available payment methods
 
-*Returns the address of all available ERC 20 tokens*
+*Returns the address of all available payment methods*
 
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | address[] | Array of all enabled ERC20 tokens |
+| _0 | address[] | Array of all enabled payment methods |
 
 ### getNameRegistrationPricePerYear
 
@@ -284,22 +300,6 @@ Mints a new Soul Name purchasing it
 | Name | Type | Description |
 |---|---|---|
 | _0 | uint256 | TokenId of the new sou name |
-
-### removeErc20Token
-
-```solidity
-function removeErc20Token(address _erc20Token) external nonpayable
-```
-
-Removes an ERC20 token as a valid payment method
-
-*The caller must have the owner to call this function*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _erc20Token | address | ERC20 token to remove |
 
 ### renounceOwnership
 
@@ -644,6 +644,128 @@ event Unpaused(address account)
 | Name | Type | Description |
 |---|---|---|
 | account  | address | undefined |
+
+
+
+## Errors
+
+### AlreadyAdded
+
+```solidity
+error AlreadyAdded()
+```
+
+
+
+
+
+
+### InsufficientEthAmount
+
+```solidity
+error InsufficientEthAmount(uint256 amount)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| amount | uint256 | undefined |
+
+### InvalidPaymentMethod
+
+```solidity
+error InvalidPaymentMethod(address paymentMethod)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| paymentMethod | address | undefined |
+
+### InvalidToken
+
+```solidity
+error InvalidToken(address token)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| token | address | undefined |
+
+### NonExistingErc20Token
+
+```solidity
+error NonExistingErc20Token(address erc20token)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| erc20token | address | undefined |
+
+### RefundFailed
+
+```solidity
+error RefundFailed()
+```
+
+
+
+
+
+
+### SameValue
+
+```solidity
+error SameValue()
+```
+
+
+
+
+
+
+### TransferFailed
+
+```solidity
+error TransferFailed()
+```
+
+
+
+
+
+
+### ZeroAddress
+
+```solidity
+error ZeroAddress()
+```
+
+
+
+
 
 
 

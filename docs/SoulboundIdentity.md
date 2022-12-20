@@ -44,6 +44,40 @@ function MINTER_ROLE() external view returns (bytes32)
 |---|---|---|
 | _0 | bytes32 | undefined |
 
+### addLinkPrice
+
+```solidity
+function addLinkPrice() external view returns (uint256)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+### addLinkPriceMASA
+
+```solidity
+function addLinkPriceMASA() external view returns (uint256)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
 ### balanceOf
 
 ```solidity
@@ -81,6 +115,28 @@ function burn(uint256 tokenId) external nonpayable
 | Name | Type | Description |
 |---|---|---|
 | tokenId | uint256 | undefined |
+
+### exists
+
+```solidity
+function exists(uint256 tokenId) external view returns (bool)
+```
+
+Returns true if the token exists
+
+*Returns true if the token has been minted*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId | uint256 | Token to check |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bool | True if the token exists |
 
 ### getExtension
 
@@ -379,6 +435,40 @@ Returns the owner address of a soul name
 |---|---|---|
 | _0 | address | Address of the owner of the identity |
 
+### readDataPrice
+
+```solidity
+function readDataPrice() external view returns (uint256)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+### readDataPriceMASA
+
+```solidity
+function readDataPriceMASA() external view returns (uint256)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
 ### renounceRole
 
 ```solidity
@@ -412,6 +502,70 @@ function revokeRole(bytes32 role, address account) external nonpayable
 |---|---|---|
 | role | bytes32 | undefined |
 | account | address | undefined |
+
+### setAddLinkPrice
+
+```solidity
+function setAddLinkPrice(uint256 _addLinkPrice) external nonpayable
+```
+
+Sets the price for adding the link in SoulLinker in stable coin
+
+*The caller must have the admin to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _addLinkPrice | uint256 | New price for adding the link in SoulLinker in stable coin |
+
+### setAddLinkPriceMASA
+
+```solidity
+function setAddLinkPriceMASA(uint256 _addLinkPriceMASA) external nonpayable
+```
+
+Sets the price for adding the link in SoulLinker in MASA
+
+*The caller must have the admin to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _addLinkPriceMASA | uint256 | New price for adding the link in SoulLinker in MASA |
+
+### setReadDataPrice
+
+```solidity
+function setReadDataPrice(uint256 _readDataPrice) external nonpayable
+```
+
+Sets the price for reading data in SoulLinker in stable coin
+
+*The caller must have the admin to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _readDataPrice | uint256 | New price for reading data in SoulLinker in stable coin |
+
+### setReadDataPriceMASA
+
+```solidity
+function setReadDataPriceMASA(uint256 _readDataPriceMASA) external nonpayable
+```
+
+Sets the price for reading data in SoulLinker in MASA
+
+*The caller must have the admin to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _readDataPriceMASA | uint256 | New price for reading data in SoulLinker in MASA |
 
 ### setSoulName
 
@@ -726,6 +880,58 @@ event RoleRevoked(bytes32 indexed role, address indexed account, address indexed
 | role `indexed` | bytes32 | undefined |
 | account `indexed` | address | undefined |
 | sender `indexed` | address | undefined |
+
+
+
+## Errors
+
+### IdentityAlreadyCreated
+
+```solidity
+error IdentityAlreadyCreated(address to)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| to | address | undefined |
+
+### SameValue
+
+```solidity
+error SameValue()
+```
+
+
+
+
+
+
+### SoulNameContractNotSet
+
+```solidity
+error SoulNameContractNotSet()
+```
+
+
+
+
+
+
+### ZeroAddress
+
+```solidity
+error ZeroAddress()
+```
+
+
+
+
 
 
 

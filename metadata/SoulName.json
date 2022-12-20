@@ -1,8 +1,0 @@
-{
-  "name": "Masa Finance Soul Name",
-  "description": "Lorem ipsum dolor sit amet",
-  "image": "external-link-url/image.png",
-  "external_link": "https://masa.finance",
-  "seller_fee_basis_points": 500,
-  "fee_recipient": "0x3c8D9f130970358b7E8cbc1DbD0a1EbA6EBE368F"
-}

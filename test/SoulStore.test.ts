@@ -92,8 +92,11 @@ describe("Soul Store", () => {
     );
 
     // we add payment methods
-    await soulStore.connect(owner).addErc20Token(USDC_GOERLI);
-    await soulStore.connect(owner).addErc20Token(MASA_GOERLI);
+    await soulStore
+      .connect(owner)
+      .enablePaymentMethod(ethers.constants.AddressZero);
+    await soulStore.connect(owner).enablePaymentMethod(USDC_GOERLI);
+    await soulStore.connect(owner).enablePaymentMethod(MASA_GOERLI);
   });
 
   describe("owner functions", () => {
@@ -490,7 +493,7 @@ describe("Soul Store", () => {
       ).to.be.equal(priceInStableCoin);
     });
 
-    it("we can purchase an identity and name with $MASA coin", async () => {
+    it("we can purchase an identity and name with MASA coin", async () => {
       const reserveWallet = await soulStore.reserveWallet();
       const priceInMasaToken = await soulStore.getPriceForMintingName(
         await soulStore.masaToken(),
@@ -533,7 +536,7 @@ describe("Soul Store", () => {
           ARWEAVE_LINK,
           { value: priceInETH.div(2) }
         )
-      ).to.be.rejectedWith("INSUFFICIENT_ETH_AMOUNT");
+      ).to.be.rejectedWith("InsufficientEthAmount");
     });
 
     it("we can't purchase an identity and name with stable coin if we don't have funds", async () => {
@@ -559,7 +562,7 @@ describe("Soul Store", () => {
       ).to.be.rejected;
     });
 
-    it("we can't purchase an identity and name with $MASA coin if we don't have funds", async () => {
+    it("we can't purchase an identity and name with MASA coin if we don't have funds", async () => {
       const priceInMasaToken = await soulStore.getPriceForMintingName(
         await soulStore.masaToken(),
         SOUL_NAME,
@@ -660,7 +663,7 @@ describe("Soul Store", () => {
       );
     });
 
-    it("we can purchase a name with $MASA coin", async () => {
+    it("we can purchase a name with MASA coin", async () => {
       const priceInMasaToken = await soulStore.getPriceForMintingName(
         await soulStore.masaToken(),
         SOUL_NAME,
@@ -696,7 +699,7 @@ describe("Soul Store", () => {
           address1.address,
           { value: priceInETH.div(2) }
         )
-      ).to.be.rejectedWith("INSUFFICIENT_ETH_AMOUNT");
+      ).to.be.rejectedWith("InsufficientEthAmount");
     });
 
     it("we can't purchase a name with stable coin if we don't have funds", async () => {
@@ -723,7 +726,7 @@ describe("Soul Store", () => {
       ).to.be.rejected;
     });
 
-    it("we can't purchase a name with $MASA coin if we don't have funds", async () => {
+    it("we can't purchase a name with MASA coin if we don't have funds", async () => {
       const priceInMasaToken = await soulStore.getPriceForMintingName(
         await soulStore.masaToken(),
         SOUL_NAME,
@@ -753,17 +756,18 @@ describe("Soul Store", () => {
     });
 
     it("should add ERC-20 token from owner", async () => {
-      await soulStore.connect(owner).addErc20Token(DAI_GOERLI);
+      await soulStore.connect(owner).enablePaymentMethod(DAI_GOERLI);
 
-      expect(await soulStore.erc20Token(DAI_GOERLI)).to.be.true;
+      expect(await soulStore.enabledPaymentMethod(DAI_GOERLI)).to.be.true;
     });
 
     it("should get all payment methods information", async () => {
-      await soulStore.connect(owner).addErc20Token(DAI_GOERLI);
+      await soulStore.connect(owner).enablePaymentMethod(DAI_GOERLI);
 
-      const erc20Tokens = await soulStore.getErc20Tokens();
+      const enabledPaymentMethods = await soulStore.getEnabledPaymentMethods();
 
-      expect(erc20Tokens).to.be.deep.equal([
+      expect(enabledPaymentMethods).to.be.deep.equal([
+        ethers.constants.AddressZero,
         USDC_GOERLI,
         MASA_GOERLI,
         DAI_GOERLI
@@ -771,31 +775,31 @@ describe("Soul Store", () => {
     });
 
     it("should fail to add ERC-20 token from non owner", async () => {
-      await expect(soulStore.connect(address1).addErc20Token(DAI_GOERLI)).to.be
-        .rejected;
+      await expect(soulStore.connect(address1).enablePaymentMethod(DAI_GOERLI))
+        .to.be.rejected;
     });
 
     it("should remove ERC-20 token from owner", async () => {
-      await soulStore.connect(owner).addErc20Token(DAI_GOERLI);
+      await soulStore.connect(owner).enablePaymentMethod(DAI_GOERLI);
 
-      expect(await soulStore.erc20Token(DAI_GOERLI)).to.be.true;
+      expect(await soulStore.enabledPaymentMethod(DAI_GOERLI)).to.be.true;
 
-      await soulStore.connect(owner).removeErc20Token(DAI_GOERLI);
+      await soulStore.connect(owner).disablePaymentMethod(DAI_GOERLI);
 
-      expect(await soulStore.erc20Token(DAI_GOERLI)).to.be.false;
+      expect(await soulStore.enabledPaymentMethod(DAI_GOERLI)).to.be.false;
     });
 
     it("should fail to remove ERC-20 token from non owner", async () => {
-      await soulStore.connect(owner).addErc20Token(DAI_GOERLI);
+      await soulStore.connect(owner).enablePaymentMethod(DAI_GOERLI);
 
-      expect(await soulStore.erc20Token(DAI_GOERLI)).to.be.true;
+      expect(await soulStore.enabledPaymentMethod(DAI_GOERLI)).to.be.true;
 
-      await expect(soulStore.connect(address1).removeErc20Token(DAI_GOERLI)).to
-        .be.rejected;
+      await expect(soulStore.connect(address1).disablePaymentMethod(DAI_GOERLI))
+        .to.be.rejected;
     });
 
     it("we can purchase a name with other ERC-20 token", async () => {
-      await soulStore.connect(owner).addErc20Token(DAI_GOERLI);
+      await soulStore.connect(owner).enablePaymentMethod(DAI_GOERLI);
 
       const priceInDAI = await soulStore.getPriceForMintingName(
         DAI_GOERLI,
@@ -821,7 +825,7 @@ describe("Soul Store", () => {
     it("should fail to get purchase info for invalid payment method", async () => {
       await expect(
         soulStore.getPriceForMintingName(owner.address, SOUL_NAME, YEAR)
-      ).to.be.rejectedWith("INVALID_PAYMENT_METHOD");
+      ).to.be.rejectedWith("InvalidPaymentMethod");
     });
 
     it("we can't use an invalid payment method", async () => {
@@ -832,7 +836,7 @@ describe("Soul Store", () => {
           YEAR,
           ARWEAVE_LINK
         )
-      ).to.be.rejectedWith("INVALID_PAYMENT_METHOD");
+      ).to.be.rejectedWith("InvalidPaymentMethod");
     });
   });
 });

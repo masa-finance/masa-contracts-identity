@@ -113,7 +113,7 @@ describe("Soulbound Credit Score", () => {
       }
     );
 
-    // we get $MASA utility tokens for address1
+    // we get MASA utility tokens for address1
     await uniswapRouter.swapExactETHForTokens(
       0,
       [WETH_GOERLI, MASA_GOERLI],
@@ -125,8 +125,11 @@ describe("Soulbound Credit Score", () => {
     );
 
     // we add payment methods
-    await soulboundCreditScore.connect(owner).addErc20Token(USDC_GOERLI);
-    await soulboundCreditScore.connect(owner).addErc20Token(MASA_GOERLI);
+    await soulboundCreditScore
+      .connect(owner)
+      .enablePaymentMethod(ethers.constants.AddressZero);
+    await soulboundCreditScore.connect(owner).enablePaymentMethod(USDC_GOERLI);
+    await soulboundCreditScore.connect(owner).enablePaymentMethod(MASA_GOERLI);
 
     // we mint identity SBT
     const mintTx = await soulboundIdentity
@@ -182,7 +185,7 @@ describe("Soulbound Credit Score", () => {
             signatureDate,
             signature
           )
-      ).to.be.revertedWith("CALLER_NOT_OWNER");
+      ).to.be.revertedWith("CallerNotOwner");
     });
 
     it("should fail to mint from owner identity", async () => {
@@ -196,7 +199,7 @@ describe("Soulbound Credit Score", () => {
             signatureDate,
             signature
           )
-      ).to.be.revertedWith("CALLER_NOT_OWNER");
+      ).to.be.revertedWith("CallerNotOwner");
     });
 
     it("should mint twice", async () => {
@@ -219,7 +222,7 @@ describe("Soulbound Credit Score", () => {
             signatureDate,
             signature
           )
-      ).to.be.revertedWith("CREDITSCORE_ALREADY_CREATED");
+      ).to.be.revertedWith("CreditScoreAlreadyCreated");
 
       expect(await soulboundCreditScore.totalSupply()).to.equal(1);
       expect(await soulboundCreditScore.tokenByIndex(0)).to.equal(0);
@@ -279,7 +282,7 @@ describe("Soulbound Credit Score", () => {
             signatureDate,
             signatureNonAuthority
           )
-      ).to.be.revertedWith("NOT_AUTHORIZED");
+      ).to.be.revertedWith("NotAuthorized");
     });
 
     it("should fail to mint with invalid signature", async () => {
@@ -298,18 +301,18 @@ describe("Soulbound Credit Score", () => {
             signatureDate,
             signatureNonAuthority
           )
-      ).to.be.revertedWith("INVALID_SIGNATURE");
+      ).to.be.revertedWith("InvalidSignature");
     });
   });
 
   describe("mint paying a minting fee", () => {
     beforeEach(async () => {
-      await soulboundCreditScore.connect(owner).setMintingPrice(1); // 1 USD
+      await soulboundCreditScore.connect(owner).setMintPrice(1); // 1 USD
     });
 
     it("should mint from final user address paying with ETH", async () => {
       const reserveWallet = await soulboundCreditScore.reserveWallet();
-      const priceInETH = await soulboundCreditScore.getMintingPrice(
+      const priceInETH = await soulboundCreditScore.getMintPrice(
         ethers.constants.AddressZero
       );
       const reserveWalletBalanceBefore = await ethers.provider.getBalance(
@@ -346,7 +349,7 @@ describe("Soulbound Credit Score", () => {
 
     it("should mint from final user identity paying with ETH", async () => {
       const reserveWallet = await soulboundCreditScore.reserveWallet();
-      const priceInETH = await soulboundCreditScore.getMintingPrice(
+      const priceInETH = await soulboundCreditScore.getMintPrice(
         ethers.constants.AddressZero
       );
       const reserveWalletBalanceBefore = await ethers.provider.getBalance(
@@ -382,7 +385,7 @@ describe("Soulbound Credit Score", () => {
     });
 
     it("should mint from final user identity paying with stable coin", async () => {
-      const priceInStableCoin = await soulboundCreditScore.getMintingPrice(
+      const priceInStableCoin = await soulboundCreditScore.getMintPrice(
         USDC_GOERLI
       );
 
@@ -410,8 +413,8 @@ describe("Soulbound Credit Score", () => {
       );
     });
 
-    it("should mint from final user identity paying with $MASA coin", async () => {
-      const priceInStableCoin = await soulboundCreditScore.getMintingPrice(
+    it("should mint from final user identity paying with MASA coin", async () => {
+      const priceInStableCoin = await soulboundCreditScore.getMintPrice(
         MASA_GOERLI
       );
 
@@ -441,8 +444,8 @@ describe("Soulbound Credit Score", () => {
 
     it("should fail to get minting info for invalid payment method", async () => {
       await expect(
-        soulboundCreditScore.getMintingPrice(owner.address)
-      ).to.be.rejectedWith("INVALID_PAYMENT_METHOD");
+        soulboundCreditScore.getMintPrice(owner.address)
+      ).to.be.rejectedWith("InvalidPaymentMethod");
     });
 
     it("we can't use an invalid payment method", async () => {
@@ -456,7 +459,7 @@ describe("Soulbound Credit Score", () => {
             signatureDate,
             signature
           )
-      ).to.be.rejectedWith("INVALID_PAYMENT_METHOD");
+      ).to.be.rejectedWith("InvalidPaymentMethod");
     });
   });
 

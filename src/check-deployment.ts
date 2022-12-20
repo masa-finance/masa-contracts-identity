@@ -103,16 +103,6 @@ async function main() {
   console.log(
     `SoulLinker.SoulboundIdentity: ${await soulLinker.soulboundIdentity()}`
   );
-  console.log(
-    `SoulLinker.linkedSBT(SoulboundCreditScore): ${await soulLinker.linkedSBT(
-      soulboundCreditScoreAddress
-    )}`
-  );
-  console.log(
-    `SoulLinker.linkedSBT(Soulbound2FA): ${await soulLinker.linkedSBT(
-      soulbound2FAAddress
-    )}`
-  );
   console.log("");
 
   console.log(

@@ -3,6 +3,7 @@ pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
+import "./libraries/Errors.sol";
 import "./interfaces/ISoulboundIdentity.sol";
 import "./interfaces/ISoulName.sol";
 import "./tokens/MasaSBTAuthority.sol";
@@ -39,8 +40,8 @@ contract SoulboundIdentity is
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
-        require(address(_soulName) != address(0), "ZERO_ADDRESS");
-        require(soulName != _soulName, "SAME_VALUE");
+        if (address(_soulName) == address(0)) revert ZeroAddress();
+        if (soulName == _soulName) revert SameValue();
         soulName = _soulName;
     }
 
@@ -51,7 +52,7 @@ contract SoulboundIdentity is
     /// @param to Address of the admin of the new identity
     function mint(address to) public override returns (uint256) {
         // Soulbound identity already created!
-        require(balanceOf(to) < 1, "SB_IDENTITY_ALREADY_CREATED");
+        if (balanceOf(to) > 0) revert IdentityAlreadyCreated(to);
 
         return _mintWithCounter(to);
     }
@@ -225,7 +226,7 @@ contract SoulboundIdentity is
     /* ========== MODIFIERS ================================================= */
 
     modifier soulNameAlreadySet() {
-        require(address(soulName) != address(0), "SOULNAME_CONTRACT_NOT_SET");
+        if (address(soulName) == address(0)) revert SoulNameContractNotSet();
         _;
     }
 

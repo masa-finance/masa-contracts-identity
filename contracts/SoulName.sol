@@ -4,6 +4,7 @@ pragma solidity ^0.8.7;
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
+import "./libraries/Errors.sol";
 import "./libraries/Utils.sol";
 import "./interfaces/ISoulboundIdentity.sol";
 import "./interfaces/ISoulName.sol";
@@ -58,7 +59,7 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         string memory _extension,
         string memory _contractURI
     ) MasaNFT(admin, "Masa Soul Name", "MSN", "") {
-        require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
+        if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
 
         soulboundIdentity = _soulboundIdentity;
         extension = _extension;
@@ -74,8 +75,8 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         external
         onlyOwner
     {
-        require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
-        require(soulboundIdentity != _soulboundIdentity, "SAME_VALUE");
+        if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
+        if (soulboundIdentity == _soulboundIdentity) revert SameValue();
         soulboundIdentity = _soulboundIdentity;
     }
 
@@ -83,11 +84,10 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     /// @dev The caller must have the admin to call this function
     /// @param _extension Extension of the soul name
     function setExtension(string memory _extension) external onlyOwner {
-        require(
-            keccak256(abi.encodePacked((extension))) !=
-                keccak256(abi.encodePacked((_extension))),
-            "SAME_VALUE"
-        );
+        if (
+            keccak256(abi.encodePacked((extension))) ==
+            keccak256(abi.encodePacked((_extension)))
+        ) revert SameValue();
         extension = _extension;
     }
 
@@ -95,11 +95,10 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     /// @dev The caller must have the admin to call this function
     /// @param _contractURI URI of the smart contract metadata
     function setContractURI(string memory _contractURI) external onlyOwner {
-        require(
-            keccak256(abi.encodePacked((contractURI))) !=
-                keccak256(abi.encodePacked((_contractURI))),
-            "SAME_VALUE"
-        );
+        if (
+            keccak256(abi.encodePacked((contractURI))) ==
+            keccak256(abi.encodePacked((_contractURI)))
+        ) revert SameValue();
         contractURI = _contractURI;
     }
 
@@ -116,19 +115,16 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         string memory name,
         uint256 yearsPeriod,
         string memory _tokenURI
-    ) external override nonReentrant returns (uint256) {
-        require(isAvailable(name), "NAME_ALREADY_EXISTS");
-        require(bytes(name).length > 0, "ZERO_LENGTH_NAME");
-        require(yearsPeriod > 0, "ZERO_YEARS_PERIOD");
-        require(
-            soulboundIdentity.balanceOf(to) > 0,
-            "ADDRESS_DOES_NOT_HAVE_IDENTITY"
-        );
-        require(
-            Utils.startsWith(_tokenURI, "ar://") ||
-                Utils.startsWith(_tokenURI, "ipfs://"),
-            "INVALID_TOKEN_URI"
-        );
+    ) public override nonReentrant returns (uint256) {
+        if (!isAvailable(name)) revert NameAlreadyExists(name);
+        if (bytes(name).length == 0) revert ZeroLengthName(name);
+        if (yearsPeriod == 0) revert ZeroYearsPeriod(yearsPeriod);
+        if (soulboundIdentity.balanceOf(to) == 0)
+            revert AddressDoesNotHaveIdentity(to);
+        if (
+            !Utils.startsWith(_tokenURI, "ar://") &&
+            !Utils.startsWith(_tokenURI, "ipfs://")
+        ) revert InvalidTokenURI(_tokenURI);
 
         uint256 tokenId = _mintWithCounter(to);
         _setTokenURI(tokenId, _tokenURI);
@@ -151,20 +147,16 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     /// @param yearsPeriod Years of validity of the name
     function renewYearsPeriod(uint256 tokenId, uint256 yearsPeriod) external {
         // ERC721: caller is not token owner nor approved
-        require(
-            _isApprovedOrOwner(_msgSender(), tokenId),
-            "ERC721_CALLER_NOT_OWNER"
-        );
-        require(yearsPeriod > 0, "ZERO_YEARS_PERIOD");
+        if (!_isApprovedOrOwner(_msgSender(), tokenId))
+            revert CallerNotOwner(_msgSender());
+        if (yearsPeriod == 0) revert ZeroYearsPeriod(yearsPeriod);
 
         // check that the last registered tokenId for that name is the current token
         string memory lowercaseName = Utils.toLowerCase(
             tokenData[tokenId].name
         );
-        require(
-            nameData[lowercaseName].tokenId == tokenId,
-            "NAME_REGISTERED_BY_OTHER_ACCOUNT"
-        );
+        if (nameData[lowercaseName].tokenId != tokenId)
+            revert NameRegisteredByOtherAccount(lowercaseName, tokenId);
 
         // check if the name is expired
         if (tokenData[tokenId].expirationDate < block.timestamp) {
@@ -188,7 +180,7 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     /// @dev The caller must be the owner or an approved address of the soul name.
     /// @param tokenId TokenId of the soul name to burn
     function burn(uint256 tokenId) public override {
-        require(_exists(tokenId), "TOKEN_NOT_FOUND");
+        if (!_exists(tokenId)) revert TokenNotFound(tokenId);
 
         string memory lowercaseName = Utils.toLowerCase(
             tokenData[tokenId].name
@@ -396,7 +388,7 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
 
     function _getTokenId(string memory name) private view returns (uint256) {
         string memory lowercaseName = Utils.toLowerCase(name);
-        require(nameData[lowercaseName].exists, "NAME_NOT_FOUND");
+        if (!nameData[lowercaseName].exists) revert NameNotFound(name);
 
         return nameData[lowercaseName].tokenId;
     }
@@ -405,11 +397,8 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         internal
         virtual
     {
-        require(
-            _exists(tokenId),
-            "ERC721URIStorage: URI set of nonexistent token"
-        );
-        require(!_URIs[_tokenURI], "URI_ALREADY_EXISTS");
+        if (!_exists(tokenId)) revert TokenNotFound(tokenId);
+        if (_URIs[_tokenURI]) revert URIAlreadyExists(_tokenURI);
 
         _tokenURIs[tokenId] = _tokenURI;
         _URIs[_tokenURI] = true;

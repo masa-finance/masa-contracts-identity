@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
+import "../libraries/Errors.sol";
 import "../interfaces/ISoulboundIdentity.sol";
 import "../dex/PaymentGateway.sol";
 import "./MasaSBT.sol";
@@ -25,7 +26,8 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
 
     ISoulboundIdentity public soulboundIdentity;
 
-    uint256 public mintingPrice; // price in stable coin
+    uint256 public mintPrice; // price in stable coin
+    uint256 public mintPriceMASA; // price in MASA
 
     mapping(address => bool) public authorities;
 
@@ -38,7 +40,6 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
     /// @param symbol Symbol of the token
     /// @param baseTokenURI Base URI of the token
     /// @param _soulboundIdentity Address of the SoulboundIdentity contract
-    /// @param _mintingPrice Price of minting in stable coin
     /// @param paymentParams Payment gateway params
     constructor(
         address admin,
@@ -46,16 +47,14 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
         string memory symbol,
         string memory baseTokenURI,
         ISoulboundIdentity _soulboundIdentity,
-        uint256 _mintingPrice,
         PaymentParams memory paymentParams
     )
         PaymentGateway(admin, paymentParams)
         MasaSBT(admin, name, symbol, baseTokenURI)
     {
-        require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
+        if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
 
         soulboundIdentity = _soulboundIdentity;
-        mintingPrice = _mintingPrice;
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
@@ -67,20 +66,31 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
-        require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
-        require(soulboundIdentity != _soulboundIdentity, "SAME_VALUE");
+        if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
+        if (soulboundIdentity == _soulboundIdentity) revert SameValue();
         soulboundIdentity = _soulboundIdentity;
     }
 
     /// @notice Sets the price of minting in stable coin
     /// @dev The caller must have the admin to call this function
-    /// @param _mintingPrice New price of minting in stable coin
-    function setMintingPrice(uint256 _mintingPrice)
+    /// @param _mintPrice New price of minting in stable coin
+    function setMintPrice(uint256 _mintPrice)
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
-        require(mintingPrice != _mintingPrice, "SAME_VALUE");
-        mintingPrice = _mintingPrice;
+        if (mintPrice == _mintPrice) revert SameValue();
+        mintPrice = _mintPrice;
+    }
+
+    /// @notice Sets the price of minting in MASA
+    /// @dev The caller must have the admin to call this function
+    /// @param _mintPriceMASA New price of minting in MASA
+    function setMintPriceMASA(uint256 _mintPriceMASA)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        if (mintPriceMASA == _mintPriceMASA) revert SameValue();
+        mintPriceMASA = _mintPriceMASA;
     }
 
     /// @notice Adds a new authority to the list of authorities
@@ -90,8 +100,8 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
-        require(_authority != address(0), "ZERO_ADDRESS");
-        require(!authorities[_authority], "ALREADY_ADDED");
+        if (_authority == address(0)) revert ZeroAddress();
+        if (authorities[_authority]) revert AlreadyAdded();
 
         authorities[_authority] = true;
     }
@@ -112,19 +122,26 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
     /// @dev Returns current pricing for minting
     /// @param paymentMethod Address of token that user want to pay
     /// @return Current price for minting in the given payment method
-    function getMintingPrice(address paymentMethod)
-        external
-        view
-        returns (uint256)
-    {
-        if (paymentMethod == address(0)) {
-            return _convertFromStableCoin(wrappedNativeToken, mintingPrice);
-        } else if (paymentMethod == stableCoin && erc20Token[paymentMethod]) {
-            return mintingPrice;
-        } else if (erc20Token[paymentMethod]) {
-            return _convertFromStableCoin(paymentMethod, mintingPrice);
+    function getMintPrice(address paymentMethod) public view returns (uint256) {
+        if (mintPrice == 0 && mintPriceMASA == 0) {
+            return 0;
+        } else if (
+            paymentMethod == masaToken &&
+            enabledPaymentMethod[paymentMethod] &&
+            mintPriceMASA > 0
+        ) {
+            // price in MASA without conversion rate
+            return mintPriceMASA;
+        } else if (
+            paymentMethod == stableCoin && enabledPaymentMethod[paymentMethod]
+        ) {
+            // stable coin
+            return mintPrice;
+        } else if (enabledPaymentMethod[paymentMethod]) {
+            // ETH and ERC 20 token
+            return _convertFromStableCoin(paymentMethod, mintPrice);
         } else {
-            revert("INVALID_PAYMENT_METHOD");
+            revert InvalidPaymentMethod(paymentMethod);
         }
     }
 
@@ -136,8 +153,8 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
         address signer
     ) internal view {
         address _signer = ECDSA.recover(digest, signature);
-        require(_signer == signer, "INVALID_SIGNATURE");
-        require(authorities[_signer], "NOT_AUTHORIZED");
+        if (_signer != signer) revert InvalidSignature();
+        if (!authorities[_signer]) revert NotAuthorized(_signer);
     }
 
     function _mintWithCounter(address to) internal virtual returns (uint256) {
