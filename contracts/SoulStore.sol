@@ -107,7 +107,7 @@ contract SoulStore is PaymentGateway, Pausable {
     ) external payable whenNotPaused returns (uint256) {
         _pay(
             paymentMethod,
-            getNameRegistrationPricePerYear(name).mul(yearsPeriod)
+            getPriceForMintingName(paymentMethod, name, yearsPeriod)
         );
 
         // finalize purchase
@@ -151,7 +151,7 @@ contract SoulStore is PaymentGateway, Pausable {
     ) external payable whenNotPaused returns (uint256) {
         _pay(
             paymentMethod,
-            getNameRegistrationPricePerYear(name).mul(yearsPeriod)
+            getPriceForMintingName(paymentMethod, name, yearsPeriod)
         );
 
         // finalize purchase
@@ -189,16 +189,20 @@ contract SoulStore is PaymentGateway, Pausable {
         string memory name,
         uint256 yearsPeriod
     ) public view returns (uint256) {
-        uint256 mintingPrice = getNameRegistrationPricePerYear(name).mul(
+        uint256 mintPrice = getNameRegistrationPricePerYear(name).mul(
             yearsPeriod
         );
 
-        if (
+        if (mintPrice == 0) {
+            return 0;
+        } else if (
             paymentMethod == stableCoin && enabledPaymentMethod[paymentMethod]
         ) {
-            return mintingPrice;
+            // stable coin
+            return mintPrice;
         } else if (enabledPaymentMethod[paymentMethod]) {
-            return _convertFromStableCoin(paymentMethod, mintingPrice);
+            // ETH and ERC 20 token
+            return _convertFromStableCoin(paymentMethod, mintPrice);
         } else {
             revert InvalidPaymentMethod(paymentMethod);
         }

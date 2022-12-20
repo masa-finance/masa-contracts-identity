@@ -70,7 +70,6 @@ const func: DeployFunction = async ({
     env.ADMIN || admin.address,
     baseUri,
     soulboundIdentityDeployed.address,
-    "0", // 0 USDC, with 6 decimals
     [
       swapRouter,
       wrappedNativeToken,

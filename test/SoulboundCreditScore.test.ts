@@ -113,7 +113,7 @@ describe("Soulbound Credit Score", () => {
       }
     );
 
-    // we get $MASA utility tokens for address1
+    // we get MASA utility tokens for address1
     await uniswapRouter.swapExactETHForTokens(
       0,
       [WETH_GOERLI, MASA_GOERLI],
@@ -307,12 +307,12 @@ describe("Soulbound Credit Score", () => {
 
   describe("mint paying a minting fee", () => {
     beforeEach(async () => {
-      await soulboundCreditScore.connect(owner).setMintingPrice(1); // 1 USD
+      await soulboundCreditScore.connect(owner).setMintPrice(1); // 1 USD
     });
 
     it("should mint from final user address paying with ETH", async () => {
       const reserveWallet = await soulboundCreditScore.reserveWallet();
-      const priceInETH = await soulboundCreditScore.getMintingPrice(
+      const priceInETH = await soulboundCreditScore.getMintPrice(
         ethers.constants.AddressZero
       );
       const reserveWalletBalanceBefore = await ethers.provider.getBalance(
@@ -349,7 +349,7 @@ describe("Soulbound Credit Score", () => {
 
     it("should mint from final user identity paying with ETH", async () => {
       const reserveWallet = await soulboundCreditScore.reserveWallet();
-      const priceInETH = await soulboundCreditScore.getMintingPrice(
+      const priceInETH = await soulboundCreditScore.getMintPrice(
         ethers.constants.AddressZero
       );
       const reserveWalletBalanceBefore = await ethers.provider.getBalance(
@@ -385,7 +385,7 @@ describe("Soulbound Credit Score", () => {
     });
 
     it("should mint from final user identity paying with stable coin", async () => {
-      const priceInStableCoin = await soulboundCreditScore.getMintingPrice(
+      const priceInStableCoin = await soulboundCreditScore.getMintPrice(
         USDC_GOERLI
       );
 
@@ -413,8 +413,8 @@ describe("Soulbound Credit Score", () => {
       );
     });
 
-    it("should mint from final user identity paying with $MASA coin", async () => {
-      const priceInStableCoin = await soulboundCreditScore.getMintingPrice(
+    it("should mint from final user identity paying with MASA coin", async () => {
+      const priceInStableCoin = await soulboundCreditScore.getMintPrice(
         MASA_GOERLI
       );
 
@@ -444,7 +444,7 @@ describe("Soulbound Credit Score", () => {
 
     it("should fail to get minting info for invalid payment method", async () => {
       await expect(
-        soulboundCreditScore.getMintingPrice(owner.address)
+        soulboundCreditScore.getMintPrice(owner.address)
       ).to.be.rejectedWith("InvalidPaymentMethod");
     });
 
