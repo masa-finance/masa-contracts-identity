@@ -252,7 +252,7 @@ Returns the list of permission signature dates for a given SBT token and reader
 ### getPriceForAddPermission
 
 ```solidity
-function getPriceForAddPermission(address paymentMethod) external view returns (uint256 price, address paymentMethodUsed)
+function getPriceForAddPermission(address paymentMethod) external view returns (uint256)
 ```
 
 Returns the price for storing a permission
@@ -269,8 +269,7 @@ Returns the price for storing a permission
 
 | Name | Type | Description |
 |---|---|---|
-| price | uint256 | Current price of storing a permission |
-| paymentMethodUsed | address | Address of the token used to pay |
+| _0 | uint256 | Current price for storing a permission |
 
 ### getSBTLinks
 

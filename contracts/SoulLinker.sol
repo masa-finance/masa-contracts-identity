@@ -184,13 +184,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
             )
         ) revert InvalidSignature();
 
-        if (addPermissionPriceMASA > 0) {
-            // if there is a price in MASA, pay it without conversion rate
-            _payWithMASA(addPermissionPriceMASA);
-        } else {
-            // pay with MASA with conversion rate
-            _pay(paymentMethod, addPermissionPrice);
-        }
+        _pay(paymentMethod, getPriceForAddPermission(paymentMethod));
 
         // token => tokenId => readerIdentityId => signatureDate => PermissionData
         _permissions[token][tokenId][readerIdentityId][
@@ -374,26 +368,37 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
     /// @notice Returns the price for storing a permission
     /// @dev Returns the current pricing for storing a permission
     /// @param paymentMethod Address of token that user want to pay
-    /// @return price Current price of storing a permission
-    /// @return paymentMethodUsed Address of the token used to pay
+    /// @return Current price for storing a permission
     function getPriceForAddPermission(address paymentMethod)
         public
         view
-        returns (uint256 price, address paymentMethodUsed)
+        returns (uint256)
     {
-        if (
-            addPermissionPriceMASA > 0 &&
-            masaToken != address(0) &&
-            enabledPaymentMethod[masaToken]
+        if (addPermissionPrice == 0 && addPermissionPriceMASA == 0) {
+            return 0;
+        } else if (
+            paymentMethod == masaToken &&
+            enabledPaymentMethod[paymentMethod] &&
+            addPermissionPriceMASA > 0
         ) {
-            // if there is a price in MASA, return it without conversion rate
-            return (addPermissionPriceMASA, masaToken);
+            // price in MASA without conversion rate
+            return addPermissionPriceMASA;
+        } else if (
+            paymentMethod == stableCoin && enabledPaymentMethod[paymentMethod]
+        ) {
+            // stable coin
+            return addPermissionPrice;
+        } else if (
+            paymentMethod == address(0) && enabledPaymentMethod[paymentMethod]
+        ) {
+            // ETH
+            return
+                _convertFromStableCoin(wrappedNativeToken, addPermissionPrice);
+        } else if (enabledPaymentMethod[paymentMethod]) {
+            // ERC 20 token
+            return _convertFromStableCoin(paymentMethod, addPermissionPrice);
         } else {
-            // return MASA with conversion rate
-            return (
-                _convertFromStableCoin(paymentMethod, addPermissionPrice),
-                paymentMethod
-            );
+            revert InvalidPaymentMethod(paymentMethod);
         }
     }
 
