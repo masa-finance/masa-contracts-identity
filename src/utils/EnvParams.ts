@@ -17,7 +17,10 @@ export function getEnvParams(networkName: string | undefined) {
   return parse(fs.readFileSync(path));
 }
 
-export function getSecretParam(param: string, networkName: string | undefined) {
+export function getSecretParam(
+  param: string,
+  networkName?: string | undefined
+) {
   const path = networkName ? `.env.${networkName}.secret` : `.env`;
 
   fsx.ensureFileSync(path);
@@ -35,21 +38,15 @@ export function getPrivateKey(networkName: string | undefined) {
 }
 
 export function getInfuraApiKey() {
-  return (
-    process.env.INFURA_API_KEY || getSecretParam("INFURA_API_KEY", undefined)
-  );
+  return process.env.INFURA_API_KEY || getSecretParam("INFURA_API_KEY");
 }
 
 export function getEtherscanApiKey() {
-  return (
-    process.env.ETHERSCAN_API_KEY ||
-    getSecretParam("ETHERSCAN_API_KEY", undefined)
-  );
+  return process.env.ETHERSCAN_API_KEY || getSecretParam("ETHERSCAN_API_KEY");
 }
 
 export function getCoinMarketCapApiKey() {
   return (
-    process.env.COINMARKETCAP_API_KEY ||
-    getSecretParam("COINMARKETCAP_API_KEY", undefined)
+    process.env.COINMARKETCAP_API_KEY || getSecretParam("COINMARKETCAP_API_KEY")
   );
 }

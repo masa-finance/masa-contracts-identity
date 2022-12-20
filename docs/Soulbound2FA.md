@@ -43,21 +43,39 @@ Adds a new authority to the list of authorities
 |---|---|---|
 | _authority | address | New authority to add |
 
-### addErc20Token
+### addLinkPrice
 
 ```solidity
-function addErc20Token(address _erc20token) external nonpayable
+function addLinkPrice() external view returns (uint256)
 ```
 
-Adds a new ERC20 token as a valid payment method
 
-*The caller must have the owner to call this function*
 
-#### Parameters
+
+
+
+#### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _erc20token | address | New ERC20 token to add |
+| _0 | uint256 | undefined |
+
+### addLinkPriceMASA
+
+```solidity
+function addLinkPriceMASA() external view returns (uint256)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
 
 ### authorities
 
@@ -119,10 +137,42 @@ function burn(uint256 tokenId) external nonpayable
 |---|---|---|
 | tokenId | uint256 | undefined |
 
-### erc20token
+### disablePaymentMethod
 
 ```solidity
-function erc20token(address) external view returns (bool)
+function disablePaymentMethod(address _paymentMethod) external nonpayable
+```
+
+Removes a token as a valid payment method
+
+*The caller must have the owner to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _paymentMethod | address | Token to remove |
+
+### enablePaymentMethod
+
+```solidity
+function enablePaymentMethod(address _paymentMethod) external nonpayable
+```
+
+Adds a new token as a valid payment method
+
+*The caller must have the owner to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _paymentMethod | address | New token to add |
+
+### enabledPaymentMethod
+
+```solidity
+function enabledPaymentMethod(address) external view returns (bool)
 ```
 
 
@@ -141,10 +191,10 @@ function erc20token(address) external view returns (bool)
 |---|---|---|
 | _0 | bool | undefined |
 
-### erc20tokens
+### enabledPaymentMethods
 
 ```solidity
-function erc20tokens(uint256) external view returns (address)
+function enabledPaymentMethods(uint256) external view returns (address)
 ```
 
 
@@ -163,22 +213,44 @@ function erc20tokens(uint256) external view returns (address)
 |---|---|---|
 | _0 | address | undefined |
 
-### getErc20Tokens
+### exists
 
 ```solidity
-function getErc20Tokens() external view returns (address[])
+function exists(uint256 tokenId) external view returns (bool)
 ```
 
-Returns all available ERC 20 tokens
+Returns true if the token exists
 
-*Returns the address of all available ERC 20 tokens*
+*Returns true if the token has been minted*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId | uint256 | Token to check |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bool | True if the token exists |
+
+### getEnabledPaymentMethods
+
+```solidity
+function getEnabledPaymentMethods() external view returns (address[])
+```
+
+Returns all available payment methods
+
+*Returns the address of all available payment methods*
 
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | address[] | Array of all enabled ERC20 tokens |
+| _0 | address[] | Array of all enabled payment methods |
 
 ### getIdentityId
 
@@ -202,10 +274,10 @@ Returns the identityId owned by the given token
 |---|---|---|
 | _0 | uint256 | Id of the identity |
 
-### getMintingPrice
+### getMintPrice
 
 ```solidity
-function getMintingPrice(address paymentMethod) external view returns (uint256)
+function getMintPrice(address paymentMethod) external view returns (uint256)
 ```
 
 Returns the price for minting
@@ -355,10 +427,27 @@ Mints a new SBT
 |---|---|---|
 | _0 | uint256 | The SBT ID of the newly minted SBT |
 
-### mintingPrice
+### mintPrice
 
 ```solidity
-function mintingPrice() external view returns (uint256)
+function mintPrice() external view returns (uint256)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+### mintPriceMASA
+
+```solidity
+function mintPriceMASA() external view returns (uint256)
 ```
 
 
@@ -428,21 +517,39 @@ function ownerOf(uint256 tokenId) external view returns (address)
 |---|---|---|
 | _0 | address | undefined |
 
-### removeErc20Token
+### readDataPrice
 
 ```solidity
-function removeErc20Token(address _erc20token) external nonpayable
+function readDataPrice() external view returns (uint256)
 ```
 
-Removes an ERC20 token as a valid payment method
 
-*The caller must have the owner to call this function*
 
-#### Parameters
+
+
+
+#### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _erc20token | address | ERC20 token to remove |
+| _0 | uint256 | undefined |
+
+### readDataPriceMASA
+
+```solidity
+function readDataPriceMASA() external view returns (uint256)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
 
 ### renounceOwnership
 
@@ -506,6 +613,38 @@ function revokeRole(bytes32 role, address account) external nonpayable
 | role | bytes32 | undefined |
 | account | address | undefined |
 
+### setAddLinkPrice
+
+```solidity
+function setAddLinkPrice(uint256 _addLinkPrice) external nonpayable
+```
+
+Sets the price for adding the link in SoulLinker in stable coin
+
+*The caller must have the admin to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _addLinkPrice | uint256 | New price for adding the link in SoulLinker in stable coin |
+
+### setAddLinkPriceMASA
+
+```solidity
+function setAddLinkPriceMASA(uint256 _addLinkPriceMASA) external nonpayable
+```
+
+Sets the price for adding the link in SoulLinker in MASA
+
+*The caller must have the admin to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _addLinkPriceMASA | uint256 | New price for adding the link in SoulLinker in MASA |
+
 ### setMasaToken
 
 ```solidity
@@ -522,10 +661,10 @@ Sets the utility token to pay the fee in (MASA)
 |---|---|---|
 | _masaToken | address | New utility token to pay the fee in |
 
-### setMintingPrice
+### setMintPrice
 
 ```solidity
-function setMintingPrice(uint256 _mintingPrice) external nonpayable
+function setMintPrice(uint256 _mintPrice) external nonpayable
 ```
 
 Sets the price of minting in stable coin
@@ -536,7 +675,55 @@ Sets the price of minting in stable coin
 
 | Name | Type | Description |
 |---|---|---|
-| _mintingPrice | uint256 | New price of minting in stable coin |
+| _mintPrice | uint256 | New price of minting in stable coin |
+
+### setMintPriceMASA
+
+```solidity
+function setMintPriceMASA(uint256 _mintPriceMASA) external nonpayable
+```
+
+Sets the price of minting in MASA
+
+*The caller must have the admin to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _mintPriceMASA | uint256 | New price of minting in MASA |
+
+### setReadDataPrice
+
+```solidity
+function setReadDataPrice(uint256 _readDataPrice) external nonpayable
+```
+
+Sets the price for reading data in SoulLinker in stable coin
+
+*The caller must have the admin to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _readDataPrice | uint256 | New price for reading data in SoulLinker in stable coin |
+
+### setReadDataPriceMASA
+
+```solidity
+function setReadDataPriceMASA(uint256 _readDataPriceMASA) external nonpayable
+```
+
+Sets the price for reading data in SoulLinker in MASA
+
+*The caller must have the admin to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _readDataPriceMASA | uint256 | New price for reading data in SoulLinker in MASA |
 
 ### setReserveWallet
 
@@ -937,7 +1124,7 @@ event RoleRevoked(bytes32 indexed role, address indexed account, address indexed
 ### Soulbound2FAMinted
 
 ```solidity
-event Soulbound2FAMinted(uint256 tokenId, uint256 identityId, address authorityAddress, uint256 signatureDate, address paymentMethod, uint256 mintingPrice)
+event Soulbound2FAMinted(uint256 tokenId, uint256 identityId, address authorityAddress, uint256 signatureDate, address paymentMethod, uint256 mintPrice)
 ```
 
 
@@ -953,7 +1140,172 @@ event Soulbound2FAMinted(uint256 tokenId, uint256 identityId, address authorityA
 | authorityAddress  | address | undefined |
 | signatureDate  | uint256 | undefined |
 | paymentMethod  | address | undefined |
-| mintingPrice  | uint256 | undefined |
+| mintPrice  | uint256 | undefined |
+
+
+
+## Errors
+
+### AlreadyAdded
+
+```solidity
+error AlreadyAdded()
+```
+
+
+
+
+
+
+### CallerNotOwner
+
+```solidity
+error CallerNotOwner(address caller)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| caller | address | undefined |
+
+### InsufficientEthAmount
+
+```solidity
+error InsufficientEthAmount(uint256 amount)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| amount | uint256 | undefined |
+
+### InvalidPaymentMethod
+
+```solidity
+error InvalidPaymentMethod(address paymentMethod)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| paymentMethod | address | undefined |
+
+### InvalidSignature
+
+```solidity
+error InvalidSignature()
+```
+
+
+
+
+
+
+### InvalidToken
+
+```solidity
+error InvalidToken(address token)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| token | address | undefined |
+
+### NonExistingErc20Token
+
+```solidity
+error NonExistingErc20Token(address erc20token)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| erc20token | address | undefined |
+
+### NotAuthorized
+
+```solidity
+error NotAuthorized(address signer)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| signer | address | undefined |
+
+### RefundFailed
+
+```solidity
+error RefundFailed()
+```
+
+
+
+
+
+
+### SameValue
+
+```solidity
+error SameValue()
+```
+
+
+
+
+
+
+### TransferFailed
+
+```solidity
+error TransferFailed()
+```
+
+
+
+
+
+
+### ZeroAddress
+
+```solidity
+error ZeroAddress()
+```
+
+
+
+
 
 
 

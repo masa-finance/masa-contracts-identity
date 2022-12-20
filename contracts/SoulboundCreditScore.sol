@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
+import "./libraries/Errors.sol";
 import "./tokens/MasaSBTSelfSovereign.sol";
 
 /// @title Soulbound Credit Score
@@ -17,13 +18,11 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
     /// @param admin Administrator of the smart contract
     /// @param baseTokenURI Base URI of the token
     /// @param soulboundIdentity Address of the SoulboundIdentity contract
-    /// @param _mintingPrice Price of minting in stable coin
     /// @param paymentParams Payment gateway params
     constructor(
         address admin,
         string memory baseTokenURI,
         ISoulboundIdentity soulboundIdentity,
-        uint256 _mintingPrice,
         PaymentParams memory paymentParams
     )
         MasaSBTSelfSovereign(
@@ -32,7 +31,6 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
             "MCS",
             baseTokenURI,
             soulboundIdentity,
-            _mintingPrice,
             paymentParams
         )
         EIP712("SoulboundCreditScore", "1.0.0")
@@ -55,8 +53,8 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
         bytes calldata signature
     ) public payable virtual returns (uint256) {
         address to = soulboundIdentity.ownerOf(identityId);
-        require(to == _msgSender(), "CALLER_NOT_OWNER");
-        require(balanceOf(to) < 1, "CREDITSCORE_ALREADY_CREATED");
+        if (to != _msgSender()) revert CallerNotOwner(_msgSender());
+        if (balanceOf(to) > 0) revert CreditScoreAlreadyCreated(to);
 
         _verify(
             _hash(identityId, authorityAddress, signatureDate),
@@ -64,7 +62,7 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
             authorityAddress
         );
 
-        _pay(paymentMethod, mintingPrice);
+        _pay(paymentMethod, getMintPrice(paymentMethod));
 
         uint256 tokenId = _mintWithCounter(to);
 
@@ -74,7 +72,7 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
             authorityAddress,
             signatureDate,
             paymentMethod,
-            mintingPrice
+            mintPrice
         );
 
         return tokenId;
@@ -138,6 +136,6 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
         address authorityAddress,
         uint256 signatureDate,
         address paymentMethod,
-        uint256 mintingPrice
+        uint256 mintPrice
     );
 }

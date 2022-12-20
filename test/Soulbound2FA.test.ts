@@ -135,7 +135,7 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
             signatureDate,
             signature
           )
-      ).to.be.revertedWith("CALLER_NOT_OWNER");
+      ).to.be.revertedWith("CallerNotOwner");
     });
 
     it("should fail to mint from owner identity", async () => {
@@ -149,7 +149,7 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
             signatureDate,
             signature
           )
-      ).to.be.revertedWith("CALLER_NOT_OWNER");
+      ).to.be.revertedWith("CallerNotOwner");
     });
 
     it("should mint twice", async () => {

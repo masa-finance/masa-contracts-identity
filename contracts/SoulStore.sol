@@ -4,6 +4,7 @@ pragma solidity ^0.8.7;
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 
+import "./libraries/Errors.sol";
 import "./dex/PaymentGateway.sol";
 import "./interfaces/ISoulboundIdentity.sol";
 import "./interfaces/ISoulName.sol";
@@ -37,7 +38,7 @@ contract SoulStore is PaymentGateway, Pausable {
         uint256 _nameRegistrationPricePerYear,
         PaymentParams memory paymentParams
     ) PaymentGateway(owner, paymentParams) {
-        require(address(_soulBoundIdentity) != address(0), "ZERO_ADDRESS");
+        if (address(_soulBoundIdentity) == address(0)) revert ZeroAddress();
 
         soulboundIdentity = _soulBoundIdentity;
 
@@ -53,8 +54,8 @@ contract SoulStore is PaymentGateway, Pausable {
         external
         onlyOwner
     {
-        require(address(_soulboundIdentity) != address(0), "ZERO_ADDRESS");
-        require(soulboundIdentity != _soulboundIdentity, "SAME_VALUE");
+        if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
+        if (soulboundIdentity == _soulboundIdentity) revert SameValue();
         soulboundIdentity = _soulboundIdentity;
     }
 
@@ -67,11 +68,10 @@ contract SoulStore is PaymentGateway, Pausable {
         uint256 _nameLength,
         uint256 _nameRegistrationPricePerYear
     ) external onlyOwner {
-        require(
-            nameRegistrationPricePerYear[_nameLength] !=
-                _nameRegistrationPricePerYear,
-            "SAME_VALUE"
-        );
+        if (
+            nameRegistrationPricePerYear[_nameLength] ==
+            _nameRegistrationPricePerYear
+        ) revert SameValue();
         nameRegistrationPricePerYear[
             _nameLength
         ] = _nameRegistrationPricePerYear;
@@ -107,7 +107,7 @@ contract SoulStore is PaymentGateway, Pausable {
     ) external payable whenNotPaused returns (uint256) {
         _pay(
             paymentMethod,
-            getNameRegistrationPricePerYear(name).mul(yearsPeriod)
+            getPriceForMintingName(paymentMethod, name, yearsPeriod)
         );
 
         // finalize purchase
@@ -151,7 +151,7 @@ contract SoulStore is PaymentGateway, Pausable {
     ) external payable whenNotPaused returns (uint256) {
         _pay(
             paymentMethod,
-            getNameRegistrationPricePerYear(name).mul(yearsPeriod)
+            getPriceForMintingName(paymentMethod, name, yearsPeriod)
         );
 
         // finalize purchase
@@ -189,18 +189,22 @@ contract SoulStore is PaymentGateway, Pausable {
         string memory name,
         uint256 yearsPeriod
     ) public view returns (uint256) {
-        uint256 mintingPrice = getNameRegistrationPricePerYear(name).mul(
+        uint256 mintPrice = getNameRegistrationPricePerYear(name).mul(
             yearsPeriod
         );
 
-        if (paymentMethod == address(0)) {
-            return _convertFromStableCoin(wrappedNativeToken, mintingPrice);
-        } else if (paymentMethod == stableCoin && erc20token[paymentMethod]) {
-            return mintingPrice;
-        } else if (erc20token[paymentMethod]) {
-            return _convertFromStableCoin(paymentMethod, mintingPrice);
+        if (mintPrice == 0) {
+            return 0;
+        } else if (
+            paymentMethod == stableCoin && enabledPaymentMethod[paymentMethod]
+        ) {
+            // stable coin
+            return mintPrice;
+        } else if (enabledPaymentMethod[paymentMethod]) {
+            // ETH and ERC 20 token
+            return _convertFromStableCoin(paymentMethod, mintPrice);
         } else {
-            revert("INVALID_PAYMENT_METHOD");
+            revert InvalidPaymentMethod(paymentMethod);
         }
     }
 

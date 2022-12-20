@@ -30,13 +30,6 @@ const func: DeployFunction = async ({
   const env = getEnvParams(network.name);
 
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
-  const soulboundCreditScoreDeployed = await deployments.get(
-    "SoulboundCreditScore"
-  );
-  let soulbound2FADeployed;
-  if (network.name !== "mainnet") {
-    soulbound2FADeployed = await deployments.get("Soulbound2FA");
-  }
 
   let swapRouter: string;
   let wrappedNativeToken: string; // weth
@@ -68,8 +61,6 @@ const func: DeployFunction = async ({
   const constructorArguments = [
     env.ADMIN || admin.address,
     soulboundIdentityDeployed.address,
-    "1000000", // 1 USDC, with 6 decimals
-    0,
     [
       swapRouter,
       wrappedNativeToken,
@@ -101,26 +92,6 @@ const func: DeployFunction = async ({
         throw error;
       }
     }
-  }
-
-  const signer = env.ADMIN
-    ? new ethers.Wallet(
-        getPrivateKey(network.name),
-        ethers.getDefaultProvider(network.name)
-      )
-    : admin;
-
-  const soulLinker = await ethers.getContractAt(
-    "SoulLinker",
-    soulLinkerDeploymentResult.address
-  );
-
-  await soulLinker
-    .connect(signer)
-    .addLinkedSBT(soulboundCreditScoreDeployed.address);
-
-  if (network.name !== "mainnet") {
-    await soulLinker.connect(signer).addLinkedSBT(soulbound2FADeployed.address);
   }
 };
 
