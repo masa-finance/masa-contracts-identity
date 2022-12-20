@@ -388,14 +388,8 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         ) {
             // stable coin
             return addPermissionPrice;
-        } else if (
-            paymentMethod == address(0) && enabledPaymentMethod[paymentMethod]
-        ) {
-            // ETH
-            return
-                _convertFromStableCoin(wrappedNativeToken, addPermissionPrice);
         } else if (enabledPaymentMethod[paymentMethod]) {
-            // ERC 20 token
+            // ETH and ERC 20 token
             return _convertFromStableCoin(paymentMethod, addPermissionPrice);
         } else {
             revert InvalidPaymentMethod(paymentMethod);
