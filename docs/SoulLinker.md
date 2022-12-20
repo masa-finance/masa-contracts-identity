@@ -33,40 +33,6 @@ Stores the permission, validating the signature of the given read link request
 | expirationDate | uint256 | Expiration date of the signature |
 | signature | bytes | Signature of the read link request made by the owner |
 
-### addPermissionPrice
-
-```solidity
-function addPermissionPrice() external view returns (uint256)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | undefined |
-
-### addPermissionPriceMASA
-
-```solidity
-function addPermissionPriceMASA() external view returns (uint256)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | undefined |
-
 ### disablePaymentMethod
 
 ```solidity
@@ -235,7 +201,7 @@ Returns the list of permission signature dates for a given SBT token and reader
 ### getPriceForAddPermission
 
 ```solidity
-function getPriceForAddPermission(address paymentMethod) external view returns (uint256)
+function getPriceForAddPermission(address paymentMethod, address token) external view returns (uint256)
 ```
 
 Returns the price for storing a permission
@@ -247,6 +213,7 @@ Returns the price for storing a permission
 | Name | Type | Description |
 |---|---|---|
 | paymentMethod | address | Address of token that user want to pay |
+| token | address | Token that user want to store permission |
 
 #### Returns
 
@@ -409,38 +376,6 @@ Revokes the permission
 | token | address | Address of the SBT contract |
 | tokenId | uint256 | Id of the token |
 | signatureDate | uint256 | Signature date of the signature |
-
-### setAddPermissionPrice
-
-```solidity
-function setAddPermissionPrice(uint256 _addPermissionPrice) external nonpayable
-```
-
-Sets the price of store permission in stable coin
-
-*The caller must have the owner to call this function*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _addPermissionPrice | uint256 | New price of the store permission in stable coin |
-
-### setAddPermissionPriceMASA
-
-```solidity
-function setAddPermissionPriceMASA(uint256 _addPermissionPriceMASA) external nonpayable
-```
-
-Sets the price of store permission in MASA
-
-*The caller must have the owner to call this function*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _addPermissionPriceMASA | uint256 | New price of the store permission in MASA |
 
 ### setMasaToken
 

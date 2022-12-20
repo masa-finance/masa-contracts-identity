@@ -19,9 +19,6 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
 
     ISoulboundIdentity public soulboundIdentity;
 
-    uint256 public addPermissionPrice; // store permission price in stable coin
-    uint256 public addPermissionPriceMASA; // store permission price in MASA
-
     // token => tokenId => readerIdentityId => signatureDate => PermissionData
     mapping(address => mapping(uint256 => mapping(uint256 => mapping(uint256 => PermissionData))))
         private _permissions;
@@ -62,29 +59,6 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
         if (soulboundIdentity == _soulboundIdentity) revert SameValue();
         soulboundIdentity = _soulboundIdentity;
-    }
-
-    /// @notice Sets the price of store permission in stable coin
-    /// @dev The caller must have the owner to call this function
-    /// @param _addPermissionPrice New price of the store permission in stable coin
-    function setAddPermissionPrice(uint256 _addPermissionPrice)
-        external
-        onlyOwner
-    {
-        if (addPermissionPrice == _addPermissionPrice) revert SameValue();
-        addPermissionPrice = _addPermissionPrice;
-    }
-
-    /// @notice Sets the price of store permission in MASA
-    /// @dev The caller must have the owner to call this function
-    /// @param _addPermissionPriceMASA New price of the store permission in MASA
-    function setAddPermissionPriceMASA(uint256 _addPermissionPriceMASA)
-        external
-        onlyOwner
-    {
-        if (addPermissionPriceMASA == _addPermissionPriceMASA)
-            revert SameValue();
-        addPermissionPriceMASA = _addPermissionPriceMASA;
     }
 
     /// @notice Pauses the smart contract
@@ -144,7 +118,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
             )
         ) revert InvalidSignature();
 
-        _pay(paymentMethod, getPriceForAddPermission(paymentMethod));
+        _pay(paymentMethod, getPriceForAddPermission(paymentMethod, token));
 
         // token => tokenId => readerIdentityId => signatureDate => PermissionData
         _permissions[token][tokenId][readerIdentityId][
@@ -322,12 +296,16 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
     /// @notice Returns the price for storing a permission
     /// @dev Returns the current pricing for storing a permission
     /// @param paymentMethod Address of token that user want to pay
+    /// @param token Token that user want to store permission
     /// @return Current price for storing a permission
-    function getPriceForAddPermission(address paymentMethod)
+    function getPriceForAddPermission(address paymentMethod, address token)
         public
         view
         returns (uint256)
     {
+        uint256 addPermissionPrice = ILinkableSBT(token).addPermissionPrice();
+        uint256 addPermissionPriceMASA = ILinkableSBT(token)
+            .addPermissionPriceMASA();
         if (addPermissionPrice == 0 && addPermissionPriceMASA == 0) {
             return 0;
         } else if (
