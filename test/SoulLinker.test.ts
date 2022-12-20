@@ -37,7 +37,6 @@ let ownerIdentityId: number;
 let readerIdentityId: number;
 let creditScore1: number;
 
-const data = '{"data1","data2"}';
 const signatureDate = Math.floor(Date.now() / 1000);
 const expirationDate = Math.floor(Date.now() / 1000) + 60 * 15;
 
@@ -64,7 +63,6 @@ const signLink = async (
         { name: "ownerIdentityId", type: "uint256" },
         { name: "token", type: "address" },
         { name: "tokenId", type: "uint256" },
-        { name: "data", type: "string" },
         { name: "signatureDate", type: "uint256" },
         { name: "expirationDate", type: "uint256" }
       ]
@@ -75,7 +73,6 @@ const signLink = async (
       ownerIdentityId: ownerIdentityId,
       token: token,
       tokenId: tokenId,
-      data: data,
       signatureDate: signatureDate,
       expirationDate: expirationDate
     }
@@ -366,7 +363,6 @@ describe("Soul Linker", () => {
           ownerIdentityId,
           soulboundCreditScore.address,
           creditScore1,
-          data,
           signatureDate,
           expirationDate,
           signature
@@ -382,7 +378,6 @@ describe("Soul Linker", () => {
 
       const {
         ownerIdentityId: ownerIdentityIdInfo,
-        data: dataInfo,
         expirationDate: expirationDateInfo,
         isRevoked: isRevokedInfo
       } = await soulLinker.getPermissionInfo(
@@ -392,11 +387,10 @@ describe("Soul Linker", () => {
         signatureDate
       );
       expect(ownerIdentityIdInfo).to.be.equal(ownerIdentityId);
-      expect(dataInfo).to.be.equal(data);
       expect(expirationDateInfo).to.be.equal(expirationDate);
       expect(isRevokedInfo).to.be.equal(false);
 
-      const dataWithPermissions = await soulLinker
+      const valid = await soulLinker
         .connect(dataReader)
         .validatePermission(
           readerIdentityId,
@@ -406,7 +400,7 @@ describe("Soul Linker", () => {
           signatureDate
         );
 
-      expect(dataWithPermissions).to.be.equal(data);
+      expect(valid).to.be.true;
     });
 
     it("addPermission must work paying with MASA without an exchange rate", async () => {
@@ -435,7 +429,6 @@ describe("Soul Linker", () => {
           ownerIdentityId,
           soulboundCreditScore.address,
           creditScore1,
-          data,
           signatureDate,
           expirationDate,
           signature
@@ -451,7 +444,6 @@ describe("Soul Linker", () => {
 
       const {
         ownerIdentityId: ownerIdentityIdInfo,
-        data: dataInfo,
         expirationDate: expirationDateInfo,
         isRevoked: isRevokedInfo
       } = await soulLinker.getPermissionInfo(
@@ -461,11 +453,10 @@ describe("Soul Linker", () => {
         signatureDate
       );
       expect(ownerIdentityIdInfo).to.be.equal(ownerIdentityId);
-      expect(dataInfo).to.be.equal(data);
       expect(expirationDateInfo).to.be.equal(expirationDate);
       expect(isRevokedInfo).to.be.equal(false);
 
-      const dataWithPermissions = await soulLinker
+      const valid = await soulLinker
         .connect(dataReader)
         .validatePermission(
           readerIdentityId,
@@ -475,7 +466,7 @@ describe("Soul Linker", () => {
           signatureDate
         );
 
-      expect(dataWithPermissions).to.be.equal(data);
+      expect(valid).to.be.true;
     });
 
     it("addPermission must work paying with ETH", async () => {
@@ -498,7 +489,6 @@ describe("Soul Linker", () => {
           ownerIdentityId,
           soulboundCreditScore.address,
           creditScore1,
-          data,
           signatureDate,
           expirationDate,
           signature,
@@ -515,7 +505,6 @@ describe("Soul Linker", () => {
 
       const {
         ownerIdentityId: ownerIdentityIdInfo,
-        data: dataInfo,
         expirationDate: expirationDateInfo,
         isRevoked: isRevokedInfo
       } = await soulLinker.getPermissionInfo(
@@ -525,11 +514,10 @@ describe("Soul Linker", () => {
         signatureDate
       );
       expect(ownerIdentityIdInfo).to.be.equal(ownerIdentityId);
-      expect(dataInfo).to.be.equal(data);
       expect(expirationDateInfo).to.be.equal(expirationDate);
       expect(isRevokedInfo).to.be.equal(false);
 
-      const dataWithPermissions = await soulLinker
+      const valid = await soulLinker
         .connect(dataReader)
         .validatePermission(
           readerIdentityId,
@@ -539,7 +527,7 @@ describe("Soul Linker", () => {
           signatureDate
         );
 
-      expect(dataWithPermissions).to.be.equal(data);
+      expect(valid).to.be.true;
     });
 
     it("addPermission won't work with an invalid signature", async () => {
@@ -565,7 +553,6 @@ describe("Soul Linker", () => {
             ownerIdentityId,
             soulboundCreditScore.address,
             creditScore1,
-            data,
             signatureDate,
             expirationDate,
             signature
@@ -609,7 +596,6 @@ describe("Soul Linker", () => {
           ownerIdentityId,
           soulboundCreditScore.address,
           creditScore1,
-          data,
           signatureDate,
           expirationDate,
           signature
@@ -627,7 +613,7 @@ describe("Soul Linker", () => {
           )
       ).to.be.rejected;
 
-      const dataWithPermissions = await soulLinker
+      const valid = await soulLinker
         .connect(dataReader)
         .validatePermission(
           readerIdentityId,
@@ -637,7 +623,7 @@ describe("Soul Linker", () => {
           signatureDate
         );
 
-      expect(dataWithPermissions).to.be.equal(data);
+      expect(valid).to.be.true;
     });
 
     it("owner of data can call revokePermission", async () => {
@@ -662,13 +648,12 @@ describe("Soul Linker", () => {
           ownerIdentityId,
           soulboundCreditScore.address,
           creditScore1,
-          data,
           signatureDate,
           expirationDate,
           signature
         );
 
-      const dataWithPermissions = await soulLinker
+      const valid = await soulLinker
         .connect(dataReader)
         .validatePermission(
           readerIdentityId,
@@ -678,7 +663,7 @@ describe("Soul Linker", () => {
           signatureDate
         );
 
-      expect(dataWithPermissions).to.be.equal(data);
+      expect(valid).to.be.true;
 
       await soulLinker
         .connect(dataOwner)

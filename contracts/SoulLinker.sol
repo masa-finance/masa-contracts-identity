@@ -30,7 +30,6 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
 
     struct PermissionData {
         uint256 ownerIdentityId;
-        string data;
         uint256 expirationDate;
         bool isRevoked;
     }
@@ -108,7 +107,6 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
     /// @param ownerIdentityId Id of the identity of the owner of the SBT
     /// @param token Address of the SBT contract
     /// @param tokenId Id of the token
-    /// @param data Data that owner wants to share
     /// @param signatureDate Signature date of the signature
     /// @param expirationDate Expiration date of the signature
     /// @param signature Signature of the read link request made by the owner
@@ -118,7 +116,6 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         uint256 ownerIdentityId,
         address token,
         uint256 tokenId,
-        string memory data,
         uint256 signatureDate,
         uint256 expirationDate,
         bytes calldata signature
@@ -142,7 +139,6 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
                     ownerIdentityId,
                     token,
                     tokenId,
-                    data,
                     signatureDate,
                     expirationDate
                 ),
@@ -156,7 +152,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         // token => tokenId => readerIdentityId => signatureDate => PermissionData
         _permissions[token][tokenId][readerIdentityId][
             signatureDate
-        ] = PermissionData(ownerIdentityId, data, expirationDate, false);
+        ] = PermissionData(ownerIdentityId, expirationDate, false);
         _permissionSignatureDates[token][tokenId][readerIdentityId].push(
             signatureDate
         );
@@ -166,7 +162,6 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
             ownerIdentityId,
             token,
             tokenId,
-            data,
             signatureDate,
             expirationDate
         );
@@ -299,14 +294,14 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
     /// @param token Address of the SBT contract
     /// @param tokenId Id of the token
     /// @param signatureDate Signature date of the signature
-    /// @return Data that the reader can read
+    /// @return True if the permission is valid
     function validatePermission(
         uint256 readerIdentityId,
         uint256 ownerIdentityId,
         address token,
         uint256 tokenId,
         uint256 signatureDate
-    ) external view returns (string memory) {
+    ) external view returns (bool) {
         address identityReader = soulboundIdentity.ownerOf(readerIdentityId);
         address identityOwner = soulboundIdentity.ownerOf(ownerIdentityId);
         address tokenOwner = IERC721Enumerable(token).ownerOf(tokenId);
@@ -324,7 +319,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
             revert ValidPeriodExpired(permission.expirationDate);
         if (permission.isRevoked) revert PermissionAlreadyRevoked();
 
-        return permission.data;
+        return true;
     }
 
     /// @notice Returns the price for storing a permission
@@ -365,7 +360,6 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         uint256 ownerIdentityId,
         address token,
         uint256 tokenId,
-        string memory data,
         uint256 signatureDate,
         uint256 expirationDate
     ) internal view returns (bytes32) {
@@ -374,13 +368,12 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
                 keccak256(
                     abi.encode(
                         keccak256(
-                            "Link(uint256 readerIdentityId,uint256 ownerIdentityId,address token,uint256 tokenId,string data,uint256 signatureDate,uint256 expirationDate)"
+                            "Link(uint256 readerIdentityId,uint256 ownerIdentityId,address token,uint256 tokenId,uint256 signatureDate,uint256 expirationDate)"
                         ),
                         readerIdentityId,
                         ownerIdentityId,
                         token,
                         tokenId,
-                        keccak256(bytes(data)),
                         signatureDate,
                         expirationDate
                     )
@@ -405,7 +398,6 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         uint256 ownerIdentityId,
         address token,
         uint256 tokenId,
-        string data,
         uint256 signatureDate,
         uint256 expirationDate
     );

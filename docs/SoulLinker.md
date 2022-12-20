@@ -13,7 +13,7 @@ Soul linker smart contract that let add links to a Soulbound token.
 ### addPermission
 
 ```solidity
-function addPermission(address paymentMethod, uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, string data, uint256 signatureDate, uint256 expirationDate, bytes signature) external payable
+function addPermission(address paymentMethod, uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, uint256 signatureDate, uint256 expirationDate, bytes signature) external payable
 ```
 
 Stores the permission, validating the signature of the given read link request
@@ -29,7 +29,6 @@ Stores the permission, validating the signature of the given read link request
 | ownerIdentityId | uint256 | Id of the identity of the owner of the SBT |
 | token | address | Address of the SBT contract |
 | tokenId | uint256 | Id of the token |
-| data | string | Data that owner wants to share |
 | signatureDate | uint256 | Signature date of the signature |
 | expirationDate | uint256 | Expiration date of the signature |
 | signature | bytes | Signature of the read link request made by the owner |
@@ -620,7 +619,7 @@ Unpauses the smart contract
 ### validatePermission
 
 ```solidity
-function validatePermission(uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, uint256 signatureDate) external view returns (string)
+function validatePermission(uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, uint256 signatureDate) external view returns (bool)
 ```
 
 Validates the permission of the given read link request and returns the data that reader can read if the permission is valid
@@ -641,7 +640,7 @@ Validates the permission of the given read link request and returns the data tha
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | string | Data that the reader can read |
+| _0 | bool | True if the permission is valid |
 
 ### wrappedNativeToken
 
@@ -700,7 +699,7 @@ event Paused(address account)
 ### PermissionAdded
 
 ```solidity
-event PermissionAdded(uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, string data, uint256 signatureDate, uint256 expirationDate)
+event PermissionAdded(uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, uint256 signatureDate, uint256 expirationDate)
 ```
 
 
@@ -715,7 +714,6 @@ event PermissionAdded(uint256 readerIdentityId, uint256 ownerIdentityId, address
 | ownerIdentityId  | uint256 | undefined |
 | token  | address | undefined |
 | tokenId  | uint256 | undefined |
-| data  | string | undefined |
 | signatureDate  | uint256 | undefined |
 | expirationDate  | uint256 | undefined |
 
