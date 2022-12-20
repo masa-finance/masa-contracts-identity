@@ -198,6 +198,29 @@ Returns the list of link signature dates for a given SBT token and reader
 |---|---|---|
 | _0 | uint256[] | List of linked SBTs |
 
+### getLinks
+
+```solidity
+function getLinks(address token, uint256 tokenId) external view returns (struct SoulLinker.LinkKey[])
+```
+
+Returns the list of link signature dates for a given SBT token and reader
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| token | address | Address of the SBT contract |
+| tokenId | uint256 | Id of the token |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | SoulLinker.LinkKey[] | List of linked SBTs |
+
 ### getPriceForAddLink
 
 ```solidity
