@@ -13,7 +13,7 @@
 ### addPermissionPrice
 
 ```solidity
-function addPermissionPrice() external nonpayable returns (uint256)
+function addPermissionPrice() external view returns (uint256)
 ```
 
 
@@ -30,7 +30,7 @@ function addPermissionPrice() external nonpayable returns (uint256)
 ### addPermissionPriceMASA
 
 ```solidity
-function addPermissionPriceMASA() external nonpayable returns (uint256)
+function addPermissionPriceMASA() external view returns (uint256)
 ```
 
 
@@ -91,7 +91,7 @@ Find the owner of an SBT
 ### readDataPrice
 
 ```solidity
-function readDataPrice() external nonpayable returns (uint256)
+function readDataPrice() external view returns (uint256)
 ```
 
 
@@ -108,7 +108,7 @@ function readDataPrice() external nonpayable returns (uint256)
 ### readDataPriceMASA
 
 ```solidity
-function readDataPriceMASA() external nonpayable returns (uint256)
+function readDataPriceMASA() external view returns (uint256)
 ```
 
 
