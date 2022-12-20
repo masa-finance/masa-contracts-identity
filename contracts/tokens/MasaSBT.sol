@@ -4,6 +4,8 @@ pragma solidity ^0.8.7;
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
+import "../libraries/Errors.sol";
+import "../interfaces/ILinkableSBT.sol";
 import "./SBT/SBT.sol";
 import "./SBT/extensions/SBTEnumerable.sol";
 import "./SBT/extensions/SBTBurnable.sol";
@@ -12,12 +14,23 @@ import "./SBT/extensions/SBTBurnable.sol";
 /// @author Masa Finance
 /// @notice Soulbound token. Non-fungible token that is not transferable.
 /// @dev Implementation of https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763 Soulbound token.
-abstract contract MasaSBT is SBT, SBTEnumerable, AccessControl, SBTBurnable {
+abstract contract MasaSBT is
+    SBT,
+    SBTEnumerable,
+    AccessControl,
+    SBTBurnable,
+    ILinkableSBT
+{
     /* ========== STATE VARIABLES =========================================== */
 
     using Strings for uint256;
 
     string private _baseTokenURI;
+
+    uint256 public override addPermissionPrice; // price in stable coin
+    uint256 public override addPermissionPriceMASA; // price in MASA
+    uint256 public override readDataPrice; // price in stable coin
+    uint256 public override readDataPriceMASA; // price in MASA
 
     /* ========== INITIALIZE ================================================ */
 
@@ -39,6 +52,51 @@ abstract contract MasaSBT is SBT, SBTEnumerable, AccessControl, SBTBurnable {
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
+
+    /// @notice Sets the price for adding the permission in SoulLinker in stable coin
+    /// @dev The caller must have the admin to call this function
+    /// @param _addPermissionPrice New price for adding the permission in SoulLinker in stable coin
+    function setAddPermissionPrice(uint256 _addPermissionPrice)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        if (addPermissionPrice == _addPermissionPrice) revert SameValue();
+        addPermissionPrice = _addPermissionPrice;
+    }
+
+    /// @notice Sets the price for adding the permission in SoulLinker in MASA
+    /// @dev The caller must have the admin to call this function
+    /// @param _addPermissionPriceMASA New price for adding the permission in SoulLinker in MASA
+    function setAddPermissionPriceMASA(uint256 _addPermissionPriceMASA)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        if (addPermissionPriceMASA == _addPermissionPriceMASA)
+            revert SameValue();
+        addPermissionPriceMASA = _addPermissionPriceMASA;
+    }
+
+    /// @notice Sets the price for reading data in SoulLinker in stable coin
+    /// @dev The caller must have the admin to call this function
+    /// @param _readDataPrice New price for reading data in SoulLinker in stable coin
+    function setReadDataPrice(uint256 _readDataPrice)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        if (readDataPrice == _readDataPrice) revert SameValue();
+        readDataPrice = _readDataPrice;
+    }
+
+    /// @notice Sets the price for reading data in SoulLinker in MASA
+    /// @dev The caller must have the admin to call this function
+    /// @param _readDataPriceMASA New price for reading data in SoulLinker in MASA
+    function setReadDataPriceMASA(uint256 _readDataPriceMASA)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        if (readDataPriceMASA == _readDataPriceMASA) revert SameValue();
+        readDataPriceMASA = _readDataPriceMASA;
+    }
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
@@ -82,7 +140,7 @@ abstract contract MasaSBT is SBT, SBTEnumerable, AccessControl, SBTBurnable {
     function supportsInterface(bytes4 interfaceId)
         public
         view
-        override(SBT, SBTEnumerable, AccessControl)
+        override(SBT, SBTEnumerable, AccessControl, IERC165)
         returns (bool)
     {
         return super.supportsInterface(interfaceId);
