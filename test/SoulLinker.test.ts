@@ -391,17 +391,16 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const { price, paymentMethodUsed } =
-        await soulLinker.getPriceForAddPermission(MASA_GOERLI);
+      const price = await soulLinker.getPriceForAddPermission(MASA_GOERLI);
 
       // set allowance for soul store
-      const masa: ERC20 = ERC20__factory.connect(paymentMethodUsed, owner);
+      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
       await masa.connect(dataReader).approve(soulLinker.address, price);
 
       await soulLinker
         .connect(dataReader)
         .addPermission(
-          paymentMethodUsed,
+          MASA_GOERLI,
           readerIdentityId,
           ownerIdentityId,
           soulboundCreditScore.address,
@@ -460,18 +459,17 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const { price, paymentMethodUsed } =
-        await soulLinker.getPriceForAddPermission(MASA_GOERLI);
+      const price = await soulLinker.getPriceForAddPermission(MASA_GOERLI);
       expect(price).to.be.equal(10);
 
       // set allowance for soul store
-      const masa: ERC20 = ERC20__factory.connect(paymentMethodUsed, owner);
+      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
       await masa.connect(dataReader).approve(soulLinker.address, price);
 
       await soulLinker
         .connect(dataReader)
         .addPermission(
-          paymentMethodUsed,
+          MASA_GOERLI,
           readerIdentityId,
           ownerIdentityId,
           soulboundCreditScore.address,
@@ -527,7 +525,7 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const { price } = await soulLinker.getPriceForAddPermission(
+      const price = await soulLinker.getPriceForAddPermission(
         ethers.constants.AddressZero
       );
 
@@ -591,18 +589,17 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const { price, paymentMethodUsed } =
-        await soulLinker.getPriceForAddPermission(MASA_GOERLI);
+      const price = await soulLinker.getPriceForAddPermission(MASA_GOERLI);
 
       // set allowance for soul store
-      const masa: ERC20 = ERC20__factory.connect(paymentMethodUsed, owner);
+      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
       await masa.connect(dataReader).approve(soulLinker.address, price);
 
       await expect(
         soulLinker
           .connect(dataReader)
           .addPermission(
-            paymentMethodUsed,
+            MASA_GOERLI,
             readerIdentityId,
             ownerIdentityId,
             soulboundCreditScore.address,
@@ -637,17 +634,16 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const { price, paymentMethodUsed } =
-        await soulLinker.getPriceForAddPermission(MASA_GOERLI);
+      const price = await soulLinker.getPriceForAddPermission(MASA_GOERLI);
 
       // set allowance for soul store
-      const masa: ERC20 = ERC20__factory.connect(paymentMethodUsed, owner);
+      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
       await masa.connect(dataReader).approve(soulLinker.address, price);
 
       await soulLinker
         .connect(dataReader)
         .addPermission(
-          paymentMethodUsed,
+          MASA_GOERLI,
           readerIdentityId,
           ownerIdentityId,
           soulboundCreditScore.address,
@@ -691,17 +687,16 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const { price, paymentMethodUsed } =
-        await soulLinker.getPriceForAddPermission(MASA_GOERLI);
+      const price = await soulLinker.getPriceForAddPermission(MASA_GOERLI);
 
       // set allowance for soul store
-      const masa: ERC20 = ERC20__factory.connect(paymentMethodUsed, owner);
+      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
       await masa.connect(dataReader).approve(soulLinker.address, price);
 
       await soulLinker
         .connect(dataReader)
         .addPermission(
-          paymentMethodUsed,
+          MASA_GOERLI,
           readerIdentityId,
           ownerIdentityId,
           soulboundCreditScore.address,
