@@ -22,6 +22,10 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
     // token => tokenId => readerIdentityId => signatureDate => LinkData
     mapping(address => mapping(uint256 => mapping(uint256 => mapping(uint256 => LinkData))))
         private _links;
+    // token => tokenId => readerIdentityId
+    mapping(address => mapping(uint256 => uint256[]))
+        private _linkReaderIdentityIds;
+    // token => tokenId => readerIdentityId => signatureDate
     mapping(address => mapping(uint256 => mapping(uint256 => uint256[])))
         private _linkSignatureDates;
 
@@ -29,6 +33,11 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         uint256 ownerIdentityId;
         uint256 expirationDate;
         bool isRevoked;
+    }
+
+    struct LinkKey {
+        uint256 readerIdentityId;
+        uint256 signatureDate;
     }
 
     /* ========== INITIALIZE ================================================ */
@@ -126,6 +135,9 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
             expirationDate,
             false
         );
+        if (_linkSignatureDates[token][tokenId][readerIdentityId].length == 0) {
+            _linkReaderIdentityIds[token][tokenId].push(readerIdentityId);
+        }
         _linkSignatureDates[token][tokenId][readerIdentityId].push(
             signatureDate
         );
@@ -225,6 +237,61 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         }
 
         return sbtConnections;
+    }
+
+    /// @notice Returns the list of link signature dates for a given SBT token and reader
+    /// @param token Address of the SBT contract
+    /// @param tokenId Id of the token
+    /// @return List of linked SBTs
+    function getLinks(address token, uint256 tokenId)
+        public
+        view
+        returns (LinkKey[] memory)
+    {
+        uint256 nLinkKeys = 0;
+        for (
+            uint256 i = 0;
+            i < _linkReaderIdentityIds[token][tokenId].length;
+            i++
+        ) {
+            uint256 readerIdentityId = _linkReaderIdentityIds[token][tokenId][
+                i
+            ];
+            for (
+                uint256 j = 0;
+                j <
+                _linkSignatureDates[token][tokenId][readerIdentityId].length;
+                j++
+            ) {
+                nLinkKeys++;
+            }
+        }
+
+        LinkKey[] memory linkKeys = new LinkKey[](nLinkKeys);
+        uint256 n = 0;
+        for (
+            uint256 i = 0;
+            i < _linkReaderIdentityIds[token][tokenId].length;
+            i++
+        ) {
+            uint256 readerIdentityId = _linkReaderIdentityIds[token][tokenId][
+                i
+            ];
+            for (
+                uint256 j = 0;
+                j <
+                _linkSignatureDates[token][tokenId][readerIdentityId].length;
+                j++
+            ) {
+                uint256 signatureDate = _linkSignatureDates[token][tokenId][
+                    readerIdentityId
+                ][j];
+                linkKeys[n].readerIdentityId = readerIdentityId;
+                linkKeys[n].signatureDate = signatureDate;
+                n++;
+            }
+        }
+        return linkKeys;
     }
 
     /// @notice Returns the list of link signature dates for a given SBT token and reader
