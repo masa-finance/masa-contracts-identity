@@ -113,7 +113,7 @@ describe("Soulbound Credit Score", () => {
       }
     );
 
-    // we get $MASA utility tokens for address1
+    // we get MASA utility tokens for address1
     await uniswapRouter.swapExactETHForTokens(
       0,
       [WETH_GOERLI, MASA_GOERLI],
@@ -413,7 +413,7 @@ describe("Soulbound Credit Score", () => {
       );
     });
 
-    it("should mint from final user identity paying with $MASA coin", async () => {
+    it("should mint from final user identity paying with MASA coin", async () => {
       const priceInStableCoin = await soulboundCreditScore.getMintPrice(
         MASA_GOERLI
       );
