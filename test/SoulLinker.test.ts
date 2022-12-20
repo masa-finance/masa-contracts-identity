@@ -218,45 +218,6 @@ describe("Soul Linker", () => {
       ).to.be.rejected;
     });
 
-    it("should add linked SBT from owner", async () => {
-      await soulLinker.connect(owner).addLinkedSBT(someone.address);
-
-      expect(await soulLinker.linkedSBT(someone.address)).to.be.true;
-    });
-
-    it("should fail to add linked SBT from non owner", async () => {
-      await expect(soulLinker.connect(someone).addLinkedSBT(someone.address)).to
-        .be.rejected;
-    });
-
-    it("should fail to add already existing linked SBT from owner", async () => {
-      await expect(
-        soulLinker.connect(owner).addLinkedSBT(soulboundCreditScore.address)
-      ).to.be.rejected;
-    });
-
-    it("should remove linked SBT from owner", async () => {
-      await soulLinker
-        .connect(owner)
-        .removeLinkedSBT(soulboundCreditScore.address);
-
-      expect(await soulLinker.linkedSBT(soulboundCreditScore.address)).to.be
-        .false;
-    });
-
-    it("should fail to remove linked SBT from non owner", async () => {
-      await expect(
-        soulLinker
-          .connect(someone)
-          .removeLinkedSBT(soulboundCreditScore.address)
-      ).to.be.rejected;
-    });
-
-    it("should fail to remove non existing linked SBT from owner", async () => {
-      await expect(soulLinker.connect(owner).removeLinkedSBT(someone.address))
-        .to.be.rejected;
-    });
-
     it("should set NameRegistrationPricePerYear from owner", async () => {
       const newPrice = 100;
       await soulLinker.connect(owner).setAddPermissionPrice(newPrice);

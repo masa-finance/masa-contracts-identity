@@ -8,6 +8,7 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 
 import "./libraries/Errors.sol";
 import "./dex/PaymentGateway.sol";
+import "./interfaces/ILinkableSBT.sol";
 import "./interfaces/ISoulboundIdentity.sol";
 
 /// @title Soul linker
@@ -17,10 +18,6 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
     /* ========== STATE VARIABLES =========================================== */
 
     ISoulboundIdentity public soulboundIdentity;
-
-    // linked SBTs
-    mapping(address => bool) public linkedSBT;
-    address[] public linkedSBTs;
 
     uint256 public addPermissionPrice; // store permission price in stable coin
     uint256 public addPermissionPriceMASA; // store permission price in MASA
@@ -73,27 +70,6 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
         if (soulboundIdentity == _soulboundIdentity) revert SameValue();
         soulboundIdentity = _soulboundIdentity;
-    }
-
-    /// @notice Adds an SBT to the list of linked SBTs
-    /// @dev The caller must be the owner to call this function
-    /// @param token Address of the SBT contract
-    function addLinkedSBT(address token) external onlyOwner {
-        if (address(token) == address(0)) revert ZeroAddress();
-        if (linkedSBT[token]) revert SBTAlreadyLinked(token);
-
-        linkedSBT[token] = true;
-        linkedSBTs.push(token);
-    }
-
-    /// @notice Removes an SBT from the list of linked SBTs
-    /// @dev The caller must be the owner to call this function
-    /// @param token Address of the SBT contract
-    function removeLinkedSBT(address token) external onlyOwner {
-        if (!linkedSBT[token]) revert SBTNotLinked(token);
-
-        linkedSBT[token] = false;
-        _removeLinkedSBT(token);
     }
 
     /// @notice Sets the price of store permission in stable coin
@@ -154,8 +130,6 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         uint256 expirationDate,
         bytes calldata signature
     ) external payable whenNotPaused {
-        if (!linkedSBT[token]) revert SBTNotLinked(token);
-
         address identityOwner = soulboundIdentity.ownerOf(ownerIdentityId);
         address readerIdentityIdOwner = soulboundIdentity.ownerOf(
             readerIdentityId
@@ -269,7 +243,6 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         view
         returns (uint256[] memory)
     {
-        if (!linkedSBT[token]) revert SBTNotLinked(token);
         address owner = soulboundIdentity.ownerOf(identityId);
 
         return getSBTLinks(owner, token);
@@ -285,8 +258,6 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         view
         returns (uint256[] memory)
     {
-        if (!linkedSBT[token]) revert SBTNotLinked(token);
-
         uint256 links = IERC721Enumerable(token).balanceOf(owner);
         uint256[] memory sbtLinks = new uint256[](links);
         for (uint256 i = 0; i < links; i++) {
@@ -343,8 +314,6 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         uint256 tokenId,
         uint256 signatureDate
     ) external view returns (string memory) {
-        if (!linkedSBT[token]) revert SBTNotLinked(token);
-
         address identityReader = soulboundIdentity.ownerOf(readerIdentityId);
         address identityOwner = soulboundIdentity.ownerOf(ownerIdentityId);
         address tokenOwner = IERC721Enumerable(token).ownerOf(tokenId);
@@ -397,16 +366,6 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
     }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
-
-    function _removeLinkedSBT(address token) internal {
-        for (uint256 i = 0; i < linkedSBTs.length; i++) {
-            if (linkedSBTs[i] == token) {
-                linkedSBTs[i] = linkedSBTs[linkedSBTs.length - 1];
-                linkedSBTs.pop();
-                break;
-            }
-        }
-    }
 
     function _hash(
         uint256 readerIdentityId,

@@ -10,22 +10,6 @@ Soul linker smart contract that let add links to a Soulbound token.
 
 ## Methods
 
-### addLinkedSBT
-
-```solidity
-function addLinkedSBT(address token) external nonpayable
-```
-
-Adds an SBT to the list of linked SBTs
-
-*The caller must be the owner to call this function*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| token | address | Address of the SBT contract |
-
 ### addPermission
 
 ```solidity
@@ -317,50 +301,6 @@ Returns the list of linked SBTs by a given SBT token
 |---|---|---|
 | _0 | uint256[] | List of linked SBTs |
 
-### linkedSBT
-
-```solidity
-function linkedSBT(address) external view returns (bool)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | address | undefined |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | bool | undefined |
-
-### linkedSBTs
-
-```solidity
-function linkedSBTs(uint256) external view returns (address)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | undefined |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | address | undefined |
-
 ### masaToken
 
 ```solidity
@@ -422,22 +362,6 @@ function paused() external view returns (bool)
 | Name | Type | Description |
 |---|---|---|
 | _0 | bool | undefined |
-
-### removeLinkedSBT
-
-```solidity
-function removeLinkedSBT(address token) external nonpayable
-```
-
-Removes an SBT from the list of linked SBTs
-
-*The caller must be the owner to call this function*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| token | address | Address of the SBT contract |
 
 ### renounceOwnership
 
@@ -1002,38 +926,6 @@ error RefundFailed()
 
 
 
-
-### SBTAlreadyLinked
-
-```solidity
-error SBTAlreadyLinked(address token)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| token | address | undefined |
-
-### SBTNotLinked
-
-```solidity
-error SBTNotLinked(address token)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| token | address | undefined |
 
 ### SameValue
 

@@ -23,7 +23,6 @@ error PermissionDoesNotExist();
 error RefundFailed();
 error SameValue();
 error SBTAlreadyLinked(address token);
-error SBTNotLinked(address token);
 error SoulNameContractNotSet();
 error TokenNotFound(uint256 tokenId);
 error TransferFailed();
