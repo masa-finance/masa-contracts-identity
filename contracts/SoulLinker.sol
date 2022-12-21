@@ -152,6 +152,65 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         );
     }
 
+    /// @notice Validates a link signature, of a given read link request, without storing it
+    /// @dev The token must be linked to this soul linker
+    /// @param readerIdentityId Id of the identity of the reader
+    /// @param ownerIdentityId Id of the identity of the owner of the SBT
+    /// @param token Address of the SBT contract
+    /// @param tokenId Id of the token
+    /// @param signatureDate Signature date of the signature
+    /// @param expirationDate Expiration date of the signature
+    /// @param signature Signature of the read link request made by the owner
+    /// @return True if the link is valid
+    function queryLink(
+        address paymentMethod,
+        uint256 readerIdentityId,
+        uint256 ownerIdentityId,
+        address token,
+        uint256 tokenId,
+        uint256 signatureDate,
+        uint256 expirationDate,
+        bytes calldata signature
+    ) external payable whenNotPaused returns (bool) {
+        address ownerAddress = soulboundIdentity.ownerOf(ownerIdentityId);
+        address readerAddress = soulboundIdentity.ownerOf(readerIdentityId);
+        address tokenOwner = IERC721Enumerable(token).ownerOf(tokenId);
+
+        if (ownerAddress != tokenOwner)
+            revert IdentityOwnerNotTokenOwner(tokenId, ownerIdentityId);
+        if (readerAddress != _msgSender()) revert CallerNotOwner(_msgSender());
+        if (expirationDate < block.timestamp)
+            revert ValidPeriodExpired(expirationDate);
+
+        // check if the link is revoked
+        // TODO: check if the link is revoked
+        if (
+            !_verify(
+                _hash(
+                    readerIdentityId,
+                    ownerIdentityId,
+                    token,
+                    tokenId,
+                    signatureDate,
+                    expirationDate
+                ),
+                signature,
+                ownerAddress
+            )
+        ) revert InvalidSignature();
+
+        _pay(paymentMethod, getPriceForQueryLink(paymentMethod, token));
+
+        emit LinkQuery(
+            readerIdentityId,
+            ownerIdentityId,
+            token,
+            tokenId,
+            signatureDate,
+            expirationDate
+        );
+    }
+
     /// @notice Revokes the link
     /// @dev The token must be linked to this soul linker
     /// @param readerIdentityId Id of the identity of the reader
@@ -338,8 +397,8 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         uint256 tokenId,
         uint256 signatureDate
     ) external view returns (bool) {
-        address identityReader = soulboundIdentity.ownerOf(readerIdentityId);
         address ownerAddress = soulboundIdentity.ownerOf(ownerIdentityId);
+        address readerAddress = soulboundIdentity.ownerOf(readerIdentityId);
         address tokenOwner = IERC721Enumerable(token).ownerOf(tokenId);
 
         LinkData memory link = _links[token][tokenId][readerIdentityId][
@@ -348,7 +407,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
 
         if (ownerAddress != tokenOwner)
             revert IdentityOwnerNotTokenOwner(tokenId, ownerIdentityId);
-        if (identityReader != _msgSender())
+        if (readerAddress != _msgSender())
             revert CallerNotReader(_msgSender());
         if (link.expirationDate == 0) revert LinkDoesNotExist();
         if (link.expirationDate < block.timestamp)
@@ -387,6 +446,40 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         } else if (enabledPaymentMethod[paymentMethod]) {
             // ETH and ERC 20 token
             return _convertFromStableCoin(paymentMethod, addLinkPrice);
+        } else {
+            revert InvalidPaymentMethod(paymentMethod);
+        }
+    }
+
+    /// @notice Returns the price for querying a link
+    /// @dev Returns the current pricing for querying a link
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param token Token that user want to query link
+    /// @return Current price for querying a link
+    function getPriceForQueryLink(address paymentMethod, address token)
+        public
+        view
+        returns (uint256)
+    {
+        uint256 queryLinkPrice = ILinkableSBT(token).queryLinkPrice();
+        uint256 queryLinkPriceMASA = ILinkableSBT(token).queryLinkPriceMASA();
+        if (queryLinkPrice == 0 && queryLinkPriceMASA == 0) {
+            return 0;
+        } else if (
+            paymentMethod == masaToken &&
+            enabledPaymentMethod[paymentMethod] &&
+            queryLinkPriceMASA > 0
+        ) {
+            // price in MASA without conversion rate
+            return queryLinkPriceMASA;
+        } else if (
+            paymentMethod == stableCoin && enabledPaymentMethod[paymentMethod]
+        ) {
+            // stable coin
+            return queryLinkPrice;
+        } else if (enabledPaymentMethod[paymentMethod]) {
+            // ETH and ERC 20 token
+            return _convertFromStableCoin(paymentMethod, queryLinkPrice);
         } else {
             revert InvalidPaymentMethod(paymentMethod);
         }
@@ -433,6 +526,15 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
     /* ========== EVENTS ==================================================== */
 
     event LinkAdded(
+        uint256 readerIdentityId,
+        uint256 ownerIdentityId,
+        address token,
+        uint256 tokenId,
+        uint256 signatureDate,
+        uint256 expirationDate
+    );
+
+    event LinkQuery(
         uint256 readerIdentityId,
         uint256 ownerIdentityId,
         address token,
