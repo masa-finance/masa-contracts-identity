@@ -15,13 +15,17 @@ import {
   SoulStore__factory
 } from "../typechain";
 import { SoulLinker } from "../typechain/contracts/SoulLinker";
+import { getEnvParams } from "./utils/EnvParams";
 
 /**
  * main function
  */
 async function main() {
   const [admin] = await ethers.getSigners();
-  const chainId = await admin.getChainId();
+  const network = await ethers.provider.getNetwork();
+  const chainId = network.chainId;
+
+  const env = getEnvParams(network.name);
 
   const { address: masaAddress } = await deployments.get("MASA");
   const { address: soulboundIdentityAddress } = await deployments.get(
@@ -42,6 +46,7 @@ async function main() {
   );
   console.log(`Account address: ${admin.address}`);
   console.log(`ChainId: ${chainId}`);
+  console.log(`Network: ${network.name}`);
 
   console.log("");
 
@@ -213,6 +218,11 @@ async function main() {
   );
   console.log(
     `SoulboundCreditScore.readDataPriceMASA: ${await soulboundCreditScore.readDataPriceMASA()}`
+  );
+  console.log(
+    `SoulboundCreditScore.authorities(${
+      env.AUTHORITY_WALLET
+    }): ${await soulboundCreditScore.authorities(env.AUTHORITY_WALLET)}`
   );
 
   console.log(
