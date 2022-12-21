@@ -8,7 +8,7 @@ interface ILinkableSBT is ISBT {
 
     function addLinkPriceMASA() external view returns (uint256);
 
-    function readDataPrice() external view returns (uint256);
+    function queryLinkPrice() external view returns (uint256);
 
-    function readDataPriceMASA() external view returns (uint256);
+    function queryLinkPriceMASA() external view returns (uint256);
 }
