@@ -194,12 +194,6 @@ describe("Soul Linker", () => {
         value: ethers.utils.parseEther("10")
       }
     );
-
-    // we add payment methods
-    await soulLinker
-      .connect(owner)
-      .enablePaymentMethod(ethers.constants.AddressZero);
-    await soulLinker.connect(owner).enablePaymentMethod(MASA_GOERLI);
   });
 
   describe("owner functions", () => {

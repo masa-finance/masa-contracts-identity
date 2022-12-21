@@ -3,6 +3,7 @@ import { getEnvParams, getPrivateKey } from "../src/utils/EnvParams";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
 import { paymentParams } from "../src/utils/PaymentParams";
+import { MASA_GOERLI, USDC_GOERLI } from "../src/constants";
 
 let admin: SignerWithAddress;
 
@@ -86,6 +87,15 @@ const func: DeployFunction = async ({
   await soulboundCreditScore
     .connect(signer)
     .addAuthority(env.AUTHORITY_WALLET || admin.address);
+
+  if (network.name != "mainnet") {
+    // we add payment methods
+    await soulboundCreditScore
+      .connect(signer)
+      .enablePaymentMethod(ethers.constants.AddressZero);
+    await soulboundCreditScore.connect(signer).enablePaymentMethod(USDC_GOERLI);
+    await soulboundCreditScore.connect(signer).enablePaymentMethod(MASA_GOERLI);
+  }
 };
 
 func.tags = ["SoulboundCreditScore"];
