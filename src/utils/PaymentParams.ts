@@ -40,4 +40,4 @@ export function paymentParams(networkName: string, ethers: any) {
     stableCoin,
     masaCoin
   };
-};
+}

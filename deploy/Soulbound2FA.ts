@@ -2,7 +2,7 @@ import hre from "hardhat";
 import { getEnvParams, getPrivateKey } from "../src/utils/EnvParams";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
-import { paymentParams } from "../src/utils/PaymentParams";
+import { paymentParams } from "../src/utils/PaymentParams";
 
 let admin: SignerWithAddress;
 
@@ -27,10 +27,8 @@ const func: DeployFunction = async ({
 
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
 
-  const { swapRouter, wrappedNativeToken, stableCoin, masaCoin } = paymentParams(
-    network.name,
-    ethers
-  );
+  const { swapRouter, wrappedNativeToken, stableCoin, masaCoin } =
+    paymentParams(network.name, ethers);
 
   const constructorArguments = [
     env.ADMIN || admin.address,

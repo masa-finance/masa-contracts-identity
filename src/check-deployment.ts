@@ -67,10 +67,8 @@ async function main() {
     soulStoreAddress,
     admin
   );
-  const soulboundCreditScore: SoulboundCreditScore = SoulboundCreditScore__factory.connect(
-    soulboundCreditScoreAddress,
-    admin
-  );
+  const soulboundCreditScore: SoulboundCreditScore =
+    SoulboundCreditScore__factory.connect(soulboundCreditScoreAddress, admin);
 
   console.log(`MASA balance: ${await masa.balanceOf(admin.address)}`);
   console.log("");
@@ -126,7 +124,9 @@ async function main() {
   );
   console.log(`SoulLinker.swapRouter: ${await soulLinker.swapRouter()}`);
   console.log(`SoulLinker.reserveWallet: ${await soulLinker.reserveWallet()}`);
-  console.log(`SoulLinker.getEnabledPaymentMethods: ${await soulLinker.getEnabledPaymentMethods()}`);
+  console.log(
+    `SoulLinker.getEnabledPaymentMethods: ${await soulLinker.getEnabledPaymentMethods()}`
+  );
 
   console.log(
     "=============================================================================="
@@ -142,7 +142,9 @@ async function main() {
   );
   console.log(`SoulStore.swapRouter: ${await soulStore.swapRouter()}`);
   console.log(`SoulStore.reserveWallet: ${await soulStore.reserveWallet()}`);
-  console.log(`SoulStore.getEnabledPaymentMethods: ${await soulStore.getEnabledPaymentMethods()}`);
+  console.log(
+    `SoulStore.getEnabledPaymentMethods: ${await soulStore.getEnabledPaymentMethods()}`
+  );
   console.log(
     `SoulStore.getNameRegistrationPricePerYear(1): ${await soulStore.getNameRegistrationPricePerYear(
       "1"
@@ -176,21 +178,43 @@ async function main() {
   console.log(
     `SoulboundCreditScore.SoulboundIdentity: ${await soulboundCreditScore.soulboundIdentity()}`
   );
-  console.log(`SoulboundCreditScore.masaToken: ${await soulboundCreditScore.masaToken()}`);
-  console.log(`SoulboundCreditScore.stableCoin: ${await soulboundCreditScore.stableCoin()}`);
+  console.log(
+    `SoulboundCreditScore.masaToken: ${await soulboundCreditScore.masaToken()}`
+  );
+  console.log(
+    `SoulboundCreditScore.stableCoin: ${await soulboundCreditScore.stableCoin()}`
+  );
   console.log(
     `SoulboundCreditScore.wrappedNativeToken: ${await soulboundCreditScore.wrappedNativeToken()}`
   );
-  console.log(`SoulboundCreditScore.swapRouter: ${await soulboundCreditScore.swapRouter()}`);
-  console.log(`SoulboundCreditScore.reserveWallet: ${await soulboundCreditScore.reserveWallet()}`);
-  console.log(`SoulboundCreditScore.getEnabledPaymentMethods: ${await soulboundCreditScore.getEnabledPaymentMethods()}`);
-  console.log(`SoulboundCreditScore.mintPrice: ${await soulboundCreditScore.mintPrice()}`);
-  console.log(`SoulboundCreditScore.mintPriceMASA: ${await soulboundCreditScore.mintPriceMASA()}`);
-  console.log(`SoulboundCreditScore.addLinkPrice: ${await soulboundCreditScore.addLinkPrice()}`);
-  console.log(`SoulboundCreditScore.addLinkPriceMASA: ${await soulboundCreditScore.addLinkPriceMASA()}`);
-  console.log(`SoulboundCreditScore.readDataPrice: ${await soulboundCreditScore.readDataPrice()}`);
-  console.log(`SoulboundCreditScore.readDataPriceMASA: ${await soulboundCreditScore.readDataPriceMASA()}`);
-    
+  console.log(
+    `SoulboundCreditScore.swapRouter: ${await soulboundCreditScore.swapRouter()}`
+  );
+  console.log(
+    `SoulboundCreditScore.reserveWallet: ${await soulboundCreditScore.reserveWallet()}`
+  );
+  console.log(
+    `SoulboundCreditScore.getEnabledPaymentMethods: ${await soulboundCreditScore.getEnabledPaymentMethods()}`
+  );
+  console.log(
+    `SoulboundCreditScore.mintPrice: ${await soulboundCreditScore.mintPrice()}`
+  );
+  console.log(
+    `SoulboundCreditScore.mintPriceMASA: ${await soulboundCreditScore.mintPriceMASA()}`
+  );
+  console.log(
+    `SoulboundCreditScore.addLinkPrice: ${await soulboundCreditScore.addLinkPrice()}`
+  );
+  console.log(
+    `SoulboundCreditScore.addLinkPriceMASA: ${await soulboundCreditScore.addLinkPriceMASA()}`
+  );
+  console.log(
+    `SoulboundCreditScore.readDataPrice: ${await soulboundCreditScore.readDataPrice()}`
+  );
+  console.log(
+    `SoulboundCreditScore.readDataPriceMASA: ${await soulboundCreditScore.readDataPriceMASA()}`
+  );
+
   console.log(
     "=============================================================================="
   );
