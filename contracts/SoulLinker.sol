@@ -436,7 +436,6 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         uint256 signatureDate
     ) external view returns (bool) {
         address ownerAddress = soulboundIdentity.ownerOf(ownerIdentityId);
-        address readerAddress = soulboundIdentity.ownerOf(readerIdentityId);
         address tokenOwner = IERC721Enumerable(token).ownerOf(tokenId);
 
         LinkData memory link = _links[token][tokenId][readerIdentityId][
@@ -445,7 +444,6 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
 
         if (ownerAddress != tokenOwner)
             revert IdentityOwnerNotTokenOwner(tokenId, ownerIdentityId);
-        if (readerAddress != _msgSender()) revert CallerNotReader(_msgSender());
         if (link.expirationDate == 0) revert LinkDoesNotExist();
         if (link.expirationDate < block.timestamp)
             revert ValidPeriodExpired(link.expirationDate);
