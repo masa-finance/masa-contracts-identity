@@ -452,6 +452,13 @@ describe("Soul Linker", () => {
       );
       expect(permissionSignatureDates[0]).to.be.equal(signatureDate);
 
+      const links = await soulLinker.getLinks(
+        soulboundCreditScore.address,
+        creditScore1
+      );
+      expect(links[0].readerIdentityId).to.be.equal(readerIdentityId);
+      expect(links[0].signatureDate).to.be.equal(signatureDate);
+
       const {
         ownerIdentityId: ownerIdentityIdInfo,
         expirationDate: expirationDateInfo,
@@ -520,6 +527,13 @@ describe("Soul Linker", () => {
       );
       expect(permissionSignatureDates[0]).to.be.equal(signatureDate);
 
+      const links = await soulLinker.getLinks(
+        soulboundCreditScore.address,
+        creditScore1
+      );
+      expect(links[0].readerIdentityId).to.be.equal(readerIdentityId);
+      expect(links[0].signatureDate).to.be.equal(signatureDate);
+
       const {
         ownerIdentityId: ownerIdentityIdInfo,
         expirationDate: expirationDateInfo,
@@ -583,6 +597,13 @@ describe("Soul Linker", () => {
         readerIdentityId
       );
       expect(permissionSignatureDates[0]).to.be.equal(signatureDate);
+
+      const links = await soulLinker.getLinks(
+        soulboundCreditScore.address,
+        creditScore1
+      );
+      expect(links[0].readerIdentityId).to.be.equal(readerIdentityId);
+      expect(links[0].signatureDate).to.be.equal(signatureDate);
 
       const {
         ownerIdentityId: ownerIdentityIdInfo,
@@ -728,8 +749,6 @@ describe("Soul Linker", () => {
         );
 
       const receipt = await tx.wait();
-
-      console.log(receipt);
 
       expect(receipt.events![2].event).to.be.equal("LinkQuery");
     });
