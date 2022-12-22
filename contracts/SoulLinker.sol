@@ -183,7 +183,11 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
             revert ValidPeriodExpired(expirationDate);
 
         // check if the link is revoked
-        // TODO: check if the link is revoked
+        if (_links[token][tokenId][readerIdentityId][signatureDate].isRevoked)
+            revert LinkAlreadyRevoked();
+
+        // TODO: if the link doesn't exist, store it
+
         if (
             !_verify(
                 _hash(
@@ -209,6 +213,8 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
             signatureDate,
             expirationDate
         );
+
+        return true;
     }
 
     /// @notice Revokes the link
@@ -407,8 +413,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
 
         if (ownerAddress != tokenOwner)
             revert IdentityOwnerNotTokenOwner(tokenId, ownerIdentityId);
-        if (readerAddress != _msgSender())
-            revert CallerNotReader(_msgSender());
+        if (readerAddress != _msgSender()) revert CallerNotReader(_msgSender());
         if (link.expirationDate == 0) revert LinkDoesNotExist();
         if (link.expirationDate < block.timestamp)
             revert ValidPeriodExpired(link.expirationDate);
