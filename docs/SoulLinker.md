@@ -815,22 +815,6 @@ error CallerNotOwner(address caller)
 |---|---|---|
 | caller | address | undefined |
 
-### CallerNotReader
-
-```solidity
-error CallerNotReader(address caller)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| caller | address | undefined |
-
 ### IdentityOwnerIsReader
 
 ```solidity
