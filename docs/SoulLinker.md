@@ -907,6 +907,25 @@ error InvalidToken(address token)
 |---|---|---|
 | token | address | undefined |
 
+### LinkAlreadyExists
+
+```solidity
+error LinkAlreadyExists(address token, uint256 tokenId, uint256 readerIdentityId, uint256 signatureDate)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| token | address | undefined |
+| tokenId | uint256 | undefined |
+| readerIdentityId | uint256 | undefined |
+| signatureDate | uint256 | undefined |
+
 ### LinkAlreadyRevoked
 
 ```solidity
