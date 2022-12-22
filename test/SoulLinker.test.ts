@@ -215,17 +215,90 @@ describe("Soul Linker", () => {
       ).to.be.rejected;
     });
 
-    it("should set NameRegistrationPricePerYear from owner", async () => {
+    it("should set mintPrice from owner", async () => {
+      const newPrice = 100;
+      await soulboundCreditScore.connect(owner).setMintPrice(newPrice);
+
+      expect(await soulboundCreditScore.mintPrice()).to.be.equal(newPrice);
+    });
+
+    it("should fail to set mintPrice from non owner", async () => {
+      const newPrice = 100;
+      await expect(soulboundCreditScore.connect(someone).setMintPrice(newPrice))
+        .to.be.rejected;
+    });
+
+    it("should set mintPriceMASA from owner", async () => {
+      const newPrice = 100;
+      await soulboundCreditScore.connect(owner).setMintPriceMASA(newPrice);
+
+      expect(await soulboundCreditScore.mintPriceMASA()).to.be.equal(newPrice);
+    });
+
+    it("should fail to set mintPriceMASA from non owner", async () => {
+      const newPrice = 100;
+      await expect(
+        soulboundCreditScore.connect(someone).setMintPriceMASA(newPrice)
+      ).to.be.rejected;
+    });
+
+    it("should set addLinkPrice from owner", async () => {
       const newPrice = 100;
       await soulboundCreditScore.connect(owner).setAddLinkPrice(newPrice);
 
       expect(await soulboundCreditScore.addLinkPrice()).to.be.equal(newPrice);
     });
 
-    it("should fail to set MintingNamePrice from non owner", async () => {
+    it("should fail to set addLinkPrice from non owner", async () => {
       const newPrice = 100;
       await expect(
         soulboundCreditScore.connect(someone).setAddLinkPrice(newPrice)
+      ).to.be.rejected;
+    });
+
+    it("should set addLinkPriceMASA from owner", async () => {
+      const newPrice = 100;
+      await soulboundCreditScore.connect(owner).setAddLinkPriceMASA(newPrice);
+
+      expect(await soulboundCreditScore.addLinkPriceMASA()).to.be.equal(
+        newPrice
+      );
+    });
+
+    it("should fail to set addLinkPriceMASA from non owner", async () => {
+      const newPrice = 100;
+      await expect(
+        soulboundCreditScore.connect(someone).setAddLinkPriceMASA(newPrice)
+      ).to.be.rejected;
+    });
+
+    it("should set queryLinkPrice from owner", async () => {
+      const newPrice = 100;
+      await soulboundCreditScore.connect(owner).setQueryLinkPrice(newPrice);
+
+      expect(await soulboundCreditScore.queryLinkPrice()).to.be.equal(newPrice);
+    });
+
+    it("should fail to set queryLinkPrice from non owner", async () => {
+      const newPrice = 100;
+      await expect(
+        soulboundCreditScore.connect(someone).setQueryLinkPrice(newPrice)
+      ).to.be.rejected;
+    });
+
+    it("should set queryLinkPriceMASA from owner", async () => {
+      const newPrice = 100;
+      await soulboundCreditScore.connect(owner).setQueryLinkPriceMASA(newPrice);
+
+      expect(await soulboundCreditScore.queryLinkPriceMASA()).to.be.equal(
+        newPrice
+      );
+    });
+
+    it("should fail to set queryLinkPriceMASA from non owner", async () => {
+      const newPrice = 100;
+      await expect(
+        soulboundCreditScore.connect(someone).setQueryLinkPriceMASA(newPrice)
       ).to.be.rejected;
     });
 
@@ -475,6 +548,9 @@ describe("Soul Linker", () => {
     });
 
     it("addLink must work paying with ETH", async () => {
+      await soulboundCreditScore.connect(owner).setAddLinkPrice(10);
+      expect(await soulboundCreditScore.addLinkPrice()).to.be.equal(10);
+
       const signature = await signLink(
         readerIdentityId,
         ownerIdentityId,
@@ -576,6 +652,152 @@ describe("Soul Linker", () => {
             soulboundCreditScore.address,
             creditScore1,
             signatureDate
+          )
+      ).to.be.rejected;
+    });
+  });
+
+  describe("queryLink", () => {
+    it("queryLink must work with a valid signature", async () => {
+      const signature = await signLink(
+        readerIdentityId,
+        ownerIdentityId,
+        soulboundCreditScore.address,
+        creditScore1
+      );
+
+      const price = await soulLinker.getPriceForQueryLink(
+        MASA_GOERLI,
+        soulboundCreditScore.address
+      );
+
+      // set allowance for soul store
+      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
+      await masa.connect(dataReader).approve(soulLinker.address, price);
+
+      const tx = await soulLinker
+        .connect(dataReader)
+        .queryLink(
+          MASA_GOERLI,
+          readerIdentityId,
+          ownerIdentityId,
+          soulboundCreditScore.address,
+          creditScore1,
+          signatureDate,
+          expirationDate,
+          signature
+        );
+
+      const receipt = await tx.wait();
+
+      expect(receipt.events![0].event).to.be.equal("LinkQuery");
+    });
+
+    it("queryLink must work paying with MASA without an exchange rate", async () => {
+      await soulboundCreditScore.connect(owner).setQueryLinkPriceMASA(10);
+      expect(await soulboundCreditScore.queryLinkPriceMASA()).to.be.equal(10);
+
+      const signature = await signLink(
+        readerIdentityId,
+        ownerIdentityId,
+        soulboundCreditScore.address,
+        creditScore1
+      );
+
+      const price = await soulLinker.getPriceForQueryLink(
+        MASA_GOERLI,
+        soulboundCreditScore.address
+      );
+      expect(price).to.be.equal(10);
+
+      // set allowance for soul store
+      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
+      await masa.connect(dataReader).approve(soulLinker.address, price);
+
+      const tx = await soulLinker
+        .connect(dataReader)
+        .queryLink(
+          MASA_GOERLI,
+          readerIdentityId,
+          ownerIdentityId,
+          soulboundCreditScore.address,
+          creditScore1,
+          signatureDate,
+          expirationDate,
+          signature
+        );
+
+      const receipt = await tx.wait();
+
+      console.log(receipt);
+
+      expect(receipt.events![2].event).to.be.equal("LinkQuery");
+    });
+
+    it("queryLink must work paying with ETH", async () => {
+      await soulboundCreditScore.connect(owner).setAddLinkPrice(10);
+      expect(await soulboundCreditScore.addLinkPrice()).to.be.equal(10);
+
+      const signature = await signLink(
+        readerIdentityId,
+        ownerIdentityId,
+        soulboundCreditScore.address,
+        creditScore1
+      );
+
+      const price = await soulLinker.getPriceForQueryLink(
+        ethers.constants.AddressZero,
+        soulboundCreditScore.address
+      );
+
+      const tx = await soulLinker
+        .connect(dataReader)
+        .queryLink(
+          ethers.constants.AddressZero,
+          readerIdentityId,
+          ownerIdentityId,
+          soulboundCreditScore.address,
+          creditScore1,
+          signatureDate,
+          expirationDate,
+          signature,
+          { value: price }
+        );
+
+      const receipt = await tx.wait();
+
+      expect(receipt.events![0].event).to.be.equal("LinkQuery");
+    });
+
+    it("queryLink won't work with an invalid signature", async () => {
+      const signature = await signLink(
+        ownerIdentityId,
+        ownerIdentityId,
+        soulboundCreditScore.address,
+        creditScore1
+      );
+
+      const price = await soulLinker.getPriceForQueryLink(
+        MASA_GOERLI,
+        soulboundCreditScore.address
+      );
+
+      // set allowance for soul store
+      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
+      await masa.connect(dataReader).approve(soulLinker.address, price);
+
+      await expect(
+        soulLinker
+          .connect(dataReader)
+          .queryLink(
+            MASA_GOERLI,
+            readerIdentityId,
+            ownerIdentityId,
+            soulboundCreditScore.address,
+            creditScore1,
+            signatureDate,
+            expirationDate,
+            signature
           )
       ).to.be.rejected;
     });
