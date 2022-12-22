@@ -423,15 +423,6 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const price = await soulLinker.getPriceForAddLink(
-        MASA_GOERLI,
-        soulboundCreditScore.address
-      );
-
-      // set allowance for soul store
-      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
-      await masa.connect(dataReader).approve(soulLinker.address, price);
-
       await soulLinker
         .connect(dataReader)
         .addLink(
@@ -640,15 +631,6 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const price = await soulLinker.getPriceForAddLink(
-        MASA_GOERLI,
-        soulboundCreditScore.address
-      );
-
-      // set allowance for soul store
-      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
-      await masa.connect(dataReader).approve(soulLinker.address, price);
-
       await expect(
         soulLinker
           .connect(dataReader)
@@ -686,15 +668,6 @@ describe("Soul Linker", () => {
         soulboundCreditScore.address,
         creditScore1
       );
-
-      const price = await soulLinker.getPriceForQueryLink(
-        MASA_GOERLI,
-        soulboundCreditScore.address
-      );
-
-      // set allowance for soul store
-      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
-      await masa.connect(dataReader).approve(soulLinker.address, price);
 
       const tx = await soulLinker
         .connect(dataReader)
@@ -796,15 +769,6 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const price = await soulLinker.getPriceForQueryLink(
-        MASA_GOERLI,
-        soulboundCreditScore.address
-      );
-
-      // set allowance for soul store
-      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
-      await masa.connect(dataReader).approve(soulLinker.address, price);
-
       await expect(
         soulLinker
           .connect(dataReader)
@@ -830,15 +794,6 @@ describe("Soul Linker", () => {
         soulboundCreditScore.address,
         creditScore1
       );
-
-      const price = await soulLinker.getPriceForAddLink(
-        MASA_GOERLI,
-        soulboundCreditScore.address
-      );
-
-      // set allowance for soul store
-      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
-      await masa.connect(dataReader).approve(soulLinker.address, price);
 
       await soulLinker
         .connect(dataReader)
@@ -886,15 +841,6 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const price = await soulLinker.getPriceForAddLink(
-        MASA_GOERLI,
-        soulboundCreditScore.address
-      );
-
-      // set allowance for soul store
-      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
-      await masa.connect(dataReader).approve(soulLinker.address, price);
-
       await soulLinker
         .connect(dataReader)
         .addLink(
@@ -941,6 +887,67 @@ describe("Soul Linker", () => {
             signatureDate
           )
       ).to.be.rejected;
+    });
+
+    it("owner of data can call revokeLink to a link that still doesn't exist", async () => {
+      await soulLinker
+        .connect(dataOwner)
+        .revokeLink(
+          readerIdentityId,
+          ownerIdentityId,
+          soulboundCreditScore.address,
+          creditScore1,
+          signatureDate
+        );
+
+      const signature = await signLink(
+        readerIdentityId,
+        ownerIdentityId,
+        soulboundCreditScore.address,
+        creditScore1
+      );
+
+      await expect(
+        soulLinker
+          .connect(dataReader)
+          .addLink(
+            MASA_GOERLI,
+            readerIdentityId,
+            ownerIdentityId,
+            soulboundCreditScore.address,
+            creditScore1,
+            signatureDate,
+            expirationDate,
+            signature
+          )
+      ).to.be.rejectedWith("LinkAlreadyExists");
+
+      await expect(
+        soulLinker
+          .connect(dataReader)
+          .validateLink(
+            readerIdentityId,
+            ownerIdentityId,
+            soulboundCreditScore.address,
+            creditScore1,
+            signatureDate
+          )
+      ).to.be.rejected;
+
+      await expect(
+        soulLinker
+          .connect(dataReader)
+          .queryLink(
+            MASA_GOERLI,
+            readerIdentityId,
+            ownerIdentityId,
+            soulboundCreditScore.address,
+            creditScore1,
+            signatureDate,
+            expirationDate,
+            signature
+          )
+      ).to.be.rejectedWith("LinkAlreadyRevoked");
     });
   });
 });
