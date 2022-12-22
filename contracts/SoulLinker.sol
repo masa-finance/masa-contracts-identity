@@ -111,6 +111,8 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         if (ownerAddress != tokenOwner)
             revert IdentityOwnerNotTokenOwner(tokenId, ownerIdentityId);
         if (readerAddress != _msgSender()) revert CallerNotOwner(_msgSender());
+        if (ownerIdentityId == readerIdentityId)
+            revert IdentityOwnerIsReader(readerIdentityId);
         if (expirationDate < block.timestamp)
             revert ValidPeriodExpired(expirationDate);
         if (_links[token][tokenId][readerIdentityId][signatureDate].exists)
@@ -188,6 +190,8 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         if (ownerAddress != tokenOwner)
             revert IdentityOwnerNotTokenOwner(tokenId, ownerIdentityId);
         if (readerAddress != _msgSender()) revert CallerNotOwner(_msgSender());
+        if (ownerIdentityId == readerIdentityId)
+            revert IdentityOwnerIsReader(readerIdentityId);
         if (expirationDate < block.timestamp)
             revert ValidPeriodExpired(expirationDate);
         // check if the link is revoked
@@ -243,6 +247,8 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         if (ownerAddress != tokenOwner)
             revert IdentityOwnerNotTokenOwner(tokenId, ownerIdentityId);
         if (ownerAddress != _msgSender()) revert CallerNotOwner(_msgSender());
+        if (ownerIdentityId == readerIdentityId)
+            revert IdentityOwnerIsReader(readerIdentityId);
         if (_links[token][tokenId][readerIdentityId][signatureDate].isRevoked)
             revert LinkAlreadyRevoked();
 

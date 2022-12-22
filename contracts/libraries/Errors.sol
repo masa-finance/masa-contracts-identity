@@ -7,6 +7,7 @@ error CallerNotOwner(address caller);
 error CallerNotReader(address caller);
 error CreditScoreAlreadyCreated(address to);
 error IdentityAlreadyCreated(address to);
+error IdentityOwnerIsReader(uint256 readerIdentityId);
 error InsufficientEthAmount(uint256 amount);
 error IdentityOwnerNotTokenOwner(uint256 tokenId, uint256 ownerIdentityId);
 error InvalidPaymentMethod(address paymentMethod);

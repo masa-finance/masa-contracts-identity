@@ -831,6 +831,22 @@ error CallerNotReader(address caller)
 |---|---|---|
 | caller | address | undefined |
 
+### IdentityOwnerIsReader
+
+```solidity
+error IdentityOwnerIsReader(uint256 readerIdentityId)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| readerIdentityId | uint256 | undefined |
+
 ### IdentityOwnerNotTokenOwner
 
 ```solidity
