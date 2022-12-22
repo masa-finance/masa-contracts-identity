@@ -4,6 +4,7 @@ pragma solidity ^0.8.7;
 error AddressDoesNotHaveIdentity(address to);
 error AlreadyAdded();
 error CallerNotOwner(address caller);
+error CallerNotReader(address caller);
 error CreditScoreAlreadyCreated(address to);
 error IdentityAlreadyCreated(address to);
 error IdentityOwnerIsReader(uint256 readerIdentityId);
