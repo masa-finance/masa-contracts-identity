@@ -30,9 +30,8 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         private _linkSignatureDates;
 
     struct LinkData {
-        uint256 readerIdentityId;
+        bool exists;
         uint256 ownerIdentityId;
-        uint256 signatureDate;
         uint256 expirationDate;
         bool isRevoked;
     }
@@ -114,6 +113,13 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         if (readerAddress != _msgSender()) revert CallerNotOwner(_msgSender());
         if (expirationDate < block.timestamp)
             revert ValidPeriodExpired(expirationDate);
+        if (_links[token][tokenId][readerIdentityId][signatureDate].exists)
+            revert LinkAlreadyExists(
+                token,
+                tokenId,
+                readerIdentityId,
+                signatureDate
+            );
         if (
             !_verify(
                 _hash(
@@ -133,9 +139,8 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
 
         // token => tokenId => readerIdentityId => signatureDate => LinkData
         _links[token][tokenId][readerIdentityId][signatureDate] = LinkData(
-            readerIdentityId,
+            true,
             ownerIdentityId,
-            signatureDate,
             expirationDate,
             false
         );
