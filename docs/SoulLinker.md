@@ -244,6 +244,29 @@ Returns the price for storing a link
 |---|---|---|
 | _0 | uint256 | Current price for storing a link |
 
+### getPriceForQueryLink
+
+```solidity
+function getPriceForQueryLink(address paymentMethod, address token) external view returns (uint256)
+```
+
+Returns the price for querying a link
+
+*Returns the current pricing for querying a link*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| paymentMethod | address | Address of token that user want to pay |
+| token | address | Token that user want to query link |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | Current price for querying a link |
+
 ### getSBTConnections
 
 ```solidity
@@ -351,6 +374,35 @@ function paused() external view returns (bool)
 | Name | Type | Description |
 |---|---|---|
 | _0 | bool | undefined |
+
+### queryLink
+
+```solidity
+function queryLink(address paymentMethod, uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, uint256 signatureDate, uint256 expirationDate, bytes signature) external payable returns (bool)
+```
+
+Validates a link signature, of a given read link request, without storing it
+
+*The token must be linked to this soul linker*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| paymentMethod | address | undefined |
+| readerIdentityId | uint256 | Id of the identity of the reader |
+| ownerIdentityId | uint256 | Id of the identity of the owner of the SBT |
+| token | address | Address of the SBT contract |
+| tokenId | uint256 | Id of the token |
+| signatureDate | uint256 | Signature date of the signature |
+| expirationDate | uint256 | Expiration date of the signature |
+| signature | bytes | Signature of the read link request made by the owner |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bool | True if the link is valid |
 
 ### renounceOwnership
 
@@ -625,6 +677,27 @@ function wrappedNativeToken() external view returns (address)
 
 ```solidity
 event LinkAdded(uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, uint256 signatureDate, uint256 expirationDate)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| readerIdentityId  | uint256 | undefined |
+| ownerIdentityId  | uint256 | undefined |
+| token  | address | undefined |
+| tokenId  | uint256 | undefined |
+| signatureDate  | uint256 | undefined |
+| expirationDate  | uint256 | undefined |
+
+### LinkQuery
+
+```solidity
+event LinkQuery(uint256 readerIdentityId, uint256 ownerIdentityId, address token, uint256 tokenId, uint256 signatureDate, uint256 expirationDate)
 ```
 
 
