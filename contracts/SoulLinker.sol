@@ -190,12 +190,9 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         if (readerAddress != _msgSender()) revert CallerNotOwner(_msgSender());
         if (expirationDate < block.timestamp)
             revert ValidPeriodExpired(expirationDate);
-
         // check if the link is revoked
         if (_links[token][tokenId][readerIdentityId][signatureDate].isRevoked)
             revert LinkAlreadyRevoked();
-
-        // TODO: if the link doesn't exist, store it
 
         if (
             !_verify(
@@ -249,9 +246,29 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         if (_links[token][tokenId][readerIdentityId][signatureDate].isRevoked)
             revert LinkAlreadyRevoked();
 
-        // token => tokenId => readerIdentityId => signatureDate => LinkData
-        _links[token][tokenId][readerIdentityId][signatureDate]
-            .isRevoked = true;
+        if (_links[token][tokenId][readerIdentityId][signatureDate].exists) {
+            // token => tokenId => readerIdentityId => signatureDate => LinkData
+            _links[token][tokenId][readerIdentityId][signatureDate]
+                .isRevoked = true;
+        } else {
+            // if the link doesn't exist, store it
+            // token => tokenId => readerIdentityId => signatureDate => LinkData
+            _links[token][tokenId][readerIdentityId][signatureDate] = LinkData(
+                true,
+                ownerIdentityId,
+                0,
+                true
+            );
+            if (
+                _linkSignatureDates[token][tokenId][readerIdentityId].length ==
+                0
+            ) {
+                _linkReaderIdentityIds[token][tokenId].push(readerIdentityId);
+            }
+            _linkSignatureDates[token][tokenId][readerIdentityId].push(
+                signatureDate
+            );
+        }
 
         emit LinkRevoked(
             readerIdentityId,
