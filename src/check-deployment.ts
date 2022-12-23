@@ -2,8 +2,6 @@
 import "@nomiclabs/hardhat-ethers";
 import { deployments, ethers } from "hardhat";
 import {
-  IERC20,
-  IERC20__factory,
   SoulboundCreditScore,
   SoulboundCreditScore__factory,
   SoulboundIdentity,
@@ -27,7 +25,6 @@ async function main() {
 
   const env = getEnvParams(network.name);
 
-  const { address: masaAddress } = await deployments.get("MASA");
   const { address: soulboundIdentityAddress } = await deployments.get(
     "SoulboundIdentity"
   );
@@ -50,7 +47,6 @@ async function main() {
 
   console.log("");
 
-  console.log(`MASA address:                  ${masaAddress}`);
   console.log(`SoulboundIdentity address:     ${soulboundIdentityAddress}`);
   console.log(`SoulboundCreditScore address:  ${soulboundCreditScoreAddress}`);
   console.log(`Soulbound2FA address:          ${soulbound2FAAddress}`);
@@ -60,7 +56,6 @@ async function main() {
   console.log("");
 
   // create contract instances
-  const masa: IERC20 = IERC20__factory.connect(masaAddress, admin);
   const soulboundIdentity: SoulboundIdentity =
     SoulboundIdentity__factory.connect(soulboundIdentityAddress, admin);
   const soulName: SoulName = SoulName__factory.connect(soulNameAddress, admin);
@@ -75,7 +70,6 @@ async function main() {
   const soulboundCreditScore: SoulboundCreditScore =
     SoulboundCreditScore__factory.connect(soulboundCreditScoreAddress, admin);
 
-  console.log(`MASA balance: ${await masa.balanceOf(admin.address)}`);
   console.log("");
 
   console.log(
