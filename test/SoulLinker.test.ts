@@ -699,7 +699,7 @@ describe("Soul Linker", () => {
       expect(price).to.be.equal(10);
 
       // set allowance for soul store
-      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
+      const masa: IERC20 = IERC20__factory.connect(MASA_GOERLI, owner);
       await masa.connect(dataReader).approve(soulLinker.address, price);
 
       const tx = await soulLinker
