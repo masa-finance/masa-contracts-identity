@@ -208,10 +208,10 @@ async function main() {
     `SoulboundCreditScore.addLinkPriceMASA: ${await soulboundCreditScore.addLinkPriceMASA()}`
   );
   console.log(
-    `SoulboundCreditScore.readDataPrice: ${await soulboundCreditScore.queryLinkPrice()}`
+    `SoulboundCreditScore.queryLinkPrice: ${await soulboundCreditScore.queryLinkPrice()}`
   );
   console.log(
-    `SoulboundCreditScore.readDataPriceMASA: ${await soulboundCreditScore.queryLinkPriceMASA()}`
+    `SoulboundCreditScore.queryLinkPriceMASA: ${await soulboundCreditScore.queryLinkPriceMASA()}`
   );
   console.log(
     `SoulboundCreditScore.authorities(${
