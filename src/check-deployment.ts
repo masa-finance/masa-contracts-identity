@@ -2,8 +2,10 @@
 import "@nomiclabs/hardhat-ethers";
 import { deployments, ethers } from "hardhat";
 import {
-  ERC20,
-  ERC20__factory,
+  IERC20,
+  IERC20__factory,
+  SoulboundCreditScore,
+  SoulboundCreditScore__factory,
   SoulboundIdentity,
   SoulboundIdentity__factory,
   SoulLinker__factory,
@@ -13,13 +15,17 @@ import {
   SoulStore__factory
 } from "../typechain";
 import { SoulLinker } from "../typechain/contracts/SoulLinker";
+import { getEnvParams } from "./utils/EnvParams";
 
 /**
  * main function
  */
 async function main() {
   const [admin] = await ethers.getSigners();
-  const chainId = await admin.getChainId();
+  const network = await ethers.provider.getNetwork();
+  const chainId = network.chainId;
+
+  const env = getEnvParams(network.name);
 
   const { address: masaAddress } = await deployments.get("MASA");
   const { address: soulboundIdentityAddress } = await deployments.get(
@@ -40,6 +46,7 @@ async function main() {
   );
   console.log(`Account address: ${admin.address}`);
   console.log(`ChainId: ${chainId}`);
+  console.log(`Network: ${network.name}`);
 
   console.log("");
 
@@ -53,7 +60,7 @@ async function main() {
   console.log("");
 
   // create contract instances
-  const masa: ERC20 = ERC20__factory.connect(masaAddress, admin);
+  const masa: IERC20 = IERC20__factory.connect(masaAddress, admin);
   const soulboundIdentity: SoulboundIdentity =
     SoulboundIdentity__factory.connect(soulboundIdentityAddress, admin);
   const soulName: SoulName = SoulName__factory.connect(soulNameAddress, admin);
@@ -65,9 +72,15 @@ async function main() {
     soulStoreAddress,
     admin
   );
+  const soulboundCreditScore: SoulboundCreditScore =
+    SoulboundCreditScore__factory.connect(soulboundCreditScoreAddress, admin);
 
   console.log(`MASA balance: ${await masa.balanceOf(admin.address)}`);
   console.log("");
+
+  console.log(
+    "=============================================================================="
+  );
 
   const IDENTITY_MINTER_ROLE = await soulboundIdentity.MINTER_ROLE();
   console.log(
@@ -79,7 +92,10 @@ async function main() {
   console.log(
     `SoulboundIdentity.SoulName: ${await soulboundIdentity.getSoulName()}`
   );
-  console.log("");
+
+  console.log(
+    "=============================================================================="
+  );
 
   const NAME_MINTER_ROLE = await soulName.MINTER_ROLE();
   console.log(
@@ -98,12 +114,28 @@ async function main() {
     `SoulName.SoulboundIdentity: ${await soulName.soulboundIdentity()}`
   );
   console.log(`SoulName.extension: ${await soulName.extension()}`);
-  console.log("");
+
+  console.log(
+    "=============================================================================="
+  );
 
   console.log(
     `SoulLinker.SoulboundIdentity: ${await soulLinker.soulboundIdentity()}`
   );
-  console.log("");
+  console.log(`SoulLinker.masaToken: ${await soulLinker.masaToken()}`);
+  console.log(`SoulLinker.stableCoin: ${await soulLinker.stableCoin()}`);
+  console.log(
+    `SoulLinker.wrappedNativeToken: ${await soulLinker.wrappedNativeToken()}`
+  );
+  console.log(`SoulLinker.swapRouter: ${await soulLinker.swapRouter()}`);
+  console.log(`SoulLinker.reserveWallet: ${await soulLinker.reserveWallet()}`);
+  console.log(
+    `SoulLinker.getEnabledPaymentMethods: ${await soulLinker.getEnabledPaymentMethods()}`
+  );
+
+  console.log(
+    "=============================================================================="
+  );
 
   console.log(
     `SoulStore.SoulboundIdentity: ${await soulStore.soulboundIdentity()}`
@@ -115,6 +147,9 @@ async function main() {
   );
   console.log(`SoulStore.swapRouter: ${await soulStore.swapRouter()}`);
   console.log(`SoulStore.reserveWallet: ${await soulStore.reserveWallet()}`);
+  console.log(
+    `SoulStore.getEnabledPaymentMethods: ${await soulStore.getEnabledPaymentMethods()}`
+  );
   console.log(
     `SoulStore.getNameRegistrationPricePerYear(1): ${await soulStore.getNameRegistrationPricePerYear(
       "1"
@@ -139,6 +174,55 @@ async function main() {
     `SoulStore.getNameRegistrationPricePerYear(5): ${await soulStore.getNameRegistrationPricePerYear(
       "55555"
     )}`
+  );
+
+  console.log(
+    "=============================================================================="
+  );
+
+  console.log(
+    `SoulboundCreditScore.SoulboundIdentity: ${await soulboundCreditScore.soulboundIdentity()}`
+  );
+  console.log(
+    `SoulboundCreditScore.masaToken: ${await soulboundCreditScore.masaToken()}`
+  );
+  console.log(
+    `SoulboundCreditScore.stableCoin: ${await soulboundCreditScore.stableCoin()}`
+  );
+  console.log(
+    `SoulboundCreditScore.wrappedNativeToken: ${await soulboundCreditScore.wrappedNativeToken()}`
+  );
+  console.log(
+    `SoulboundCreditScore.swapRouter: ${await soulboundCreditScore.swapRouter()}`
+  );
+  console.log(
+    `SoulboundCreditScore.reserveWallet: ${await soulboundCreditScore.reserveWallet()}`
+  );
+  console.log(
+    `SoulboundCreditScore.getEnabledPaymentMethods: ${await soulboundCreditScore.getEnabledPaymentMethods()}`
+  );
+  console.log(
+    `SoulboundCreditScore.mintPrice: ${await soulboundCreditScore.mintPrice()}`
+  );
+  console.log(
+    `SoulboundCreditScore.mintPriceMASA: ${await soulboundCreditScore.mintPriceMASA()}`
+  );
+  console.log(
+    `SoulboundCreditScore.addLinkPrice: ${await soulboundCreditScore.addLinkPrice()}`
+  );
+  console.log(
+    `SoulboundCreditScore.addLinkPriceMASA: ${await soulboundCreditScore.addLinkPriceMASA()}`
+  );
+  console.log(
+    `SoulboundCreditScore.readDataPrice: ${await soulboundCreditScore.readDataPrice()}`
+  );
+  console.log(
+    `SoulboundCreditScore.readDataPriceMASA: ${await soulboundCreditScore.readDataPriceMASA()}`
+  );
+  console.log(
+    `SoulboundCreditScore.authorities(${
+      env.AUTHORITY_WALLET
+    }): ${await soulboundCreditScore.authorities(env.AUTHORITY_WALLET)}`
   );
 
   console.log(

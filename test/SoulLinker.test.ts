@@ -4,8 +4,8 @@ import { solidity } from "ethereum-waffle";
 import { deployments, ethers, getChainId } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
-  ERC20,
-  ERC20__factory,
+  IERC20,
+  IERC20__factory,
   IUniswapRouter,
   IUniswapRouter__factory,
   SoulboundCreditScore,
@@ -194,12 +194,6 @@ describe("Soul Linker", () => {
         value: ethers.utils.parseEther("10")
       }
     );
-
-    // we add payment methods
-    await soulLinker
-      .connect(owner)
-      .enablePaymentMethod(ethers.constants.AddressZero);
-    await soulLinker.connect(owner).enablePaymentMethod(MASA_GOERLI);
   });
 
   describe("owner functions", () => {
@@ -495,7 +489,7 @@ describe("Soul Linker", () => {
       expect(price).to.be.equal(10);
 
       // set allowance for soul store
-      const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
+      const masa: IERC20 = IERC20__factory.connect(MASA_GOERLI, owner);
       await masa.connect(dataReader).approve(soulLinker.address, price);
 
       await soulLinker

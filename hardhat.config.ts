@@ -35,6 +35,12 @@ const networks: NetworksUserConfig = {
     gas: "auto", // 20000000
     gasPrice: 200000000000 //"auto"
   },
+  mainnet: {
+    url: getInfuraURL("mainnet"),
+    accounts: [getPrivateKey("mainnet")],
+    gas: "auto", // 20000000
+    gasPrice: 100000000000 //"auto"
+  },
   alfajores: {
     url: "https://alfajores-forno.celo-testnet.org", // Localhost (default: none)
     accounts: [getPrivateKey("alfajores")],
