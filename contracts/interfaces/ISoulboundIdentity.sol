@@ -13,7 +13,7 @@ interface ISoulboundIdentity is ISBT {
         string memory name,
         uint256 yearsPeriod,
         string memory _tokenURI
-    ) external payable returns (uint256);
+    ) external returns (uint256);
 
     function getSoulName() external view returns (ISoulName);
 

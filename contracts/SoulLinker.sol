@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
@@ -14,7 +15,7 @@ import "./interfaces/ISoulboundIdentity.sol";
 /// @title Soul linker
 /// @author Masa Finance
 /// @notice Soul linker smart contract that let add links to a Soulbound token.
-contract SoulLinker is PaymentGateway, EIP712, Pausable {
+contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
     /* ========== STATE VARIABLES =========================================== */
 
     ISoulboundIdentity public soulboundIdentity;
@@ -73,13 +74,13 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
 
     /// @notice Pauses the smart contract
     /// @dev The caller must have the owner to call this function
-    function pause() public onlyOwner {
+    function pause() external onlyOwner {
         _pause();
     }
 
     /// @notice Unpauses the smart contract
     /// @dev The caller must have the owner to call this function
-    function unpause() public onlyOwner {
+    function unpause() external onlyOwner {
         _unpause();
     }
 
@@ -103,7 +104,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         uint256 signatureDate,
         uint256 expirationDate,
         bytes calldata signature
-    ) external payable whenNotPaused {
+    ) external payable whenNotPaused nonReentrant {
         address ownerAddress = soulboundIdentity.ownerOf(ownerIdentityId);
         address readerAddress = soulboundIdentity.ownerOf(readerIdentityId);
         address tokenOwner = IERC721Enumerable(token).ownerOf(tokenId);
@@ -400,7 +401,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         address token,
         uint256 tokenId,
         uint256 readerIdentityId
-    ) public view returns (uint256[] memory) {
+    ) external view returns (uint256[] memory) {
         return _linkSignatureDates[token][tokenId][readerIdentityId];
     }
 
@@ -415,7 +416,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         uint256 tokenId,
         uint256 readerIdentityId,
         uint256 signatureDate
-    ) public view returns (LinkData memory) {
+    ) external view returns (LinkData memory) {
         return _links[token][tokenId][readerIdentityId][signatureDate];
     }
 
