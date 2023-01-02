@@ -28,12 +28,20 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
     // token => tokenId => readerIdentityId => signatureDate
     mapping(address => mapping(uint256 => mapping(uint256 => uint256[])))
         private _linkSignatureDates;
+    // readerIdentityId => ReaderLink
+    mapping(address => ReaderLink[]) private _readerLinks;
 
     struct LinkData {
         bool exists;
         uint256 ownerIdentityId;
         uint256 expirationDate;
         bool isRevoked;
+    }
+
+    struct ReaderLink {
+        address token;
+        uint256 tokenId;
+        uint256 signatureDate;
     }
 
     struct LinkKey {
