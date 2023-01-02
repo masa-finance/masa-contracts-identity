@@ -91,7 +91,7 @@ async function main() {
         console.log(
           `${events[0].args.tokenId},${totalSupply},${events[0].args.to}`
         );
-        if (accounts[events[0].args.to] == null) {
+        if (accounts[events[0].args.to] === null) {
           accounts[events[0].args.to] = true;
         }
       } else {

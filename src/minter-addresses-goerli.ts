@@ -160,7 +160,7 @@ async function main() {
                   events[i].arguments[j].value
                 }`
               );
-              if (accounts[events[i].arguments[j].value] == null) {
+              if (accounts[events[i].arguments[j].value] === null) {
                 accounts[events[i].arguments[j].value] = true;
               }
             } else {
@@ -169,7 +169,7 @@ async function main() {
                   events[i].arguments[j + 1].value
                 }`
               );
-              if (accounts[events[i].arguments[j + 1].value] == null) {
+              if (accounts[events[i].arguments[j + 1].value] === null) {
                 accounts[events[i].arguments[j + 1].value] = true;
               }
             }
