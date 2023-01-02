@@ -29,7 +29,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
     mapping(address => mapping(uint256 => mapping(uint256 => uint256[])))
         private _linkSignatureDates;
     // readerIdentityId => ReaderLink
-    mapping(address => ReaderLink[]) private _readerLinks;
+    mapping(uint256 => ReaderLink[]) private _readerLinks;
 
     struct LinkData {
         bool exists;
@@ -431,6 +431,15 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         uint256 signatureDate
     ) public view returns (LinkData memory) {
         return _links[token][tokenId][readerIdentityId][signatureDate];
+    }
+
+    /// @notice Returns the list of links for a given reader identity id
+    /// @param readerIdentityId Id of the identity of the reader of the SBT
+    /// @return List of links for the reader
+    function getReaderLinks(
+        uint256 readerIdentityId
+    ) public view returns (ReaderLink[] memory) {
+        return _readerLinks[readerIdentityId];
     }
 
     /// @notice Validates the link of the given read link request and returns the
