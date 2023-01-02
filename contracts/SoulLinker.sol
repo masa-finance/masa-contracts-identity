@@ -113,6 +113,8 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         if (readerAddress != _msgSender()) revert CallerNotReader(_msgSender());
         if (ownerIdentityId == readerIdentityId)
             revert IdentityOwnerIsReader(readerIdentityId);
+        if (signatureDate == 0)
+            revert InvalidSignatureDate(signatureDate);
         if (expirationDate < block.timestamp)
             revert ValidPeriodExpired(expirationDate);
         if (_links[token][tokenId][readerIdentityId][signatureDate].exists)
@@ -192,6 +194,8 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         if (readerAddress != _msgSender()) revert CallerNotReader(_msgSender());
         if (ownerIdentityId == readerIdentityId)
             revert IdentityOwnerIsReader(readerIdentityId);
+        if (signatureDate == 0)
+            revert InvalidSignatureDate(signatureDate);
         if (expirationDate < block.timestamp)
             revert ValidPeriodExpired(expirationDate);
         // check if the link is revoked
