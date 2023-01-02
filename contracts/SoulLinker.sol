@@ -232,7 +232,9 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
     }
 
     /// @notice Revokes the link
-    /// @dev The token must be linked to this soul linker
+    /// @dev The links can be revoked, wether the token is linked or not.
+    /// The caller must be the owner of the token.
+    /// The owner of the token can revoke a link even if the reader has not added it yet.
     /// @param readerIdentityId Id of the identity of the reader
     /// @param ownerIdentityId Id of the identity of the owner of the SBT
     /// @param token Address of the SBT contract
