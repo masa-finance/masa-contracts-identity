@@ -162,6 +162,9 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
         _linkSignatureDates[token][tokenId][readerIdentityId].push(
             signatureDate
         );
+        _readerLinks[readerIdentityId].push(
+            ReaderLink(token, tokenId, signatureDate)
+        );
 
         emit LinkAdded(
             readerIdentityId,
@@ -287,6 +290,9 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable {
             }
             _linkSignatureDates[token][tokenId][readerIdentityId].push(
                 signatureDate
+            );
+            _readerLinks[readerIdentityId].push(
+                ReaderLink(token, tokenId, signatureDate)
             );
         }
 
