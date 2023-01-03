@@ -31,6 +31,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
         private _linkSignatureDates;
 
     struct LinkData {
+        bool exists;
         uint256 ownerIdentityId;
         uint256 expirationDate;
         bool isRevoked;
@@ -110,9 +111,18 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
 
         if (ownerAddress != tokenOwner)
             revert IdentityOwnerNotTokenOwner(tokenId, ownerIdentityId);
-        if (readerAddress != _msgSender()) revert CallerNotOwner(_msgSender());
+        if (readerAddress != _msgSender()) revert CallerNotReader(_msgSender());
+        if (ownerIdentityId == readerIdentityId)
+            revert IdentityOwnerIsReader(readerIdentityId);
         if (expirationDate < block.timestamp)
             revert ValidPeriodExpired(expirationDate);
+        if (_links[token][tokenId][readerIdentityId][signatureDate].exists)
+            revert LinkAlreadyExists(
+                token,
+                tokenId,
+                readerIdentityId,
+                signatureDate
+            );
         if (
             !_verify(
                 _hash(
@@ -132,6 +142,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
 
         // token => tokenId => readerIdentityId => signatureDate => LinkData
         _links[token][tokenId][readerIdentityId][signatureDate] = LinkData(
+            true,
             ownerIdentityId,
             expirationDate,
             false
@@ -173,12 +184,34 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
         if (ownerAddress != tokenOwner)
             revert IdentityOwnerNotTokenOwner(tokenId, ownerIdentityId);
         if (ownerAddress != _msgSender()) revert CallerNotOwner(_msgSender());
+        if (ownerIdentityId == readerIdentityId)
+            revert IdentityOwnerIsReader(readerIdentityId);
         if (_links[token][tokenId][readerIdentityId][signatureDate].isRevoked)
             revert LinkAlreadyRevoked();
 
-        // token => tokenId => readerIdentityId => signatureDate => LinkData
-        _links[token][tokenId][readerIdentityId][signatureDate]
-            .isRevoked = true;
+        if (_links[token][tokenId][readerIdentityId][signatureDate].exists) {
+            // token => tokenId => readerIdentityId => signatureDate => LinkData
+            _links[token][tokenId][readerIdentityId][signatureDate]
+                .isRevoked = true;
+        } else {
+            // if the link doesn't exist, store it
+            // token => tokenId => readerIdentityId => signatureDate => LinkData
+            _links[token][tokenId][readerIdentityId][signatureDate] = LinkData(
+                true,
+                ownerIdentityId,
+                0,
+                true
+            );
+            if (
+                _linkSignatureDates[token][tokenId][readerIdentityId].length ==
+                0
+            ) {
+                _linkReaderIdentityIds[token][tokenId].push(readerIdentityId);
+            }
+            _linkSignatureDates[token][tokenId][readerIdentityId].push(
+                signatureDate
+            );
+        }
 
         emit LinkRevoked(
             readerIdentityId,
@@ -339,7 +372,6 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
         uint256 tokenId,
         uint256 signatureDate
     ) external view returns (bool) {
-        address identityReader = soulboundIdentity.ownerOf(readerIdentityId);
         address ownerAddress = soulboundIdentity.ownerOf(ownerIdentityId);
         address tokenOwner = IERC721Enumerable(token).ownerOf(tokenId);
 
@@ -349,9 +381,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
 
         if (ownerAddress != tokenOwner)
             revert IdentityOwnerNotTokenOwner(tokenId, ownerIdentityId);
-        if (identityReader != _msgSender())
-            revert CallerNotReader(_msgSender());
-        if (link.expirationDate == 0) revert LinkDoesNotExist();
+        if (!link.exists) revert LinkDoesNotExist();
         if (link.expirationDate < block.timestamp)
             revert ValidPeriodExpired(link.expirationDate);
         if (link.isRevoked) revert LinkAlreadyRevoked();
