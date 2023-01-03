@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+
 import "./libraries/Errors.sol";
 import "./tokens/MasaSBTSelfSovereign.sol";
 
@@ -8,7 +10,7 @@ import "./tokens/MasaSBTSelfSovereign.sol";
 /// @author Masa Finance
 /// @notice Soulbound token that represents a credit score.
 /// @dev Soulbound credit score, that inherits from the SBT contract.
-contract SoulboundCreditScore is MasaSBTSelfSovereign {
+contract SoulboundCreditScore is MasaSBTSelfSovereign, ReentrancyGuard {
     /* ========== STATE VARIABLES =========================================== */
 
     /* ========== INITIALIZE ================================================ */
@@ -51,7 +53,7 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
         address authorityAddress,
         uint256 signatureDate,
         bytes calldata signature
-    ) public payable virtual returns (uint256) {
+    ) public payable virtual nonReentrant returns (uint256) {
         address to = soulboundIdentity.ownerOf(identityId);
         if (to != _msgSender()) revert CallerNotOwner(_msgSender());
         if (balanceOf(to) > 0) revert CreditScoreAlreadyCreated(to);
@@ -89,7 +91,7 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
         address authorityAddress,
         uint256 signatureDate,
         bytes calldata signature
-    ) public payable virtual returns (uint256) {
+    ) external payable virtual returns (uint256) {
         uint256 identityId = soulboundIdentity.tokenOfOwner(to);
 
         return

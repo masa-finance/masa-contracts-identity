@@ -106,7 +106,7 @@ async function main() {
 
   const accountKeys = Object.keys(accounts);
   for (let i = 0; i < accountKeys.length; i++) {
-    console.log(accountKeys[i])
+    console.log(accountKeys[i]);
   }
 }
 
