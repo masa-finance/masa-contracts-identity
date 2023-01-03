@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 import "./libraries/Errors.sol";
@@ -14,7 +15,7 @@ import "./tokens/MasaNFT.sol";
 /// @notice SoulName NFT that points to a Soulbound identity token
 /// @dev SoulName NFT, that inherits from the NFT contract, and points to a Soulbound identity token.
 /// It has an extension, and stores all the information about the identity names.
-contract SoulName is MasaNFT, ISoulName {
+contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     /* ========== STATE VARIABLES ========== */
     using SafeMath for uint256;
 
@@ -114,7 +115,7 @@ contract SoulName is MasaNFT, ISoulName {
         string memory name,
         uint256 yearsPeriod,
         string memory _tokenURI
-    ) public override returns (uint256) {
+    ) public override nonReentrant returns (uint256) {
         if (!isAvailable(name)) revert NameAlreadyExists(name);
         if (bytes(name).length == 0) revert ZeroLengthName(name);
         if (yearsPeriod == 0) revert ZeroYearsPeriod(yearsPeriod);
@@ -144,7 +145,7 @@ contract SoulName is MasaNFT, ISoulName {
     /// @dev The caller must be the owner or an approved address of the soul name.
     /// @param tokenId TokenId of the soul name
     /// @param yearsPeriod Years of validity of the name
-    function renewYearsPeriod(uint256 tokenId, uint256 yearsPeriod) public {
+    function renewYearsPeriod(uint256 tokenId, uint256 yearsPeriod) external {
         // ERC721: caller is not token owner nor approved
         if (!_isApprovedOrOwner(_msgSender(), tokenId))
             revert CallerNotOwner(_msgSender());
@@ -254,7 +255,7 @@ contract SoulName is MasaNFT, ISoulName {
         tokenId = _getTokenId(name);
         address _owner = ownerOf(tokenId);
         bool _linked = soulboundIdentity.balanceOf(_owner) > 0;
-        uint256 _identityId;
+        uint256 _identityId = 0;
         if (_linked) {
             _identityId = soulboundIdentity.tokenOfOwner(_owner);
         }
@@ -310,7 +311,7 @@ contract SoulName is MasaNFT, ISoulName {
         override
         returns (string[] memory sbtNames)
     {
-        uint256 results;
+        uint256 results = 0;
         uint256 balance = balanceOf(owner);
 
         for (uint256 i = 0; i < balance; i++) {
@@ -321,7 +322,7 @@ contract SoulName is MasaNFT, ISoulName {
         }
 
         string[] memory _sbtNames = new string[](results);
-        uint256 index;
+        uint256 index = 0;
 
         for (uint256 i = 0; i < balance; i++) {
             uint256 tokenId = tokenOfOwnerByIndex(owner, i);
@@ -340,7 +341,7 @@ contract SoulName is MasaNFT, ISoulName {
     /// @param name Name of the soul name
     /// @return URI of the soulname associated to a name
     function tokenURI(string memory name)
-        public
+        external
         view
         virtual
         returns (string memory)

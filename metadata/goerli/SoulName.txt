@@ -11,3 +11,10 @@ Hash: 3c0ec46b626b04dcdfc63c494a1185ab27f1d55181137f85108e097e225a1d8a
 https://arweave.app/tx/M6CTrV07E0yffM-LAy7CQEp2JbhQTaadApTAtZw4llY
 https://arweave.net/M6CTrV07E0yffM-LAy7CQEp2JbhQTaadApTAtZw4llY
 ar://M6CTrV07E0yffM-LAy7CQEp2JbhQTaadApTAtZw4llY
+
+#3:
+Hash: 9d92253b2324964342fed5df35062cf352222492b8d106d33427e45e136b3354
+
+https://arweave.app/tx/bfG2m3VJU19fj6uGgyaxNY0QhK0G7RINYtw-GRVVqTM
+https://arweave.net/bfG2m3VJU19fj6uGgyaxNY0QhK0G7RINYtw-GRVVqTM
+ar://bfG2m3VJU19fj6uGgyaxNY0QhK0G7RINYtw-GRVVqTM
