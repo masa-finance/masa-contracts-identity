@@ -16,7 +16,7 @@ import {
   SoulLinker__factory
 } from "../typechain";
 import { BigNumber } from "ethers";
-import { MASA_GOERLI, SWAPROUTER_GOERLI, WETH_GOERLI } from "../src/constants";
+import { MASA_GOERLI, SWAPROUTER_GOERLI, WETH_GOERLI } from "../src/Constants";
 
 chai.use(chaiAsPromised);
 chai.use(solidity);
