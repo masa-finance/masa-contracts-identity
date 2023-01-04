@@ -138,17 +138,23 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard {
     /// @dev This function allows the purchase of a soul name using
     /// stable coin (USDC), native token (ETH) or utility token (MASA)
     /// @param paymentMethod Address of token that user want to pay
+    /// @param to Address of the owner of the new soul name
     /// @param name Name of the new soul name
+    /// @param nameLength Length of the name
     /// @param yearsPeriod Years of validity of the name
     /// @param _tokenURI URI of the NFT
-    /// @param to Address of the new owner of the soul name
+    /// @param authorityAddress Address of the authority
+    /// @param signature Signature of the authority
     /// @return TokenId of the new sou name
     function purchaseName(
         address paymentMethod,
+        address to,
         string memory name,
+        uint256 nameLength,
         uint256 yearsPeriod,
         string memory _tokenURI,
-        address to
+        address authorityAddress,
+        bytes calldata signature
     ) external payable whenNotPaused nonReentrant returns (uint256) {
         _pay(
             paymentMethod,
@@ -156,7 +162,16 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard {
         );
 
         // finalize purchase
-        return _mintSoulName(to, name, yearsPeriod, _tokenURI);
+        return
+            _mintSoulName(
+                to,
+                name,
+                nameLength,
+                yearsPeriod,
+                _tokenURI,
+                authorityAddress,
+                signature
+            );
     }
 
     /* ========== VIEWS ========== */
@@ -257,19 +272,33 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard {
     /// new Soul Name NFT and emit the purchase event
     /// @param to Address of the owner of the new soul name
     /// @param name Name of the new soul name
+    /// @param nameLength Length of the name
     /// @param yearsPeriod Years of validity of the name
     /// @param _tokenURI URI of the NFT
+    /// @param authorityAddress Address of the authority
+    /// @param signature Signature of the authority
     /// @return TokenId of the new soul name
     function _mintSoulName(
         address to,
         string memory name,
+        uint256 nameLength,
         uint256 yearsPeriod,
-        string memory _tokenURI
+        string memory _tokenURI,
+        address authorityAddress,
+        bytes calldata signature
     ) internal returns (uint256) {
         // mint Soul Name token
         ISoulName soulName = soulboundIdentity.getSoulName();
 
-        uint256 tokenId = soulName.mint(to, name, yearsPeriod, _tokenURI);
+        uint256 tokenId = soulName.mint(
+            to,
+            name,
+            nameLength,
+            yearsPeriod,
+            _tokenURI,
+            authorityAddress,
+            signature
+        );
 
         emit SoulNamePurchased(to, tokenId, name, yearsPeriod);
 
