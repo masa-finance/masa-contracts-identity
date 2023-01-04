@@ -97,14 +97,20 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard {
     /// stable coin (USDC), native token (ETH) or utility token (MASA)
     /// @param paymentMethod Address of token that user want to pay
     /// @param name Name of the new soul name
+    /// @param nameLength Length of the name
     /// @param yearsPeriod Years of validity of the name
     /// @param _tokenURI URI of the NFT
+    /// @param authorityAddress Address of the authority
+    /// @param signature Signature of the authority
     /// @return TokenId of the new soulbound identity
     function purchaseIdentityAndName(
         address paymentMethod,
         string memory name,
+        uint256 nameLength,
         uint256 yearsPeriod,
-        string memory _tokenURI
+        string memory _tokenURI,
+        address authorityAddress,
+        bytes calldata signature
     ) external payable whenNotPaused nonReentrant returns (uint256) {
         _pay(
             paymentMethod,
@@ -116,8 +122,11 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard {
             _mintSoulboundIdentityAndName(
                 _msgSender(),
                 name,
+                nameLength,
                 yearsPeriod,
-                _tokenURI
+                _tokenURI,
+                authorityAddress,
+                signature
             );
     }
 
@@ -231,21 +240,30 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard {
     /// new Soulbound Identity and a Soul Name NFT and emit the purchase event
     /// @param to Address of the owner of the new soul name
     /// @param name Name of the new soul name
+    /// @param nameLength Length of the name
     /// @param yearsPeriod Years of validity of the name
     /// @param _tokenURI URI of the NFT
+    /// @param authorityAddress Address of the authority
+    /// @param signature Signature of the authority
     /// @return TokenId of the new soulbound identity
     function _mintSoulboundIdentityAndName(
         address to,
         string memory name,
+        uint256 nameLength,
         uint256 yearsPeriod,
-        string memory _tokenURI
+        string memory _tokenURI,
+        address authorityAddress,
+        bytes calldata signature
     ) internal returns (uint256) {
         // mint Soulbound identity token
         uint256 tokenId = soulboundIdentity.mintIdentityWithName(
             to,
             name,
+            nameLength,
             yearsPeriod,
-            _tokenURI
+            _tokenURI,
+            authorityAddress,
+            signature
         );
 
         emit SoulboundIdentityAndNamePurchased(to, tokenId, name, yearsPeriod);
