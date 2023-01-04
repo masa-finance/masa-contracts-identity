@@ -1064,4 +1064,70 @@ describe("Soul Store", () => {
       ).to.be.rejectedWith("InvalidPaymentMethod");
     });
   });
+
+  describe("use invalid signature", () => {
+    it("we can't use an invalid signature", async () => {
+      const priceInETH = await soulStore.getPriceForMintingName(
+        ethers.constants.AddressZero,
+        SOUL_NAME.length,
+        YEAR
+      );
+
+      const signature = await signMintSoulName(
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length + 1,
+        YEAR,
+        ARWEAVE_LINK,
+        authority
+      );
+
+      await expect(
+        soulStore
+          .connect(address1)
+          .purchaseIdentityAndName(
+            ethers.constants.AddressZero,
+            SOUL_NAME,
+            SOUL_NAME.length,
+            YEAR,
+            ARWEAVE_LINK,
+            authority.address,
+            signature,
+            { value: priceInETH }
+          )
+      ).to.be.rejectedWith("InvalidSignature");
+    });
+
+    it("we can't use a non authority signature", async () => {
+      const priceInETH = await soulStore.getPriceForMintingName(
+        ethers.constants.AddressZero,
+        SOUL_NAME.length,
+        YEAR
+      );
+
+      const signature = await signMintSoulName(
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length,
+        YEAR,
+        ARWEAVE_LINK,
+        address1
+      );
+
+      await expect(
+        soulStore
+          .connect(address1)
+          .purchaseIdentityAndName(
+            ethers.constants.AddressZero,
+            SOUL_NAME,
+            SOUL_NAME.length,
+            YEAR,
+            ARWEAVE_LINK,
+            address1.address,
+            signature,
+            { value: priceInETH }
+          )
+      ).to.be.rejectedWith("NotAuthorized");
+    });
+  });
 });
