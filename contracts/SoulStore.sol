@@ -361,10 +361,10 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
                             "MintSoulName(address to,string name,uint256 nameLength,uint256 yearsPeriod,string tokenURI)"
                         ),
                         to,
-                        bytes(name),
+                        keccak256(bytes(name)),
                         nameLength,
                         yearsPeriod,
-                        bytes(tokenURI)
+                        keccak256(bytes(tokenURI))
                     )
                 )
             );
