@@ -112,7 +112,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @param name Name of the new soul name
     /// @param nameLength Length of the name
     /// @param yearsPeriod Years of validity of the name
-    /// @param _tokenURI URI of the NFT
+    /// @param tokenURI URI of the NFT
     /// @param authorityAddress Address of the authority
     /// @param signature Signature of the authority
     /// @return TokenId of the new soulbound identity
@@ -121,7 +121,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         string memory name,
         uint256 nameLength,
         uint256 yearsPeriod,
-        string memory _tokenURI,
+        string memory tokenURI,
         address authorityAddress,
         bytes calldata signature
     ) external payable whenNotPaused nonReentrant returns (uint256) {
@@ -137,7 +137,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
                 name,
                 nameLength,
                 yearsPeriod,
-                _tokenURI,
+                tokenURI,
                 authorityAddress,
                 signature
             );
@@ -164,7 +164,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @param name Name of the new soul name
     /// @param nameLength Length of the name
     /// @param yearsPeriod Years of validity of the name
-    /// @param _tokenURI URI of the NFT
+    /// @param tokenURI URI of the NFT
     /// @param authorityAddress Address of the authority
     /// @param signature Signature of the authority
     /// @return TokenId of the new sou name
@@ -174,7 +174,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         string memory name,
         uint256 nameLength,
         uint256 yearsPeriod,
-        string memory _tokenURI,
+        string memory tokenURI,
         address authorityAddress,
         bytes calldata signature
     ) external payable whenNotPaused nonReentrant returns (uint256) {
@@ -190,7 +190,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
                 name,
                 nameLength,
                 yearsPeriod,
-                _tokenURI,
+                tokenURI,
                 authorityAddress,
                 signature
             );
@@ -254,7 +254,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @param name Name of the new soul name
     /// @param nameLength Length of the name
     /// @param yearsPeriod Years of validity of the name
-    /// @param _tokenURI URI of the NFT
+    /// @param tokenURI URI of the NFT
     /// @param authorityAddress Address of the authority
     /// @param signature Signature of the authority
     /// @return TokenId of the new soulbound identity
@@ -263,12 +263,12 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         string memory name,
         uint256 nameLength,
         uint256 yearsPeriod,
-        string memory _tokenURI,
+        string memory tokenURI,
         address authorityAddress,
         bytes calldata signature
     ) internal returns (uint256) {
         _verify(
-            _hash(to, name, nameLength, yearsPeriod, _tokenURI),
+            _hash(to, name, nameLength, yearsPeriod, tokenURI),
             signature,
             authorityAddress
         );
@@ -278,7 +278,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
             to,
             name,
             yearsPeriod,
-            _tokenURI
+            tokenURI
         );
 
         emit SoulboundIdentityAndNamePurchased(to, tokenId, name, yearsPeriod);
@@ -307,7 +307,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @param name Name of the new soul name
     /// @param nameLength Length of the name
     /// @param yearsPeriod Years of validity of the name
-    /// @param _tokenURI URI of the NFT
+    /// @param tokenURI URI of the NFT
     /// @param authorityAddress Address of the authority
     /// @param signature Signature of the authority
     /// @return TokenId of the new soul name
@@ -316,12 +316,12 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         string memory name,
         uint256 nameLength,
         uint256 yearsPeriod,
-        string memory _tokenURI,
+        string memory tokenURI,
         address authorityAddress,
         bytes calldata signature
     ) internal returns (uint256) {
         _verify(
-            _hash(to, name, nameLength, yearsPeriod, _tokenURI),
+            _hash(to, name, nameLength, yearsPeriod, tokenURI),
             signature,
             authorityAddress
         );
@@ -329,7 +329,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         // mint Soul Name token
         ISoulName soulName = soulboundIdentity.getSoulName();
 
-        uint256 tokenId = soulName.mint(to, name, yearsPeriod, _tokenURI);
+        uint256 tokenId = soulName.mint(to, name, yearsPeriod, tokenURI);
 
         emit SoulNamePurchased(to, tokenId, name, yearsPeriod);
 
@@ -351,20 +351,20 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         string memory name,
         uint256 nameLength,
         uint256 yearsPeriod,
-        string memory _tokenURI
+        string memory tokenURI
     ) internal view returns (bytes32) {
         return
             _hashTypedDataV4(
                 keccak256(
                     abi.encode(
                         keccak256(
-                            "MintSoulName(address to,string name,uint256 nameLength,uint256 yearsPeriod,string _tokenURI)"
+                            "MintSoulName(address to,string name,uint256 nameLength,uint256 yearsPeriod,string tokenURI)"
                         ),
                         to,
                         bytes(name),
                         nameLength,
                         yearsPeriod,
-                        bytes(_tokenURI)
+                        bytes(tokenURI)
                     )
                 )
             );
