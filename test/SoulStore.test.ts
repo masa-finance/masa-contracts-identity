@@ -119,7 +119,7 @@ describe("Soul Store", () => {
         .setNameRegistrationPricePerYear(0, newPrice);
 
       expect(
-        await soulStore.getNameRegistrationPricePerYear(SOUL_NAME)
+        await soulStore.getNameRegistrationPricePerYear(SOUL_NAME.length)
       ).to.be.equal(newPrice);
     });
 
