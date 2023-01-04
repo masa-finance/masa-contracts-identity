@@ -291,7 +291,7 @@ Mints a new Soulbound Identity purchasing it
 ### purchaseIdentityAndName
 
 ```solidity
-function purchaseIdentityAndName(address paymentMethod, string name, uint256 nameLength, uint256 yearsPeriod, string _tokenURI, address authorityAddress, bytes signature) external payable returns (uint256)
+function purchaseIdentityAndName(address paymentMethod, string name, uint256 nameLength, uint256 yearsPeriod, string tokenURI, address authorityAddress, bytes signature) external payable returns (uint256)
 ```
 
 Mints a new Soulbound Identity and Name purchasing it
@@ -306,7 +306,7 @@ Mints a new Soulbound Identity and Name purchasing it
 | name | string | Name of the new soul name |
 | nameLength | uint256 | Length of the name |
 | yearsPeriod | uint256 | Years of validity of the name |
-| _tokenURI | string | URI of the NFT |
+| tokenURI | string | URI of the NFT |
 | authorityAddress | address | Address of the authority |
 | signature | bytes | Signature of the authority |
 
@@ -319,7 +319,7 @@ Mints a new Soulbound Identity and Name purchasing it
 ### purchaseName
 
 ```solidity
-function purchaseName(address paymentMethod, address to, string name, uint256 nameLength, uint256 yearsPeriod, string _tokenURI, address authorityAddress, bytes signature) external payable returns (uint256)
+function purchaseName(address paymentMethod, address to, string name, uint256 nameLength, uint256 yearsPeriod, string tokenURI, address authorityAddress, bytes signature) external payable returns (uint256)
 ```
 
 Mints a new Soul Name purchasing it
@@ -335,7 +335,7 @@ Mints a new Soul Name purchasing it
 | name | string | Name of the new soul name |
 | nameLength | uint256 | Length of the name |
 | yearsPeriod | uint256 | Years of validity of the name |
-| _tokenURI | string | URI of the NFT |
+| tokenURI | string | URI of the NFT |
 | authorityAddress | address | Address of the authority |
 | signature | bytes | Signature of the authority |
 
