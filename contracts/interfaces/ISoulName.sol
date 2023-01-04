@@ -8,6 +8,7 @@ interface ISoulName {
         uint256 nameLength,
         uint256 yearsPeriod,
         string memory _tokenURI,
+        address authorityAddress,
         bytes calldata signature
     ) external returns (uint256);
 

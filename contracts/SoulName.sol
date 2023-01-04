@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
+import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
@@ -15,7 +16,7 @@ import "./tokens/MasaNFT.sol";
 /// @notice SoulName NFT that points to a Soulbound identity token
 /// @dev SoulName NFT, that inherits from the NFT contract, and points to a Soulbound identity token.
 /// It has an extension, and stores all the information about the identity names.
-contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
+contract SoulName is MasaNFT, ISoulName, ReentrancyGuard, EIP712 {
     /* ========== STATE VARIABLES ========== */
     using SafeMath for uint256;
 
@@ -34,6 +35,8 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
 
     mapping(uint256 => TokenData) public tokenData; // used to store the data of the token id
     mapping(string => NameData) public nameData; // stores the token id of the current active soul name
+
+    mapping(address => bool) public authorities;
 
     struct TokenData {
         string name; // Name with lowercase and uppercase
@@ -58,7 +61,7 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         ISoulboundIdentity _soulboundIdentity,
         string memory _extension,
         string memory _contractURI
-    ) MasaNFT(admin, "Masa Soul Name", "MSN", "") {
+    ) MasaNFT(admin, "Masa Soul Name", "MSN", "") EIP712("SoulName", "1.0.0") {
         if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
 
         soulboundIdentity = _soulboundIdentity;
@@ -102,6 +105,16 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         contractURI = _contractURI;
     }
 
+    /// @notice Adds a new authority to the list of authorities
+    /// @dev The caller must have the admin to call this function
+    /// @param _authority New authority to add
+    function addAuthority(address _authority) external onlyOwner {
+        if (_authority == address(0)) revert ZeroAddress();
+        if (authorities[_authority]) revert AlreadyAdded();
+
+        authorities[_authority] = true;
+    }
+
     /* ========== MUTATIVE FUNCTIONS ========== */
 
     /// @notice Mints a new soul name
@@ -111,6 +124,7 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     /// @param nameLength Length of the name
     /// @param yearsPeriod Years of validity of the name
     /// @param _tokenURI URI of the NFT
+    /// @param authorityAddress Address of the authority
     /// @param signature Signature of the authority
     function mint(
         address to,
@@ -118,6 +132,7 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         uint256 nameLength,
         uint256 yearsPeriod,
         string memory _tokenURI,
+        address authorityAddress,
         bytes calldata signature
     ) public override nonReentrant returns (uint256) {
         if (!isAvailable(name)) revert NameAlreadyExists(name);
@@ -130,6 +145,12 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
             !Utils.startsWith(_tokenURI, "ar://") &&
             !Utils.startsWith(_tokenURI, "ipfs://")
         ) revert InvalidTokenURI(_tokenURI);
+
+        _verify(
+            _hash(to, name, nameLength, yearsPeriod, _tokenURI),
+            signature,
+            authorityAddress
+        );
 
         uint256 tokenId = _mintWithCounter(to);
         _setTokenURI(tokenId, _tokenURI);
@@ -407,6 +428,40 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
 
         _tokenURIs[tokenId] = _tokenURI;
         _URIs[_tokenURI] = true;
+    }
+
+    function _verify(
+        bytes32 digest,
+        bytes memory signature,
+        address signer
+    ) internal view {
+        address _signer = ECDSA.recover(digest, signature);
+        if (_signer != signer) revert InvalidSignature();
+        if (!authorities[_signer]) revert NotAuthorized(_signer);
+    }
+
+    function _hash(
+        address to,
+        string memory name,
+        uint256 nameLength,
+        uint256 yearsPeriod,
+        string memory _tokenURI
+    ) internal view returns (bytes32) {
+        return
+            _hashTypedDataV4(
+                keccak256(
+                    abi.encode(
+                        keccak256(
+                            "MintSoulName(address to,string name,uint256 nameLength,uint256 yearsPeriod,string _tokenURI)"
+                        ),
+                        to,
+                        bytes(name),
+                        nameLength,
+                        yearsPeriod,
+                        bytes(_tokenURI)
+                    )
+                )
+            );
     }
 
     /* ========== MODIFIERS ========== */
