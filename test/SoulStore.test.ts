@@ -17,7 +17,7 @@ import {
   USDC_GOERLI,
   SWAPROUTER_GOERLI,
   WETH_GOERLI
-} from "../src/constants";
+} from "../src/Constants";
 
 chai.use(chaiAsPromised);
 chai.use(solidity);
