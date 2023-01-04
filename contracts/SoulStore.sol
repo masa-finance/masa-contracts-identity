@@ -114,7 +114,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard {
     ) external payable whenNotPaused nonReentrant returns (uint256) {
         _pay(
             paymentMethod,
-            getPriceForMintingName(paymentMethod, name, yearsPeriod)
+            getPriceForMintingName(paymentMethod, nameLength, yearsPeriod)
         );
 
         // finalize purchase
@@ -167,7 +167,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard {
     ) external payable whenNotPaused nonReentrant returns (uint256) {
         _pay(
             paymentMethod,
-            getPriceForMintingName(paymentMethod, name, yearsPeriod)
+            getPriceForMintingName(paymentMethod, nameLength, yearsPeriod)
         );
 
         // finalize purchase
@@ -189,13 +189,12 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard {
     /// @dev Returns the price for registering per year in USD for an specific name length
     /// @param nameLength Length of the name
     /// @return Price in stable coin for that name length
-    function getNameRegistrationPricePerYear(string memory nameLength)
+    function getNameRegistrationPricePerYear(uint256 nameLength)
         public
         view
         returns (uint256)
     {
-        uint256 bytelength = bytes(nameLength).length;
-        uint256 price = nameRegistrationPricePerYear[bytelength];
+        uint256 price = nameRegistrationPricePerYear[nameLength];
         if (price == 0) {
             // if not found, return the default price
             price = nameRegistrationPricePerYear[0];
@@ -206,15 +205,15 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard {
     /// @notice Returns the price of the name minting
     /// @dev Returns current pricing for name minting for a given name length and years period
     /// @param paymentMethod Address of token that user want to pay
-    /// @param name Name of the new soul name
+    /// @param nameLength Length of the name
     /// @param yearsPeriod Years of validity of the name
     /// @return Current price of the name minting in the given payment method
     function getPriceForMintingName(
         address paymentMethod,
-        string memory name,
+        uint256 nameLength,
         uint256 yearsPeriod
     ) public view returns (uint256) {
-        uint256 mintPrice = getNameRegistrationPricePerYear(name).mul(
+        uint256 mintPrice = getNameRegistrationPricePerYear(nameLength).mul(
             yearsPeriod
         );
 

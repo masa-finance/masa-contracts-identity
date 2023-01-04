@@ -106,7 +106,7 @@ Returns all available payment methods
 ### getNameRegistrationPricePerYear
 
 ```solidity
-function getNameRegistrationPricePerYear(string nameLength) external view returns (uint256)
+function getNameRegistrationPricePerYear(uint256 nameLength) external view returns (uint256)
 ```
 
 Returns the price of register a name per year in stable coin for an specific length
@@ -117,7 +117,7 @@ Returns the price of register a name per year in stable coin for an specific len
 
 | Name | Type | Description |
 |---|---|---|
-| nameLength | string | Length of the name |
+| nameLength | uint256 | Length of the name |
 
 #### Returns
 
@@ -128,7 +128,7 @@ Returns the price of register a name per year in stable coin for an specific len
 ### getPriceForMintingName
 
 ```solidity
-function getPriceForMintingName(address paymentMethod, string name, uint256 yearsPeriod) external view returns (uint256)
+function getPriceForMintingName(address paymentMethod, uint256 nameLength, uint256 yearsPeriod) external view returns (uint256)
 ```
 
 Returns the price of the name minting
@@ -140,7 +140,7 @@ Returns the price of the name minting
 | Name | Type | Description |
 |---|---|---|
 | paymentMethod | address | Address of token that user want to pay |
-| name | string | Name of the new soul name |
+| nameLength | uint256 | Length of the name |
 | yearsPeriod | uint256 | Years of validity of the name |
 
 #### Returns
