@@ -10,6 +10,44 @@ Soul Store, that can mint new Soulbound Identities and Soul Name NFTs, paying a 
 
 ## Methods
 
+### addAuthority
+
+```solidity
+function addAuthority(address _authority) external nonpayable
+```
+
+Adds a new authority to the list of authorities
+
+*The caller must have the admin to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _authority | address | New authority to add |
+
+### authorities
+
+```solidity
+function authorities(address) external view returns (bool)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bool | undefined |
+
 ### disablePaymentMethod
 
 ```solidity
@@ -698,6 +736,17 @@ error InvalidPaymentMethod(address paymentMethod)
 |---|---|---|
 | paymentMethod | address | undefined |
 
+### InvalidSignature
+
+```solidity
+error InvalidSignature()
+```
+
+
+
+
+
+
 ### InvalidToken
 
 ```solidity
@@ -729,6 +778,22 @@ error NonExistingErc20Token(address erc20token)
 | Name | Type | Description |
 |---|---|---|
 | erc20token | address | undefined |
+
+### NotAuthorized
+
+```solidity
+error NotAuthorized(address signer)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| signer | address | undefined |
 
 ### RefundFailed
 

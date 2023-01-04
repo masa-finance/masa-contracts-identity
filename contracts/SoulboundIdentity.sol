@@ -61,30 +61,16 @@ contract SoulboundIdentity is
     /// @dev The caller can only mint one identity per address, and the name must be unique
     /// @param to Address of the admin of the new identity
     /// @param name Name of the new identity
-    /// @param nameLength Length of the name
     /// @param yearsPeriod Years of validity of the name
     /// @param _tokenURI URI of the NFT
-    /// @param authorityAddress Address of the authority
-    /// @param signature Signature of the authority
     function mintIdentityWithName(
         address to,
         string memory name,
-        uint256 nameLength,
         uint256 yearsPeriod,
-        string memory _tokenURI,
-        address authorityAddress,
-        bytes calldata signature
+        string memory _tokenURI
     ) external override soulNameAlreadySet nonReentrant returns (uint256) {
         uint256 identityId = mint(to);
-        soulName.mint(
-            to,
-            name,
-            nameLength,
-            yearsPeriod,
-            _tokenURI,
-            authorityAddress,
-            signature
-        );
+        soulName.mint(to, name, yearsPeriod, _tokenURI);
 
         return identityId;
     }

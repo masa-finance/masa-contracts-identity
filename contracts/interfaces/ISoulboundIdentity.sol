@@ -11,11 +11,8 @@ interface ISoulboundIdentity is ISBT {
     function mintIdentityWithName(
         address to,
         string memory name,
-        uint256 nameLength,
         uint256 yearsPeriod,
-        string memory _tokenURI,
-        address authorityAddress,
-        bytes calldata signature
+        string memory _tokenURI
     ) external returns (uint256);
 
     function getSoulName() external view returns (ISoulName);

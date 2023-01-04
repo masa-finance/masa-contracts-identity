@@ -5,11 +5,8 @@ interface ISoulName {
     function mint(
         address to,
         string memory name,
-        uint256 nameLength,
         uint256 yearsPeriod,
-        string memory _tokenURI,
-        address authorityAddress,
-        bytes calldata signature
+        string memory _tokenURI
     ) external returns (uint256);
 
     function getExtension() external view returns (string memory);

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.7;
 
+import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
@@ -15,7 +16,7 @@ import "./interfaces/ISoulName.sol";
 /// @notice Soul Store, that can mint new Soulbound Identities and Soul Name NFTs, paying a fee
 /// @dev From this smart contract we can mint new Soulbound Identities and Soul Name NFTs.
 /// This minting can be done paying a fee in ETH, USDC or MASA
-contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard {
+contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     using SafeMath for uint256;
 
     /* ========== STATE VARIABLES ========== */
@@ -23,6 +24,8 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard {
     ISoulboundIdentity public soulboundIdentity;
 
     mapping(uint256 => uint256) public nameRegistrationPricePerYear; // (length --> price in stable coin per year)
+
+    mapping(address => bool) public authorities;
 
     /* ========== INITIALIZE ========== */
 
@@ -38,7 +41,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard {
         ISoulboundIdentity _soulBoundIdentity,
         uint256 _nameRegistrationPricePerYear,
         PaymentParams memory paymentParams
-    ) PaymentGateway(owner, paymentParams) {
+    ) PaymentGateway(owner, paymentParams) EIP712("SoulStore", "1.0.0") {
         if (address(_soulBoundIdentity) == address(0)) revert ZeroAddress();
 
         soulboundIdentity = _soulBoundIdentity;
@@ -76,6 +79,16 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard {
         nameRegistrationPricePerYear[
             _nameLength
         ] = _nameRegistrationPricePerYear;
+    }
+
+    /// @notice Adds a new authority to the list of authorities
+    /// @dev The caller must have the admin to call this function
+    /// @param _authority New authority to add
+    function addAuthority(address _authority) external onlyOwner {
+        if (_authority == address(0)) revert ZeroAddress();
+        if (authorities[_authority]) revert AlreadyAdded();
+
+        authorities[_authority] = true;
     }
 
     /// @notice Pauses the smart contract
@@ -254,15 +267,18 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard {
         address authorityAddress,
         bytes calldata signature
     ) internal returns (uint256) {
+        _verify(
+            _hash(to, name, nameLength, yearsPeriod, _tokenURI),
+            signature,
+            authorityAddress
+        );
+
         // mint Soulbound identity token
         uint256 tokenId = soulboundIdentity.mintIdentityWithName(
             to,
             name,
-            nameLength,
             yearsPeriod,
-            _tokenURI,
-            authorityAddress,
-            signature
+            _tokenURI
         );
 
         emit SoulboundIdentityAndNamePurchased(to, tokenId, name, yearsPeriod);
@@ -304,22 +320,54 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard {
         address authorityAddress,
         bytes calldata signature
     ) internal returns (uint256) {
+        _verify(
+            _hash(to, name, nameLength, yearsPeriod, _tokenURI),
+            signature,
+            authorityAddress
+        );
+
         // mint Soul Name token
         ISoulName soulName = soulboundIdentity.getSoulName();
 
-        uint256 tokenId = soulName.mint(
-            to,
-            name,
-            nameLength,
-            yearsPeriod,
-            _tokenURI,
-            authorityAddress,
-            signature
-        );
+        uint256 tokenId = soulName.mint(to, name, yearsPeriod, _tokenURI);
 
         emit SoulNamePurchased(to, tokenId, name, yearsPeriod);
 
         return tokenId;
+    }
+
+    function _verify(
+        bytes32 digest,
+        bytes memory signature,
+        address signer
+    ) internal view {
+        address _signer = ECDSA.recover(digest, signature);
+        if (_signer != signer) revert InvalidSignature();
+        if (!authorities[_signer]) revert NotAuthorized(_signer);
+    }
+
+    function _hash(
+        address to,
+        string memory name,
+        uint256 nameLength,
+        uint256 yearsPeriod,
+        string memory _tokenURI
+    ) internal view returns (bytes32) {
+        return
+            _hashTypedDataV4(
+                keccak256(
+                    abi.encode(
+                        keccak256(
+                            "MintSoulName(address to,string name,uint256 nameLength,uint256 yearsPeriod,string _tokenURI)"
+                        ),
+                        to,
+                        bytes(name),
+                        nameLength,
+                        yearsPeriod,
+                        bytes(_tokenURI)
+                    )
+                )
+            );
     }
 
     /* ========== MODIFIERS ========== */

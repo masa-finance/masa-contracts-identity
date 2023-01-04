@@ -352,7 +352,7 @@ Mints a new soulbound identity
 ### mintIdentityWithName
 
 ```solidity
-function mintIdentityWithName(address to, string name, uint256 nameLength, uint256 yearsPeriod, string _tokenURI, address authorityAddress, bytes signature) external nonpayable returns (uint256)
+function mintIdentityWithName(address to, string name, uint256 yearsPeriod, string _tokenURI) external nonpayable returns (uint256)
 ```
 
 Mints a new soulbound identity with a SoulName associated to it
@@ -365,11 +365,8 @@ Mints a new soulbound identity with a SoulName associated to it
 |---|---|---|
 | to | address | Address of the admin of the new identity |
 | name | string | Name of the new identity |
-| nameLength | uint256 | Length of the name |
 | yearsPeriod | uint256 | Years of validity of the name |
 | _tokenURI | string | URI of the NFT |
-| authorityAddress | address | Address of the authority |
-| signature | bytes | Signature of the authority |
 
 #### Returns
 
