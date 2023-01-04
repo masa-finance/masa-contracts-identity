@@ -108,16 +108,21 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     /// @dev The caller can mint more than one name. The soul name must be unique.
     /// @param to Address of the owner of the new soul name
     /// @param name Name of the new soul name
+    /// @param nameLength Length of the name
     /// @param yearsPeriod Years of validity of the name
     /// @param _tokenURI URI of the NFT
+    /// @param signature Signature of the authority
     function mint(
         address to,
         string memory name,
+        uint256 nameLength,
         uint256 yearsPeriod,
-        string memory _tokenURI
+        string memory _tokenURI,
+        bytes calldata signature
     ) public override nonReentrant returns (uint256) {
         if (!isAvailable(name)) revert NameAlreadyExists(name);
         if (bytes(name).length == 0) revert ZeroLengthName(name);
+        if (nameLength == 0) revert ZeroLengthName(name);
         if (yearsPeriod == 0) revert ZeroYearsPeriod(yearsPeriod);
         if (soulboundIdentity.balanceOf(to) == 0)
             revert AddressDoesNotHaveIdentity(to);
