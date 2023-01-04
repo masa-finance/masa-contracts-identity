@@ -44,6 +44,22 @@ function MINTER_ROLE() external view returns (bytes32)
 |---|---|---|
 | _0 | bytes32 | undefined |
 
+### addAuthority
+
+```solidity
+function addAuthority(address _authority) external nonpayable
+```
+
+Adds a new authority to the list of authorities
+
+*The caller must have the admin to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _authority | address | New authority to add |
+
 ### approve
 
 ```solidity
@@ -60,6 +76,28 @@ function approve(address to, uint256 tokenId) external nonpayable
 |---|---|---|
 | to | address | undefined |
 | tokenId | uint256 | undefined |
+
+### authorities
+
+```solidity
+function authorities(address) external view returns (bool)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bool | undefined |
 
 ### balanceOf
 
@@ -397,7 +435,7 @@ Checks if a soul name is available
 ### mint
 
 ```solidity
-function mint(address to, string name, uint256 yearsPeriod, string _tokenURI) external nonpayable returns (uint256)
+function mint(address to, string name, uint256 nameLength, uint256 yearsPeriod, string _tokenURI, address authorityAddress, bytes signature) external nonpayable returns (uint256)
 ```
 
 Mints a new soul name
@@ -410,8 +448,11 @@ Mints a new soul name
 |---|---|---|
 | to | address | Address of the owner of the new soul name |
 | name | string | Name of the new soul name |
+| nameLength | uint256 | Length of the name |
 | yearsPeriod | uint256 | Years of validity of the name |
 | _tokenURI | string | URI of the NFT |
+| authorityAddress | address | Address of the authority |
+| signature | bytes | Signature of the authority |
 
 #### Returns
 
@@ -1048,6 +1089,17 @@ error AddressDoesNotHaveIdentity(address to)
 |---|---|---|
 | to | address | undefined |
 
+### AlreadyAdded
+
+```solidity
+error AlreadyAdded()
+```
+
+
+
+
+
+
 ### CallerNotOwner
 
 ```solidity
@@ -1063,6 +1115,17 @@ error CallerNotOwner(address caller)
 | Name | Type | Description |
 |---|---|---|
 | caller | address | undefined |
+
+### InvalidSignature
+
+```solidity
+error InvalidSignature()
+```
+
+
+
+
+
 
 ### InvalidTokenURI
 
@@ -1128,6 +1191,22 @@ error NameRegisteredByOtherAccount(string name, uint256 tokenId)
 |---|---|---|
 | name | string | undefined |
 | tokenId | uint256 | undefined |
+
+### NotAuthorized
+
+```solidity
+error NotAuthorized(address signer)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| signer | address | undefined |
 
 ### SameValue
 
