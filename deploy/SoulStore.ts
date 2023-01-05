@@ -3,7 +3,7 @@ import { getEnvParams, getPrivateKey } from "../src/EnvParams";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
 import { paymentParams } from "../src/PaymentParams";
-import { MASA_GOERLI, USDC_GOERLI } from "../src/constants";
+import { MASA_GOERLI, USDC_GOERLI } from "../src/Constants";
 
 let admin: SignerWithAddress;
 
