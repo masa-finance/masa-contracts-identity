@@ -122,8 +122,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
         if (readerAddress != _msgSender()) revert CallerNotReader(_msgSender());
         if (ownerIdentityId == readerIdentityId)
             revert IdentityOwnerIsReader(readerIdentityId);
-        if (signatureDate == 0)
-            revert InvalidSignatureDate(signatureDate);
+        if (signatureDate == 0) revert InvalidSignatureDate(signatureDate);
         if (expirationDate < block.timestamp)
             revert ValidPeriodExpired(expirationDate);
         if (_links[token][tokenId][readerIdentityId][signatureDate].exists)
@@ -377,9 +376,11 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
     /// @notice Returns the list of links for a given reader identity id
     /// @param readerIdentityId Id of the identity of the reader of the SBT
     /// @return List of links for the reader
-    function getReaderLinks(
-        uint256 readerIdentityId
-    ) public view returns (ReaderLink[] memory) {
+    function getReaderLinks(uint256 readerIdentityId)
+        public
+        view
+        returns (ReaderLink[] memory)
+    {
         return _readerLinks[readerIdentityId];
     }
 

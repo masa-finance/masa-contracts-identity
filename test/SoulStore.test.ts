@@ -1,7 +1,7 @@
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 import { solidity } from "ethereum-waffle";
-import { ethers, deployments } from "hardhat";
+import { ethers, deployments, getChainId } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
   ERC20,
@@ -29,6 +29,7 @@ let soulStore: SoulStore;
 let owner: SignerWithAddress;
 let address1: SignerWithAddress;
 let address2: SignerWithAddress;
+let authority: SignerWithAddress;
 
 const MINTING_NAME_PRICE_1LETTERS = 50000000000; // 50,000 USDC, with 6 decimals
 const MINTING_NAME_PRICE_2LETTERS = 5000000000; // 5,000 USDC, with 6 decimals
@@ -40,9 +41,50 @@ const SOUL_NAME = "soulNameTest";
 const YEAR = 1; // 1 year
 const ARWEAVE_LINK = "ar://jK9sR4OrYvODj7PD3czIAyNJalub0-vdV_JAg1NqQ-o";
 
+const signMintSoulName = async (
+  to: string,
+  name: string,
+  nameLength: number,
+  yearsPeriod: number,
+  tokenURI: string,
+  authoritySigner: SignerWithAddress
+) => {
+  const chainId = await getChainId();
+
+  const signature = await authoritySigner._signTypedData(
+    // Domain
+    {
+      name: "SoulStore",
+      version: "1.0.0",
+      chainId: chainId,
+      verifyingContract: soulStore.address
+    },
+    // Types
+    {
+      MintSoulName: [
+        { name: "to", type: "address" },
+        { name: "name", type: "string" },
+        { name: "nameLength", type: "uint256" },
+        { name: "yearsPeriod", type: "uint256" },
+        { name: "tokenURI", type: "string" }
+      ]
+    },
+    // Value
+    {
+      to: to,
+      name: name,
+      nameLength: nameLength,
+      yearsPeriod: yearsPeriod,
+      tokenURI: tokenURI
+    }
+  );
+
+  return signature;
+};
+
 describe("Soul Store", () => {
   before(async () => {
-    [, owner, address1, , address2] = await ethers.getSigners();
+    [, owner, address1, , address2, authority] = await ethers.getSigners();
   });
 
   beforeEach(async () => {
@@ -97,6 +139,9 @@ describe("Soul Store", () => {
       .enablePaymentMethod(ethers.constants.AddressZero);
     await soulStore.connect(owner).enablePaymentMethod(USDC_GOERLI);
     await soulStore.connect(owner).enablePaymentMethod(MASA_GOERLI);
+
+    // we add authority account
+    await soulStore.addAuthority(authority.address);
   });
 
   describe("owner functions", () => {
@@ -119,7 +164,7 @@ describe("Soul Store", () => {
         .setNameRegistrationPricePerYear(0, newPrice);
 
       expect(
-        await soulStore.getNameRegistrationPricePerYear(SOUL_NAME)
+        await soulStore.getNameRegistrationPricePerYear(SOUL_NAME.length)
       ).to.be.equal(newPrice);
     });
 
@@ -217,17 +262,17 @@ describe("Soul Store", () => {
     it("we can get name purchase info for 1 and 2 years", async () => {
       const priceInStableCoin1 = await soulStore.getPriceForMintingName(
         await soulStore.stableCoin(),
-        SOUL_NAME,
+        SOUL_NAME.length,
         YEAR
       );
       const priceInETH1 = await soulStore.getPriceForMintingName(
         ethers.constants.AddressZero,
-        SOUL_NAME,
+        SOUL_NAME.length,
         YEAR
       );
       const priceInMasaToken1 = await soulStore.getPriceForMintingName(
         await soulStore.masaToken(),
-        SOUL_NAME,
+        SOUL_NAME.length,
         YEAR
       );
 
@@ -237,17 +282,17 @@ describe("Soul Store", () => {
 
       const priceInStableCoin2 = await soulStore.getPriceForMintingName(
         await soulStore.stableCoin(),
-        SOUL_NAME,
+        SOUL_NAME.length,
         YEAR * 2
       );
       const priceInETH2 = await soulStore.getPriceForMintingName(
         ethers.constants.AddressZero,
-        SOUL_NAME,
+        SOUL_NAME.length,
         YEAR * 2
       );
       const priceInMasaToken2 = await soulStore.getPriceForMintingName(
         await soulStore.masaToken(),
-        SOUL_NAME,
+        SOUL_NAME.length,
         YEAR * 2
       );
 
@@ -261,17 +306,17 @@ describe("Soul Store", () => {
 
       const priceInStableCoin1 = await soulStore.getPriceForMintingName(
         await soulStore.stableCoin(),
-        SOUL_NAME_1LETTERS,
+        SOUL_NAME_1LETTERS.length,
         YEAR
       );
       const priceInETH1 = await soulStore.getPriceForMintingName(
         ethers.constants.AddressZero,
-        SOUL_NAME_1LETTERS,
+        SOUL_NAME_1LETTERS.length,
         YEAR
       );
       const priceInMasaToken1 = await soulStore.getPriceForMintingName(
         await soulStore.masaToken(),
-        SOUL_NAME_1LETTERS,
+        SOUL_NAME_1LETTERS.length,
         YEAR
       );
 
@@ -281,17 +326,17 @@ describe("Soul Store", () => {
 
       const priceInStableCoin2 = await soulStore.getPriceForMintingName(
         await soulStore.stableCoin(),
-        SOUL_NAME_1LETTERS,
+        SOUL_NAME_1LETTERS.length,
         YEAR * 2
       );
       const priceInETH2 = await soulStore.getPriceForMintingName(
         ethers.constants.AddressZero,
-        SOUL_NAME_1LETTERS,
+        SOUL_NAME_1LETTERS.length,
         YEAR * 2
       );
       const priceInMasaToken2 = await soulStore.getPriceForMintingName(
         await soulStore.masaToken(),
-        SOUL_NAME_1LETTERS,
+        SOUL_NAME_1LETTERS.length,
         YEAR * 2
       );
 
@@ -305,17 +350,17 @@ describe("Soul Store", () => {
 
       const priceInStableCoin1 = await soulStore.getPriceForMintingName(
         await soulStore.stableCoin(),
-        SOUL_NAME_2LETTERS,
+        SOUL_NAME_2LETTERS.length,
         YEAR
       );
       const priceInETH1 = await soulStore.getPriceForMintingName(
         ethers.constants.AddressZero,
-        SOUL_NAME_2LETTERS,
+        SOUL_NAME_2LETTERS.length,
         YEAR
       );
       const priceInMasaToken1 = await soulStore.getPriceForMintingName(
         await soulStore.masaToken(),
-        SOUL_NAME_2LETTERS,
+        SOUL_NAME_2LETTERS.length,
         YEAR
       );
 
@@ -325,17 +370,17 @@ describe("Soul Store", () => {
 
       const priceInStableCoin2 = await soulStore.getPriceForMintingName(
         await soulStore.stableCoin(),
-        SOUL_NAME_2LETTERS,
+        SOUL_NAME_2LETTERS.length,
         YEAR * 2
       );
       const priceInETH2 = await soulStore.getPriceForMintingName(
         ethers.constants.AddressZero,
-        SOUL_NAME_2LETTERS,
+        SOUL_NAME_2LETTERS.length,
         YEAR * 2
       );
       const priceInMasaToken2 = await soulStore.getPriceForMintingName(
         await soulStore.masaToken(),
-        SOUL_NAME_2LETTERS,
+        SOUL_NAME_2LETTERS.length,
         YEAR * 2
       );
 
@@ -349,17 +394,17 @@ describe("Soul Store", () => {
 
       const priceInStableCoin1 = await soulStore.getPriceForMintingName(
         await soulStore.stableCoin(),
-        SOUL_NAME_3LETTERS,
+        SOUL_NAME_3LETTERS.length,
         YEAR
       );
       const priceInETH1 = await soulStore.getPriceForMintingName(
         ethers.constants.AddressZero,
-        SOUL_NAME_3LETTERS,
+        SOUL_NAME_3LETTERS.length,
         YEAR
       );
       const priceInMasaToken1 = await soulStore.getPriceForMintingName(
         await soulStore.masaToken(),
-        SOUL_NAME_3LETTERS,
+        SOUL_NAME_3LETTERS.length,
         YEAR
       );
 
@@ -369,17 +414,17 @@ describe("Soul Store", () => {
 
       const priceInStableCoin2 = await soulStore.getPriceForMintingName(
         await soulStore.stableCoin(),
-        SOUL_NAME_3LETTERS,
+        SOUL_NAME_3LETTERS.length,
         YEAR * 2
       );
       const priceInETH2 = await soulStore.getPriceForMintingName(
         ethers.constants.AddressZero,
-        SOUL_NAME_3LETTERS,
+        SOUL_NAME_3LETTERS.length,
         YEAR * 2
       );
       const priceInMasaToken2 = await soulStore.getPriceForMintingName(
         await soulStore.masaToken(),
-        SOUL_NAME_3LETTERS,
+        SOUL_NAME_3LETTERS.length,
         YEAR * 2
       );
 
@@ -393,17 +438,17 @@ describe("Soul Store", () => {
 
       const priceInStableCoin1 = await soulStore.getPriceForMintingName(
         await soulStore.stableCoin(),
-        SOUL_NAME_4LETTERS,
+        SOUL_NAME_4LETTERS.length,
         YEAR
       );
       const priceInETH1 = await soulStore.getPriceForMintingName(
         ethers.constants.AddressZero,
-        SOUL_NAME_4LETTERS,
+        SOUL_NAME_4LETTERS.length,
         YEAR
       );
       const priceInMasaToken1 = await soulStore.getPriceForMintingName(
         await soulStore.masaToken(),
-        SOUL_NAME_4LETTERS,
+        SOUL_NAME_4LETTERS.length,
         YEAR
       );
 
@@ -413,17 +458,17 @@ describe("Soul Store", () => {
 
       const priceInStableCoin2 = await soulStore.getPriceForMintingName(
         await soulStore.stableCoin(),
-        SOUL_NAME_4LETTERS,
+        SOUL_NAME_4LETTERS.length,
         YEAR * 2
       );
       const priceInETH2 = await soulStore.getPriceForMintingName(
         ethers.constants.AddressZero,
-        SOUL_NAME_4LETTERS,
+        SOUL_NAME_4LETTERS.length,
         YEAR * 2
       );
       const priceInMasaToken2 = await soulStore.getPriceForMintingName(
         await soulStore.masaToken(),
-        SOUL_NAME_4LETTERS,
+        SOUL_NAME_4LETTERS.length,
         YEAR * 2
       );
 
@@ -438,18 +483,30 @@ describe("Soul Store", () => {
       const reserveWallet = await soulStore.reserveWallet();
       const priceInETH = await soulStore.getPriceForMintingName(
         ethers.constants.AddressZero,
-        SOUL_NAME,
+        SOUL_NAME.length,
         YEAR
       );
       const reserveWalletBalanceBefore = await ethers.provider.getBalance(
         reserveWallet
       );
 
+      const signature = await signMintSoulName(
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length,
+        YEAR,
+        ARWEAVE_LINK,
+        authority
+      );
+
       await soulStore.connect(address1).purchaseIdentityAndName(
         ethers.constants.AddressZero, // ETH
         SOUL_NAME,
+        SOUL_NAME.length,
         YEAR,
         ARWEAVE_LINK,
+        authority.address,
+        signature,
         { value: priceInETH }
       );
 
@@ -467,7 +524,7 @@ describe("Soul Store", () => {
       const reserveWallet = await soulStore.reserveWallet();
       const priceInStableCoin = await soulStore.getPriceForMintingName(
         await soulStore.stableCoin(),
-        SOUL_NAME,
+        SOUL_NAME.length,
         YEAR
       );
 
@@ -478,11 +535,23 @@ describe("Soul Store", () => {
         .approve(soulStore.address, priceInStableCoin);
       const reserveWalletBalanceBefore = await usdc.balanceOf(reserveWallet);
 
+      const signature = await signMintSoulName(
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length,
+        YEAR,
+        ARWEAVE_LINK,
+        authority
+      );
+
       await soulStore.connect(address1).purchaseIdentityAndName(
         USDC_GOERLI, // USDC
         SOUL_NAME,
+        SOUL_NAME.length,
         YEAR,
-        ARWEAVE_LINK
+        ARWEAVE_LINK,
+        authority.address,
+        signature
       );
 
       const reserveWalletBalanceAfter = await usdc.balanceOf(reserveWallet);
@@ -497,7 +566,7 @@ describe("Soul Store", () => {
       const reserveWallet = await soulStore.reserveWallet();
       const priceInMasaToken = await soulStore.getPriceForMintingName(
         await soulStore.masaToken(),
-        SOUL_NAME,
+        SOUL_NAME.length,
         YEAR
       );
 
@@ -506,11 +575,23 @@ describe("Soul Store", () => {
       await masa.connect(address1).approve(soulStore.address, priceInMasaToken);
       const reserveWalletBalanceBefore = await masa.balanceOf(reserveWallet);
 
+      const signature = await signMintSoulName(
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length,
+        YEAR,
+        ARWEAVE_LINK,
+        authority
+      );
+
       await soulStore.connect(address1).purchaseIdentityAndName(
         MASA_GOERLI, // MASA
         SOUL_NAME,
+        SOUL_NAME.length,
         YEAR,
-        ARWEAVE_LINK
+        ARWEAVE_LINK,
+        authority.address,
+        signature
       );
 
       const reserveWalletBalanceAfter = await masa.balanceOf(reserveWallet);
@@ -524,16 +605,28 @@ describe("Soul Store", () => {
     it("we can't purchase an identity and name with ETH if we pay less", async () => {
       const priceInETH = await soulStore.getPriceForMintingName(
         ethers.constants.AddressZero,
-        SOUL_NAME,
+        SOUL_NAME.length,
         YEAR
+      );
+
+      const signature = await signMintSoulName(
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length,
+        YEAR,
+        ARWEAVE_LINK,
+        authority
       );
 
       await expect(
         soulStore.connect(address1).purchaseIdentityAndName(
           ethers.constants.AddressZero, // ETH
           SOUL_NAME,
+          SOUL_NAME.length,
           YEAR,
           ARWEAVE_LINK,
+          authority.address,
+          signature,
           { value: priceInETH.div(2) }
         )
       ).to.be.rejectedWith("InsufficientEthAmount");
@@ -542,7 +635,7 @@ describe("Soul Store", () => {
     it("we can't purchase an identity and name with stable coin if we don't have funds", async () => {
       const priceInStableCoin = await soulStore.getPriceForMintingName(
         await soulStore.stableCoin(),
-        SOUL_NAME,
+        SOUL_NAME.length,
         YEAR
       );
 
@@ -552,12 +645,24 @@ describe("Soul Store", () => {
         .connect(address2)
         .approve(soulStore.address, priceInStableCoin);
 
+      const signature = await signMintSoulName(
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length,
+        YEAR,
+        ARWEAVE_LINK,
+        authority
+      );
+
       await expect(
         soulStore.connect(address2).purchaseIdentityAndName(
           USDC_GOERLI, // USDC
           SOUL_NAME,
+          SOUL_NAME.length,
           YEAR,
-          ARWEAVE_LINK
+          ARWEAVE_LINK,
+          authority.address,
+          signature
         )
       ).to.be.rejected;
     });
@@ -565,7 +670,7 @@ describe("Soul Store", () => {
     it("we can't purchase an identity and name with MASA coin if we don't have funds", async () => {
       const priceInMasaToken = await soulStore.getPriceForMintingName(
         await soulStore.masaToken(),
-        SOUL_NAME,
+        SOUL_NAME.length,
         YEAR
       );
 
@@ -573,12 +678,24 @@ describe("Soul Store", () => {
       const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
       await masa.connect(address2).approve(soulStore.address, priceInMasaToken);
 
+      const signature = await signMintSoulName(
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length,
+        YEAR,
+        ARWEAVE_LINK,
+        authority
+      );
+
       await expect(
         soulStore.connect(address2).purchaseIdentityAndName(
           MASA_GOERLI, // MASA
           SOUL_NAME,
+          SOUL_NAME.length,
           YEAR,
-          ARWEAVE_LINK
+          ARWEAVE_LINK,
+          authority.address,
+          signature
         )
       ).to.be.rejected;
     });
@@ -586,17 +703,29 @@ describe("Soul Store", () => {
     it("we can purchase an identity and name with more ETH receiving the refund", async () => {
       const priceInETH = await soulStore.getPriceForMintingName(
         ethers.constants.AddressZero,
-        SOUL_NAME,
+        SOUL_NAME.length,
         YEAR
       );
 
       const balance = await address1.getBalance();
 
+      const signature = await signMintSoulName(
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length,
+        YEAR,
+        ARWEAVE_LINK,
+        authority
+      );
+
       const tx = await soulStore.connect(address1).purchaseIdentityAndName(
         ethers.constants.AddressZero, // ETH
         SOUL_NAME,
+        SOUL_NAME.length,
         YEAR,
         ARWEAVE_LINK,
+        authority.address,
+        signature,
         { value: priceInETH.mul(2) }
       );
       const receipt = await tx.wait();
@@ -627,16 +756,28 @@ describe("Soul Store", () => {
     it("we can purchase a name with ETH", async () => {
       const priceInETH = await soulStore.getPriceForMintingName(
         ethers.constants.AddressZero,
-        SOUL_NAME,
+        SOUL_NAME.length,
         YEAR
+      );
+
+      const signature = await signMintSoulName(
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length,
+        YEAR,
+        ARWEAVE_LINK,
+        authority
       );
 
       await soulStore.connect(address1).purchaseName(
         ethers.constants.AddressZero, // ETH
+        address1.address,
         SOUL_NAME,
+        SOUL_NAME.length,
         YEAR,
         ARWEAVE_LINK,
-        address1.address,
+        authority.address,
+        signature,
         { value: priceInETH }
       );
     });
@@ -644,7 +785,7 @@ describe("Soul Store", () => {
     it("we can purchase a name with stable coin", async () => {
       const priceInStableCoin = await soulStore.getPriceForMintingName(
         await soulStore.stableCoin(),
-        SOUL_NAME,
+        SOUL_NAME.length,
         YEAR
       );
 
@@ -654,19 +795,31 @@ describe("Soul Store", () => {
         .connect(address1)
         .approve(soulStore.address, priceInStableCoin);
 
-      await soulStore.connect(address1).purchaseName(
-        USDC_GOERLI, // USDC
+      const signature = await signMintSoulName(
+        address1.address,
         SOUL_NAME,
+        SOUL_NAME.length,
         YEAR,
         ARWEAVE_LINK,
-        address1.address
+        authority
+      );
+
+      await soulStore.connect(address1).purchaseName(
+        USDC_GOERLI, // USDC
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length,
+        YEAR,
+        ARWEAVE_LINK,
+        authority.address,
+        signature
       );
     });
 
     it("we can purchase a name with MASA coin", async () => {
       const priceInMasaToken = await soulStore.getPriceForMintingName(
         await soulStore.masaToken(),
-        SOUL_NAME,
+        SOUL_NAME.length,
         YEAR
       );
 
@@ -674,29 +827,53 @@ describe("Soul Store", () => {
       const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
       await masa.connect(address1).approve(soulStore.address, priceInMasaToken);
 
-      await soulStore.connect(address1).purchaseName(
-        MASA_GOERLI, // MASA
+      const signature = await signMintSoulName(
+        address1.address,
         SOUL_NAME,
+        SOUL_NAME.length,
         YEAR,
         ARWEAVE_LINK,
-        address1.address
+        authority
+      );
+
+      await soulStore.connect(address1).purchaseName(
+        MASA_GOERLI, // MASA
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length,
+        YEAR,
+        ARWEAVE_LINK,
+        authority.address,
+        signature
       );
     });
 
     it("we can't purchase a name with ETH if we pay less", async () => {
       const priceInETH = await soulStore.getPriceForMintingName(
         ethers.constants.AddressZero,
-        SOUL_NAME,
+        SOUL_NAME.length,
         YEAR
+      );
+
+      const signature = await signMintSoulName(
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length,
+        YEAR,
+        ARWEAVE_LINK,
+        authority
       );
 
       await expect(
         soulStore.connect(address1).purchaseName(
           ethers.constants.AddressZero, // ETH
+          address1.address,
           SOUL_NAME,
+          SOUL_NAME.length,
           YEAR,
           ARWEAVE_LINK,
-          address1.address,
+          authority.address,
+          signature,
           { value: priceInETH.div(2) }
         )
       ).to.be.rejectedWith("InsufficientEthAmount");
@@ -705,7 +882,7 @@ describe("Soul Store", () => {
     it("we can't purchase a name with stable coin if we don't have funds", async () => {
       const priceInStableCoin = await soulStore.getPriceForMintingName(
         await soulStore.stableCoin(),
-        SOUL_NAME,
+        SOUL_NAME.length,
         YEAR
       );
 
@@ -715,13 +892,25 @@ describe("Soul Store", () => {
         .connect(address2)
         .approve(soulStore.address, priceInStableCoin);
 
+      const signature = await signMintSoulName(
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length,
+        YEAR,
+        ARWEAVE_LINK,
+        authority
+      );
+
       await expect(
         soulStore.connect(address2).purchaseName(
           USDC_GOERLI, // USDC
+          address1.address,
           SOUL_NAME,
+          SOUL_NAME.length,
           YEAR,
           ARWEAVE_LINK,
-          address1.address
+          authority.address,
+          signature
         )
       ).to.be.rejected;
     });
@@ -729,7 +918,7 @@ describe("Soul Store", () => {
     it("we can't purchase a name with MASA coin if we don't have funds", async () => {
       const priceInMasaToken = await soulStore.getPriceForMintingName(
         await soulStore.masaToken(),
-        SOUL_NAME,
+        SOUL_NAME.length,
         YEAR
       );
 
@@ -737,13 +926,25 @@ describe("Soul Store", () => {
       const masa: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
       await masa.connect(address2).approve(soulStore.address, priceInMasaToken);
 
+      const signature = await signMintSoulName(
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length,
+        YEAR,
+        ARWEAVE_LINK,
+        authority
+      );
+
       await expect(
         soulStore.connect(address2).purchaseName(
           MASA_GOERLI, // MASA
+          address1.address,
           SOUL_NAME,
+          SOUL_NAME.length,
           YEAR,
           ARWEAVE_LINK,
-          address1.address
+          authority.address,
+          signature
         )
       ).to.be.rejected;
     });
@@ -803,7 +1004,7 @@ describe("Soul Store", () => {
 
       const priceInDAI = await soulStore.getPriceForMintingName(
         DAI_GOERLI,
-        SOUL_NAME,
+        SOUL_NAME.length,
         YEAR
       );
 
@@ -811,12 +1012,24 @@ describe("Soul Store", () => {
       const dai: ERC20 = ERC20__factory.connect(DAI_GOERLI, owner);
       await dai.connect(address1).approve(soulStore.address, priceInDAI);
 
-      await soulStore.connect(address1).purchaseName(
-        DAI_GOERLI, // DAI token, other ERC-20 token
+      const signature = await signMintSoulName(
+        address1.address,
         SOUL_NAME,
+        SOUL_NAME.length,
         YEAR,
         ARWEAVE_LINK,
-        address1.address
+        authority
+      );
+
+      await soulStore.connect(address1).purchaseName(
+        DAI_GOERLI, // DAI token, other ERC-20 token
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length,
+        YEAR,
+        ARWEAVE_LINK,
+        authority.address,
+        signature
       );
     });
   });
@@ -824,19 +1037,97 @@ describe("Soul Store", () => {
   describe("use invalid payment method", () => {
     it("should fail to get purchase info for invalid payment method", async () => {
       await expect(
-        soulStore.getPriceForMintingName(owner.address, SOUL_NAME, YEAR)
+        soulStore.getPriceForMintingName(owner.address, SOUL_NAME.length, YEAR)
       ).to.be.rejectedWith("InvalidPaymentMethod");
     });
 
     it("we can't use an invalid payment method", async () => {
+      const signature = await signMintSoulName(
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length,
+        YEAR,
+        ARWEAVE_LINK,
+        authority
+      );
+
       await expect(
         soulStore.connect(address1).purchaseIdentityAndName(
           address2.address, // invalid payment method
           SOUL_NAME,
+          SOUL_NAME.length,
           YEAR,
-          ARWEAVE_LINK
+          ARWEAVE_LINK,
+          authority.address,
+          signature
         )
       ).to.be.rejectedWith("InvalidPaymentMethod");
+    });
+  });
+
+  describe("use invalid signature", () => {
+    it("we can't use an invalid signature", async () => {
+      const priceInETH = await soulStore.getPriceForMintingName(
+        ethers.constants.AddressZero,
+        SOUL_NAME.length,
+        YEAR
+      );
+
+      const signature = await signMintSoulName(
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length + 1,
+        YEAR,
+        ARWEAVE_LINK,
+        authority
+      );
+
+      await expect(
+        soulStore
+          .connect(address1)
+          .purchaseIdentityAndName(
+            ethers.constants.AddressZero,
+            SOUL_NAME,
+            SOUL_NAME.length,
+            YEAR,
+            ARWEAVE_LINK,
+            authority.address,
+            signature,
+            { value: priceInETH }
+          )
+      ).to.be.rejectedWith("InvalidSignature");
+    });
+
+    it("we can't use a non authority signature", async () => {
+      const priceInETH = await soulStore.getPriceForMintingName(
+        ethers.constants.AddressZero,
+        SOUL_NAME.length,
+        YEAR
+      );
+
+      const signature = await signMintSoulName(
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length,
+        YEAR,
+        ARWEAVE_LINK,
+        address1
+      );
+
+      await expect(
+        soulStore
+          .connect(address1)
+          .purchaseIdentityAndName(
+            ethers.constants.AddressZero,
+            SOUL_NAME,
+            SOUL_NAME.length,
+            YEAR,
+            ARWEAVE_LINK,
+            address1.address,
+            signature,
+            { value: priceInETH }
+          )
+      ).to.be.rejectedWith("NotAuthorized");
     });
   });
 });
