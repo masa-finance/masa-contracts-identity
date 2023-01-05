@@ -29,12 +29,20 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
     // token => tokenId => readerIdentityId => signatureDate
     mapping(address => mapping(uint256 => mapping(uint256 => uint256[])))
         private _linkSignatureDates;
+    // readerIdentityId => ReaderLink
+    mapping(uint256 => ReaderLink[]) private _readerLinks;
 
     struct LinkData {
         bool exists;
         uint256 ownerIdentityId;
         uint256 expirationDate;
         bool isRevoked;
+    }
+
+    struct ReaderLink {
+        address token;
+        uint256 tokenId;
+        uint256 signatureDate;
     }
 
     struct LinkKey {
@@ -114,6 +122,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
         if (readerAddress != _msgSender()) revert CallerNotReader(_msgSender());
         if (ownerIdentityId == readerIdentityId)
             revert IdentityOwnerIsReader(readerIdentityId);
+        if (signatureDate == 0) revert InvalidSignatureDate(signatureDate);
         if (expirationDate < block.timestamp)
             revert ValidPeriodExpired(expirationDate);
         if (_links[token][tokenId][readerIdentityId][signatureDate].exists)
@@ -153,6 +162,9 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
         _linkSignatureDates[token][tokenId][readerIdentityId].push(
             signatureDate
         );
+        _readerLinks[readerIdentityId].push(
+            ReaderLink(token, tokenId, signatureDate)
+        );
 
         emit LinkAdded(
             readerIdentityId,
@@ -165,7 +177,9 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
     }
 
     /// @notice Revokes the link
-    /// @dev The token must be linked to this soul linker
+    /// @dev The links can be revoked, wether the token is linked or not.
+    /// The caller must be the owner of the token.
+    /// The owner of the token can revoke a link even if the reader has not added it yet.
     /// @param readerIdentityId Id of the identity of the reader
     /// @param ownerIdentityId Id of the identity of the owner of the SBT
     /// @param token Address of the SBT contract
@@ -210,6 +224,9 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
             }
             _linkSignatureDates[token][tokenId][readerIdentityId].push(
                 signatureDate
+            );
+            _readerLinks[readerIdentityId].push(
+                ReaderLink(token, tokenId, signatureDate)
             );
         }
 
@@ -354,6 +371,17 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
         uint256 signatureDate
     ) external view returns (LinkData memory) {
         return _links[token][tokenId][readerIdentityId][signatureDate];
+    }
+
+    /// @notice Returns the list of links for a given reader identity id
+    /// @param readerIdentityId Id of the identity of the reader of the SBT
+    /// @return List of links for the reader
+    function getReaderLinks(uint256 readerIdentityId)
+        public
+        view
+        returns (ReaderLink[] memory)
+    {
+        return _readerLinks[readerIdentityId];
     }
 
     /// @notice Validates the link of the given read link request and returns the

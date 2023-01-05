@@ -16,7 +16,7 @@ import {
   SoulLinker__factory
 } from "../typechain";
 import { BigNumber } from "ethers";
-import { MASA_GOERLI, SWAPROUTER_GOERLI, WETH_GOERLI } from "../src/constants";
+import { MASA_GOERLI, SWAPROUTER_GOERLI, WETH_GOERLI } from "../src/Constants";
 
 chai.use(chaiAsPromised);
 chai.use(solidity);
@@ -444,6 +444,11 @@ describe("Soul Linker", () => {
       expect(links[0].readerIdentityId).to.be.equal(readerIdentityId);
       expect(links[0].signatureDate).to.be.equal(signatureDate);
 
+      const readerLinks = await soulLinker.getReaderLinks(readerIdentityId);
+      expect(readerLinks[0].token).to.be.equal(soulboundCreditScore.address);
+      expect(readerLinks[0].tokenId).to.be.equal(creditScore1);
+      expect(readerLinks[0].signatureDate).to.be.equal(signatureDate);
+
       const {
         ownerIdentityId: ownerIdentityIdInfo,
         expirationDate: expirationDateInfo,
@@ -519,6 +524,11 @@ describe("Soul Linker", () => {
       expect(links[0].readerIdentityId).to.be.equal(readerIdentityId);
       expect(links[0].signatureDate).to.be.equal(signatureDate);
 
+      const readerLinks = await soulLinker.getReaderLinks(readerIdentityId);
+      expect(readerLinks[0].token).to.be.equal(soulboundCreditScore.address);
+      expect(readerLinks[0].tokenId).to.be.equal(creditScore1);
+      expect(readerLinks[0].signatureDate).to.be.equal(signatureDate);
+
       const {
         ownerIdentityId: ownerIdentityIdInfo,
         expirationDate: expirationDateInfo,
@@ -589,6 +599,11 @@ describe("Soul Linker", () => {
       );
       expect(links[0].readerIdentityId).to.be.equal(readerIdentityId);
       expect(links[0].signatureDate).to.be.equal(signatureDate);
+
+      const readerLinks = await soulLinker.getReaderLinks(readerIdentityId);
+      expect(readerLinks[0].token).to.be.equal(soulboundCreditScore.address);
+      expect(readerLinks[0].tokenId).to.be.equal(creditScore1);
+      expect(readerLinks[0].signatureDate).to.be.equal(signatureDate);
 
       const {
         ownerIdentityId: ownerIdentityIdInfo,
