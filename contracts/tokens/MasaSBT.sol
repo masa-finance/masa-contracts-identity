@@ -29,8 +29,8 @@ abstract contract MasaSBT is
 
     uint256 public override addLinkPrice; // price in stable coin
     uint256 public override addLinkPriceMASA; // price in MASA
-    uint256 public override readDataPrice; // price in stable coin
-    uint256 public override readDataPriceMASA; // price in MASA
+    uint256 public override queryLinkPrice; // price in stable coin
+    uint256 public override queryLinkPriceMASA; // price in MASA
 
     /* ========== INITIALIZE ================================================ */
 
@@ -77,24 +77,24 @@ abstract contract MasaSBT is
 
     /// @notice Sets the price for reading data in SoulLinker in stable coin
     /// @dev The caller must have the admin to call this function
-    /// @param _readDataPrice New price for reading data in SoulLinker in stable coin
-    function setReadDataPrice(uint256 _readDataPrice)
+    /// @param _queryLinkPrice New price for reading data in SoulLinker in stable coin
+    function setQueryLinkPrice(uint256 _queryLinkPrice)
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
-        if (readDataPrice == _readDataPrice) revert SameValue();
-        readDataPrice = _readDataPrice;
+        if (queryLinkPrice == _queryLinkPrice) revert SameValue();
+        queryLinkPrice = _queryLinkPrice;
     }
 
     /// @notice Sets the price for reading data in SoulLinker in MASA
     /// @dev The caller must have the admin to call this function
-    /// @param _readDataPriceMASA New price for reading data in SoulLinker in MASA
-    function setReadDataPriceMASA(uint256 _readDataPriceMASA)
+    /// @param _queryLinkPriceMASA New price for reading data in SoulLinker in MASA
+    function setQueryLinkPriceMASA(uint256 _queryLinkPriceMASA)
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
-        if (readDataPriceMASA == _readDataPriceMASA) revert SameValue();
-        readDataPriceMASA = _readDataPriceMASA;
+        if (queryLinkPriceMASA == _queryLinkPriceMASA) revert SameValue();
+        queryLinkPriceMASA = _queryLinkPriceMASA;
     }
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */

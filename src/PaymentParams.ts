@@ -3,7 +3,7 @@ import {
   SWAPROUTER_GOERLI,
   USDC_GOERLI,
   WETH_GOERLI
-} from "../../src/constants";
+} from "./Constants";
 
 export function paymentParams(networkName: string, ethers: any) {
   let swapRouter: string;

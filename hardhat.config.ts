@@ -3,7 +3,7 @@ import {
   getInfuraApiKey,
   getCoinMarketCapApiKey,
   getEtherscanApiKey
-} from "./src/utils/EnvParams";
+} from "./src/EnvParams";
 import "hardhat-deploy";
 import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-solhint";

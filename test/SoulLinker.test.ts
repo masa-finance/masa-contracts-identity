@@ -16,7 +16,7 @@ import {
   SoulLinker__factory
 } from "../typechain";
 import { BigNumber } from "ethers";
-import { MASA_GOERLI, SWAPROUTER_GOERLI, WETH_GOERLI } from "../src/constants";
+import { MASA_GOERLI, SWAPROUTER_GOERLI, WETH_GOERLI } from "../src/Constants";
 
 chai.use(chaiAsPromised);
 chai.use(solidity);
@@ -209,17 +209,90 @@ describe("Soul Linker", () => {
       ).to.be.rejected;
     });
 
-    it("should set NameRegistrationPricePerYear from owner", async () => {
+    it("should set mintPrice from owner", async () => {
+      const newPrice = 100;
+      await soulboundCreditScore.connect(owner).setMintPrice(newPrice);
+
+      expect(await soulboundCreditScore.mintPrice()).to.be.equal(newPrice);
+    });
+
+    it("should fail to set mintPrice from non owner", async () => {
+      const newPrice = 100;
+      await expect(soulboundCreditScore.connect(someone).setMintPrice(newPrice))
+        .to.be.rejected;
+    });
+
+    it("should set mintPriceMASA from owner", async () => {
+      const newPrice = 100;
+      await soulboundCreditScore.connect(owner).setMintPriceMASA(newPrice);
+
+      expect(await soulboundCreditScore.mintPriceMASA()).to.be.equal(newPrice);
+    });
+
+    it("should fail to set mintPriceMASA from non owner", async () => {
+      const newPrice = 100;
+      await expect(
+        soulboundCreditScore.connect(someone).setMintPriceMASA(newPrice)
+      ).to.be.rejected;
+    });
+
+    it("should set addLinkPrice from owner", async () => {
       const newPrice = 100;
       await soulboundCreditScore.connect(owner).setAddLinkPrice(newPrice);
 
       expect(await soulboundCreditScore.addLinkPrice()).to.be.equal(newPrice);
     });
 
-    it("should fail to set MintingNamePrice from non owner", async () => {
+    it("should fail to set addLinkPrice from non owner", async () => {
       const newPrice = 100;
       await expect(
         soulboundCreditScore.connect(someone).setAddLinkPrice(newPrice)
+      ).to.be.rejected;
+    });
+
+    it("should set addLinkPriceMASA from owner", async () => {
+      const newPrice = 100;
+      await soulboundCreditScore.connect(owner).setAddLinkPriceMASA(newPrice);
+
+      expect(await soulboundCreditScore.addLinkPriceMASA()).to.be.equal(
+        newPrice
+      );
+    });
+
+    it("should fail to set addLinkPriceMASA from non owner", async () => {
+      const newPrice = 100;
+      await expect(
+        soulboundCreditScore.connect(someone).setAddLinkPriceMASA(newPrice)
+      ).to.be.rejected;
+    });
+
+    it("should set queryLinkPrice from owner", async () => {
+      const newPrice = 100;
+      await soulboundCreditScore.connect(owner).setQueryLinkPrice(newPrice);
+
+      expect(await soulboundCreditScore.queryLinkPrice()).to.be.equal(newPrice);
+    });
+
+    it("should fail to set queryLinkPrice from non owner", async () => {
+      const newPrice = 100;
+      await expect(
+        soulboundCreditScore.connect(someone).setQueryLinkPrice(newPrice)
+      ).to.be.rejected;
+    });
+
+    it("should set queryLinkPriceMASA from owner", async () => {
+      const newPrice = 100;
+      await soulboundCreditScore.connect(owner).setQueryLinkPriceMASA(newPrice);
+
+      expect(await soulboundCreditScore.queryLinkPriceMASA()).to.be.equal(
+        newPrice
+      );
+    });
+
+    it("should fail to set queryLinkPriceMASA from non owner", async () => {
+      const newPrice = 100;
+      await expect(
+        soulboundCreditScore.connect(someone).setQueryLinkPriceMASA(newPrice)
       ).to.be.rejected;
     });
 
@@ -344,15 +417,6 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const price = await soulLinker.getPriceForAddLink(
-        MASA_GOERLI,
-        soulboundCreditScore.address
-      );
-
-      // set allowance for soul store
-      const masa: IERC20 = IERC20__factory.connect(MASA_GOERLI, owner);
-      await masa.connect(dataReader).approve(soulLinker.address, price);
-
       await soulLinker
         .connect(dataReader)
         .addLink(
@@ -372,6 +436,18 @@ describe("Soul Linker", () => {
         readerIdentityId
       );
       expect(permissionSignatureDates[0]).to.be.equal(signatureDate);
+
+      const links = await soulLinker.getLinks(
+        soulboundCreditScore.address,
+        creditScore1
+      );
+      expect(links[0].readerIdentityId).to.be.equal(readerIdentityId);
+      expect(links[0].signatureDate).to.be.equal(signatureDate);
+
+      const readerLinks = await soulLinker.getReaderLinks(readerIdentityId);
+      expect(readerLinks[0].token).to.be.equal(soulboundCreditScore.address);
+      expect(readerLinks[0].tokenId).to.be.equal(creditScore1);
+      expect(readerLinks[0].signatureDate).to.be.equal(signatureDate);
 
       const {
         ownerIdentityId: ownerIdentityIdInfo,
@@ -441,6 +517,18 @@ describe("Soul Linker", () => {
       );
       expect(permissionSignatureDates[0]).to.be.equal(signatureDate);
 
+      const links = await soulLinker.getLinks(
+        soulboundCreditScore.address,
+        creditScore1
+      );
+      expect(links[0].readerIdentityId).to.be.equal(readerIdentityId);
+      expect(links[0].signatureDate).to.be.equal(signatureDate);
+
+      const readerLinks = await soulLinker.getReaderLinks(readerIdentityId);
+      expect(readerLinks[0].token).to.be.equal(soulboundCreditScore.address);
+      expect(readerLinks[0].tokenId).to.be.equal(creditScore1);
+      expect(readerLinks[0].signatureDate).to.be.equal(signatureDate);
+
       const {
         ownerIdentityId: ownerIdentityIdInfo,
         expirationDate: expirationDateInfo,
@@ -469,6 +557,9 @@ describe("Soul Linker", () => {
     });
 
     it("addLink must work paying with ETH", async () => {
+      await soulboundCreditScore.connect(owner).setAddLinkPrice(10);
+      expect(await soulboundCreditScore.addLinkPrice()).to.be.equal(10);
+
       const signature = await signLink(
         readerIdentityId,
         ownerIdentityId,
@@ -501,6 +592,18 @@ describe("Soul Linker", () => {
         readerIdentityId
       );
       expect(permissionSignatureDates[0]).to.be.equal(signatureDate);
+
+      const links = await soulLinker.getLinks(
+        soulboundCreditScore.address,
+        creditScore1
+      );
+      expect(links[0].readerIdentityId).to.be.equal(readerIdentityId);
+      expect(links[0].signatureDate).to.be.equal(signatureDate);
+
+      const readerLinks = await soulLinker.getReaderLinks(readerIdentityId);
+      expect(readerLinks[0].token).to.be.equal(soulboundCreditScore.address);
+      expect(readerLinks[0].tokenId).to.be.equal(creditScore1);
+      expect(readerLinks[0].signatureDate).to.be.equal(signatureDate);
 
       const {
         ownerIdentityId: ownerIdentityIdInfo,
@@ -536,15 +639,6 @@ describe("Soul Linker", () => {
         soulboundCreditScore.address,
         creditScore1
       );
-
-      const price = await soulLinker.getPriceForAddLink(
-        MASA_GOERLI,
-        soulboundCreditScore.address
-      );
-
-      // set allowance for soul store
-      const masa: IERC20 = IERC20__factory.connect(MASA_GOERLI, owner);
-      await masa.connect(dataReader).approve(soulLinker.address, price);
 
       await expect(
         soulLinker
@@ -583,15 +677,6 @@ describe("Soul Linker", () => {
         soulboundCreditScore.address,
         creditScore1
       );
-
-      const price = await soulLinker.getPriceForAddLink(
-        MASA_GOERLI,
-        soulboundCreditScore.address
-      );
-
-      // set allowance for soul store
-      const masa: IERC20 = IERC20__factory.connect(MASA_GOERLI, owner);
-      await masa.connect(dataReader).approve(soulLinker.address, price);
 
       await soulLinker
         .connect(dataReader)
@@ -639,15 +724,6 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const price = await soulLinker.getPriceForAddLink(
-        MASA_GOERLI,
-        soulboundCreditScore.address
-      );
-
-      // set allowance for soul store
-      const masa: IERC20 = IERC20__factory.connect(MASA_GOERLI, owner);
-      await masa.connect(dataReader).approve(soulLinker.address, price);
-
       await soulLinker
         .connect(dataReader)
         .addLink(
@@ -682,6 +758,52 @@ describe("Soul Linker", () => {
           creditScore1,
           signatureDate
         );
+
+      await expect(
+        soulLinker
+          .connect(dataReader)
+          .validateLink(
+            readerIdentityId,
+            ownerIdentityId,
+            soulboundCreditScore.address,
+            creditScore1,
+            signatureDate
+          )
+      ).to.be.rejected;
+    });
+
+    it("owner of data can call revokeLink to a link that still doesn't exist", async () => {
+      await soulLinker
+        .connect(dataOwner)
+        .revokeLink(
+          readerIdentityId,
+          ownerIdentityId,
+          soulboundCreditScore.address,
+          creditScore1,
+          signatureDate
+        );
+
+      const signature = await signLink(
+        readerIdentityId,
+        ownerIdentityId,
+        soulboundCreditScore.address,
+        creditScore1
+      );
+
+      await expect(
+        soulLinker
+          .connect(dataReader)
+          .addLink(
+            MASA_GOERLI,
+            readerIdentityId,
+            ownerIdentityId,
+            soulboundCreditScore.address,
+            creditScore1,
+            signatureDate,
+            expirationDate,
+            signature
+          )
+      ).to.be.rejectedWith("LinkAlreadyExists");
 
       await expect(
         soulLinker
