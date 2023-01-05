@@ -3,6 +3,7 @@ pragma solidity ^0.8.7;
 
 error AddressDoesNotHaveIdentity(address to);
 error AlreadyAdded();
+error AuthorityNotExists(address authority);
 error CallerNotOwner(address caller);
 error CallerNotReader(address caller);
 error CreditScoreAlreadyCreated(address to);
