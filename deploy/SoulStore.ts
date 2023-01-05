@@ -98,6 +98,11 @@ const func: DeployFunction = async ({
     .connect(signer)
     .setNameRegistrationPricePerYear(4, 50_000_000); // 4 length, 50 USDC
 
+  // add authority to soulbound2FA
+  await soulStore
+    .connect(signer)
+    .addAuthority(env.AUTHORITY_WALLET || admin.address);
+
   // we add soulStore as soulboundIdentity and soulName minter
 
   const IDENTITY_MINTER_ROLE = await soulboundIdentity.MINTER_ROLE();
