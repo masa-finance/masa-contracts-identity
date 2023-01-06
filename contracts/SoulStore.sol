@@ -91,6 +91,16 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         authorities[_authority] = true;
     }
 
+    /// @notice Removes an authority from the list of authorities
+    /// @dev The caller must have the admin to call this function
+    /// @param _authority Authority to remove
+    function removeAuthority(address _authority) external onlyOwner {
+        if (_authority == address(0)) revert ZeroAddress();
+        if (!authorities[_authority]) revert AuthorityNotExists(_authority);
+
+        authorities[_authority] = false;
+    }
+
     /// @notice Pauses the smart contract
     /// @dev The caller must have the owner to call this function
     function pause() public onlyOwner {
