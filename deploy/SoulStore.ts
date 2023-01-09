@@ -87,14 +87,16 @@ const func: DeployFunction = async ({
   );
   await soulStore
     .connect(signer)
-    .setNameRegistrationPricePerYear(1, 50000000000); // 1 length, 50,000 USDC
+    .setNameRegistrationPricePerYear(1, 6_250_000_000); // 1 length, 6,250 USDC USDC
   await soulStore
     .connect(signer)
-    .setNameRegistrationPricePerYear(2, 5000000000); // 2 length, 5,000 USDC
+    .setNameRegistrationPricePerYear(2, 1_250_000_000); // 2 length, 1,250 USDC
   await soulStore
     .connect(signer)
-    .setNameRegistrationPricePerYear(3, 1500000000); // 3 length, 1,500 USDC
-  await soulStore.connect(signer).setNameRegistrationPricePerYear(4, 500000000); // 4 length, 500 USDC
+    .setNameRegistrationPricePerYear(3, 250_000_000); // 3 length, 250 USDC
+  await soulStore
+    .connect(signer)
+    .setNameRegistrationPricePerYear(4, 50_000_000); // 4 length, 50 USDC
 
   // add authority to soulStore
   await soulStore

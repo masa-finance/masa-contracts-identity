@@ -31,11 +31,11 @@ let address1: SignerWithAddress;
 let address2: SignerWithAddress;
 let authority: SignerWithAddress;
 
-const MINTING_NAME_PRICE_1LETTERS = 50000000000; // 50,000 USDC, with 6 decimals
-const MINTING_NAME_PRICE_2LETTERS = 5000000000; // 5,000 USDC, with 6 decimals
-const MINTING_NAME_PRICE_3LETTERS = 1500000000; // 1,500 USDC, with 6 decimals
-const MINTING_NAME_PRICE_4LETTERS = 500000000; // 500 USDC, with 6 decimals
-const MINTING_NAME_PRICE_5LETTERS = 10000000; // 10 USDC, with 6 decimals
+const MINTING_NAME_PRICE_1LETTERS = 6_250_000_000; // 6,250 USDC, with 6 decimals
+const MINTING_NAME_PRICE_2LETTERS = 1_250_000_000; // 1,250 USDC, with 6 decimals
+const MINTING_NAME_PRICE_3LETTERS = 250_000_000; // 250 USDC, with 6 decimals
+const MINTING_NAME_PRICE_4LETTERS = 50_000_000; // 50 USDC, with 6 decimals
+const MINTING_NAME_PRICE_5LETTERS = 10_000_000; // 10 USDC, with 6 decimals
 
 const SOUL_NAME = "soulNameTest";
 const YEAR = 1; // 1 year
