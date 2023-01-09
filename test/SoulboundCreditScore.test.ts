@@ -4,8 +4,8 @@ import { solidity } from "ethereum-waffle";
 import { ethers, deployments, getChainId } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
-  ERC20,
-  ERC20__factory,
+  IERC20,
+  IERC20__factory,
   IUniswapRouter,
   IUniswapRouter__factory,
   SoulboundCreditScore,
@@ -123,13 +123,6 @@ describe("Soulbound Credit Score", () => {
         value: ethers.utils.parseEther("10")
       }
     );
-
-    // we add payment methods
-    await soulboundCreditScore
-      .connect(owner)
-      .enablePaymentMethod(ethers.constants.AddressZero);
-    await soulboundCreditScore.connect(owner).enablePaymentMethod(USDC_GOERLI);
-    await soulboundCreditScore.connect(owner).enablePaymentMethod(MASA_GOERLI);
 
     // we mint identity SBT
     const mintTx = await soulboundIdentity
@@ -390,7 +383,7 @@ describe("Soulbound Credit Score", () => {
       );
 
       // set allowance for soul store
-      const usdc: ERC20 = ERC20__factory.connect(USDC_GOERLI, owner);
+      const usdc: IERC20 = IERC20__factory.connect(USDC_GOERLI, owner);
       await usdc
         .connect(address1)
         .approve(soulboundCreditScore.address, priceInStableCoin);
@@ -419,7 +412,7 @@ describe("Soulbound Credit Score", () => {
       );
 
       // set allowance for soul store
-      const usdc: ERC20 = ERC20__factory.connect(MASA_GOERLI, owner);
+      const usdc: IERC20 = IERC20__factory.connect(MASA_GOERLI, owner);
       await usdc
         .connect(address1)
         .approve(soulboundCreditScore.address, priceInStableCoin);

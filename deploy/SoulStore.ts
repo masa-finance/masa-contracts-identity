@@ -2,12 +2,8 @@ import hre from "hardhat";
 import { getEnvParams, getPrivateKey } from "../src/EnvParams";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
-import {
-  MASA_GOERLI,
-  SWAPROUTER_GOERLI,
-  USDC_GOERLI,
-  WETH_GOERLI
-} from "../src/Constants";
+import { paymentParams } from "../src/PaymentParams";
+import { MASA_GOERLI, USDC_GOERLI } from "../src/Constants";
 
 let admin: SignerWithAddress;
 
@@ -26,42 +22,11 @@ const func: DeployFunction = async ({
   [, admin] = await ethers.getSigners();
   const env = getEnvParams(network.name);
 
-  const masa = await deployments.get("MASA");
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
   const soulNameDeployed = await deployments.get("SoulName");
 
-  let swapRouter: string;
-  let wrappedNativeToken: string; // weth
-  let stableCoin: string; // usdc
-  let masaCoin: string; // masa
-
-  if (network.name == "mainnet") {
-    // mainnet
-    swapRouter = SWAPROUTER_GOERLI;
-    wrappedNativeToken = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
-    stableCoin = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
-    masaCoin = masa.address;
-  } else if (network.name == "goerli") {
-    // goerli
-    swapRouter = SWAPROUTER_GOERLI;
-    wrappedNativeToken = WETH_GOERLI;
-    stableCoin = USDC_GOERLI;
-    masaCoin = MASA_GOERLI;
-  } else if (network.name == "hardhat") {
-    // hardhat
-    swapRouter = SWAPROUTER_GOERLI;
-    wrappedNativeToken = WETH_GOERLI;
-    stableCoin = USDC_GOERLI;
-    masaCoin = MASA_GOERLI;
-  } else if (network.name == "alfajores") {
-    // alfajores
-    swapRouter = "0xE3D8bd6Aed4F159bc8000a9cD47CffDb95F96121"; // Ubeswap
-    wrappedNativeToken = "0xF194afDf50B03e69Bd7D057c1Aa9e10c9954E4C9";
-    stableCoin = "0x37f39aD164cBBf0Cc03Dd638472F3FbeC7aE426C";
-    masaCoin = masa.address;
-  } else {
-    throw new Error("Network not supported");
-  }
+  const { swapRouter, wrappedNativeToken, stableCoin, masaCoin } =
+    paymentParams(network.name, ethers);
 
   const constructorArguments = [
     env.ADMIN || admin.address,
@@ -131,6 +96,11 @@ const func: DeployFunction = async ({
     .setNameRegistrationPricePerYear(3, 1500000000); // 3 length, 1,500 USDC
   await soulStore.connect(signer).setNameRegistrationPricePerYear(4, 500000000); // 4 length, 500 USDC
 
+  // add authority to soulStore
+  await soulStore
+    .connect(signer)
+    .addAuthority(env.AUTHORITY_WALLET || admin.address);
+
   // we add soulStore as soulboundIdentity and soulName minter
 
   const IDENTITY_MINTER_ROLE = await soulboundIdentity.MINTER_ROLE();
@@ -142,8 +112,17 @@ const func: DeployFunction = async ({
   await soulName
     .connect(signer)
     .grantRole(NAME_MINTER_ROLE, soulStoreDeploymentResult.address);
+
+  if (network.name != "mainnet") {
+    // we add payment methods
+    await soulStore
+      .connect(signer)
+      .enablePaymentMethod(ethers.constants.AddressZero);
+    await soulStore.connect(signer).enablePaymentMethod(USDC_GOERLI);
+    await soulStore.connect(signer).enablePaymentMethod(MASA_GOERLI);
+  }
 };
 
 func.tags = ["SoulStore"];
-func.dependencies = ["MASA", "SoulboundIdentity", "SoulName"];
+func.dependencies = ["SoulboundIdentity", "SoulName"];
 export default func;
