@@ -30,7 +30,7 @@ library Utils {
         return string(bLower);
     }
 
-    function toSlice(string memory self) internal pure returns (slice memory) {
+    function toSlice(string memory self) private pure returns (slice memory) {
         uint256 ptr;
         assembly {
             ptr := add(self, 0x20)
