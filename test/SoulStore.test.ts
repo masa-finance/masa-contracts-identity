@@ -226,6 +226,29 @@ describe("Soul Store", () => {
         soulStore.connect(address1).setWrappedNativeToken(address1.address)
       ).to.be.rejected;
     });
+
+    it("should add authority from owner", async () => {
+      await soulStore.connect(owner).addAuthority(address1.address);
+
+      expect(await soulStore.authorities(address1.address)).to.be.true;
+    });
+
+    it("should fail to add authority from non owner", async () => {
+      await expect(soulStore.connect(address1).addAuthority(address1.address))
+        .to.be.rejected;
+    });
+
+    it("should remove authority from owner", async () => {
+      await soulStore.connect(owner).removeAuthority(authority.address);
+
+      expect(await soulStore.authorities(authority.address)).to.be.false;
+    });
+
+    it("should fail to remove authority from non owner", async () => {
+      await expect(
+        soulStore.connect(address1).removeAuthority(authority.address)
+      ).to.be.rejected;
+    });
   });
 
   describe("test pausable", () => {
