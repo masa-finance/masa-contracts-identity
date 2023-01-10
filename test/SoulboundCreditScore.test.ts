@@ -158,18 +158,15 @@ describe("Soulbound Credit Score", () => {
     });
 
     it("should add authority from owner", async () => {
-      await soulboundCreditScore
-        .connect(owner)
-        .addAuthority(address1.address);
+      await soulboundCreditScore.connect(owner).addAuthority(address1.address);
 
-      expect(await soulboundCreditScore.authorities(address1.address)).to.be.true;
+      expect(await soulboundCreditScore.authorities(address1.address)).to.be
+        .true;
     });
 
     it("should fail to add authority from non owner", async () => {
       await expect(
-        soulboundCreditScore
-          .connect(address1)
-          .addAuthority(address1.address)
+        soulboundCreditScore.connect(address1).addAuthority(address1.address)
       ).to.be.rejected;
     });
 
@@ -178,7 +175,8 @@ describe("Soulbound Credit Score", () => {
         .connect(owner)
         .removeAuthority(authority.address);
 
-      expect(await soulboundCreditScore.authorities(authority.address)).to.be.false;
+      expect(await soulboundCreditScore.authorities(authority.address)).to.be
+        .false;
     });
 
     it("should fail to remove authority from non owner", async () => {
