@@ -134,7 +134,7 @@ abstract contract PaymentGateway is Ownable {
     }
 
     /// @notice Set the reserve wallet
-    /// @dev Let change the reserve walled. It can be triggered by an authorized account.
+    /// @dev The caller must have the owner to call this function
     /// @param _reserveWallet New reserve wallet
     function setReserveWallet(address _reserveWallet) external onlyOwner {
         if (_reserveWallet == address(0)) revert ZeroAddress();
@@ -159,18 +159,24 @@ abstract contract PaymentGateway is Ownable {
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
 
-    function _convertFromStableCoin(address token, uint256 amount)
+    /// @notice Converts an amount from a stable coin to a payment method amount
+    /// @dev This method will perform the swap between the stable coin and the
+    /// payment method, and return the amount of the payment method,
+    /// performing the swap if necessary
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param amount Price to be converted in the specified payment method
+    function _convertFromStableCoin(address paymentMethod, uint256 amount)
         internal
         view
         returns (uint256)
     {
-        if (!enabledPaymentMethod[token] || token == stableCoin)
-            revert InvalidToken(token);
+        if (!enabledPaymentMethod[paymentMethod] || paymentMethod == stableCoin)
+            revert InvalidToken(paymentMethod);
 
-        if (token == address(0)) {
+        if (paymentMethod == address(0)) {
             return _estimateSwapAmount(wrappedNativeToken, stableCoin, amount);
         } else {
-            return _estimateSwapAmount(token, stableCoin, amount);
+            return _estimateSwapAmount(paymentMethod, stableCoin, amount);
         }
     }
 
