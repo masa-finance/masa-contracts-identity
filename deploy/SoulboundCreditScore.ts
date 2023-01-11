@@ -80,9 +80,13 @@ const func: DeployFunction = async ({
       .addAuthority(env.AUTHORITY_WALLET || admin.address);
 
     // we add payment methods
-    await soulboundCreditScore
-      .connect(signer)
-      .enablePaymentMethod(ethers.constants.AddressZero);
+    env.PAYMENT_METHODS_SOULBOUNDCREDITSCORE.split(" ").forEach(
+      async (paymentMethod) => {
+        await soulboundCreditScore
+          .connect(signer)
+          .enablePaymentMethod(paymentMethod);
+      }
+    );
   }
 };
 

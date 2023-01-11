@@ -104,9 +104,9 @@ const func: DeployFunction = async ({
       .grantRole(NAME_MINTER_ROLE, soulStoreDeploymentResult.address);
 
     // we add payment methods
-    await soulStore
-      .connect(signer)
-      .enablePaymentMethod(ethers.constants.AddressZero);
+    env.PAYMENT_METHODS_SOULSTORE.split(" ").forEach(async (paymentMethod) => {
+      await soulStore.connect(signer).enablePaymentMethod(paymentMethod);
+    });
   }
 };
 

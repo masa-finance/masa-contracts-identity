@@ -68,6 +68,10 @@ const func: DeployFunction = async ({
       soulLinkerDeploymentResult.address
     );
 
+    env.PAYMENT_METHODS_SOULLINKER.split(" ").forEach(async (paymentMethod) => {
+      await soulLinker.connect(signer).enablePaymentMethod(paymentMethod);
+    });
+
     await soulLinker
       .connect(signer)
       .enablePaymentMethod(ethers.constants.AddressZero);
