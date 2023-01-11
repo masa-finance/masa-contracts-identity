@@ -1,4 +1,3 @@
-import hre from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
 import { getEnvParams } from "../src/EnvParams";
