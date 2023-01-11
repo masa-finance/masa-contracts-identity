@@ -1,7 +1,8 @@
 import hre from "hardhat";
-import { getEnvParams, getPrivateKey } from "../src/EnvParams";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
+import { getEnvParams, getPrivateKey } from "../src/EnvParams";
+import { verifyOnEtherscan } from "../src/Etherscan";
 import { paymentParams } from "../src/PaymentParams";
 
 let admin: SignerWithAddress;
@@ -43,46 +44,42 @@ const func: DeployFunction = async ({
     ]
   ];
 
-  const soulbound2FADeploymentResult = await deploy("Soulbound2FA", {
-    from: deployer,
-    args: constructorArguments,
-    log: true
-    // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
-  });
-
-  // verify contract with etherscan, if its not a local network
-  if (network.name == "mainnet" || network.name == "goerli") {
-    try {
-      await hre.run("verify:verify", {
-        address: soulbound2FADeploymentResult.address,
-        constructorArguments
-      });
-    } catch (error) {
-      if (
-        !error.message.includes("Contract source code already verified") &&
-        !error.message.includes("Reason: Already Verified")
-      ) {
-        throw error;
-      }
-    }
+  let soulbound2FADeploymentResult;
+  if (network.name != "mainnet") {
+    soulbound2FADeploymentResult = await deploy("Soulbound2FA", {
+      from: deployer,
+      args: constructorArguments,
+      log: true
+      // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
+    });
   }
 
-  const signer = env.ADMIN
-    ? new ethers.Wallet(
-        getPrivateKey(network.name),
-        ethers.getDefaultProvider(network.name)
-      )
-    : admin;
+  // verify contract with etherscan, if its not a local network
+  if (network.name == "goerli") {
+    verifyOnEtherscan(
+      soulbound2FADeploymentResult.address,
+      constructorArguments
+    );
+  }
 
-  const soulbound2FA = await ethers.getContractAt(
-    "Soulbound2FA",
-    soulbound2FADeploymentResult.address
-  );
+  if (network.name != "mainnet") {
+    const signer = env.ADMIN
+      ? new ethers.Wallet(
+          getPrivateKey(network.name),
+          ethers.getDefaultProvider(network.name)
+        )
+      : admin;
 
-  // add authority to soulbound2FA
-  await soulbound2FA
-    .connect(signer)
-    .addAuthority(env.AUTHORITY_WALLET || admin.address);
+    const soulbound2FA = await ethers.getContractAt(
+      "Soulbound2FA",
+      soulbound2FADeploymentResult.address
+    );
+
+    // add authority to soulbound2FA
+    await soulbound2FA
+      .connect(signer)
+      .addAuthority(env.AUTHORITY_WALLET || admin.address);
+  }
 };
 
 func.skip = async ({ network }) => {
