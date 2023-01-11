@@ -44,37 +44,42 @@ const func: DeployFunction = async ({
     ]
   ];
 
-  const soulbound2FADeploymentResult = await deploy("Soulbound2FA", {
-    from: deployer,
-    args: constructorArguments,
-    log: true
-    // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
-  });
+  let soulbound2FADeploymentResult;
+  if (network.name != "mainnet") {
+    soulbound2FADeploymentResult = await deploy("Soulbound2FA", {
+      from: deployer,
+      args: constructorArguments,
+      log: true
+      // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
+    });
+  }
 
   // verify contract with etherscan, if its not a local network
-  if (network.name == "mainnet" || network.name == "goerli") {
+  if (network.name == "goerli") {
     verifyOnEtherscan(
       soulbound2FADeploymentResult.address,
       constructorArguments
     );
   }
 
-  const signer = env.ADMIN
-    ? new ethers.Wallet(
-        getPrivateKey(network.name),
-        ethers.getDefaultProvider(network.name)
-      )
-    : admin;
+  if (network.name != "mainnet") {
+    const signer = env.ADMIN
+      ? new ethers.Wallet(
+          getPrivateKey(network.name),
+          ethers.getDefaultProvider(network.name)
+        )
+      : admin;
 
-  const soulbound2FA = await ethers.getContractAt(
-    "Soulbound2FA",
-    soulbound2FADeploymentResult.address
-  );
+    const soulbound2FA = await ethers.getContractAt(
+      "Soulbound2FA",
+      soulbound2FADeploymentResult.address
+    );
 
-  // add authority to soulbound2FA
-  await soulbound2FA
-    .connect(signer)
-    .addAuthority(env.AUTHORITY_WALLET || admin.address);
+    // add authority to soulbound2FA
+    await soulbound2FA
+      .connect(signer)
+      .addAuthority(env.AUTHORITY_WALLET || admin.address);
+  }
 };
 
 func.skip = async ({ network }) => {
