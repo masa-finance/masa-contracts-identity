@@ -16,11 +16,13 @@ import {
   SoulLinker__factory
 } from "../typechain";
 import { BigNumber } from "ethers";
-import { MASA_GOERLI, SWAPROUTER_GOERLI, WETH_GOERLI } from "../src/Constants";
+import { getEnvParams } from "../src/EnvParams";
 
 chai.use(chaiAsPromised);
 chai.use(solidity);
 const expect = chai.expect;
+
+const env = getEnvParams("hardhat");
 
 // contract instances
 let soulboundIdentity: SoulboundIdentity;
@@ -180,14 +182,14 @@ describe("Soul Linker", () => {
     creditScore1 = mintReceipt.events![0].args![1].toNumber();
 
     const uniswapRouter: IUniswapRouter = IUniswapRouter__factory.connect(
-      SWAPROUTER_GOERLI,
+      env.SWAP_ROUTER,
       owner
     );
 
     // we get MASA utility tokens for dataReader
     await uniswapRouter.swapExactETHForTokens(
       0,
-      [WETH_GOERLI, MASA_GOERLI],
+      [env.WETH_TOKEN, env.MASA_TOKEN],
       dataReader.address,
       Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
       {
@@ -420,7 +422,7 @@ describe("Soul Linker", () => {
       await soulLinker
         .connect(dataReader)
         .addLink(
-          MASA_GOERLI,
+          env.MASA_TOKEN,
           readerIdentityId,
           ownerIdentityId,
           soulboundCreditScore.address,
@@ -488,19 +490,19 @@ describe("Soul Linker", () => {
       );
 
       const price = await soulLinker.getPriceForAddLink(
-        MASA_GOERLI,
+        env.MASA_TOKEN,
         soulboundCreditScore.address
       );
       expect(price).to.be.equal(10);
 
       // set allowance for soul store
-      const masa: IERC20 = IERC20__factory.connect(MASA_GOERLI, owner);
+      const masa: IERC20 = IERC20__factory.connect(env.MASA_TOKEN, owner);
       await masa.connect(dataReader).approve(soulLinker.address, price);
 
       await soulLinker
         .connect(dataReader)
         .addLink(
-          MASA_GOERLI,
+          env.MASA_TOKEN,
           readerIdentityId,
           ownerIdentityId,
           soulboundCreditScore.address,
@@ -644,7 +646,7 @@ describe("Soul Linker", () => {
         soulLinker
           .connect(dataReader)
           .addLink(
-            MASA_GOERLI,
+            env.MASA_TOKEN,
             readerIdentityId,
             ownerIdentityId,
             soulboundCreditScore.address,
@@ -681,7 +683,7 @@ describe("Soul Linker", () => {
       await soulLinker
         .connect(dataReader)
         .addLink(
-          MASA_GOERLI,
+          env.MASA_TOKEN,
           readerIdentityId,
           ownerIdentityId,
           soulboundCreditScore.address,
@@ -727,7 +729,7 @@ describe("Soul Linker", () => {
       await soulLinker
         .connect(dataReader)
         .addLink(
-          MASA_GOERLI,
+          env.MASA_TOKEN,
           readerIdentityId,
           ownerIdentityId,
           soulboundCreditScore.address,
@@ -794,7 +796,7 @@ describe("Soul Linker", () => {
         soulLinker
           .connect(dataReader)
           .addLink(
-            MASA_GOERLI,
+            env.MASA_TOKEN,
             readerIdentityId,
             ownerIdentityId,
             soulboundCreditScore.address,
