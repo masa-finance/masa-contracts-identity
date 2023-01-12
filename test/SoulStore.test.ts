@@ -12,7 +12,6 @@ import {
   SoulStore__factory
 } from "../typechain";
 import {
-  DAI_GOERLI,
   MASA_GOERLI,
   USDC_GOERLI,
   SWAPROUTER_GOERLI,
@@ -22,6 +21,8 @@ import {
 chai.use(chaiAsPromised);
 chai.use(solidity);
 const expect = chai.expect;
+
+const DAI_GOERLI = "0xdc31Ee1784292379Fbb2964b3B9C4124D8F89C60";
 
 // contract instances
 let soulStore: SoulStore;
