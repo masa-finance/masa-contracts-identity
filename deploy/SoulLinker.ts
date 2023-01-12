@@ -1,10 +1,8 @@
-import hre from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
 import { getEnvParams, getPrivateKey } from "../src/EnvParams";
 import { verifyOnEtherscan } from "../src/Etherscan";
 import { paymentParams } from "../src/PaymentParams";
-import { MASA_GOERLI, USDC_GOERLI } from "../src/Constants";
 
 let admin: SignerWithAddress;
 
@@ -55,7 +53,7 @@ const func: DeployFunction = async ({
     verifyOnEtherscan(soulLinkerDeploymentResult.address, constructorArguments);
   }
 
-  if (network.name != "mainnet") {
+  if (network.name == "hardhat") {
     // we add payment methods
 
     const signer = env.ADMIN
@@ -70,11 +68,9 @@ const func: DeployFunction = async ({
       soulLinkerDeploymentResult.address
     );
 
-    await soulLinker
-      .connect(signer)
-      .enablePaymentMethod(ethers.constants.AddressZero);
-    await soulLinker.connect(signer).enablePaymentMethod(USDC_GOERLI);
-    await soulLinker.connect(signer).enablePaymentMethod(MASA_GOERLI);
+    env.PAYMENT_METHODS_SOULLINKER.split(" ").forEach(async (paymentMethod) => {
+      await soulLinker.connect(signer).enablePaymentMethod(paymentMethod);
+    });
   }
 };
 

@@ -72,7 +72,7 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
     }
 
     /// @notice Sets the price of minting in stable coin
-    /// @dev The caller must have the admin to call this function
+    /// @dev The caller must have the admin role to call this function
     /// @param _mintPrice New price of minting in stable coin
     function setMintPrice(uint256 _mintPrice)
         external
@@ -83,7 +83,7 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
     }
 
     /// @notice Sets the price of minting in MASA
-    /// @dev The caller must have the admin to call this function
+    /// @dev The caller must have the admin role to call this function
     /// @param _mintPriceMASA New price of minting in MASA
     function setMintPriceMASA(uint256 _mintPriceMASA)
         external
@@ -94,7 +94,7 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
     }
 
     /// @notice Adds a new authority to the list of authorities
-    /// @dev The caller must have the admin to call this function
+    /// @dev The caller must have the admin role to call this function
     /// @param _authority New authority to add
     function addAuthority(address _authority)
         external
@@ -107,9 +107,12 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
     }
 
     /// @notice Removes an authority from the list of authorities
-    /// @dev The caller must have the admin to call this function
+    /// @dev The caller must have the admin role to call this function
     /// @param _authority Authority to remove
-    function removeAuthority(address _authority) external onlyOwner {
+    function removeAuthority(address _authority)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
         if (_authority == address(0)) revert ZeroAddress();
         if (!authorities[_authority]) revert AuthorityNotExists(_authority);
 

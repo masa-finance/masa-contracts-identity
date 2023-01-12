@@ -69,7 +69,7 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
     /// @notice Sets the SoulboundIdentity contract address linked to this soul name
-    /// @dev The caller must have the admin to call this function
+    /// @dev The caller must have the admin role to call this function
     /// @param _soulboundIdentity Address of the SoulboundIdentity contract
     function setSoulboundIdentity(ISoulboundIdentity _soulboundIdentity)
         external
@@ -81,7 +81,7 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     }
 
     /// @notice Sets the extension of the soul name
-    /// @dev The caller must have the admin to call this function
+    /// @dev The caller must have the admin role to call this function
     /// @param _extension Extension of the soul name
     function setExtension(string memory _extension) external onlyOwner {
         if (
@@ -92,7 +92,7 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     }
 
     /// @notice Sets the URI of the smart contract metadata
-    /// @dev The caller must have the admin to call this function
+    /// @dev The caller must have the admin role to call this function
     /// @param _contractURI URI of the smart contract metadata
     function setContractURI(string memory _contractURI) external onlyOwner {
         if (

@@ -1,10 +1,8 @@
-import hre from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
 import { getEnvParams, getPrivateKey } from "../src/EnvParams";
 import { verifyOnEtherscan } from "../src/Etherscan";
 import { paymentParams } from "../src/PaymentParams";
-import { MASA_GOERLI, USDC_GOERLI } from "../src/Constants";
 
 let admin: SignerWithAddress;
 
@@ -63,30 +61,32 @@ const func: DeployFunction = async ({
     );
   }
 
-  const signer = env.ADMIN
-    ? new ethers.Wallet(
-        getPrivateKey(network.name),
-        ethers.getDefaultProvider(network.name)
-      )
-    : admin;
+  if (network.name == "hardhat") {
+    const signer = env.ADMIN
+      ? new ethers.Wallet(
+          getPrivateKey(network.name),
+          ethers.getDefaultProvider(network.name)
+        )
+      : admin;
 
-  const soulboundCreditScore = await ethers.getContractAt(
-    "SoulboundCreditScore",
-    soulboundCreditScoreDeploymentResult.address
-  );
+    const soulboundCreditScore = await ethers.getContractAt(
+      "SoulboundCreditScore",
+      soulboundCreditScoreDeploymentResult.address
+    );
 
-  // add authority to soulboundCreditScore
-  await soulboundCreditScore
-    .connect(signer)
-    .addAuthority(env.AUTHORITY_WALLET || admin.address);
-
-  if (network.name != "mainnet") {
-    // we add payment methods
+    // add authority to soulboundCreditScore
     await soulboundCreditScore
       .connect(signer)
-      .enablePaymentMethod(ethers.constants.AddressZero);
-    await soulboundCreditScore.connect(signer).enablePaymentMethod(USDC_GOERLI);
-    await soulboundCreditScore.connect(signer).enablePaymentMethod(MASA_GOERLI);
+      .addAuthority(env.AUTHORITY_WALLET || admin.address);
+
+    // we add payment methods
+    env.PAYMENT_METHODS_SOULBOUNDCREDITSCORE.split(" ").forEach(
+      async (paymentMethod) => {
+        await soulboundCreditScore
+          .connect(signer)
+          .enablePaymentMethod(paymentMethod);
+      }
+    );
   }
 };
 

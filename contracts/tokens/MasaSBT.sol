@@ -54,7 +54,7 @@ abstract contract MasaSBT is
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
     /// @notice Sets the price for adding the link in SoulLinker in stable coin
-    /// @dev The caller must have the admin to call this function
+    /// @dev The caller must have the admin role to call this function
     /// @param _addLinkPrice New price for adding the link in SoulLinker in stable coin
     function setAddLinkPrice(uint256 _addLinkPrice)
         external
@@ -65,7 +65,7 @@ abstract contract MasaSBT is
     }
 
     /// @notice Sets the price for adding the link in SoulLinker in MASA
-    /// @dev The caller must have the admin to call this function
+    /// @dev The caller must have the admin role to call this function
     /// @param _addLinkPriceMASA New price for adding the link in SoulLinker in MASA
     function setAddLinkPriceMASA(uint256 _addLinkPriceMASA)
         external
@@ -76,7 +76,7 @@ abstract contract MasaSBT is
     }
 
     /// @notice Sets the price for reading data in SoulLinker in stable coin
-    /// @dev The caller must have the admin to call this function
+    /// @dev The caller must have the admin role to call this function
     /// @param _queryLinkPrice New price for reading data in SoulLinker in stable coin
     function setQueryLinkPrice(uint256 _queryLinkPrice)
         external
@@ -87,7 +87,7 @@ abstract contract MasaSBT is
     }
 
     /// @notice Sets the price for reading data in SoulLinker in MASA
-    /// @dev The caller must have the admin to call this function
+    /// @dev The caller must have the admin role to call this function
     /// @param _queryLinkPriceMASA New price for reading data in SoulLinker in MASA
     function setQueryLinkPriceMASA(uint256 _queryLinkPriceMASA)
         external

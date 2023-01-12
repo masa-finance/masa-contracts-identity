@@ -34,7 +34,7 @@ contract SoulboundIdentity is
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
     /// @notice Sets the SoulName contract address linked to this identity
-    /// @dev The caller must have the admin to call this function
+    /// @dev The caller must have the admin role to call this function
     /// @param _soulName Address of the SoulName contract
     function setSoulName(ISoulName _soulName)
         external
