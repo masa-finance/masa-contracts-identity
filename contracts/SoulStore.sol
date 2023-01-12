@@ -82,7 +82,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     }
 
     /// @notice Adds a new authority to the list of authorities
-    /// @dev The caller must have the admin to call this function
+    /// @dev The caller must have the admin role to call this function
     /// @param _authority New authority to add
     function addAuthority(address _authority) external onlyOwner {
         if (_authority == address(0)) revert ZeroAddress();
@@ -92,7 +92,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     }
 
     /// @notice Removes an authority from the list of authorities
-    /// @dev The caller must have the admin to call this function
+    /// @dev The caller must have the admin role to call this function
     /// @param _authority Authority to remove
     function removeAuthority(address _authority) external onlyOwner {
         if (_authority == address(0)) revert ZeroAddress();
