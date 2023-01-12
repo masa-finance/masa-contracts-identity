@@ -109,7 +109,10 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
     /// @notice Removes an authority from the list of authorities
     /// @dev The caller must have the admin to call this function
     /// @param _authority Authority to remove
-    function removeAuthority(address _authority) external onlyOwner {
+    function removeAuthority(address _authority)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
         if (_authority == address(0)) revert ZeroAddress();
         if (!authorities[_authority]) revert AuthorityNotExists(_authority);
 
