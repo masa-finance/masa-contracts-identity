@@ -139,6 +139,7 @@ abstract contract MasaSBT is
     function supportsInterface(bytes4 interfaceId)
         public
         view
+        virtual
         override(SBT, SBTEnumerable, AccessControl, IERC165)
         returns (bool)
     {

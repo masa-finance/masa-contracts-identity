@@ -108,6 +108,7 @@ abstract contract MasaNFT is
     function supportsInterface(bytes4 interfaceId)
         public
         view
+        virtual
         override(ERC721, ERC721Enumerable, AccessControl)
         returns (bool)
     {
