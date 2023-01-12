@@ -158,6 +158,21 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
         }
     }
 
+    /// @notice Query if a contract implements an interface
+    /// @dev Interface identification is specified in ERC-165.
+    /// @param interfaceId The interface identifier, as specified in ERC-165
+    /// @return `true` if the contract implements `interfaceId` and
+    ///  `interfaceId` is not 0xffffffff, `false` otherwise
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override(AccessControl, MasaSBT)
+        returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
+    }
+
     /* ========== PRIVATE FUNCTIONS ========================================= */
 
     function _verify(

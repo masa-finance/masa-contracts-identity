@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
@@ -14,7 +14,7 @@ import "../interfaces/dex/IUniswapRouter.sol";
 /// @notice Smart contract to call a Dex AMM smart contract to pay to a reserve wallet recipient
 /// @dev This smart contract will call the Uniswap Router interface, based on
 /// https://github.com/Uniswap/v2-periphery/blob/master/contracts/interfaces/IUniswapV2Router01.sol
-abstract contract PaymentGateway is Ownable {
+abstract contract PaymentGateway is AccessControl {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
@@ -45,16 +45,16 @@ abstract contract PaymentGateway is Ownable {
     /// @notice Creates a new Dex AMM
     /// @dev Creates a new Decentralized automated market maker (AMM) smart contract,
     // that will call the Uniswap Router interface
-    /// @param owner Owner of the smart contract
+    /// @param admin Administrator of the smart contract
     /// @param paymentParams Payment params
-    constructor(address owner, PaymentParams memory paymentParams) {
+    constructor(address admin, PaymentParams memory paymentParams) {
         if (paymentParams.swapRouter == address(0)) revert ZeroAddress();
         if (paymentParams.wrappedNativeToken == address(0))
             revert ZeroAddress();
         if (paymentParams.stableCoin == address(0)) revert ZeroAddress();
         if (paymentParams.reserveWallet == address(0)) revert ZeroAddress();
 
-        Ownable.transferOwnership(owner);
+        _grantRole(DEFAULT_ADMIN_ROLE, admin);
 
         swapRouter = paymentParams.swapRouter;
         wrappedNativeToken = paymentParams.wrappedNativeToken;
@@ -66,20 +66,23 @@ abstract contract PaymentGateway is Ownable {
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
     /// @notice Sets the swap router address
-    /// @dev The caller must have the owner to call this function
+    /// @dev The caller must have the admin role to call this function
     /// @param _swapRouter New swap router address
-    function setSwapRouter(address _swapRouter) external onlyOwner {
+    function setSwapRouter(address _swapRouter)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
         if (_swapRouter == address(0)) revert ZeroAddress();
         if (swapRouter == _swapRouter) revert SameValue();
         swapRouter = _swapRouter;
     }
 
     /// @notice Sets the wrapped native token address
-    /// @dev The caller must have the owner to call this function
+    /// @dev The caller must have the admin role to call this function
     /// @param _wrappedNativeToken New wrapped native token address
     function setWrappedNativeToken(address _wrappedNativeToken)
         external
-        onlyOwner
+        onlyRole(DEFAULT_ADMIN_ROLE)
     {
         if (_wrappedNativeToken == address(0)) revert ZeroAddress();
         if (wrappedNativeToken == _wrappedNativeToken) revert SameValue();
@@ -87,27 +90,36 @@ abstract contract PaymentGateway is Ownable {
     }
 
     /// @notice Sets the stable coin to pay the fee in (USDC)
-    /// @dev The caller must have the owner to call this function
+    /// @dev The caller must have the admin role to call this function
     /// @param _stableCoin New stable coin to pay the fee in
-    function setStableCoin(address _stableCoin) external onlyOwner {
+    function setStableCoin(address _stableCoin)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
         if (_stableCoin == address(0)) revert ZeroAddress();
         if (stableCoin == _stableCoin) revert SameValue();
         stableCoin = _stableCoin;
     }
 
     /// @notice Sets the utility token to pay the fee in (MASA)
-    /// @dev The caller must have the owner to call this function
+    /// @dev The caller must have the admin role to call this function
     /// It can be set to address(0) to disable paying in MASA
     /// @param _masaToken New utility token to pay the fee in
-    function setMasaToken(address _masaToken) external onlyOwner {
+    function setMasaToken(address _masaToken)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
         if (masaToken == _masaToken) revert SameValue();
         masaToken = _masaToken;
     }
 
     /// @notice Adds a new token as a valid payment method
-    /// @dev The caller must have the owner to call this function
+    /// @dev The caller must have the admin role to call this function
     /// @param _paymentMethod New token to add
-    function enablePaymentMethod(address _paymentMethod) external onlyOwner {
+    function enablePaymentMethod(address _paymentMethod)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
         if (enabledPaymentMethod[_paymentMethod]) revert AlreadyAdded();
 
         enabledPaymentMethod[_paymentMethod] = true;
@@ -115,9 +127,12 @@ abstract contract PaymentGateway is Ownable {
     }
 
     /// @notice Removes a token as a valid payment method
-    /// @dev The caller must have the owner to call this function
+    /// @dev The caller must have the admin role to call this function
     /// @param _paymentMethod Token to remove
-    function disablePaymentMethod(address _paymentMethod) external onlyOwner {
+    function disablePaymentMethod(address _paymentMethod)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
         if (!enabledPaymentMethod[_paymentMethod])
             revert NonExistingErc20Token(_paymentMethod);
 
@@ -134,9 +149,12 @@ abstract contract PaymentGateway is Ownable {
     }
 
     /// @notice Set the reserve wallet
-    /// @dev The caller must have the owner to call this function
+    /// @dev The caller must have the admin role to call this function
     /// @param _reserveWallet New reserve wallet
-    function setReserveWallet(address _reserveWallet) external onlyOwner {
+    function setReserveWallet(address _reserveWallet)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
         if (_reserveWallet == address(0)) revert ZeroAddress();
         if (_reserveWallet == reserveWallet) revert SameValue();
         reserveWallet = _reserveWallet;

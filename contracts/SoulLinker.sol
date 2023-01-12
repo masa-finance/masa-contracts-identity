@@ -53,14 +53,14 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
     /* ========== INITIALIZE ================================================ */
 
     /// @notice Creates a new soul linker
-    /// @param owner Owner of the smart contract
+    /// @param admin Administrator of the smart contract
     /// @param _soulboundIdentity Soulbound identity smart contract
     /// @param paymentParams Payment gateway params
     constructor(
-        address owner,
+        address admin,
         ISoulboundIdentity _soulboundIdentity,
         PaymentParams memory paymentParams
-    ) EIP712("SoulLinker", "1.0.0") PaymentGateway(owner, paymentParams) {
+    ) EIP712("SoulLinker", "1.0.0") PaymentGateway(admin, paymentParams) {
         if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
 
         soulboundIdentity = _soulboundIdentity;
@@ -69,11 +69,11 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
     /// @notice Sets the SoulboundIdentity contract address linked to this soul name
-    /// @dev The caller must be the owner to call this function
+    /// @dev The caller must have the admin role to call this function
     /// @param _soulboundIdentity Address of the SoulboundIdentity contract
     function setSoulboundIdentity(ISoulboundIdentity _soulboundIdentity)
         external
-        onlyOwner
+        onlyRole(DEFAULT_ADMIN_ROLE)
     {
         if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
         if (soulboundIdentity == _soulboundIdentity) revert SameValue();
@@ -81,14 +81,14 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
     }
 
     /// @notice Pauses the smart contract
-    /// @dev The caller must have the owner to call this function
-    function pause() external onlyOwner {
+    /// @dev The caller must have the admin role to call this function
+    function pause() external onlyRole(DEFAULT_ADMIN_ROLE) {
         _pause();
     }
 
     /// @notice Unpauses the smart contract
-    /// @dev The caller must have the owner to call this function
-    function unpause() external onlyOwner {
+    /// @dev The caller must have the admin role to call this function
+    function unpause() external onlyRole(DEFAULT_ADMIN_ROLE) {
         _unpause();
     }
 
