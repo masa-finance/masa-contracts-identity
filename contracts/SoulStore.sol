@@ -32,16 +32,16 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @notice Creates a new Soul Store
     /// @dev Creates a new Soul Store, that has the role to minting new Soulbound Identities
     /// and Soul Name NFTs, paying a fee
-    /// @param owner Owner of the smart contract
+    /// @param admin Administrator of the smart contract
     /// @param _soulBoundIdentity Address of the Soulbound identity contract
     /// @param _nameRegistrationPricePerYear Price of the default name registering in stable coin per year
     /// @param paymentParams Payment gateway params
     constructor(
-        address owner,
+        address admin,
         ISoulboundIdentity _soulBoundIdentity,
         uint256 _nameRegistrationPricePerYear,
         PaymentParams memory paymentParams
-    ) PaymentGateway(owner, paymentParams) EIP712("SoulStore", "1.0.0") {
+    ) PaymentGateway(admin, paymentParams) EIP712("SoulStore", "1.0.0") {
         if (address(_soulBoundIdentity) == address(0)) revert ZeroAddress();
 
         soulboundIdentity = _soulBoundIdentity;
@@ -52,11 +52,11 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /* ========== RESTRICTED FUNCTIONS ========== */
 
     /// @notice Sets the SoulboundIdentity contract address linked to this store
-    /// @dev The caller must have the owner to call this function
+    /// @dev The caller must have the admin role to call this function
     /// @param _soulboundIdentity New SoulboundIdentity contract address
     function setSoulboundIdentity(ISoulboundIdentity _soulboundIdentity)
         external
-        onlyOwner
+        onlyRole(DEFAULT_ADMIN_ROLE)
     {
         if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
         if (soulboundIdentity == _soulboundIdentity) revert SameValue();
@@ -64,14 +64,14 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     }
 
     /// @notice Sets the price of the name registering per one year in stable coin
-    /// @dev The caller must have the owner to call this function
+    /// @dev The caller must have the admin role to call this function
     /// @param _nameLength Length of the name
     /// @param _nameRegistrationPricePerYear New price of the name registering per one
     /// year in stable coin for that name length per year
     function setNameRegistrationPricePerYear(
         uint256 _nameLength,
         uint256 _nameRegistrationPricePerYear
-    ) external onlyOwner {
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (
             nameRegistrationPricePerYear[_nameLength] ==
             _nameRegistrationPricePerYear
@@ -84,7 +84,10 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @notice Adds a new authority to the list of authorities
     /// @dev The caller must have the admin role to call this function
     /// @param _authority New authority to add
-    function addAuthority(address _authority) external onlyOwner {
+    function addAuthority(address _authority)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
         if (_authority == address(0)) revert ZeroAddress();
         if (authorities[_authority]) revert AlreadyAdded();
 
@@ -94,7 +97,10 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @notice Removes an authority from the list of authorities
     /// @dev The caller must have the admin role to call this function
     /// @param _authority Authority to remove
-    function removeAuthority(address _authority) external onlyOwner {
+    function removeAuthority(address _authority)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
         if (_authority == address(0)) revert ZeroAddress();
         if (!authorities[_authority]) revert AuthorityNotExists(_authority);
 
@@ -102,14 +108,14 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     }
 
     /// @notice Pauses the smart contract
-    /// @dev The caller must have the owner to call this function
-    function pause() public onlyOwner {
+    /// @dev The caller must have the admin role to call this function
+    function pause() public onlyRole(DEFAULT_ADMIN_ROLE) {
         _pause();
     }
 
     /// @notice Unpauses the smart contract
-    /// @dev The caller must have the owner to call this function
-    function unpause() public onlyOwner {
+    /// @dev The caller must have the admin role to call this function
+    function unpause() public onlyRole(DEFAULT_ADMIN_ROLE) {
         _unpause();
     }
 
