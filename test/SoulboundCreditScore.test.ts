@@ -13,16 +13,13 @@ import {
   SoulboundIdentity,
   SoulboundIdentity__factory
 } from "../typechain";
-import {
-  MASA_GOERLI,
-  SWAPROUTER_GOERLI,
-  USDC_GOERLI,
-  WETH_GOERLI
-} from "../src/Constants";
+import { getEnvParams } from "../src/EnvParams";
 
 chai.use(chaiAsPromised);
 chai.use(solidity);
 const expect = chai.expect;
+
+const env = getEnvParams("hardhat");
 
 // contract instances
 let soulboundIdentity: SoulboundIdentity;
@@ -98,14 +95,14 @@ describe("Soulbound Credit Score", () => {
       owner
     );
     const uniswapRouter: IUniswapRouter = IUniswapRouter__factory.connect(
-      SWAPROUTER_GOERLI,
+      env.SWAP_ROUTER,
       owner
     );
 
     // we get stable coins for address1
     await uniswapRouter.swapExactETHForTokens(
       0,
-      [WETH_GOERLI, USDC_GOERLI],
+      [env.WETH_TOKEN, env.USDC_TOKEN],
       address1.address,
       Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
       {
@@ -116,7 +113,7 @@ describe("Soulbound Credit Score", () => {
     // we get MASA utility tokens for address1
     await uniswapRouter.swapExactETHForTokens(
       0,
-      [WETH_GOERLI, MASA_GOERLI],
+      [env.WETH_TOKEN, env.MASA_TOKEN],
       address1.address,
       Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
       {
@@ -409,11 +406,11 @@ describe("Soulbound Credit Score", () => {
 
     it("should mint from final user identity paying with stable coin", async () => {
       const priceInStableCoin = await soulboundCreditScore.getMintPrice(
-        USDC_GOERLI
+        env.USDC_TOKEN
       );
 
       // set allowance for soul store
-      const usdc: IERC20 = IERC20__factory.connect(USDC_GOERLI, owner);
+      const usdc: IERC20 = IERC20__factory.connect(env.USDC_TOKEN, owner);
       await usdc
         .connect(address1)
         .approve(soulboundCreditScore.address, priceInStableCoin);
@@ -421,7 +418,7 @@ describe("Soulbound Credit Score", () => {
       const mintTx = await soulboundCreditScore
         .connect(address1)
         ["mint(address,uint256,address,uint256,bytes)"](
-          USDC_GOERLI,
+          env.USDC_TOKEN,
           identityId1,
           authority.address,
           signatureDate,
@@ -438,11 +435,11 @@ describe("Soulbound Credit Score", () => {
 
     it("should mint from final user identity paying with MASA coin", async () => {
       const priceInStableCoin = await soulboundCreditScore.getMintPrice(
-        MASA_GOERLI
+        env.MASA_TOKEN
       );
 
       // set allowance for soul store
-      const usdc: IERC20 = IERC20__factory.connect(MASA_GOERLI, owner);
+      const usdc: IERC20 = IERC20__factory.connect(env.MASA_TOKEN, owner);
       await usdc
         .connect(address1)
         .approve(soulboundCreditScore.address, priceInStableCoin);
@@ -450,7 +447,7 @@ describe("Soulbound Credit Score", () => {
       const mintTx = await soulboundCreditScore
         .connect(address1)
         ["mint(address,uint256,address,uint256,bytes)"](
-          MASA_GOERLI,
+          env.MASA_TOKEN,
           identityId1,
           authority.address,
           signatureDate,

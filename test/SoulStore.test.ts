@@ -11,17 +11,15 @@ import {
   SoulStore,
   SoulStore__factory
 } from "../typechain";
-import {
-  DAI_GOERLI,
-  MASA_GOERLI,
-  USDC_GOERLI,
-  SWAPROUTER_GOERLI,
-  WETH_GOERLI
-} from "../src/Constants";
+import { getEnvParams } from "../src/EnvParams";
 
 chai.use(chaiAsPromised);
 chai.use(solidity);
 const expect = chai.expect;
+
+const env = getEnvParams("hardhat");
+
+const DAI_GOERLI = "0xdc31Ee1784292379Fbb2964b3B9C4124D8F89C60";
 
 // contract instances
 let soulStore: SoulStore;
@@ -96,14 +94,14 @@ describe("Soul Store", () => {
 
     soulStore = SoulStore__factory.connect(soulStoreAddress, owner);
     const uniswapRouter: IUniswapRouter = IUniswapRouter__factory.connect(
-      SWAPROUTER_GOERLI,
+      env.SWAP_ROUTER,
       owner
     );
 
     // we get stable coins for address1
     await uniswapRouter.swapExactETHForTokens(
       0,
-      [WETH_GOERLI, USDC_GOERLI],
+      [env.WETH_TOKEN, env.USDC_TOKEN],
       address1.address,
       Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
       {
@@ -114,7 +112,7 @@ describe("Soul Store", () => {
     // we get MASA utility tokens for address1
     await uniswapRouter.swapExactETHForTokens(
       0,
-      [WETH_GOERLI, MASA_GOERLI],
+      [env.WETH_TOKEN, env.MASA_TOKEN],
       address1.address,
       Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
       {
@@ -125,7 +123,7 @@ describe("Soul Store", () => {
     // we get DAI tokens for address1
     await uniswapRouter.swapExactETHForTokens(
       0,
-      [WETH_GOERLI, DAI_GOERLI],
+      [env.WETH_TOKEN, DAI_GOERLI],
       address1.address,
       Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
       {
@@ -545,7 +543,7 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const usdc: IERC20 = IERC20__factory.connect(USDC_GOERLI, owner);
+      const usdc: IERC20 = IERC20__factory.connect(env.USDC_TOKEN, owner);
       await usdc
         .connect(address1)
         .approve(soulStore.address, priceInStableCoin);
@@ -561,7 +559,7 @@ describe("Soul Store", () => {
       );
 
       await soulStore.connect(address1).purchaseIdentityAndName(
-        USDC_GOERLI, // USDC
+        env.USDC_TOKEN, // USDC
         SOUL_NAME,
         SOUL_NAME.length,
         YEAR,
@@ -587,7 +585,7 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const masa: IERC20 = IERC20__factory.connect(MASA_GOERLI, owner);
+      const masa: IERC20 = IERC20__factory.connect(env.MASA_TOKEN, owner);
       await masa.connect(address1).approve(soulStore.address, priceInMasaToken);
       const reserveWalletBalanceBefore = await masa.balanceOf(reserveWallet);
 
@@ -601,7 +599,7 @@ describe("Soul Store", () => {
       );
 
       await soulStore.connect(address1).purchaseIdentityAndName(
-        MASA_GOERLI, // MASA
+        env.MASA_TOKEN, // MASA
         SOUL_NAME,
         SOUL_NAME.length,
         YEAR,
@@ -656,7 +654,7 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const usdc: IERC20 = IERC20__factory.connect(USDC_GOERLI, owner);
+      const usdc: IERC20 = IERC20__factory.connect(env.USDC_TOKEN, owner);
       await usdc
         .connect(address2)
         .approve(soulStore.address, priceInStableCoin);
@@ -672,7 +670,7 @@ describe("Soul Store", () => {
 
       await expect(
         soulStore.connect(address2).purchaseIdentityAndName(
-          USDC_GOERLI, // USDC
+          env.USDC_TOKEN, // USDC
           SOUL_NAME,
           SOUL_NAME.length,
           YEAR,
@@ -691,7 +689,7 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const masa: IERC20 = IERC20__factory.connect(MASA_GOERLI, owner);
+      const masa: IERC20 = IERC20__factory.connect(env.MASA_TOKEN, owner);
       await masa.connect(address2).approve(soulStore.address, priceInMasaToken);
 
       const signature = await signMintSoulName(
@@ -705,7 +703,7 @@ describe("Soul Store", () => {
 
       await expect(
         soulStore.connect(address2).purchaseIdentityAndName(
-          MASA_GOERLI, // MASA
+          env.MASA_TOKEN, // MASA
           SOUL_NAME,
           SOUL_NAME.length,
           YEAR,
@@ -806,7 +804,7 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const usdc: IERC20 = IERC20__factory.connect(USDC_GOERLI, owner);
+      const usdc: IERC20 = IERC20__factory.connect(env.USDC_TOKEN, owner);
       await usdc
         .connect(address1)
         .approve(soulStore.address, priceInStableCoin);
@@ -821,7 +819,7 @@ describe("Soul Store", () => {
       );
 
       await soulStore.connect(address1).purchaseName(
-        USDC_GOERLI, // USDC
+        env.USDC_TOKEN, // USDC
         address1.address,
         SOUL_NAME,
         SOUL_NAME.length,
@@ -840,7 +838,7 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const masa: IERC20 = IERC20__factory.connect(MASA_GOERLI, owner);
+      const masa: IERC20 = IERC20__factory.connect(env.MASA_TOKEN, owner);
       await masa.connect(address1).approve(soulStore.address, priceInMasaToken);
 
       const signature = await signMintSoulName(
@@ -853,7 +851,7 @@ describe("Soul Store", () => {
       );
 
       await soulStore.connect(address1).purchaseName(
-        MASA_GOERLI, // MASA
+        env.MASA_TOKEN, // MASA
         address1.address,
         SOUL_NAME,
         SOUL_NAME.length,
@@ -903,7 +901,7 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const usdc: IERC20 = IERC20__factory.connect(USDC_GOERLI, owner);
+      const usdc: IERC20 = IERC20__factory.connect(env.USDC_TOKEN, owner);
       await usdc
         .connect(address2)
         .approve(soulStore.address, priceInStableCoin);
@@ -919,7 +917,7 @@ describe("Soul Store", () => {
 
       await expect(
         soulStore.connect(address2).purchaseName(
-          USDC_GOERLI, // USDC
+          env.USDC_TOKEN, // USDC
           address1.address,
           SOUL_NAME,
           SOUL_NAME.length,
@@ -939,7 +937,7 @@ describe("Soul Store", () => {
       );
 
       // set allowance for soul store
-      const masa: IERC20 = IERC20__factory.connect(MASA_GOERLI, owner);
+      const masa: IERC20 = IERC20__factory.connect(env.MASA_TOKEN, owner);
       await masa.connect(address2).approve(soulStore.address, priceInMasaToken);
 
       const signature = await signMintSoulName(
@@ -953,7 +951,7 @@ describe("Soul Store", () => {
 
       await expect(
         soulStore.connect(address2).purchaseName(
-          MASA_GOERLI, // MASA
+          env.MASA_TOKEN, // MASA
           address1.address,
           SOUL_NAME,
           SOUL_NAME.length,
@@ -985,8 +983,8 @@ describe("Soul Store", () => {
 
       expect(enabledPaymentMethods).to.be.deep.equal([
         ethers.constants.AddressZero,
-        USDC_GOERLI,
-        MASA_GOERLI,
+        env.USDC_TOKEN,
+        env.MASA_TOKEN,
         DAI_GOERLI
       ]);
     });
