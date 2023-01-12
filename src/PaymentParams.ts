@@ -30,7 +30,6 @@ export function paymentParams(networkName: string, ethers: any) {
     stableCoin = USDC_GOERLI;
     masaCoin = MASA_GOERLI;
   } else {
-    console.log(networkName);
     throw new Error("Network not supported");
   }
 
