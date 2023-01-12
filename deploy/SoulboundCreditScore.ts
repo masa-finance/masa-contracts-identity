@@ -1,7 +1,7 @@
+import hre from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
 import { getEnvParams, getPrivateKey } from "../src/EnvParams";
-import { verifyOnEtherscan } from "../src/Etherscan";
 import { paymentParams } from "../src/PaymentParams";
 
 let admin: SignerWithAddress;
@@ -55,10 +55,19 @@ const func: DeployFunction = async ({
 
   // verify contract with etherscan, if its not a local network
   if (network.name == "mainnet" || network.name == "goerli") {
-    verifyOnEtherscan(
-      soulboundCreditScoreDeploymentResult.address,
-      constructorArguments
-    );
+    try {
+      await hre.run("verify:verify", {
+        address: soulboundCreditScoreDeploymentResult.address,
+        constructorArguments
+      });
+    } catch (error) {
+      if (
+        !error.message.includes("Contract source code already verified") &&
+        !error.message.includes("Reason: Already Verified")
+      ) {
+        throw error;
+      }
+    }
   }
 
   if (network.name == "hardhat") {
