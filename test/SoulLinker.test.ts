@@ -162,6 +162,8 @@ describe("Soul Linker", () => {
     // we add authority account
     await soulboundCreditScore.addAuthority(authority.address);
 
+    await soulboundCreditScore.setMintPrice(0); // 0 USDC
+
     // we mint credit score SBT for dataOwner
     const signatureMintCreditScore = await signMintCreditScore(
       ownerIdentityId,
