@@ -84,6 +84,11 @@ const func: DeployFunction = async ({
       .connect(signer)
       .addAuthority(env.AUTHORITY_WALLET || admin.address);
 
+    // add authority to soulboundCreditScore
+    await soulboundCreditScore
+      .connect(signer)
+      .setMintPrice(20_000_000); // 20 USDC
+
     // we add payment methods
     env.PAYMENT_METHODS_SOULBOUNDCREDITSCORE.split(" ").forEach(
       async (paymentMethod) => {
