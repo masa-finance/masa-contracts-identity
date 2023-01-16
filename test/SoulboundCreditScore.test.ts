@@ -132,6 +132,8 @@ describe("Soulbound Credit Score", () => {
     // we add authority account
     await soulboundCreditScore.addAuthority(authority.address);
 
+    await soulboundCreditScore.setMintPrice(0); // 0 USDC
+
     signature = await signMintCreditScore(identityId1, authority);
   });
 
