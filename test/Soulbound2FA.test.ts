@@ -28,7 +28,7 @@ const signatureDate = Math.floor(Date.now() / 1000);
 
 let signature: string;
 
-const signMintCreditScore = async (
+const signMintCredit2FA = async (
   identityId: number,
   authoritySigner: SignerWithAddress
 ) => {
@@ -96,7 +96,7 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
     // we add authority account
     await soulbound2FA.addAuthority(authority.address);
 
-    signature = await signMintCreditScore(identityId1, authority);
+    signature = await signMintCredit2FA(identityId1, authority);
   });
 
   describe("owner functions", () => {
