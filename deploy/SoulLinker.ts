@@ -37,51 +37,66 @@ const func: DeployFunction = async ({
     ]
   ];
 
-  const soulLinkerDeploymentResult = await deploy("SoulLinker", {
-    from: deployer,
-    args: constructorArguments,
-    log: true
-    // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
-  });
+  if (
+    network.name === "mainnet" ||
+    network.name === "goerli" ||
+    network.name === "hardhat"
+  ) {
+    const soulLinkerDeploymentResult = await deploy("SoulLinker", {
+      from: deployer,
+      args: constructorArguments,
+      log: true
+      // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
+    });
 
-  // verify contract with etherscan, if its not a local network
-  if (network.name == "mainnet" || network.name == "goerli") {
-    try {
-      await hre.run("verify:verify", {
-        address: soulLinkerDeploymentResult.address,
-        constructorArguments
-      });
-    } catch (error) {
-      if (
-        !error.message.includes("Contract source code already verified") &&
-        !error.message.includes("Reason: Already Verified")
-      ) {
-        throw error;
+    // verify contract with etherscan, if its not a local network
+    if (network.name === "mainnet" || network.name === "goerli") {
+      try {
+        await hre.run("verify:verify", {
+          address: soulLinkerDeploymentResult.address,
+          constructorArguments
+        });
+      } catch (error) {
+        if (
+          !error.message.includes("Contract source code already verified") &&
+          !error.message.includes("Reason: Already Verified")
+        ) {
+          throw error;
+        }
       }
     }
-  }
 
-  if (network.name == "hardhat") {
-    // we add payment methods
+    if (network.name === "hardhat") {
+      // we add payment methods
 
-    const signer = env.ADMIN
-      ? new ethers.Wallet(
-          getPrivateKey(network.name),
-          ethers.getDefaultProvider(network.name)
-        )
-      : admin;
+      const signer = env.ADMIN
+        ? new ethers.Wallet(
+            getPrivateKey(network.name),
+            ethers.getDefaultProvider(network.name)
+          )
+        : admin;
 
-    const soulLinker = await ethers.getContractAt(
-      "SoulLinker",
-      soulLinkerDeploymentResult.address
-    );
+      const soulLinker = await ethers.getContractAt(
+        "SoulLinker",
+        soulLinkerDeploymentResult.address
+      );
 
-    env.PAYMENT_METHODS_SOULLINKER.split(" ").forEach(async (paymentMethod) => {
-      await soulLinker.connect(signer).enablePaymentMethod(paymentMethod);
-    });
+      env.PAYMENT_METHODS_SOULLINKER.split(" ").forEach(
+        async (paymentMethod) => {
+          await soulLinker.connect(signer).enablePaymentMethod(paymentMethod);
+        }
+      );
+    }
   }
 };
 
+func.skip = async ({ network }) => {
+  return (
+    network.name !== "mainnet" &&
+    network.name !== "goerli" &&
+    network.name !== "hardhat"
+  );
+};
 func.tags = ["SoulLinker"];
 func.dependencies = [
   "SoulboundIdentity",

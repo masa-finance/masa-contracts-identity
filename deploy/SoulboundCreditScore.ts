@@ -39,67 +39,78 @@ const func: DeployFunction = async ({
     ]
   ];
 
-  const soulboundCreditScoreDeploymentResult = await deploy(
-    "SoulboundCreditScore",
-    {
-      from: deployer,
-      args: constructorArguments,
-      log: true
-      // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
-    }
-  );
-
-  // verify contract with etherscan, if its not a local network
-  if (network.name == "mainnet" || network.name == "goerli") {
-    try {
-      await hre.run("verify:verify", {
-        address: soulboundCreditScoreDeploymentResult.address,
-        constructorArguments
-      });
-    } catch (error) {
-      if (
-        !error.message.includes("Contract source code already verified") &&
-        !error.message.includes("Reason: Already Verified")
-      ) {
-        throw error;
-      }
-    }
-  }
-
-  if (network.name == "hardhat") {
-    const signer = env.ADMIN
-      ? new ethers.Wallet(
-          getPrivateKey(network.name),
-          ethers.getDefaultProvider(network.name)
-        )
-      : admin;
-
-    const soulboundCreditScore = await ethers.getContractAt(
+  if (
+    network.name === "mainnet" ||
+    network.name === "goerli" ||
+    network.name === "hardhat"
+  ) {
+    const soulboundCreditScoreDeploymentResult = await deploy(
       "SoulboundCreditScore",
-      soulboundCreditScoreDeploymentResult.address
-    );
-
-    // add authority to soulboundCreditScore
-    await soulboundCreditScore
-      .connect(signer)
-      .addAuthority(env.AUTHORITY_WALLET || admin.address);
-
-    // add authority to soulboundCreditScore
-    await soulboundCreditScore
-      .connect(signer)
-      .setMintPrice(20_000_000); // 20 USDC
-
-    // we add payment methods
-    env.PAYMENT_METHODS_SOULBOUNDCREDITSCORE.split(" ").forEach(
-      async (paymentMethod) => {
-        await soulboundCreditScore
-          .connect(signer)
-          .enablePaymentMethod(paymentMethod);
+      {
+        from: deployer,
+        args: constructorArguments,
+        log: true
+        // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
       }
     );
+
+    // verify contract with etherscan, if its not a local network
+    if (network.name === "mainnet" || network.name === "goerli") {
+      try {
+        await hre.run("verify:verify", {
+          address: soulboundCreditScoreDeploymentResult.address,
+          constructorArguments
+        });
+      } catch (error) {
+        if (
+          !error.message.includes("Contract source code already verified") &&
+          !error.message.includes("Reason: Already Verified")
+        ) {
+          throw error;
+        }
+      }
+    }
+
+    if (network.name === "hardhat") {
+      const signer = env.ADMIN
+        ? new ethers.Wallet(
+            getPrivateKey(network.name),
+            ethers.getDefaultProvider(network.name)
+          )
+        : admin;
+
+      const soulboundCreditScore = await ethers.getContractAt(
+        "SoulboundCreditScore",
+        soulboundCreditScoreDeploymentResult.address
+      );
+
+      // add authority to soulboundCreditScore
+      await soulboundCreditScore
+        .connect(signer)
+        .addAuthority(env.AUTHORITY_WALLET || admin.address);
+
+      // add authority to soulboundCreditScore
+      await soulboundCreditScore.connect(signer).setMintPrice(20_000_000); // 20 USDC
+
+      // we add payment methods
+      env.PAYMENT_METHODS_SOULBOUNDCREDITSCORE.split(" ").forEach(
+        async (paymentMethod) => {
+          await soulboundCreditScore
+            .connect(signer)
+            .enablePaymentMethod(paymentMethod);
+        }
+      );
+    }
   }
 };
 
+func.skip = async ({ network }) => {
+  return (
+    network.name !== "mainnet" &&
+    network.name !== "goerli" &&
+    network.name !== "hardhat"
+  );
+};
 func.tags = ["SoulboundCreditScore"];
 func.dependencies = ["SoulboundIdentity"];
 export default func;

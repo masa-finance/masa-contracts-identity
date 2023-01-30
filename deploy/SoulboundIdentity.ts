@@ -26,30 +26,46 @@ const func: DeployFunction = async ({
 
   const constructorArguments = [env.ADMIN || admin.address, baseUri];
 
-  const soulboundIdentityDeploymentResult = await deploy("SoulboundIdentity", {
-    from: deployer,
-    args: constructorArguments,
-    log: true
-    // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
-  });
+  if (
+    network.name === "mainnet" ||
+    network.name === "goerli" ||
+    network.name === "hardhat"
+  ) {
+    const soulboundIdentityDeploymentResult = await deploy(
+      "SoulboundIdentity",
+      {
+        from: deployer,
+        args: constructorArguments,
+        log: true
+        // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
+      }
+    );
 
-  // verify contract with etherscan, if its not a local network
-  if (network.name == "mainnet" || network.name == "goerli") {
-    try {
-      await hre.run("verify:verify", {
-        address: soulboundIdentityDeploymentResult.address,
-        constructorArguments
-      });
-    } catch (error) {
-      if (
-        !error.message.includes("Contract source code already verified") &&
-        !error.message.includes("Reason: Already Verified")
-      ) {
-        throw error;
+    // verify contract with etherscan, if its not a local network
+    if (network.name === "mainnet" || network.name === "goerli") {
+      try {
+        await hre.run("verify:verify", {
+          address: soulboundIdentityDeploymentResult.address,
+          constructorArguments
+        });
+      } catch (error) {
+        if (
+          !error.message.includes("Contract source code already verified") &&
+          !error.message.includes("Reason: Already Verified")
+        ) {
+          throw error;
+        }
       }
     }
   }
 };
 
+func.skip = async ({ network }) => {
+  return (
+    network.name !== "mainnet" &&
+    network.name !== "goerli" &&
+    network.name !== "hardhat"
+  );
+};
 func.tags = ["SoulboundIdentity"];
 export default func;

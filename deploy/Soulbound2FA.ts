@@ -39,50 +39,49 @@ const func: DeployFunction = async ({
     ]
   ];
 
-  let soulbound2FADeploymentResult;
   if (network.name != "mainnet") {
-    soulbound2FADeploymentResult = await deploy("Soulbound2FA", {
+    const soulbound2FADeploymentResult = await deploy("Soulbound2FA", {
       from: deployer,
       args: constructorArguments,
       log: true
       // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
     });
-  }
 
-  // verify contract with etherscan, if its not a local network
-  if (network.name == "goerli") {
-    try {
-      await hre.run("verify:verify", {
-        address: soulbound2FADeploymentResult.address,
-        constructorArguments
-      });
-    } catch (error) {
-      if (
-        !error.message.includes("Contract source code already verified") &&
-        !error.message.includes("Reason: Already Verified")
-      ) {
-        throw error;
+    // verify contract with etherscan, if its not a local network
+    if (network.name === "goerli") {
+      try {
+        await hre.run("verify:verify", {
+          address: soulbound2FADeploymentResult.address,
+          constructorArguments
+        });
+      } catch (error) {
+        if (
+          !error.message.includes("Contract source code already verified") &&
+          !error.message.includes("Reason: Already Verified")
+        ) {
+          throw error;
+        }
       }
     }
-  }
 
-  if (network.name == "hardhat") {
-    const signer = env.ADMIN
-      ? new ethers.Wallet(
-          getPrivateKey(network.name),
-          ethers.getDefaultProvider(network.name)
-        )
-      : admin;
+    if (network.name == "hardhat") {
+      const signer = env.ADMIN
+        ? new ethers.Wallet(
+            getPrivateKey(network.name),
+            ethers.getDefaultProvider(network.name)
+          )
+        : admin;
 
-    const soulbound2FA = await ethers.getContractAt(
-      "Soulbound2FA",
-      soulbound2FADeploymentResult.address
-    );
+      const soulbound2FA = await ethers.getContractAt(
+        "Soulbound2FA",
+        soulbound2FADeploymentResult.address
+      );
 
-    // add authority to soulbound2FA
-    await soulbound2FA
-      .connect(signer)
-      .addAuthority(env.AUTHORITY_WALLET || admin.address);
+      // add authority to soulbound2FA
+      await soulbound2FA
+        .connect(signer)
+        .addAuthority(env.AUTHORITY_WALLET || admin.address);
+    }
   }
 };
 
