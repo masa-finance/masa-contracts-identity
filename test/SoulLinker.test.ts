@@ -172,9 +172,9 @@ describe("Soul Linker", () => {
 
     mintTx = await soulboundCreditScore
       .connect(dataOwner)
-      ["mint(address,address,address,uint256,bytes)"](
+      ["mint(address,uint256,address,uint256,bytes)"](
         ethers.constants.AddressZero,
-        dataOwner.address,
+        ownerIdentityId,
         authority.address,
         signatureDate,
         signatureMintCreditScore

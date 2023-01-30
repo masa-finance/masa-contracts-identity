@@ -230,9 +230,9 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
         );
       const mintReceipt = await mintTx.wait();
 
-      const tokenId = mintReceipt.events![0].args![1].toNumber();
+      const toAddress = mintReceipt.events![1].args![1];
 
-      expect(await soulbound2FA.getIdentityId(tokenId)).to.equal(identityId1);
+      expect(toAddress).to.equal(address1.address);
     });
 
     it("should mint from final user identity", async () => {
@@ -249,7 +249,9 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
 
       const tokenId = mintReceipt.events![0].args![1].toNumber();
 
-      expect(await soulbound2FA.getIdentityId(tokenId)).to.equal(identityId1);
+      expect((await soulbound2FA.getIdentityId(tokenId))[0]).to.equal(
+        identityId1
+      );
     });
   });
 

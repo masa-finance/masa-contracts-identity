@@ -305,7 +305,7 @@ describe("Soulbound Credit Score", () => {
 
       const tokenId = mintReceipt.events![0].args![1].toNumber();
 
-      expect(await soulboundCreditScore.getIdentityId(tokenId)).to.equal(
+      expect((await soulboundCreditScore.getIdentityId(tokenId))[0]).to.equal(
         identityId1
       );
     });
@@ -324,7 +324,7 @@ describe("Soulbound Credit Score", () => {
 
       const tokenId = mintReceipt.events![0].args![1].toNumber();
 
-      expect(await soulboundCreditScore.getIdentityId(tokenId)).to.equal(
+      expect((await soulboundCreditScore.getIdentityId(tokenId))[0]).to.equal(
         identityId1
       );
     });
@@ -396,7 +396,7 @@ describe("Soulbound Credit Score", () => {
 
       const tokenId = mintReceipt.events![0].args![1].toNumber();
 
-      expect(await soulboundCreditScore.getIdentityId(tokenId)).to.equal(
+      expect((await soulboundCreditScore.getIdentityId(tokenId))[0]).to.equal(
         identityId1
       );
 
@@ -433,7 +433,7 @@ describe("Soulbound Credit Score", () => {
 
       const tokenId = mintReceipt.events![0].args![1].toNumber();
 
-      expect(await soulboundCreditScore.getIdentityId(tokenId)).to.equal(
+      expect((await soulboundCreditScore.getIdentityId(tokenId))[0]).to.equal(
         identityId1
       );
 
@@ -471,7 +471,7 @@ describe("Soulbound Credit Score", () => {
 
       const tokenId = mintReceipt.events![1].args![1].toNumber();
 
-      expect(await soulboundCreditScore.getIdentityId(tokenId)).to.equal(
+      expect((await soulboundCreditScore.getIdentityId(tokenId))[0]).to.equal(
         identityId1
       );
     });
@@ -500,7 +500,7 @@ describe("Soulbound Credit Score", () => {
 
       const tokenId = mintReceipt.events![2].args![1].toNumber();
 
-      expect(await soulboundCreditScore.getIdentityId(tokenId)).to.equal(
+      expect((await soulboundCreditScore.getIdentityId(tokenId))[0]).to.equal(
         identityId1
       );
     });
