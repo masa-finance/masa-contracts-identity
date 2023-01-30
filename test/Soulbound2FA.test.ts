@@ -20,6 +20,7 @@ let soulbound2FA: Soulbound2FA;
 
 let owner: SignerWithAddress;
 let address1: SignerWithAddress;
+let address2: SignerWithAddress;
 let authority: SignerWithAddress;
 
 let identityId1: number;
@@ -97,7 +98,7 @@ const signMintCredit2FAToAddress = async (
 
 describe("Soulbound Two-factor authentication (2FA)", () => {
   before(async () => {
-    [, owner, address1, authority] = await ethers.getSigners();
+    [, owner, address1, address2, authority] = await ethers.getSigners();
   });
 
   beforeEach(async () => {
@@ -249,8 +250,37 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
 
       const tokenId = mintReceipt.events![0].args![1].toNumber();
 
-      expect((await soulbound2FA.getIdentityId(tokenId))[0]).to.equal(
-        identityId1
+      expect(await soulbound2FA.getIdentityId(tokenId)).to.equal(identityId1);
+    });
+
+    it("should mint to an address, with a 2FA SBT not linked to an identity SC", async () => {
+      // we set the identity SC to 0x0
+      await soulbound2FA.setSoulboundIdentity(ethers.constants.AddressZero);
+
+      const signatureToAddress2 = await signMintCredit2FAToAddress(
+        address2.address,
+        authority
+      );
+      const mintTx = await soulbound2FA
+        .connect(address2)
+        ["mint(address,address,address,uint256,bytes)"](
+          ethers.constants.AddressZero,
+          address2.address,
+          authority.address,
+          signatureDate,
+          signatureToAddress2
+        );
+      const mintReceipt = await mintTx.wait();
+
+      const toAddress = mintReceipt.events![1].args![1];
+
+      expect(toAddress).to.equal(address2.address);
+
+      const tokenId = mintReceipt.events![0].args![1].toNumber();
+
+      // check that this 2FA is not linked to an identity
+      await expect(soulbound2FA.getIdentityId(tokenId)).to.be.revertedWith(
+        "NotLinkedToAnIdentitySBT"
       );
     });
   });
