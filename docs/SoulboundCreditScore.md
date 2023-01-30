@@ -255,7 +255,7 @@ Returns all available payment methods
 ### getIdentityId
 
 ```solidity
-function getIdentityId(uint256 tokenId) external view returns (uint256 identityId, bool exists)
+function getIdentityId(uint256 tokenId) external view returns (uint256)
 ```
 
 Returns the identityId owned by the given token
@@ -272,8 +272,7 @@ Returns the identityId owned by the given token
 
 | Name | Type | Description |
 |---|---|---|
-| identityId | uint256 | Id of the identity |
-| exists | bool | True if the identity exists |
+| _0 | uint256 | Id of the identity |
 
 ### getMintPrice
 
@@ -1272,6 +1271,17 @@ error NotAuthorized(address signer)
 | Name | Type | Description |
 |---|---|---|
 | signer | address | undefined |
+
+### NotLinkedToAnIdentitySBT
+
+```solidity
+error NotLinkedToAnIdentitySBT()
+```
+
+
+
+
+
 
 ### RefundFailed
 
