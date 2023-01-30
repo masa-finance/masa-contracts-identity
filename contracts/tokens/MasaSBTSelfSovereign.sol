@@ -122,19 +122,13 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
 
     /// @notice Returns the identityId owned by the given token
     /// @param tokenId Id of the token
-    /// @return identityId Id of the identity
-    /// @return exists True if the identity exists
-    function getIdentityId(uint256 tokenId)
-        external
-        view
-        returns (uint256 identityId, bool exists)
-    {
-        if (soulboundIdentity != ISoulboundIdentity(address(0))) {
-            address owner = super.ownerOf(tokenId);
-            return (soulboundIdentity.tokenOfOwner(owner), true);
-        } else {
-            return (0, false);
-        }
+    /// @return Id of the identity
+    function getIdentityId(uint256 tokenId) external view returns (uint256) {
+        if (soulboundIdentity == ISoulboundIdentity(address(0)))
+            revert NotLinkedToAnIdentitySBT();
+
+        address owner = super.ownerOf(tokenId);
+        return soulboundIdentity.tokenOfOwner(owner);
     }
 
     /// @notice Returns the price for minting
