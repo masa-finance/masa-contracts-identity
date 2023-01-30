@@ -255,7 +255,7 @@ Returns all available payment methods
 ### getIdentityId
 
 ```solidity
-function getIdentityId(uint256 tokenId) external view returns (uint256)
+function getIdentityId(uint256 tokenId) external view returns (uint256 identityId, bool exists)
 ```
 
 Returns the identityId owned by the given token
@@ -272,7 +272,8 @@ Returns the identityId owned by the given token
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256 | Id of the identity |
+| identityId | uint256 | Id of the identity |
+| exists | bool | True if the identity exists |
 
 ### getMintPrice
 
