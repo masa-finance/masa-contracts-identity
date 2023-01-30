@@ -46,6 +46,9 @@ contract Soulbound2FA is MasaSBTSelfSovereign, ReentrancyGuard {
     /// @dev The caller must have the MINTER role
     /// @param paymentMethod Address of token that user want to pay
     /// @param identityId TokenId of the identity to mint the NFT to
+    /// @param authorityAddress Address of the authority that signed the message
+    /// @param signatureDate Date of the signature
+    /// @param signature Signature of the message
     /// @return The NFT ID of the newly minted SBT
     function mint(
         address paymentMethod,
@@ -83,6 +86,9 @@ contract Soulbound2FA is MasaSBTSelfSovereign, ReentrancyGuard {
     /// @dev The caller must have the MINTER role
     /// @param paymentMethod Address of token that user want to pay
     /// @param to The address to mint the SBT to
+    /// @param authorityAddress Address of the authority that signed the message
+    /// @param signatureDate Date of the signature
+    /// @param signature Signature of the message
     /// @return The SBT ID of the newly minted SBT
     function mint(
         address paymentMethod,
@@ -91,16 +97,28 @@ contract Soulbound2FA is MasaSBTSelfSovereign, ReentrancyGuard {
         uint256 signatureDate,
         bytes calldata signature
     ) external payable virtual returns (uint256) {
-        uint256 identityId = soulboundIdentity.tokenOfOwner(to);
+        if (to != _msgSender()) revert CallerNotOwner(_msgSender());
 
-        return
-            mint(
-                paymentMethod,
-                identityId,
-                authorityAddress,
-                signatureDate,
-                signature
-            );
+        _verify(
+            _hash(to, authorityAddress, signatureDate),
+            signature,
+            authorityAddress
+        );
+
+        _pay(paymentMethod, getMintPrice(paymentMethod));
+
+        uint256 tokenId = _mintWithCounter(to);
+
+        emit Soulbound2FAMinted(
+            tokenId,
+            to,
+            authorityAddress,
+            signatureDate,
+            paymentMethod,
+            mintPrice
+        );
+
+        return tokenId;
     }
 
     /* ========== VIEWS ===================================================== */
@@ -127,6 +145,26 @@ contract Soulbound2FA is MasaSBTSelfSovereign, ReentrancyGuard {
             );
     }
 
+    function _hash(
+        address to,
+        address authorityAddress,
+        uint256 signatureDate
+    ) internal view returns (bytes32) {
+        return
+            _hashTypedDataV4(
+                keccak256(
+                    abi.encode(
+                        keccak256(
+                            "Mint2FA(address to,address authorityAddress,uint256 signatureDate)"
+                        ),
+                        to,
+                        authorityAddress,
+                        signatureDate
+                    )
+                )
+            );
+    }
+
     /* ========== MODIFIERS ================================================= */
 
     /* ========== EVENTS ==================================================== */
@@ -134,6 +172,15 @@ contract Soulbound2FA is MasaSBTSelfSovereign, ReentrancyGuard {
     event Soulbound2FAMinted(
         uint256 tokenId,
         uint256 identityId,
+        address authorityAddress,
+        uint256 signatureDate,
+        address paymentMethod,
+        uint256 mintPrice
+    );
+
+    event Soulbound2FAMinted(
+        uint256 tokenId,
+        address to,
         address authorityAddress,
         uint256 signatureDate,
         address paymentMethod,
