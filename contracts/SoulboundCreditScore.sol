@@ -99,6 +99,7 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign, ReentrancyGuard {
         bytes calldata signature
     ) external payable virtual returns (uint256) {
         if (to != _msgSender()) revert CallerNotOwner(_msgSender());
+        if (balanceOf(to) > 0) revert CreditScoreAlreadyCreated(to);
 
         _verify(
             _hash(to, authorityAddress, signatureDate),
