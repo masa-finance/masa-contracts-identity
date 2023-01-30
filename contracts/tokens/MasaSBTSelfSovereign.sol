@@ -52,8 +52,6 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
         PaymentGateway(admin, paymentParams)
         MasaSBT(admin, name, symbol, baseTokenURI)
     {
-        if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
-
         soulboundIdentity = _soulboundIdentity;
     }
 
@@ -66,7 +64,6 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
-        if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
         if (soulboundIdentity == _soulboundIdentity) revert SameValue();
         soulboundIdentity = _soulboundIdentity;
     }
