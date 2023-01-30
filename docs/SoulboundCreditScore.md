@@ -1077,10 +1077,10 @@ event RoleRevoked(bytes32 indexed role, address indexed account, address indexed
 | account `indexed` | address | undefined |
 | sender `indexed` | address | undefined |
 
-### SoulboundCreditScoreMinted
+### SoulboundCreditScoreMintedToAddress
 
 ```solidity
-event SoulboundCreditScoreMinted(uint256 tokenId, address to, address authorityAddress, uint256 signatureDate, address paymentMethod, uint256 mintPrice)
+event SoulboundCreditScoreMintedToAddress(uint256 tokenId, address to, address authorityAddress, uint256 signatureDate, address paymentMethod, uint256 mintPrice)
 ```
 
 
@@ -1093,6 +1093,27 @@ event SoulboundCreditScoreMinted(uint256 tokenId, address to, address authorityA
 |---|---|---|
 | tokenId  | uint256 | undefined |
 | to  | address | undefined |
+| authorityAddress  | address | undefined |
+| signatureDate  | uint256 | undefined |
+| paymentMethod  | address | undefined |
+| mintPrice  | uint256 | undefined |
+
+### SoulboundCreditScoreMintedToIdentity
+
+```solidity
+event SoulboundCreditScoreMintedToIdentity(uint256 tokenId, uint256 identityId, address authorityAddress, uint256 signatureDate, address paymentMethod, uint256 mintPrice)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId  | uint256 | undefined |
+| identityId  | uint256 | undefined |
 | authorityAddress  | address | undefined |
 | signatureDate  | uint256 | undefined |
 | paymentMethod  | address | undefined |

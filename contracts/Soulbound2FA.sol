@@ -70,7 +70,7 @@ contract Soulbound2FA is MasaSBTSelfSovereign, ReentrancyGuard {
 
         uint256 tokenId = _mintWithCounter(to);
 
-        emit Soulbound2FAMinted(
+        emit Soulbound2FAMintedToIdentity(
             tokenId,
             identityId,
             authorityAddress,
@@ -109,7 +109,7 @@ contract Soulbound2FA is MasaSBTSelfSovereign, ReentrancyGuard {
 
         uint256 tokenId = _mintWithCounter(to);
 
-        emit Soulbound2FAMinted(
+        emit Soulbound2FAMintedToAddress(
             tokenId,
             to,
             authorityAddress,
@@ -169,7 +169,7 @@ contract Soulbound2FA is MasaSBTSelfSovereign, ReentrancyGuard {
 
     /* ========== EVENTS ==================================================== */
 
-    event Soulbound2FAMinted(
+    event Soulbound2FAMintedToIdentity(
         uint256 tokenId,
         uint256 identityId,
         address authorityAddress,
@@ -178,7 +178,7 @@ contract Soulbound2FA is MasaSBTSelfSovereign, ReentrancyGuard {
         uint256 mintPrice
     );
 
-    event Soulbound2FAMinted(
+    event Soulbound2FAMintedToAddress(
         uint256 tokenId,
         address to,
         address authorityAddress,

@@ -1077,10 +1077,10 @@ event RoleRevoked(bytes32 indexed role, address indexed account, address indexed
 | account `indexed` | address | undefined |
 | sender `indexed` | address | undefined |
 
-### Soulbound2FAMinted
+### Soulbound2FAMintedToAddress
 
 ```solidity
-event Soulbound2FAMinted(uint256 tokenId, address to, address authorityAddress, uint256 signatureDate, address paymentMethod, uint256 mintPrice)
+event Soulbound2FAMintedToAddress(uint256 tokenId, address to, address authorityAddress, uint256 signatureDate, address paymentMethod, uint256 mintPrice)
 ```
 
 
@@ -1093,6 +1093,27 @@ event Soulbound2FAMinted(uint256 tokenId, address to, address authorityAddress, 
 |---|---|---|
 | tokenId  | uint256 | undefined |
 | to  | address | undefined |
+| authorityAddress  | address | undefined |
+| signatureDate  | uint256 | undefined |
+| paymentMethod  | address | undefined |
+| mintPrice  | uint256 | undefined |
+
+### Soulbound2FAMintedToIdentity
+
+```solidity
+event Soulbound2FAMintedToIdentity(uint256 tokenId, uint256 identityId, address authorityAddress, uint256 signatureDate, address paymentMethod, uint256 mintPrice)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId  | uint256 | undefined |
+| identityId  | uint256 | undefined |
 | authorityAddress  | address | undefined |
 | signatureDate  | uint256 | undefined |
 | paymentMethod  | address | undefined |

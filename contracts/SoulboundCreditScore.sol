@@ -71,7 +71,7 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign, ReentrancyGuard {
 
         uint256 tokenId = _mintWithCounter(to);
 
-        emit SoulboundCreditScoreMinted(
+        emit SoulboundCreditScoreMintedToIdentity(
             tokenId,
             identityId,
             authorityAddress,
@@ -110,7 +110,7 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign, ReentrancyGuard {
 
         uint256 tokenId = _mintWithCounter(to);
 
-        emit SoulboundCreditScoreMinted(
+        emit SoulboundCreditScoreMintedToAddress(
             tokenId,
             to,
             authorityAddress,
@@ -170,7 +170,7 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign, ReentrancyGuard {
 
     /* ========== EVENTS ==================================================== */
 
-    event SoulboundCreditScoreMinted(
+    event SoulboundCreditScoreMintedToIdentity(
         uint256 tokenId,
         uint256 identityId,
         address authorityAddress,
@@ -179,7 +179,7 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign, ReentrancyGuard {
         uint256 mintPrice
     );
 
-    event SoulboundCreditScoreMinted(
+    event SoulboundCreditScoreMintedToAddress(
         uint256 tokenId,
         address to,
         address authorityAddress,
