@@ -24,12 +24,24 @@ const func: DeployFunction = async ({
   const env = getEnvParams(network.name);
   const baseUri = `${env.BASE_URI}/2fa/`;
 
-  const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
+  let soulboundIdentityDeployedAddress;
+  if (
+    network.name === "mainnet" ||
+    network.name === "goerli" ||
+    network.name === "hardhat"
+  ) {
+    const soulboundIdentityDeployed = await deployments.get(
+      "SoulboundIdentity"
+    );
+    soulboundIdentityDeployedAddress = soulboundIdentityDeployed.address;
+  } else {
+    soulboundIdentityDeployedAddress = ethers.constants.AddressZero;
+  }
 
   const constructorArguments = [
     env.ADMIN || admin.address,
     baseUri,
-    soulboundIdentityDeployed.address,
+    soulboundIdentityDeployedAddress,
     [
       env.SWAP_ROUTER,
       env.WETH_TOKEN,
