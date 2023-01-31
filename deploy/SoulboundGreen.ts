@@ -52,7 +52,7 @@ const func: DeployFunction = async ({
   ];
 
   if (network.name != "mainnet") {
-    const soulbound2FADeploymentResult = await deploy("Soulbound2FA", {
+    const soulboundGreenDeploymentResult = await deploy("SoulboundGreen", {
       from: deployer,
       args: constructorArguments,
       log: true
@@ -63,7 +63,7 @@ const func: DeployFunction = async ({
     if (network.name === "goerli") {
       try {
         await hre.run("verify:verify", {
-          address: soulbound2FADeploymentResult.address,
+          address: soulboundGreenDeploymentResult.address,
           constructorArguments
         });
       } catch (error) {
@@ -86,13 +86,13 @@ const func: DeployFunction = async ({
         ? new ethers.Wallet(getPrivateKey(network.name), ethers.provider)
         : admin;
 
-      const soulbound2FA = await ethers.getContractAt(
-        "Soulbound2FA",
-        soulbound2FADeploymentResult.address
+      const soulboundGreen = await ethers.getContractAt(
+        "SoulboundGreen",
+        soulboundGreenDeploymentResult.address
       );
 
-      // add authority to soulbound2FA
-      await soulbound2FA
+      // add authority to soulboundGreen
+      await soulboundGreen
         .connect(signer)
         .addAuthority(env.AUTHORITY_WALLET || admin.address);
     }
@@ -102,6 +102,6 @@ const func: DeployFunction = async ({
 func.skip = async ({ network }) => {
   return network.name === "mainnet";
 };
-func.tags = ["Soulbound2FA"];
+func.tags = ["SoulboundGreen"];
 func.dependencies = ["SoulboundIdentity"];
 export default func;

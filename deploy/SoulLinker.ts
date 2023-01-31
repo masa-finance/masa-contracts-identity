@@ -98,6 +98,6 @@ func.tags = ["SoulLinker"];
 func.dependencies = [
   "SoulboundIdentity",
   "SoulboundCreditScore",
-  "Soulbound2FA"
+  "SoulboundGreen"
 ];
 export default func;
