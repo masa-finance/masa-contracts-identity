@@ -22,7 +22,7 @@ const func: DeployFunction = async ({
 
   [, admin] = await ethers.getSigners();
   const env = getEnvParams(network.name);
-  const baseUri = `${env.BASE_URI}/identity/`;
+  const baseUri = `${env.BASE_URI}/identity/${network.name}/`;
 
   const constructorArguments = [env.ADMIN || admin.address, baseUri];
 

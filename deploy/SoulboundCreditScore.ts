@@ -22,7 +22,7 @@ const func: DeployFunction = async ({
 
   [, admin] = await ethers.getSigners();
   const env = getEnvParams(network.name);
-  const baseUri = `${env.BASE_URI}/credit-score/`;
+  const baseUri = `${env.BASE_URI}/credit-score/${network.name}/`;
 
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
 

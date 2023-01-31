@@ -22,7 +22,7 @@ const func: DeployFunction = async ({
 
   [, admin] = await ethers.getSigners();
   const env = getEnvParams(network.name);
-  const baseUri = `${env.BASE_URI}/2fa/`;
+  const baseUri = `${env.BASE_URI}/green/${network.name}/`;
 
   let soulboundIdentityDeployedAddress;
   if (
