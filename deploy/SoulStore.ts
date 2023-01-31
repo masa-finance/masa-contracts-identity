@@ -75,10 +75,7 @@ const func: DeployFunction = async ({
       );
 
       const signer = env.ADMIN
-        ? new ethers.Wallet(
-            getPrivateKey(network.name),
-            ethers.provider
-          )
+        ? new ethers.Wallet(getPrivateKey(network.name), ethers.provider)
         : admin;
 
       // we set the registration prices per year and length of name

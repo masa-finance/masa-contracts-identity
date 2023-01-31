@@ -83,10 +83,7 @@ const func: DeployFunction = async ({
       network.name === "mumbai"
     ) {
       const signer = env.ADMIN
-        ? new ethers.Wallet(
-            getPrivateKey(network.name),
-            ethers.provider
-          )
+        ? new ethers.Wallet(getPrivateKey(network.name), ethers.provider)
         : admin;
 
       const soulbound2FA = await ethers.getContractAt(

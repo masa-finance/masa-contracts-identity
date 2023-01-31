@@ -70,10 +70,7 @@ const func: DeployFunction = async ({
       // we add payment methods
 
       const signer = env.ADMIN
-        ? new ethers.Wallet(
-            getPrivateKey(network.name),
-            ethers.provider
-          )
+        ? new ethers.Wallet(getPrivateKey(network.name), ethers.provider)
         : admin;
 
       const soulLinker = await ethers.getContractAt(

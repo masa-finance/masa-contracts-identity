@@ -69,10 +69,7 @@ const func: DeployFunction = async ({
 
       // we set the soulName contract in soulboundIdentity and we add soulboundIdentity as soulName minter
       const signer = env.ADMIN
-        ? new ethers.Wallet(
-            getPrivateKey(network.name),
-            ethers.provider
-          )
+        ? new ethers.Wallet(getPrivateKey(network.name), ethers.provider)
         : admin;
 
       const MINTER_ROLE = await soulName.MINTER_ROLE();

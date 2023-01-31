@@ -73,10 +73,7 @@ const func: DeployFunction = async ({
 
     if (network.name === "hardhat") {
       const signer = env.ADMIN
-        ? new ethers.Wallet(
-            getPrivateKey(network.name),
-            ethers.provider
-          )
+        ? new ethers.Wallet(getPrivateKey(network.name), ethers.provider)
         : admin;
 
       const soulboundCreditScore = await ethers.getContractAt(
