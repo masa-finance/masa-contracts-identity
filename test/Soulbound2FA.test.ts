@@ -20,15 +20,17 @@ let soulbound2FA: Soulbound2FA;
 
 let owner: SignerWithAddress;
 let address1: SignerWithAddress;
+let address2: SignerWithAddress;
 let authority: SignerWithAddress;
 
 let identityId1: number;
 
 const signatureDate = Math.floor(Date.now() / 1000);
 
-let signature: string;
+let signatureToIdentity: string;
+let signatureToAddress: string;
 
-const signMintCredit2FA = async (
+const signMintCredit2FAToIdentity = async (
   identityId: number,
   authoritySigner: SignerWithAddress
 ) => {
@@ -61,9 +63,42 @@ const signMintCredit2FA = async (
   return signature;
 };
 
+const signMintCredit2FAToAddress = async (
+  to: string,
+  authoritySigner: SignerWithAddress
+) => {
+  const chainId = await getChainId();
+
+  const signature = await authoritySigner._signTypedData(
+    // Domain
+    {
+      name: "Soulbound2FA",
+      version: "1.0.0",
+      chainId: chainId,
+      verifyingContract: soulbound2FA.address
+    },
+    // Types
+    {
+      Mint2FA: [
+        { name: "to", type: "address" },
+        { name: "authorityAddress", type: "address" },
+        { name: "signatureDate", type: "uint256" }
+      ]
+    },
+    // Value
+    {
+      to: to,
+      authorityAddress: authoritySigner.address,
+      signatureDate: signatureDate
+    }
+  );
+
+  return signature;
+};
+
 describe("Soulbound Two-factor authentication (2FA)", () => {
   before(async () => {
-    [, owner, address1, authority] = await ethers.getSigners();
+    [, owner, address1, address2, authority] = await ethers.getSigners();
   });
 
   beforeEach(async () => {
@@ -96,7 +131,14 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
     // we add authority account
     await soulbound2FA.addAuthority(authority.address);
 
-    signature = await signMintCredit2FA(identityId1, authority);
+    signatureToIdentity = await signMintCredit2FAToIdentity(
+      identityId1,
+      authority
+    );
+    signatureToAddress = await signMintCredit2FAToAddress(
+      address1.address,
+      authority
+    );
   });
 
   describe("owner functions", () => {
@@ -133,7 +175,7 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
             address1.address,
             authority.address,
             signatureDate,
-            signature
+            signatureToAddress
           )
       ).to.be.revertedWith("CallerNotOwner");
     });
@@ -147,7 +189,7 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
             identityId1,
             authority.address,
             signatureDate,
-            signature
+            signatureToIdentity
           )
       ).to.be.revertedWith("CallerNotOwner");
     });
@@ -160,7 +202,7 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
           address1.address,
           authority.address,
           signatureDate,
-          signature
+          signatureToAddress
         );
       await soulbound2FA
         .connect(address1)
@@ -169,7 +211,7 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
           address1.address,
           authority.address,
           signatureDate,
-          signature
+          signatureToAddress
         );
 
       expect(await soulbound2FA.totalSupply()).to.equal(2);
@@ -185,13 +227,13 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
           address1.address,
           authority.address,
           signatureDate,
-          signature
+          signatureToAddress
         );
       const mintReceipt = await mintTx.wait();
 
-      const tokenId = mintReceipt.events![0].args![1].toNumber();
+      const toAddress = mintReceipt.events![1].args![1];
 
-      expect(await soulbound2FA.getIdentityId(tokenId)).to.equal(identityId1);
+      expect(toAddress).to.equal(address1.address);
     });
 
     it("should mint from final user identity", async () => {
@@ -202,13 +244,44 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
           identityId1,
           authority.address,
           signatureDate,
-          signature
+          signatureToIdentity
         );
       const mintReceipt = await mintTx.wait();
 
       const tokenId = mintReceipt.events![0].args![1].toNumber();
 
       expect(await soulbound2FA.getIdentityId(tokenId)).to.equal(identityId1);
+    });
+
+    it("should mint to an address, with a 2FA SBT not linked to an identity SC", async () => {
+      // we set the identity SC to 0x0
+      await soulbound2FA.setSoulboundIdentity(ethers.constants.AddressZero);
+
+      const signatureToAddress2 = await signMintCredit2FAToAddress(
+        address2.address,
+        authority
+      );
+      const mintTx = await soulbound2FA
+        .connect(address2)
+        ["mint(address,address,address,uint256,bytes)"](
+          ethers.constants.AddressZero,
+          address2.address,
+          authority.address,
+          signatureDate,
+          signatureToAddress2
+        );
+      const mintReceipt = await mintTx.wait();
+
+      const toAddress = mintReceipt.events![1].args![1];
+
+      expect(toAddress).to.equal(address2.address);
+
+      const tokenId = mintReceipt.events![0].args![1].toNumber();
+
+      // check that this 2FA is not linked to an identity
+      await expect(soulbound2FA.getIdentityId(tokenId)).to.be.revertedWith(
+        "NotLinkedToAnIdentitySBT"
+      );
     });
   });
 
@@ -222,7 +295,7 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
           address1.address,
           authority.address,
           signatureDate,
-          signature
+          signatureToAddress
         );
       let mintReceipt = await mintTx.wait();
       const tokenId1 = mintReceipt.events![0].args![1].toNumber();
@@ -235,7 +308,7 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
           address1.address,
           authority.address,
           signatureDate,
-          signature
+          signatureToAddress
         );
       mintReceipt = await mintTx.wait();
       const tokenId2 = mintReceipt.events![0].args![1].toNumber();
@@ -268,7 +341,7 @@ describe("Soulbound Two-factor authentication (2FA)", () => {
           address1.address,
           authority.address,
           signatureDate,
-          signature
+          signatureToAddress
         );
 
       const mintReceipt = await mintTx.wait();

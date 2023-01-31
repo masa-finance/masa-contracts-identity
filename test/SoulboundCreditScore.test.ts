@@ -33,9 +33,10 @@ let identityId1: number;
 
 const signatureDate = Math.floor(Date.now() / 1000);
 
-let signature: string;
+let signatureToIdentity: string;
+let signatureToAddress: string;
 
-const signMintCreditScore = async (
+const signMintCreditScoreToIdentity = async (
   identityId: number,
   authoritySigner: SignerWithAddress
 ) => {
@@ -60,6 +61,39 @@ const signMintCreditScore = async (
     // Value
     {
       identityId: identityId,
+      authorityAddress: authoritySigner.address,
+      signatureDate: signatureDate
+    }
+  );
+
+  return signature;
+};
+
+const signMintCreditScoreToAddress = async (
+  to: string,
+  authoritySigner: SignerWithAddress
+) => {
+  const chainId = await getChainId();
+
+  const signature = await authoritySigner._signTypedData(
+    // Domain
+    {
+      name: "SoulboundCreditScore",
+      version: "1.0.0",
+      chainId: chainId,
+      verifyingContract: soulboundCreditScore.address
+    },
+    // Types
+    {
+      MintCreditScore: [
+        { name: "to", type: "address" },
+        { name: "authorityAddress", type: "address" },
+        { name: "signatureDate", type: "uint256" }
+      ]
+    },
+    // Value
+    {
+      to: to,
       authorityAddress: authoritySigner.address,
       signatureDate: signatureDate
     }
@@ -134,7 +168,14 @@ describe("Soulbound Credit Score", () => {
 
     await soulboundCreditScore.setMintPrice(0); // 0 USDC
 
-    signature = await signMintCreditScore(identityId1, authority);
+    signatureToIdentity = await signMintCreditScoreToIdentity(
+      identityId1,
+      authority
+    );
+    signatureToAddress = await signMintCreditScoreToAddress(
+      address1.address,
+      authority
+    );
   });
 
   describe("owner functions", () => {
@@ -205,7 +246,7 @@ describe("Soulbound Credit Score", () => {
             address1.address,
             authority.address,
             signatureDate,
-            signature
+            signatureToAddress
           )
       ).to.be.revertedWith("CallerNotOwner");
     });
@@ -219,7 +260,7 @@ describe("Soulbound Credit Score", () => {
             identityId1,
             authority.address,
             signatureDate,
-            signature
+            signatureToIdentity
           )
       ).to.be.revertedWith("CallerNotOwner");
     });
@@ -232,7 +273,7 @@ describe("Soulbound Credit Score", () => {
           address1.address,
           authority.address,
           signatureDate,
-          signature
+          signatureToAddress
         );
       await expect(
         soulboundCreditScore
@@ -242,7 +283,7 @@ describe("Soulbound Credit Score", () => {
             address1.address,
             authority.address,
             signatureDate,
-            signature
+            signatureToAddress
           )
       ).to.be.revertedWith("CreditScoreAlreadyCreated");
 
@@ -258,7 +299,7 @@ describe("Soulbound Credit Score", () => {
           address1.address,
           authority.address,
           signatureDate,
-          signature
+          signatureToAddress
         );
       const mintReceipt = await mintTx.wait();
 
@@ -277,7 +318,7 @@ describe("Soulbound Credit Score", () => {
           identityId1,
           authority.address,
           signatureDate,
-          signature
+          signatureToIdentity
         );
       const mintReceipt = await mintTx.wait();
 
@@ -289,7 +330,7 @@ describe("Soulbound Credit Score", () => {
     });
 
     it("should fail to mint with non-authority signature", async () => {
-      const signatureNonAuthority = await signMintCreditScore(
+      const signatureNonAuthority = await signMintCreditScoreToIdentity(
         identityId1,
         address1
       );
@@ -308,7 +349,7 @@ describe("Soulbound Credit Score", () => {
     });
 
     it("should fail to mint with invalid signature", async () => {
-      const signatureNonAuthority = await signMintCreditScore(
+      const signatureNonAuthority = await signMintCreditScoreToIdentity(
         identityId1,
         address1
       );
@@ -348,7 +389,7 @@ describe("Soulbound Credit Score", () => {
           address1.address,
           authority.address,
           signatureDate,
-          signature,
+          signatureToAddress,
           { value: priceInETH }
         );
       const mintReceipt = await mintTx.wait();
@@ -385,7 +426,7 @@ describe("Soulbound Credit Score", () => {
           identityId1,
           authority.address,
           signatureDate,
-          signature,
+          signatureToIdentity,
           { value: priceInETH }
         );
       const mintReceipt = await mintTx.wait();
@@ -424,7 +465,7 @@ describe("Soulbound Credit Score", () => {
           identityId1,
           authority.address,
           signatureDate,
-          signature
+          signatureToIdentity
         );
       const mintReceipt = await mintTx.wait();
 
@@ -453,7 +494,7 @@ describe("Soulbound Credit Score", () => {
           identityId1,
           authority.address,
           signatureDate,
-          signature
+          signatureToIdentity
         );
       const mintReceipt = await mintTx.wait();
 
@@ -479,7 +520,7 @@ describe("Soulbound Credit Score", () => {
             identityId1,
             authority.address,
             signatureDate,
-            signature
+            signatureToIdentity
           )
       ).to.be.rejectedWith("InvalidPaymentMethod");
     });
@@ -495,7 +536,7 @@ describe("Soulbound Credit Score", () => {
           address1.address,
           authority.address,
           signatureDate,
-          signature
+          signatureToAddress
         );
       let mintReceipt = await mintTx.wait();
       const tokenId = mintReceipt.events![0].args![1].toNumber();
@@ -524,7 +565,7 @@ describe("Soulbound Credit Score", () => {
           address1.address,
           authority.address,
           signatureDate,
-          signature
+          signatureToAddress
         );
 
       const mintReceipt = await mintTx.wait();
