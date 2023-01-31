@@ -71,7 +71,7 @@ const func: DeployFunction = async ({
       const signer = env.ADMIN
         ? new ethers.Wallet(
             getPrivateKey(network.name),
-            ethers.getDefaultProvider(network.name)
+            ethers.provider
           )
         : admin;
 
