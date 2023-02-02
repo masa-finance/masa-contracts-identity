@@ -33,11 +33,11 @@ const SBT_SYMBOL = "SBT";
 const SBT_NAME712 = "Soulbound Test";
 const SBT_TOKEN_URI = "https://soulbound.io";
 const SBT_PAYMENT_PARAMS = {
-  swapRouter: ethers.constants.AddressZero,
-  wrappedNativeToken: ethers.constants.AddressZero,
-  stableCoin: ethers.constants.AddressZero,
-  masaToken: ethers.constants.AddressZero,
-  reserveWallet: ethers.constants.AddressZero
+  swapRouter: env.SWAP_ROUTER,
+  wrappedNativeToken: env.WETH_TOKEN,
+  stableCoin: env.USDC_TOKEN,
+  masaToken: env.MASA_TOKEN,
+  reserveWallet: env.RESERVE_WALLET
 };
 
 describe("Soul Factory", () => {
@@ -361,7 +361,7 @@ describe("Soul Factory", () => {
       ).to.be.rejected;
     });
 
-    it("we cancreate a new SBT paying with more ETH receiving the refund", async () => {
+    it("we can create a new SBT paying with more ETH receiving the refund", async () => {
       const priceInETH = await soulFactory.getCreationPrice(
         ethers.constants.AddressZero
       );
