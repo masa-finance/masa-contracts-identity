@@ -30,7 +30,7 @@ function DEFAULT_ADMIN_ROLE() external view returns (bytes32)
 ### createNewSBT
 
 ```solidity
-function createNewSBT(address paymentMethod) external payable returns (address)
+function createNewSBT(address paymentMethod, address admin, string name, string symbol, string nameEIP712, string baseTokenURI) external payable returns (address)
 ```
 
 Mints a new Soulbound Identity and Name purchasing it
@@ -42,6 +42,11 @@ Mints a new Soulbound Identity and Name purchasing it
 | Name | Type | Description |
 |---|---|---|
 | paymentMethod | address | Address of token that user want to pay |
+| admin | address | Administrator of the smart contract |
+| name | string | Name of the token |
+| symbol | string | Symbol of the token |
+| nameEIP712 | string | Name of the EIP712 domain |
+| baseTokenURI | string | Base URI of the token |
 
 #### Returns
 
