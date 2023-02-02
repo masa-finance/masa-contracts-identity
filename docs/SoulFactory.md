@@ -27,6 +27,34 @@ function DEFAULT_ADMIN_ROLE() external view returns (bytes32)
 |---|---|---|
 | _0 | bytes32 | undefined |
 
+### cloneNewSBT
+
+```solidity
+function cloneNewSBT(address paymentMethod, address admin, string name, string symbol, string nameEIP712, string baseTokenURI, PaymentGateway.PaymentParams paymentParams) external payable returns (address)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| paymentMethod | address | undefined |
+| admin | address | undefined |
+| name | string | undefined |
+| symbol | string | undefined |
+| nameEIP712 | string | undefined |
+| baseTokenURI | string | undefined |
+| paymentParams | PaymentGateway.PaymentParams | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
 ### createNewSBT
 
 ```solidity
@@ -474,6 +502,22 @@ Sets the swap router address
 |---|---|---|
 | _swapRouter | address | New swap router address |
 
+### setTemplateSBT
+
+```solidity
+function setTemplateSBT(contract SoulboundBaseSelfSovereign _templateSBT) external nonpayable
+```
+
+Sets the template SBT contract address linked to this factory
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _templateSBT | contract SoulboundBaseSelfSovereign | New SBT template contract address |
+
 ### setWrappedNativeToken
 
 ```solidity
@@ -562,6 +606,23 @@ function swapRouter() external view returns (address)
 | Name | Type | Description |
 |---|---|---|
 | _0 | address | undefined |
+
+### templateSBT
+
+```solidity
+function templateSBT() external view returns (contract SoulboundBaseSelfSovereign)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | contract SoulboundBaseSelfSovereign | undefined |
 
 ### unpause
 
