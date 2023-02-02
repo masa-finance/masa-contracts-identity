@@ -21,6 +21,7 @@ contract SoulFactory is PaymentGateway, Pausable, ReentrancyGuard {
     /* ========== STATE VARIABLES ========== */
 
     ISoulboundIdentity public soulboundIdentity;
+    SoulboundBaseSelfSovereign public templateSBT;
 
     uint256 public creationPrice; // price in stable coin
     uint256 public creationPriceMASA; // price in MASA
@@ -32,15 +33,19 @@ contract SoulFactory is PaymentGateway, Pausable, ReentrancyGuard {
     /// paying a fee
     /// @param admin Administrator of the smart contract
     /// @param _soulBoundIdentity Address of the Soulbound identity contract
+    /// @param _templateSBT Address of the template SBT
     /// @param paymentParams Payment gateway params
     constructor(
         address admin,
         ISoulboundIdentity _soulBoundIdentity,
+        SoulboundBaseSelfSovereign _templateSBT,
         PaymentParams memory paymentParams
     ) PaymentGateway(admin, paymentParams) {
         if (address(_soulBoundIdentity) == address(0)) revert ZeroAddress();
+        if (address(_templateSBT) == address(0)) revert ZeroAddress();
 
         soulboundIdentity = _soulBoundIdentity;
+        templateSBT = _templateSBT;
     }
 
     /* ========== RESTRICTED FUNCTIONS ========== */
@@ -55,6 +60,18 @@ contract SoulFactory is PaymentGateway, Pausable, ReentrancyGuard {
         if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
         if (soulboundIdentity == _soulboundIdentity) revert SameValue();
         soulboundIdentity = _soulboundIdentity;
+    }
+
+    /// @notice Sets the template SBT contract address linked to this factory
+    /// @dev The caller must have the admin role to call this function
+    /// @param _templateSBT New SBT template contract address
+    function setTemplateSBT(SoulboundBaseSelfSovereign _templateSBT)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        if (address(_templateSBT) == address(0)) revert ZeroAddress();
+        if (templateSBT == _templateSBT) revert SameValue();
+        templateSBT = _templateSBT;
     }
 
     /// @notice Sets the price for create an SBT in stable coin
@@ -93,8 +110,8 @@ contract SoulFactory is PaymentGateway, Pausable, ReentrancyGuard {
 
     /* ========== MUTATIVE FUNCTIONS ========== */
 
-    /// @notice Mints a new Soulbound Identity and Name purchasing it
-    /// @dev This function allows the purchase of a soulbound identity and name using
+    /// @notice Creates a new Soulbound SBT and pays the fee
+    /// @dev This function allows the creation of a new SBT paying
     /// stable coin (USDC), native token (ETH) or utility token (MASA)
     /// @param paymentMethod Address of token that user want to pay
     /// @param admin Administrator of the smart contract
@@ -123,6 +140,37 @@ contract SoulFactory is PaymentGateway, Pausable, ReentrancyGuard {
             baseTokenURI,
             soulboundIdentity,
             paymentParams
+        );
+
+        emit SoulboundTokenCreated();
+
+        return address(newSBT);
+    }
+
+    /// @notice Clones a new Soulbound SBT and pays the fee
+    /// @dev This function allows the creation of a new SBT paying
+    /// stable coin (USDC), native token (ETH) or utility token (MASA)
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param admin Administrator of the smart contract
+    /// @param name Name of the token
+    /// @param symbol Symbol of the token
+    /// @param nameEIP712 Name of the EIP712 domain
+    /// @param baseTokenURI Base URI of the token
+    /// @return TokenId of the new soulbound identity
+    function cloneNewSBT(
+        address paymentMethod,
+        address admin,
+        string memory name,
+        string memory symbol,
+        string memory nameEIP712,
+        string memory baseTokenURI,
+        PaymentParams memory paymentParams
+    ) external payable whenNotPaused nonReentrant returns (address) {
+        _pay(paymentMethod, getCreationPrice(paymentMethod));
+
+        // create new SBT
+        SoulboundBaseSelfSovereign newSBT = SoulboundBaseSelfSovereign(
+            _createClone(address(templateSBT))
         );
 
         emit SoulboundTokenCreated();
