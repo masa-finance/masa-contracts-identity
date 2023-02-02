@@ -420,6 +420,22 @@ Set the reserve wallet
 |---|---|---|
 | _reserveWallet | address | New reserve wallet |
 
+### setSoulboundIdentity
+
+```solidity
+function setSoulboundIdentity(contract ISoulboundIdentity _soulboundIdentity) external nonpayable
+```
+
+Sets the SoulboundIdentity contract address linked to this store
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _soulboundIdentity | contract ISoulboundIdentity | New SoulboundIdentity contract address |
+
 ### setStableCoin
 
 ```solidity
@@ -467,6 +483,23 @@ Sets the wrapped native token address
 | Name | Type | Description |
 |---|---|---|
 | _wrappedNativeToken | address | New wrapped native token address |
+
+### soulboundIdentity
+
+```solidity
+function soulboundIdentity() external view returns (contract ISoulboundIdentity)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | contract ISoulboundIdentity | undefined |
 
 ### stableCoin
 

@@ -96,14 +96,20 @@ contract SoulFactory is PaymentGateway, Pausable, ReentrancyGuard {
     /// @dev This function allows the purchase of a soulbound identity and name using
     /// stable coin (USDC), native token (ETH) or utility token (MASA)
     /// @param paymentMethod Address of token that user want to pay
+    /// @param admin Administrator of the smart contract
+    /// @param name Name of the token
+    /// @param symbol Symbol of the token
+    /// @param nameEIP712 Name of the EIP712 domain
+    /// @param baseTokenURI Base URI of the token
     /// @return TokenId of the new soulbound identity
-    function createNewSBT(address paymentMethod)
-        external
-        payable
-        whenNotPaused
-        nonReentrant
-        returns (address)
-    {
+    function createNewSBT(
+        address paymentMethod,
+        address admin,
+        string memory name,
+        string memory symbol,
+        string memory nameEIP712,
+        string memory baseTokenURI
+    ) external payable whenNotPaused nonReentrant returns (address) {
         _pay(paymentMethod, getCreationPrice(paymentMethod));
 
         // create new SBT

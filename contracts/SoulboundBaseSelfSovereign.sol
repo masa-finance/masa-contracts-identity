@@ -19,6 +19,9 @@ contract SoulboundBaseSelfSovereign is MasaSBTSelfSovereign, ReentrancyGuard {
     /// @notice Creates a new Soulbound Base SBT Self Sovereign
     /// @dev Creates a new soulbound Base SBT, inheriting from the SBT contract.
     /// @param admin Administrator of the smart contract
+    /// @param name Name of the token
+    /// @param symbol Symbol of the token
+    /// @param nameEIP712 Name of the EIP712 domain
     /// @param baseTokenURI Base URI of the token
     /// @param soulboundIdentity Address of the SoulboundIdentity contract
     /// @param paymentParams Payment gateway params
