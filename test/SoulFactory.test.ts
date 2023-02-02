@@ -391,6 +391,196 @@ describe("Soul Factory", () => {
     });
   });
 
+  describe("clone new SBT", () => {
+    it("we can clone a new SBT paying with ETH", async () => {
+      const reserveWallet = await soulFactory.reserveWallet();
+      const priceInETH = await soulFactory.getCreationPrice(
+        ethers.constants.AddressZero
+      );
+      const reserveWalletBalanceBefore = await ethers.provider.getBalance(
+        reserveWallet
+      );
+
+      await soulFactory.connect(address1).cloneNewSBT(
+        ethers.constants.AddressZero, // ETH
+        address1.address,
+        SBT_NAME,
+        SBT_SYMBOL,
+        SBT_NAME712,
+        SBT_TOKEN_URI,
+        SBT_PAYMENT_PARAMS,
+        { value: priceInETH }
+      );
+
+      const reserveWalletBalanceAfter = await ethers.provider.getBalance(
+        reserveWallet
+      );
+
+      // we check that the reserve wallet received the ETH
+      expect(
+        reserveWalletBalanceAfter.sub(reserveWalletBalanceBefore)
+      ).to.be.equal(priceInETH);
+    });
+
+    it("we can clone a new SBT paying with stable coin", async () => {
+      const reserveWallet = await soulFactory.reserveWallet();
+      const priceInStableCoin = await soulFactory.getCreationPrice(
+        await soulFactory.stableCoin()
+      );
+
+      // set allowance for soul store
+      const usdc: IERC20 = IERC20__factory.connect(env.USDC_TOKEN, owner);
+      await usdc
+        .connect(address1)
+        .approve(soulFactory.address, priceInStableCoin);
+      const reserveWalletBalanceBefore = await usdc.balanceOf(reserveWallet);
+
+      await soulFactory.connect(address1).cloneNewSBT(
+        env.USDC_TOKEN, // USDC
+        address1.address,
+        SBT_NAME,
+        SBT_SYMBOL,
+        SBT_NAME712,
+        SBT_TOKEN_URI,
+        SBT_PAYMENT_PARAMS
+      );
+
+      const reserveWalletBalanceAfter = await usdc.balanceOf(reserveWallet);
+
+      // we check that the reserve wallet received the stable coin
+      expect(
+        reserveWalletBalanceAfter.sub(reserveWalletBalanceBefore)
+      ).to.be.equal(priceInStableCoin);
+    });
+
+    it("we can clone a new SBT paying with MASA coin", async () => {
+      const reserveWallet = await soulFactory.reserveWallet();
+      const priceInMasaToken = await soulFactory.getCreationPrice(
+        await soulFactory.masaToken()
+      );
+
+      // set allowance for soul store
+      const masa: IERC20 = IERC20__factory.connect(env.MASA_TOKEN, owner);
+      await masa
+        .connect(address1)
+        .approve(soulFactory.address, priceInMasaToken);
+      const reserveWalletBalanceBefore = await masa.balanceOf(reserveWallet);
+
+      await soulFactory.connect(address1).cloneNewSBT(
+        env.MASA_TOKEN, // MASA
+        address1.address,
+        SBT_NAME,
+        SBT_SYMBOL,
+        SBT_NAME712,
+        SBT_TOKEN_URI,
+        SBT_PAYMENT_PARAMS
+      );
+
+      const reserveWalletBalanceAfter = await masa.balanceOf(reserveWallet);
+
+      // we check that the reserve wallet received the stable coin
+      expect(
+        reserveWalletBalanceAfter.sub(reserveWalletBalanceBefore)
+      ).to.be.equal(priceInMasaToken);
+    });
+
+    it("we can't clone a new SBT paying with ETH if we pay less", async () => {
+      const priceInETH = await soulFactory.getCreationPrice(
+        ethers.constants.AddressZero
+      );
+
+      await expect(
+        soulFactory.connect(address1).cloneNewSBT(
+          ethers.constants.AddressZero, // ETH
+          address1.address,
+          SBT_NAME,
+          SBT_SYMBOL,
+          SBT_NAME712,
+          SBT_TOKEN_URI,
+          SBT_PAYMENT_PARAMS,
+          { value: priceInETH.div(2) }
+        )
+      ).to.be.rejectedWith("InsufficientEthAmount");
+    });
+
+    it("we can't clone a new SBT paying with stable coin if we don't have funds", async () => {
+      const priceInStableCoin = await soulFactory.getCreationPrice(
+        await soulFactory.stableCoin()
+      );
+
+      // set allowance for soul store
+      const usdc: IERC20 = IERC20__factory.connect(env.USDC_TOKEN, owner);
+      await usdc
+        .connect(address2)
+        .approve(soulFactory.address, priceInStableCoin);
+
+      await expect(
+        soulFactory.connect(address2).cloneNewSBT(
+          env.USDC_TOKEN, // USDC
+          address2.address,
+          SBT_NAME,
+          SBT_SYMBOL,
+          SBT_NAME712,
+          SBT_TOKEN_URI,
+          SBT_PAYMENT_PARAMS
+        )
+      ).to.be.rejected;
+    });
+
+    it("we can't clone a new SBT paying with MASA coin if we don't have funds", async () => {
+      const priceInMasaToken = await soulFactory.getCreationPrice(
+        await soulFactory.masaToken()
+      );
+
+      // set allowance for soul store
+      const masa: IERC20 = IERC20__factory.connect(env.MASA_TOKEN, owner);
+      await masa
+        .connect(address2)
+        .approve(soulFactory.address, priceInMasaToken);
+
+      await expect(
+        soulFactory.connect(address2).cloneNewSBT(
+          env.MASA_TOKEN, // MASA
+          address2.address,
+          SBT_NAME,
+          SBT_SYMBOL,
+          SBT_NAME712,
+          SBT_TOKEN_URI,
+          SBT_PAYMENT_PARAMS
+        )
+      ).to.be.rejected;
+    });
+
+    it("we can clone a new SBT paying with more ETH receiving the refund", async () => {
+      const priceInETH = await soulFactory.getCreationPrice(
+        ethers.constants.AddressZero
+      );
+
+      const balance = await address1.getBalance();
+
+      const tx = await soulFactory.connect(address1).cloneNewSBT(
+        ethers.constants.AddressZero, // ETH
+        address1.address,
+        SBT_NAME,
+        SBT_SYMBOL,
+        SBT_NAME712,
+        SBT_TOKEN_URI,
+        SBT_PAYMENT_PARAMS,
+        { value: priceInETH.mul(2) }
+      );
+      const receipt = await tx.wait();
+
+      const balanceAfter = await address1.getBalance();
+      const price = await address1.provider?.getGasPrice();
+      const gasCost = price?.mul(receipt.gasUsed) || 0;
+
+      // TODO: it fails on coverage, but works on test
+      await expect(balanceAfter).to.be.equal(
+        balance.sub(priceInETH).sub(gasCost)
+      );
+    });
+  });
+
   describe("use invalid payment method", () => {
     it("should fail to get creation price for invalid payment method", async () => {
       await expect(

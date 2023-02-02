@@ -21,7 +21,9 @@ const func: DeployFunction = async ({
   const env = getEnvParams(network.name);
 
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
-  const soulboundBaseSelfSovereignDeployed = await deployments.get("SoulboundBaseSelfSovereign");
+  const soulboundBaseSelfSovereignDeployed = await deployments.get(
+    "SoulboundBaseSelfSovereign"
+  );
 
   const constructorArguments = [
     env.ADMIN || admin.address,
