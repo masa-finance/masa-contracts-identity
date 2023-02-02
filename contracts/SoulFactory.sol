@@ -8,6 +8,7 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 import "./libraries/Errors.sol";
 import "./dex/PaymentGateway.sol";
 import "./interfaces/ISoulboundIdentity.sol";
+import "./SoulboundBaseSelfSovereign.sol";
 
 /// @title Soul Factory
 /// @author Masa Finance
@@ -108,16 +109,25 @@ contract SoulFactory is PaymentGateway, Pausable, ReentrancyGuard {
         string memory name,
         string memory symbol,
         string memory nameEIP712,
-        string memory baseTokenURI
+        string memory baseTokenURI,
+        PaymentParams memory paymentParams
     ) external payable whenNotPaused nonReentrant returns (address) {
         _pay(paymentMethod, getCreationPrice(paymentMethod));
 
         // create new SBT
-        address newSBT = address(0);
+        SoulboundBaseSelfSovereign newSBT = new SoulboundBaseSelfSovereign(
+            admin,
+            name,
+            symbol,
+            nameEIP712,
+            baseTokenURI,
+            soulboundIdentity,
+            paymentParams
+        );
 
         emit SoulboundTokenCreated();
 
-        return newSBT;
+        return address(newSBT);
     }
 
     /* ========== VIEWS ========== */
