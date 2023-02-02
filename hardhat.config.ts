@@ -31,12 +31,44 @@ const networks: NetworksUserConfig = {
   },
   goerli: {
     url: getInfuraURL("goerli"),
+    chainId: 5,
     accounts: [getPrivateKey("goerli")],
     gas: "auto", // 20000000
     gasPrice: 200000000000 //"auto"
   },
+  alfajores: {
+    url: "https://alfajores-forno.celo-testnet.org",
+    chainId: 44787,
+    accounts: [getPrivateKey("alfajores")]
+  },
+  celo: {
+    url: "https://forno.celo.org",
+    chainId: 42220,
+    accounts: [getPrivateKey("celo")]
+  },
+  bsctest: {
+    url: "https://data-seed-prebsc-1-s1.binance.org:8545",
+    chainId: 97,
+    accounts: [getPrivateKey("bsctest")]
+  },
+  bsc: {
+    url: "https://bsc-dataseed.binance.org/",
+    chainId: 56,
+    accounts: [getPrivateKey("bsc")]
+  },
+  mumbai: {
+    url: "https://rpc-mumbai.maticvigil.com",
+    chainId: 80001,
+    accounts: [getPrivateKey("mumbai")]
+  },
+  polygon: {
+    url: "https://rpc-mainnet.maticvigil.com",
+    chainId: 137,
+    accounts: [getPrivateKey("polygon")]
+  },
   mainnet: {
     url: getInfuraURL("mainnet"),
+    chainId: 1,
     accounts: [getPrivateKey("mainnet")],
     gas: "auto", // 20000000
     gasPrice: "auto" // 100000000000

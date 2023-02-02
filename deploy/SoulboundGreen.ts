@@ -22,14 +22,26 @@ const func: DeployFunction = async ({
 
   [, admin] = await ethers.getSigners();
   const env = getEnvParams(network.name);
-  const baseUri = `${env.BASE_URI}/credit-score/${network.name}/`;
+  const baseUri = `${env.BASE_URI}/green/${network.name}/`;
 
-  const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
+  let soulboundIdentityDeployedAddress;
+  if (
+    network.name === "mainnet" ||
+    network.name === "goerli" ||
+    network.name === "hardhat"
+  ) {
+    const soulboundIdentityDeployed = await deployments.get(
+      "SoulboundIdentity"
+    );
+    soulboundIdentityDeployedAddress = soulboundIdentityDeployed.address;
+  } else {
+    soulboundIdentityDeployedAddress = ethers.constants.AddressZero;
+  }
 
   const constructorArguments = [
     env.ADMIN || admin.address,
     baseUri,
-    soulboundIdentityDeployed.address,
+    soulboundIdentityDeployedAddress,
     [
       env.SWAP_ROUTER,
       env.WETH_TOKEN,
@@ -39,26 +51,19 @@ const func: DeployFunction = async ({
     ]
   ];
 
-  if (
-    network.name === "mainnet" ||
-    network.name === "goerli" ||
-    network.name === "hardhat"
-  ) {
-    const soulboundCreditScoreDeploymentResult = await deploy(
-      "SoulboundCreditScore",
-      {
-        from: deployer,
-        args: constructorArguments,
-        log: true
-        // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
-      }
-    );
+  if (network.name != "mainnet") {
+    const soulboundGreenDeploymentResult = await deploy("SoulboundGreen", {
+      from: deployer,
+      args: constructorArguments,
+      log: true
+      // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
+    });
 
     // verify contract with etherscan, if its not a local network
-    if (network.name === "mainnet" || network.name === "goerli") {
+    if (network.name === "goerli") {
       try {
         await hre.run("verify:verify", {
-          address: soulboundCreditScoreDeploymentResult.address,
+          address: soulboundGreenDeploymentResult.address,
           constructorArguments
         });
       } catch (error) {
@@ -71,28 +76,30 @@ const func: DeployFunction = async ({
       }
     }
 
-    if (network.name === "hardhat") {
+    if (
+      network.name === "hardhat" ||
+      network.name === "alfajores" ||
+      network.name === "bsctest" ||
+      network.name === "mumbai"
+    ) {
       const signer = env.ADMIN
         ? new ethers.Wallet(getPrivateKey(network.name), ethers.provider)
         : admin;
 
-      const soulboundCreditScore = await ethers.getContractAt(
-        "SoulboundCreditScore",
-        soulboundCreditScoreDeploymentResult.address
+      const soulboundGreen = await ethers.getContractAt(
+        "SoulboundGreen",
+        soulboundGreenDeploymentResult.address
       );
 
-      // add authority to soulboundCreditScore
-      await soulboundCreditScore
+      // add authority to soulboundGreen
+      await soulboundGreen
         .connect(signer)
         .addAuthority(env.AUTHORITY_WALLET || admin.address);
 
-      // add authority to soulboundCreditScore
-      await soulboundCreditScore.connect(signer).setMintPrice(20_000_000); // 20 USDC
-
       // we add payment methods
-      env.PAYMENT_METHODS_SOULBOUNDCREDITSCORE.split(" ").forEach(
+      env.PAYMENT_METHODS_SOULBOUNDGREEN.split(" ").forEach(
         async (paymentMethod) => {
-          await soulboundCreditScore
+          await soulboundGreen
             .connect(signer)
             .enablePaymentMethod(paymentMethod);
         }
@@ -102,12 +109,8 @@ const func: DeployFunction = async ({
 };
 
 func.skip = async ({ network }) => {
-  return (
-    network.name !== "mainnet" &&
-    network.name !== "goerli" &&
-    network.name !== "hardhat"
-  );
+  return network.name === "mainnet";
 };
-func.tags = ["SoulboundCreditScore"];
+func.tags = ["SoulboundGreen"];
 func.dependencies = ["SoulboundIdentity"];
 export default func;

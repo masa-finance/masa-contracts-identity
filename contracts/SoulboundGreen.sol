@@ -6,17 +6,17 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./libraries/Errors.sol";
 import "./tokens/MasaSBTSelfSovereign.sol";
 
-/// @title Soulbound Two-factor authentication (2FA)
+/// @title Soulbound Two-factor authentication (Green - 2FA)
 /// @author Masa Finance
 /// @notice Soulbound token that represents a Two-factor authentication (2FA)
-/// @dev Soulbound 2FA, that inherits from the SBT contract.
-contract Soulbound2FA is MasaSBTSelfSovereign, ReentrancyGuard {
+/// @dev Soulbound Green, that inherits from the SBT contract.
+contract SoulboundGreen is MasaSBTSelfSovereign, ReentrancyGuard {
     /* ========== STATE VARIABLES =========================================== */
 
     /* ========== INITIALIZE ================================================ */
 
-    /// @notice Creates a new soulbound Two-factor authentication (2FA)
-    /// @dev Creates a new soulbound 2FA, inheriting from the SBT contract.
+    /// @notice Creates a new soulbound Two-factor authentication (Green - 2FA)
+    /// @dev Creates a new soulbound Green, inheriting from the SBT contract.
     /// @param admin Administrator of the smart contract
     /// @param baseTokenURI Base URI of the token
     /// @param soulboundIdentity Address of the SoulboundIdentity contract
@@ -29,13 +29,13 @@ contract Soulbound2FA is MasaSBTSelfSovereign, ReentrancyGuard {
     )
         MasaSBTSelfSovereign(
             admin,
-            "Masa 2FA",
+            "Masa Green",
             "M2F",
             baseTokenURI,
             soulboundIdentity,
             paymentParams
         )
-        EIP712("Soulbound2FA", "1.0.0")
+        EIP712("SoulboundGreen", "1.0.0")
     {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
@@ -70,7 +70,7 @@ contract Soulbound2FA is MasaSBTSelfSovereign, ReentrancyGuard {
 
         uint256 tokenId = _mintWithCounter(to);
 
-        emit Soulbound2FAMintedToIdentity(
+        emit SoulboundGreenMintedToIdentity(
             tokenId,
             identityId,
             authorityAddress,
@@ -109,7 +109,7 @@ contract Soulbound2FA is MasaSBTSelfSovereign, ReentrancyGuard {
 
         uint256 tokenId = _mintWithCounter(to);
 
-        emit Soulbound2FAMintedToAddress(
+        emit SoulboundGreenMintedToAddress(
             tokenId,
             to,
             authorityAddress,
@@ -135,7 +135,7 @@ contract Soulbound2FA is MasaSBTSelfSovereign, ReentrancyGuard {
                 keccak256(
                     abi.encode(
                         keccak256(
-                            "Mint2FA(uint256 identityId,address authorityAddress,uint256 signatureDate)"
+                            "MintGreen(uint256 identityId,address authorityAddress,uint256 signatureDate)"
                         ),
                         identityId,
                         authorityAddress,
@@ -155,7 +155,7 @@ contract Soulbound2FA is MasaSBTSelfSovereign, ReentrancyGuard {
                 keccak256(
                     abi.encode(
                         keccak256(
-                            "Mint2FA(address to,address authorityAddress,uint256 signatureDate)"
+                            "MintGreen(address to,address authorityAddress,uint256 signatureDate)"
                         ),
                         to,
                         authorityAddress,
@@ -169,7 +169,7 @@ contract Soulbound2FA is MasaSBTSelfSovereign, ReentrancyGuard {
 
     /* ========== EVENTS ==================================================== */
 
-    event Soulbound2FAMintedToIdentity(
+    event SoulboundGreenMintedToIdentity(
         uint256 tokenId,
         uint256 identityId,
         address authorityAddress,
@@ -178,7 +178,7 @@ contract Soulbound2FA is MasaSBTSelfSovereign, ReentrancyGuard {
         uint256 mintPrice
     );
 
-    event Soulbound2FAMintedToAddress(
+    event SoulboundGreenMintedToAddress(
         uint256 tokenId,
         address to,
         address authorityAddress,
