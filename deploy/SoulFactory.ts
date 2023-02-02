@@ -21,10 +21,12 @@ const func: DeployFunction = async ({
   const env = getEnvParams(network.name);
 
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
+  const soulboundBaseSelfSovereignDeployed = await deployments.get("SoulboundBaseSelfSovereign");
 
   const constructorArguments = [
     env.ADMIN || admin.address,
     soulboundIdentityDeployed.address,
+    soulboundBaseSelfSovereignDeployed.address,
     [
       env.SWAP_ROUTER,
       env.WETH_TOKEN,
@@ -78,5 +80,5 @@ const func: DeployFunction = async ({
 };
 
 func.tags = ["SoulFactory"];
-func.dependencies = ["SoulboundIdentity"];
+func.dependencies = ["SoulboundIdentity", "SoulboundBaseSelfSovereign"];
 export default func;
