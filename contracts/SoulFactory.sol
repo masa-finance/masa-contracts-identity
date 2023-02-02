@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 
 import "./libraries/Errors.sol";
 import "./dex/PaymentGateway.sol";
+import "./interfaces/ISoulboundIdentity.sol";
 
 /// @title Soul Factory
 /// @author Masa Finance
@@ -18,6 +19,8 @@ contract SoulFactory is PaymentGateway, Pausable, ReentrancyGuard {
 
     /* ========== STATE VARIABLES ========== */
 
+    ISoulboundIdentity public soulboundIdentity;
+
     uint256 public creationPrice; // price in stable coin
     uint256 public creationPriceMASA; // price in MASA
 
@@ -27,12 +30,31 @@ contract SoulFactory is PaymentGateway, Pausable, ReentrancyGuard {
     /// @dev Creates a new Soul Factory, that has the role to create new Soulbound Tokens,
     /// paying a fee
     /// @param admin Administrator of the smart contract
+    /// @param _soulBoundIdentity Address of the Soulbound identity contract
     /// @param paymentParams Payment gateway params
-    constructor(address admin, PaymentParams memory paymentParams)
-        PaymentGateway(admin, paymentParams)
-    {}
+    constructor(
+        address admin,
+        ISoulboundIdentity _soulBoundIdentity,
+        PaymentParams memory paymentParams
+    ) PaymentGateway(admin, paymentParams) {
+        if (address(_soulBoundIdentity) == address(0)) revert ZeroAddress();
+
+        soulboundIdentity = _soulBoundIdentity;
+    }
 
     /* ========== RESTRICTED FUNCTIONS ========== */
+
+    /// @notice Sets the SoulboundIdentity contract address linked to this store
+    /// @dev The caller must have the admin role to call this function
+    /// @param _soulboundIdentity New SoulboundIdentity contract address
+    function setSoulboundIdentity(ISoulboundIdentity _soulboundIdentity)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
+        if (soulboundIdentity == _soulboundIdentity) revert SameValue();
+        soulboundIdentity = _soulboundIdentity;
+    }
 
     /// @notice Sets the price for create an SBT in stable coin
     /// @dev The caller must have the admin role to call this function
