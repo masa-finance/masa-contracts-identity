@@ -54,7 +54,7 @@ const func: DeployFunction = async ({
       try {
         await hre.run("verify:verify", {
           address: soulLinkerDeploymentResult.address,
-          initArguments
+          constructorArguments: []
         });
       } catch (error) {
         if (

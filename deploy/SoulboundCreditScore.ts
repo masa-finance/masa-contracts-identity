@@ -59,7 +59,7 @@ const func: DeployFunction = async ({
       try {
         await hre.run("verify:verify", {
           address: soulboundCreditScoreDeploymentResult.address,
-          initArguments
+          constructorArguments: []
         });
       } catch (error) {
         if (

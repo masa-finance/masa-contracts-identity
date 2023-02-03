@@ -52,7 +52,7 @@ const func: DeployFunction = async ({
       try {
         await hre.run("verify:verify", {
           address: soulStoreDeploymentResult.address,
-          initArguments
+          constructorArguments: []
         });
       } catch (error) {
         if (

@@ -64,7 +64,7 @@ const func: DeployFunction = async ({
       try {
         await hre.run("verify:verify", {
           address: soulboundGreenDeploymentResult.address,
-          initArguments
+          constructorArguments: []
         });
       } catch (error) {
         if (
