@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "@openzeppelin/contracts/security/Pausable.sol";
 
 import "./libraries/Errors.sol";
 import "./dex/PaymentGateway.sol";
@@ -15,7 +15,11 @@ import "./SoulboundBaseSelfSovereign.sol";
 /// @notice Soul Factory, that can deploy new Soulbound Tokens, paying a fee
 /// @dev From this smart contract we can create new Soulbound Tokens.
 /// This can be done paying a fee in ETH, USDC or MASA
-contract SoulFactory is PaymentGateway, Pausable, ReentrancyGuard {
+contract SoulFactory is
+    PaymentGateway,
+    PausableUpgradeable,
+    ReentrancyGuardUpgradeable
+{
     using SafeMath for uint256;
 
     /* ========== STATE VARIABLES ========== */
@@ -35,12 +39,15 @@ contract SoulFactory is PaymentGateway, Pausable, ReentrancyGuard {
     /// @param _soulBoundIdentity Address of the Soulbound identity contract
     /// @param _templateSBT Address of the template SBT
     /// @param paymentParams Payment gateway params
-    constructor(
+    function initialize(
         address admin,
         ISoulboundIdentity _soulBoundIdentity,
         SoulboundBaseSelfSovereign _templateSBT,
         PaymentParams memory paymentParams
-    ) PaymentGateway(admin, paymentParams) {
+    ) public initializer {
+        PaymentGateway.initialize(admin, paymentParams);
+        __ReentrancyGuard_init();
+        __Pausable_init();
         if (address(_soulBoundIdentity) == address(0)) revert ZeroAddress();
         if (address(_templateSBT) == address(0)) revert ZeroAddress();
 
@@ -132,7 +139,8 @@ contract SoulFactory is PaymentGateway, Pausable, ReentrancyGuard {
         _pay(paymentMethod, getCreationPrice(paymentMethod));
 
         // create new SBT
-        SoulboundBaseSelfSovereign newSBT = new SoulboundBaseSelfSovereign(
+        SoulboundBaseSelfSovereign newSBT = new SoulboundBaseSelfSovereign();
+        newSBT.initialize(
             admin,
             name,
             symbol,
@@ -171,6 +179,15 @@ contract SoulFactory is PaymentGateway, Pausable, ReentrancyGuard {
         // create new SBT
         SoulboundBaseSelfSovereign newSBT = SoulboundBaseSelfSovereign(
             _createClone(address(templateSBT))
+        );
+        newSBT.initialize(
+            admin,
+            name,
+            symbol,
+            nameEIP712,
+            baseTokenURI,
+            soulboundIdentity,
+            paymentParams
         );
 
         emit SoulboundTokenCreated();

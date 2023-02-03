@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 import "../libraries/Errors.sol";
 import "../interfaces/dex/IUniswapRouter.sol";
@@ -14,7 +15,7 @@ import "../interfaces/dex/IUniswapRouter.sol";
 /// @notice Smart contract to call a Dex AMM smart contract to pay to a reserve wallet recipient
 /// @dev This smart contract will call the Uniswap Router interface, based on
 /// https://github.com/Uniswap/v2-periphery/blob/master/contracts/interfaces/IUniswapV2Router01.sol
-abstract contract PaymentGateway is AccessControl {
+abstract contract PaymentGateway is Initializable, AccessControlUpgradeable {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
@@ -47,13 +48,17 @@ abstract contract PaymentGateway is AccessControl {
     // that will call the Uniswap Router interface
     /// @param admin Administrator of the smart contract
     /// @param paymentParams Payment params
-    constructor(address admin, PaymentParams memory paymentParams) {
+    function initialize(address admin, PaymentParams memory paymentParams)
+        public
+        onlyInitializing
+    {
         if (paymentParams.swapRouter == address(0)) revert ZeroAddress();
         if (paymentParams.wrappedNativeToken == address(0))
             revert ZeroAddress();
         if (paymentParams.stableCoin == address(0)) revert ZeroAddress();
         if (paymentParams.reserveWallet == address(0)) revert ZeroAddress();
 
+        __AccessControl_init();
         _grantRole(DEFAULT_ADMIN_ROLE, admin);
 
         swapRouter = paymentParams.swapRouter;

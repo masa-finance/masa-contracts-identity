@@ -1,15 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/utils/Context.sol";
-
 import "../SBT.sol";
 
 /**
  * @title SBT Burnable Token
  * @dev SBT Token that can be burned (destroyed).
  */
-abstract contract SBTBurnable is Context, SBT {
+abstract contract SBTBurnable is SBT {
     /**
      * @dev Burns `tokenId`. See {SBT-_burn}.
      *

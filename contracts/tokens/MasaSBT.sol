@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 
 import "../libraries/Errors.sol";
 import "../interfaces/ILinkableSBT.sol";
@@ -17,9 +18,10 @@ import "./SBT/extensions/SBTBurnable.sol";
 abstract contract MasaSBT is
     SBT,
     SBTEnumerable,
-    AccessControl,
+    AccessControlUpgradeable,
     SBTBurnable,
-    ILinkableSBT
+    ILinkableSBT,
+    ReentrancyGuardUpgradeable
 {
     /* ========== STATE VARIABLES =========================================== */
 
@@ -40,12 +42,16 @@ abstract contract MasaSBT is
     /// @param name Name of the token
     /// @param symbol Symbol of the token
     /// @param baseTokenURI Base URI of the token
-    constructor(
+    function initialize(
         address admin,
         string memory name,
         string memory symbol,
         string memory baseTokenURI
-    ) SBT(name, symbol) {
+    ) public virtual onlyInitializing {
+        SBT.initialize(name, symbol);
+        __ReentrancyGuard_init();
+        __AccessControl_init();
+
         _grantRole(DEFAULT_ADMIN_ROLE, admin);
 
         _baseTokenURI = baseTokenURI;
@@ -140,7 +146,7 @@ abstract contract MasaSBT is
         public
         view
         virtual
-        override(SBT, SBTEnumerable, AccessControl, IERC165)
+        override(SBT, SBTEnumerable, AccessControlUpgradeable, IERC165)
         returns (bool)
     {
         return super.supportsInterface(interfaceId);

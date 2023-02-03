@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-
 import "./libraries/Errors.sol";
 import "./interfaces/ISoulboundIdentity.sol";
 import "./interfaces/ISoulName.sol";
@@ -12,11 +10,7 @@ import "./tokens/MasaSBTAuthority.sol";
 /// @author Masa Finance
 /// @notice Soulbound token that represents an identity.
 /// @dev Soulbound identity, that inherits from the SBT contract.
-contract SoulboundIdentity is
-    MasaSBTAuthority,
-    ISoulboundIdentity,
-    ReentrancyGuard
-{
+contract SoulboundIdentity is MasaSBTAuthority, ISoulboundIdentity {
     /* ========== STATE VARIABLES =========================================== */
 
     ISoulName public soulName;
@@ -27,9 +21,17 @@ contract SoulboundIdentity is
     /// @dev Creates a new soulbound identity, inheriting from the SBT contract.
     /// @param admin Administrator of the smart contract
     /// @param baseTokenURI Base URI of the token
-    constructor(address admin, string memory baseTokenURI)
-        MasaSBTAuthority(admin, "Masa Identity", "MID", baseTokenURI)
-    {}
+    function initialize(address admin, string memory baseTokenURI)
+        public
+        initializer
+    {
+        MasaSBTAuthority.initialize(
+            admin,
+            "Masa Identity",
+            "MID",
+            baseTokenURI
+        );
+    }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
@@ -219,6 +221,21 @@ contract SoulboundIdentity is
         returns (string[] memory sbtNames)
     {
         return soulName.getSoulNames(tokenId);
+    }
+
+    /// @notice Query if a contract implements an interface
+    /// @dev Interface identification is specified in ERC-165.
+    /// @param interfaceId The interface identifier, as specified in ERC-165
+    /// @return `true` if the contract implements `interfaceId` and
+    ///  `interfaceId` is not 0xffffffff, `false` otherwise
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override(IERC165, MasaSBT)
+        returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
     }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */

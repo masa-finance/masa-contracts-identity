@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
+import "@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
@@ -17,7 +17,11 @@ import "./MasaSBT.sol";
 /// Adds a payment gateway to let minting paying a fee
 /// Adds a self-sovereign protocol to let minting using an authority signature
 /// @dev Implementation of https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763 Soulbound token.
-abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
+abstract contract MasaSBTSelfSovereign is
+    PaymentGateway,
+    MasaSBT,
+    EIP712Upgradeable
+{
     /* ========== STATE VARIABLES =========================================== */
 
     using Counters for Counters.Counter;
@@ -41,17 +45,16 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
     /// @param baseTokenURI Base URI of the token
     /// @param _soulboundIdentity Address of the SoulboundIdentity contract
     /// @param paymentParams Payment gateway params
-    constructor(
+    function initialize(
         address admin,
         string memory name,
         string memory symbol,
         string memory baseTokenURI,
         ISoulboundIdentity _soulboundIdentity,
         PaymentParams memory paymentParams
-    )
-        PaymentGateway(admin, paymentParams)
-        MasaSBT(admin, name, symbol, baseTokenURI)
-    {
+    ) public onlyInitializing {
+        PaymentGateway.initialize(admin, paymentParams);
+        MasaSBT.initialize(admin, name, symbol, baseTokenURI);
         soulboundIdentity = _soulboundIdentity;
     }
 
@@ -167,7 +170,7 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
         public
         view
         virtual
-        override(AccessControl, MasaSBT)
+        override(AccessControlUpgradeable, MasaSBT)
         returns (bool)
     {
         return super.supportsInterface(interfaceId);

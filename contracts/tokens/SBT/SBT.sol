@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
-import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 import "./ISBT.sol";
@@ -11,7 +12,7 @@ import "./extensions/ISBTMetadata.sol";
 /// @title SBT
 /// @author Masa Finance
 /// @notice Soulbound token is an NFT token that is not transferable.
-contract SBT is Context, ERC165, ISBT, ISBTMetadata {
+contract SBT is Initializable, ContextUpgradeable, ERC165, ISBT, ISBTMetadata {
     using Strings for uint256;
 
     // Token name
@@ -29,7 +30,11 @@ contract SBT is Context, ERC165, ISBT, ISBTMetadata {
     /**
      * @dev Initializes the contract by setting a `name` and a `symbol` to the token collection.
      */
-    constructor(string memory name_, string memory symbol_) {
+    function initialize(string memory name_, string memory symbol_)
+        public
+        onlyInitializing
+    {
+        __Context_init();
         _name = name_;
         _symbol = symbol_;
     }

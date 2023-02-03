@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "@openzeppelin/contracts/security/Pausable.sol";
 
 import "./libraries/Errors.sol";
 import "./dex/PaymentGateway.sol";
@@ -16,7 +16,12 @@ import "./interfaces/ISoulName.sol";
 /// @notice Soul Store, that can mint new Soulbound Identities and Soul Name NFTs, paying a fee
 /// @dev From this smart contract we can mint new Soulbound Identities and Soul Name NFTs.
 /// This minting can be done paying a fee in ETH, USDC or MASA
-contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
+contract SoulStore is
+    PaymentGateway,
+    PausableUpgradeable,
+    ReentrancyGuardUpgradeable,
+    EIP712Upgradeable
+{
     using SafeMath for uint256;
 
     /* ========== STATE VARIABLES ========== */
@@ -36,13 +41,18 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @param _soulBoundIdentity Address of the Soulbound identity contract
     /// @param _nameRegistrationPricePerYear Price of the default name registering in stable coin per year
     /// @param paymentParams Payment gateway params
-    constructor(
+    function initialize(
         address admin,
         ISoulboundIdentity _soulBoundIdentity,
         uint256 _nameRegistrationPricePerYear,
         PaymentParams memory paymentParams
-    ) PaymentGateway(admin, paymentParams) EIP712("SoulStore", "1.0.0") {
+    ) public initializer {
         if (address(_soulBoundIdentity) == address(0)) revert ZeroAddress();
+
+        PaymentGateway.initialize(admin, paymentParams);
+        __ReentrancyGuard_init();
+        __Pausable_init();
+        __EIP712_init("SoulStore", "1.0.0");
 
         soulboundIdentity = _soulBoundIdentity;
 
@@ -357,7 +367,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         bytes memory signature,
         address signer
     ) internal view {
-        address _signer = ECDSA.recover(digest, signature);
+        address _signer = ECDSAUpgradeable.recover(digest, signature);
         if (_signer != signer) revert InvalidSignature();
         if (!authorities[_signer]) revert NotAuthorized(_signer);
     }
