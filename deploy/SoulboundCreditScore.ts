@@ -26,31 +26,38 @@ const func: DeployFunction = async ({
 
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
 
-  const initArguments = [
-    env.ADMIN || admin.address,
-    baseUri,
-    soulboundIdentityDeployed.address,
-    [
-      env.SWAP_ROUTER,
-      env.WETH_TOKEN,
-      env.USDC_TOKEN,
-      env.MASA_TOKEN,
-      env.RESERVE_WALLET || admin.address
-    ]
-  ];
-
   if (
     network.name === "mainnet" ||
     network.name === "goerli" ||
     network.name === "hardhat"
   ) {
+    // deploy contract
     const soulboundCreditScoreDeploymentResult = await deploy(
       "SoulboundCreditScore",
       {
         from: deployer,
-        args: initArguments,
+        args: [],
         log: true
         // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
+      }
+    );
+
+    const soulboundCreditScore = await ethers.getContractAt(
+      "SoulboundCreditScore",
+      soulboundCreditScoreDeploymentResult.address
+    );
+
+    // initialize contract
+    await soulboundCreditScore.initialize(
+      env.ADMIN || admin.address,
+      baseUri,
+      soulboundIdentityDeployed.address,
+      {
+        swapRouter: env.SWAP_ROUTER,
+        wrappedNativeToken: env.WETH_TOKEN,
+        stableCoin: env.USDC_TOKEN,
+        masaToken: env.MASA_TOKEN,
+        reserveWallet: env.RESERVE_WALLET || admin.address
       }
     );
 
@@ -75,11 +82,6 @@ const func: DeployFunction = async ({
       const signer = env.ADMIN
         ? new ethers.Wallet(getPrivateKey(network.name), ethers.provider)
         : admin;
-
-      const soulboundCreditScore = await ethers.getContractAt(
-        "SoulboundCreditScore",
-        soulboundCreditScoreDeploymentResult.address
-      );
 
       // add authority to soulboundCreditScore
       await soulboundCreditScore

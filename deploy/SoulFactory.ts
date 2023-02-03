@@ -25,24 +25,31 @@ const func: DeployFunction = async ({
     "SoulboundBaseSelfSovereign"
   );
 
-  const initArguments = [
+  // deploy contract
+  const soulFactoryDeploymentResult = await deploy("SoulFactory", {
+    from: deployer,
+    args: [],
+    log: true
+  });
+
+  const soulFactory = await ethers.getContractAt(
+    "SoulFactory",
+    soulFactoryDeploymentResult.address
+  );
+
+  // initialize contract
+  await soulFactory.initialize(
     env.ADMIN || admin.address,
     soulboundIdentityDeployed.address,
     soulboundBaseSelfSovereignDeployed.address,
-    [
-      env.SWAP_ROUTER,
-      env.WETH_TOKEN,
-      env.USDC_TOKEN,
-      env.MASA_TOKEN,
-      env.RESERVE_WALLET || admin.address
-    ]
-  ];
-
-  const soulFactoryDeploymentResult = await deploy("SoulFactory", {
-    from: deployer,
-    args: initArguments,
-    log: true
-  });
+    {
+      swapRouter: env.SWAP_ROUTER,
+      wrappedNativeToken: env.WETH_TOKEN,
+      stableCoin: env.USDC_TOKEN,
+      masaToken: env.MASA_TOKEN,
+      reserveWallet: env.RESERVE_WALLET || admin.address
+    }
+  );
 
   // verify contract with etherscan, if its not a local network
   if (network.name == "mainnet" || network.name == "goerli") {
@@ -68,11 +75,6 @@ const func: DeployFunction = async ({
           ethers.getDefaultProvider(network.name)
         )
       : admin;
-
-    const soulFactory = await ethers.getContractAt(
-      "SoulFactory",
-      soulFactoryDeploymentResult.address
-    );
 
     // we add payment methods
     env.PAYMENT_METHODS_SOULSTORE.split(" ").forEach(async (paymentMethod) => {

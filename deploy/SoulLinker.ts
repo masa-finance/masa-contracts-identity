@@ -25,29 +25,36 @@ const func: DeployFunction = async ({
 
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
 
-  const initArguments = [
-    env.ADMIN || admin.address,
-    soulboundIdentityDeployed.address,
-    [
-      env.SWAP_ROUTER,
-      env.WETH_TOKEN,
-      env.USDC_TOKEN,
-      env.MASA_TOKEN,
-      env.RESERVE_WALLET || admin.address
-    ]
-  ];
-
   if (
     network.name === "mainnet" ||
     network.name === "goerli" ||
     network.name === "hardhat"
   ) {
+    // deploy contract
     const soulLinkerDeploymentResult = await deploy("SoulLinker", {
       from: deployer,
-      args: initArguments,
+      args: [],
       log: true
       // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
     });
+
+    const soulLinker = await ethers.getContractAt(
+      "SoulLinker",
+      soulLinkerDeploymentResult.address
+    );
+
+    // initialize contract
+    await soulLinker.initialize(
+      env.ADMIN || admin.address,
+      soulboundIdentityDeployed.address,
+      {
+        swapRouter: env.SWAP_ROUTER,
+        wrappedNativeToken: env.WETH_TOKEN,
+        stableCoin: env.USDC_TOKEN,
+        masaToken: env.MASA_TOKEN,
+        reserveWallet: env.RESERVE_WALLET || admin.address
+      }
+    );
 
     // verify contract with etherscan, if its not a local network
     if (network.name === "mainnet" || network.name === "goerli") {
@@ -72,11 +79,6 @@ const func: DeployFunction = async ({
       const signer = env.ADMIN
         ? new ethers.Wallet(getPrivateKey(network.name), ethers.provider)
         : admin;
-
-      const soulLinker = await ethers.getContractAt(
-        "SoulLinker",
-        soulLinkerDeploymentResult.address
-      );
 
       env.PAYMENT_METHODS_SOULLINKER.split(" ").forEach(
         async (paymentMethod) => {

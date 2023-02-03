@@ -26,34 +26,41 @@ const func: DeployFunction = async ({
 
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
 
-  const initArguments = [
-    env.ADMIN || admin.address,
-    "Soulbound Test",
-    "SBT",
-    "Soulbound Test",
-    baseUri,
-    soulboundIdentityDeployed.address,
-    [
-      env.SWAP_ROUTER,
-      env.WETH_TOKEN,
-      env.USDC_TOKEN,
-      env.MASA_TOKEN,
-      env.RESERVE_WALLET || admin.address
-    ]
-  ];
-
   if (
     network.name === "mainnet" ||
     network.name === "goerli" ||
     network.name === "hardhat"
   ) {
+    // deploy contract
     const soulboundBaseSelfSovereignDeploymentResult = await deploy(
       "SoulboundBaseSelfSovereign",
       {
         from: deployer,
-        args: initArguments,
+        args: [],
         log: true
         // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
+      }
+    );
+
+    const soulboundBaseSelfSovereign = await ethers.getContractAt(
+      "SoulboundBaseSelfSovereign",
+      soulboundBaseSelfSovereignDeploymentResult.address
+    );
+
+    // initialize contract
+    await soulboundBaseSelfSovereign.initialize(
+      env.ADMIN || admin.address,
+      "Soulbound Test",
+      "SBT",
+      "Soulbound Test",
+      baseUri,
+      soulboundIdentityDeployed.address,
+      {
+        swapRouter: env.SWAP_ROUTER,
+        wrappedNativeToken: env.WETH_TOKEN,
+        stableCoin: env.USDC_TOKEN,
+        masaToken: env.MASA_TOKEN,
+        reserveWallet: env.RESERVE_WALLET || admin.address
       }
     );
 
@@ -62,7 +69,7 @@ const func: DeployFunction = async ({
       try {
         await hre.run("verify:verify", {
           address: soulboundBaseSelfSovereignDeploymentResult.address,
-          initArguments
+          constructorArguments: []
         });
       } catch (error) {
         if (

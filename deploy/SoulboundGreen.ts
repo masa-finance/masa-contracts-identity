@@ -38,26 +38,33 @@ const func: DeployFunction = async ({
     soulboundIdentityDeployedAddress = ethers.constants.AddressZero;
   }
 
-  const initArguments = [
-    env.ADMIN || admin.address,
-    baseUri,
-    soulboundIdentityDeployedAddress,
-    [
-      env.SWAP_ROUTER,
-      env.WETH_TOKEN,
-      env.USDC_TOKEN,
-      env.MASA_TOKEN,
-      env.RESERVE_WALLET || admin.address
-    ]
-  ];
-
   if (network.name != "mainnet") {
+    // deploy contract
     const soulboundGreenDeploymentResult = await deploy("SoulboundGreen", {
       from: deployer,
-      args: initArguments,
+      args: [],
       log: true
       // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
     });
+
+    const soulboundGreen = await ethers.getContractAt(
+      "SoulboundGreen",
+      soulboundGreenDeploymentResult.address
+    );
+
+    // initialize contract
+    await soulboundGreen.initialize(
+      env.ADMIN || admin.address,
+      baseUri,
+      soulboundIdentityDeployedAddress,
+      {
+        swapRouter: env.SWAP_ROUTER,
+        wrappedNativeToken: env.WETH_TOKEN,
+        stableCoin: env.USDC_TOKEN,
+        masaToken: env.MASA_TOKEN,
+        reserveWallet: env.RESERVE_WALLET || admin.address
+      }
+    );
 
     // verify contract with etherscan, if its not a local network
     if (network.name === "goerli") {
@@ -85,11 +92,6 @@ const func: DeployFunction = async ({
       const signer = env.ADMIN
         ? new ethers.Wallet(getPrivateKey(network.name), ethers.provider)
         : admin;
-
-      const soulboundGreen = await ethers.getContractAt(
-        "SoulboundGreen",
-        soulboundGreenDeploymentResult.address
-      );
 
       // add authority to soulboundGreen
       await soulboundGreen

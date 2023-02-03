@@ -24,22 +24,29 @@ const func: DeployFunction = async ({
   const env = getEnvParams(network.name);
   const baseUri = `${env.BASE_URI}/identity/${network.name}/`;
 
-  const initArguments = [env.ADMIN || admin.address, baseUri];
-
   if (
     network.name === "mainnet" ||
     network.name === "goerli" ||
     network.name === "hardhat"
   ) {
+    // deploy contract
     const soulboundIdentityDeploymentResult = await deploy(
       "SoulboundIdentity",
       {
         from: deployer,
-        args: initArguments,
+        args: [],
         log: true
         // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
       }
     );
+
+    const soulboundIdentity = await ethers.getContractAt(
+      "SoulboundIdentity",
+      soulboundIdentityDeploymentResult.address
+    );
+
+    // initialize contract
+    await soulboundIdentity.initialize(env.ADMIN || admin.address, baseUri);
 
     // verify contract with etherscan, if its not a local network
     if (network.name === "mainnet" || network.name === "goerli") {

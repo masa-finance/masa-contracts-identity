@@ -23,29 +23,36 @@ const func: DeployFunction = async ({
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
   const soulNameDeployed = await deployments.get("SoulName");
 
-  const initArguments = [
-    env.ADMIN || admin.address,
-    soulboundIdentityDeployed.address,
-    "10000000", // 10 USDC, with 6 decimals
-    [
-      env.SWAP_ROUTER,
-      env.WETH_TOKEN,
-      env.USDC_TOKEN,
-      env.MASA_TOKEN,
-      env.RESERVE_WALLET || admin.address
-    ]
-  ];
-
   if (
     network.name === "mainnet" ||
     network.name === "goerli" ||
     network.name === "hardhat"
   ) {
+    // deploy contract
     const soulStoreDeploymentResult = await deploy("SoulStore", {
       from: deployer,
-      args: initArguments,
+      args: [],
       log: true
     });
+
+    const soulStore = await ethers.getContractAt(
+      "SoulStore",
+      soulStoreDeploymentResult.address
+    );
+
+    // initialize contract
+    await soulStore.initialize(
+      env.ADMIN || admin.address,
+      soulboundIdentityDeployed.address,
+      "10000000", // 10 USDC, with 6 decimals
+      {
+        swapRouter: env.SWAP_ROUTER,
+        wrappedNativeToken: env.WETH_TOKEN,
+        stableCoin: env.USDC_TOKEN,
+        masaToken: env.MASA_TOKEN,
+        reserveWallet: env.RESERVE_WALLET || admin.address
+      }
+    );
 
     // verify contract with etherscan, if its not a local network
     if (network.name === "mainnet" || network.name === "goerli") {
@@ -79,10 +86,6 @@ const func: DeployFunction = async ({
         : admin;
 
       // we set the registration prices per year and length of name
-      const soulStore = await ethers.getContractAt(
-        "SoulStore",
-        soulStoreDeploymentResult.address
-      );
       await soulStore
         .connect(signer)
         .setNameRegistrationPricePerYear(1, 6_250_000_000); // 1 length, 6,250 USDC USDC
