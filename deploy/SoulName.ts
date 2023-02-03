@@ -22,7 +22,7 @@ const func: DeployFunction = async ({
 
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
 
-  const constructorArguments = [
+  const initArguments = [
     env.ADMIN || admin.address,
     soulboundIdentityDeployed.address,
     ".soul",
@@ -36,7 +36,7 @@ const func: DeployFunction = async ({
   ) {
     const soulNameDeploymentResult = await deploy("SoulName", {
       from: deployer,
-      args: constructorArguments,
+      args: initArguments,
       log: true
     });
 
@@ -45,7 +45,7 @@ const func: DeployFunction = async ({
       try {
         await hre.run("verify:verify", {
           address: soulNameDeploymentResult.address,
-          constructorArguments
+          initArguments
         });
       } catch (error) {
         if (

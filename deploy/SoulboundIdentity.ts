@@ -24,7 +24,7 @@ const func: DeployFunction = async ({
   const env = getEnvParams(network.name);
   const baseUri = `${env.BASE_URI}/identity/${network.name}/`;
 
-  const constructorArguments = [env.ADMIN || admin.address, baseUri];
+  const initArguments = [env.ADMIN || admin.address, baseUri];
 
   if (
     network.name === "mainnet" ||
@@ -35,7 +35,7 @@ const func: DeployFunction = async ({
       "SoulboundIdentity",
       {
         from: deployer,
-        args: constructorArguments,
+        args: initArguments,
         log: true
         // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
       }
@@ -46,7 +46,7 @@ const func: DeployFunction = async ({
       try {
         await hre.run("verify:verify", {
           address: soulboundIdentityDeploymentResult.address,
-          constructorArguments
+          initArguments
         });
       } catch (error) {
         if (

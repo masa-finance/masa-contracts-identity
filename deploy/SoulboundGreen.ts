@@ -38,7 +38,7 @@ const func: DeployFunction = async ({
     soulboundIdentityDeployedAddress = ethers.constants.AddressZero;
   }
 
-  const constructorArguments = [
+  const initArguments = [
     env.ADMIN || admin.address,
     baseUri,
     soulboundIdentityDeployedAddress,
@@ -54,7 +54,7 @@ const func: DeployFunction = async ({
   if (network.name != "mainnet") {
     const soulboundGreenDeploymentResult = await deploy("SoulboundGreen", {
       from: deployer,
-      args: constructorArguments,
+      args: initArguments,
       log: true
       // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
     });
@@ -64,7 +64,7 @@ const func: DeployFunction = async ({
       try {
         await hre.run("verify:verify", {
           address: soulboundGreenDeploymentResult.address,
-          constructorArguments
+          initArguments
         });
       } catch (error) {
         if (

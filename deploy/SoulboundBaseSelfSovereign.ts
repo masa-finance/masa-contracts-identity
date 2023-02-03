@@ -26,7 +26,7 @@ const func: DeployFunction = async ({
 
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
 
-  const constructorArguments = [
+  const initArguments = [
     env.ADMIN || admin.address,
     "Soulbound Test",
     "SBT",
@@ -51,7 +51,7 @@ const func: DeployFunction = async ({
       "SoulboundBaseSelfSovereign",
       {
         from: deployer,
-        args: constructorArguments,
+        args: initArguments,
         log: true
         // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
       }
@@ -62,7 +62,7 @@ const func: DeployFunction = async ({
       try {
         await hre.run("verify:verify", {
           address: soulboundBaseSelfSovereignDeploymentResult.address,
-          constructorArguments
+          initArguments
         });
       } catch (error) {
         if (

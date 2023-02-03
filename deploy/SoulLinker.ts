@@ -25,7 +25,7 @@ const func: DeployFunction = async ({
 
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
 
-  const constructorArguments = [
+  const initArguments = [
     env.ADMIN || admin.address,
     soulboundIdentityDeployed.address,
     [
@@ -44,7 +44,7 @@ const func: DeployFunction = async ({
   ) {
     const soulLinkerDeploymentResult = await deploy("SoulLinker", {
       from: deployer,
-      args: constructorArguments,
+      args: initArguments,
       log: true
       // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
     });
@@ -54,7 +54,7 @@ const func: DeployFunction = async ({
       try {
         await hre.run("verify:verify", {
           address: soulLinkerDeploymentResult.address,
-          constructorArguments
+          initArguments
         });
       } catch (error) {
         if (
