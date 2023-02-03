@@ -266,6 +266,42 @@ function hasRole(bytes32 role, address account) external view returns (bool)
 |---|---|---|
 | _0 | bool | undefined |
 
+### initialize
+
+```solidity
+function initialize(address admin, contract ISoulboundIdentity _soulBoundIdentity, uint256 _nameRegistrationPricePerYear, PaymentGateway.PaymentParams paymentParams) external nonpayable
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| admin | address | undefined |
+| _soulBoundIdentity | contract ISoulboundIdentity | undefined |
+| _nameRegistrationPricePerYear | uint256 | undefined |
+| paymentParams | PaymentGateway.PaymentParams | undefined |
+
+### initialize
+
+```solidity
+function initialize(address admin, PaymentGateway.PaymentParams paymentParams) external nonpayable
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| admin | address | undefined |
+| paymentParams | PaymentGateway.PaymentParams | undefined |
+
 ### masaToken
 
 ```solidity
@@ -691,6 +727,22 @@ function wrappedNativeToken() external view returns (address)
 
 
 ## Events
+
+### Initialized
+
+```solidity
+event Initialized(uint8 version)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| version  | uint8 | undefined |
 
 ### Paused
 

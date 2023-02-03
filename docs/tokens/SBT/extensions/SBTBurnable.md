@@ -48,6 +48,23 @@ function burn(uint256 tokenId) external nonpayable
 |---|---|---|
 | tokenId | uint256 | undefined |
 
+### initialize
+
+```solidity
+function initialize(string name_, string symbol_) external nonpayable
+```
+
+
+
+*Initializes the contract by setting a `name` and a `symbol` to the token collection.*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name_ | string | undefined |
+| symbol_ | string | undefined |
+
 ### name
 
 ```solidity
@@ -168,6 +185,22 @@ event Burn(address indexed _owner, uint256 indexed _tokenId)
 |---|---|---|
 | _owner `indexed` | address | undefined |
 | _tokenId `indexed` | uint256 | undefined |
+
+### Initialized
+
+```solidity
+event Initialized(uint8 version)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| version  | uint8 | undefined |
 
 ### Mint
 

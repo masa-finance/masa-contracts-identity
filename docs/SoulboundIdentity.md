@@ -305,6 +305,59 @@ function hasRole(bytes32 role, address account) external view returns (bool)
 |---|---|---|
 | _0 | bool | undefined |
 
+### initialize
+
+```solidity
+function initialize(string name_, string symbol_) external nonpayable
+```
+
+
+
+*Initializes the contract by setting a `name` and a `symbol` to the token collection.*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name_ | string | undefined |
+| symbol_ | string | undefined |
+
+### initialize
+
+```solidity
+function initialize(address admin, string name, string symbol, string baseTokenURI) external nonpayable
+```
+
+Creates a new soulbound token
+
+*Creates a new soulbound token*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| admin | address | Administrator of the smart contract |
+| name | string | Name of the token |
+| symbol | string | Symbol of the token |
+| baseTokenURI | string | Base URI of the token |
+
+### initialize
+
+```solidity
+function initialize(address admin, string baseTokenURI) external nonpayable
+```
+
+Creates a new soulbound identity
+
+*Creates a new soulbound identity, inheriting from the SBT contract.*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| admin | address | Administrator of the smart contract |
+| baseTokenURI | string | Base URI of the token |
+
 ### isAvailable
 
 ```solidity
@@ -809,6 +862,22 @@ event Burn(address indexed _owner, uint256 indexed _tokenId)
 |---|---|---|
 | _owner `indexed` | address | undefined |
 | _tokenId `indexed` | uint256 | undefined |
+
+### Initialized
+
+```solidity
+event Initialized(uint8 version)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| version  | uint8 | undefined |
 
 ### Mint
 
