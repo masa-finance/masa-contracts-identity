@@ -285,23 +285,6 @@ function initialize(address admin, contract ISoulboundIdentity _soulBoundIdentit
 | _nameRegistrationPricePerYear | uint256 | undefined |
 | paymentParams | PaymentGateway.PaymentParams | undefined |
 
-### initialize
-
-```solidity
-function initialize(address admin, PaymentGateway.PaymentParams paymentParams) external nonpayable
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| admin | address | undefined |
-| paymentParams | PaymentGateway.PaymentParams | undefined |
-
 ### masaToken
 
 ```solidity

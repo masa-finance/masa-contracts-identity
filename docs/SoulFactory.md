@@ -297,23 +297,6 @@ function hasRole(bytes32 role, address account) external view returns (bool)
 ### initialize
 
 ```solidity
-function initialize(address admin, PaymentGateway.PaymentParams paymentParams) external nonpayable
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| admin | address | undefined |
-| paymentParams | PaymentGateway.PaymentParams | undefined |
-
-### initialize
-
-```solidity
 function initialize(address admin, contract ISoulboundIdentity _soulBoundIdentity, contract SoulboundBaseSelfSovereign _templateSBT, PaymentGateway.PaymentParams paymentParams) external nonpayable
 ```
 

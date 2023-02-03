@@ -182,23 +182,6 @@ function hasRole(bytes32 role, address account) external view returns (bool)
 |---|---|---|
 | _0 | bool | undefined |
 
-### initialize
-
-```solidity
-function initialize(address admin, PaymentGateway.PaymentParams paymentParams) external nonpayable
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| admin | address | undefined |
-| paymentParams | PaymentGateway.PaymentParams | undefined |
-
 ### masaToken
 
 ```solidity
