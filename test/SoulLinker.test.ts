@@ -15,7 +15,6 @@ import {
   SoulLinker,
   SoulLinker__factory
 } from "../typechain";
-import { BigNumber } from "ethers";
 import { getEnvParams } from "../src/EnvParams";
 
 chai.use(chaiAsPromised);
@@ -394,21 +393,19 @@ describe("Soul Linker", () => {
     });
 
     it("should get SBT connections by identityId", async () => {
-      expect(
-        await soulLinker["getSBTConnections(uint256,address)"](
-          ownerIdentityId,
-          soulboundCreditScore.address
-        )
-      ).to.deep.equal([BigNumber.from(creditScore1)]);
+      const sbtConnections = await soulLinker[
+        "getSBTConnections(uint256,address)"
+      ](ownerIdentityId, soulboundCreditScore.address);
+      expect(sbtConnections.length).to.be.equal(1);
+      expect(sbtConnections[0]).to.be.equal(creditScore1);
     });
 
     it("should get SBT connections by owner address", async () => {
-      expect(
-        await soulLinker["getSBTConnections(address,address)"](
-          dataOwner.address,
-          soulboundCreditScore.address
-        )
-      ).to.deep.equal([BigNumber.from(creditScore1)]);
+      const sbtConnections = await soulLinker[
+        "getSBTConnections(address,address)"
+      ](dataOwner.address, soulboundCreditScore.address);
+      expect(sbtConnections.length).to.be.equal(1);
+      expect(sbtConnections[0]).to.be.equal(creditScore1);
     });
   });
 
