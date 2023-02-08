@@ -124,10 +124,9 @@ abstract contract MasaNFT is
     function _beforeTokenTransfer(
         address from,
         address to,
-        uint256 firstTokenId,
-        uint256 batchSize
+        uint256 tokenId
     ) internal virtual override(ERC721, ERC721Enumerable) {
-        super._beforeTokenTransfer(from, to, firstTokenId, batchSize);
+        super._beforeTokenTransfer(from, to, tokenId);
     }
 
     /* ========== MODIFIERS ================================================= */
