@@ -27,7 +27,7 @@
     "release": "GITHUB_TOKEN=$(grep GITHUB_TOKEN .env | cut -d '=' -f2) release-it"
   },
   "dependencies": {
-    "ethers": "^5.6.9"
+    "ethers": "~5.7.2"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.1.0",
