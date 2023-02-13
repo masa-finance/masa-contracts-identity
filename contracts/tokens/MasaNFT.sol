@@ -54,11 +54,9 @@ abstract contract MasaNFT is
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
-    function _mintWithCounter(address to)
-        internal
-        onlyRole(MINTER_ROLE)
-        returns (uint256)
-    {
+    function _mintWithCounter(
+        address to
+    ) internal onlyRole(MINTER_ROLE) returns (uint256) {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
@@ -84,13 +82,9 @@ abstract contract MasaNFT is
     ///  Metadata JSON Schema".
     /// @param tokenId NFT to get the URI of
     /// @return URI of the NFT
-    function tokenURI(uint256 tokenId)
-        public
-        view
-        virtual
-        override
-        returns (string memory)
-    {
+    function tokenURI(
+        uint256 tokenId
+    ) public view virtual override returns (string memory) {
         _requireMinted(tokenId);
 
         string memory baseURI = _baseURI();
@@ -105,7 +99,9 @@ abstract contract MasaNFT is
     /// @param interfaceId The interface identifier, as specified in ERC-165
     /// @return `true` if the contract implements `interfaceId` and
     ///  `interfaceId` is not 0xffffffff, `false` otherwise
-    function supportsInterface(bytes4 interfaceId)
+    function supportsInterface(
+        bytes4 interfaceId
+    )
         public
         view
         virtual
@@ -124,9 +120,10 @@ abstract contract MasaNFT is
     function _beforeTokenTransfer(
         address from,
         address to,
-        uint256 tokenId
+        uint256 firstTokenId,
+        uint256 batchSize
     ) internal virtual override(ERC721, ERC721Enumerable) {
-        super._beforeTokenTransfer(from, to, tokenId);
+        super._beforeTokenTransfer(from, to, firstTokenId, batchSize);
     }
 
     /* ========== MODIFIERS ================================================= */
