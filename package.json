@@ -56,7 +56,7 @@
     "prettier": "^2.7.1",
     "prettier-plugin-solidity": "^1.1.2",
     "release-it": "^15.4.1",
-    "solhint": "^3.3.7",
+    "solhint": "^3.3.8",
     "solhint-plugin-prettier": "^0.0.5",
     "solidity-coverage": "^0.7.21",
     "ts-generator": "^0.1.1",
