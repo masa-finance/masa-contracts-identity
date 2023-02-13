@@ -1251,7 +1251,7 @@
   dependencies:
     "@types/chai" "*"
 
-"@types/chai@*", "@types/chai@^4.3.3":
+"@types/chai@*", "@types/chai@^4.3.4":
   version "4.3.4"
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.3.4.tgz#e913e8175db8307d78b4e8fa690408ba6b65dee4"
   integrity sha512-KnRanxnpfpjUTqTCXslZSEdLfXExwgNxYPdiO2WGUj8+HDjFi8R3k5RVKPeSCzLjCcshCAtVO2QBbVuAV4kTnw==
@@ -3149,7 +3149,7 @@ chai-ethers@^0.0.1:
   dependencies:
     ethers "^5.0.0"
 
-chai@^4.3.6:
+chai@^4.3.7:
   version "4.3.7"
   resolved "https://registry.yarnpkg.com/chai/-/chai-4.3.7.tgz#ec63f6df01829088e8bf55fca839bcd464a8ec51"
   integrity sha512-HLnAzZ2iupm25PlN0xFreAlBA5zaBSv3og0DdeGA4Ar6h6rJ3A0rolRUKJhSF2V10GZKDgWF/VmAEsNWjCRB+A==
@@ -4279,7 +4279,7 @@ env-paths@^2.2.0:
   resolved "https://registry.yarnpkg.com/env-paths/-/env-paths-2.2.1.tgz#420399d416ce1fbe9bc0a07c62fa68d67fd0f8f2"
   integrity sha512-+h1lkLKhZMTYjog1VEpJNG7NZJWcuc2DDk/qsqSTRRCOXiLjeQ1d1/udrUGhqMxUgAlwKNZ0cf2uqan5GLuS2A==
 
-envfile@^6.17.0:
+envfile@^6.18.0:
   version "6.18.0"
   resolved "https://registry.yarnpkg.com/envfile/-/envfile-6.18.0.tgz#bcb6275af19ba5c961c70c3f3b5c8baf568bdbf6"
   integrity sha512-IsYv64dtlNXTm4huvCBpbXsdZQurYUju9WoYCkSj+SDYpO3v4/dq346QsCnNZ3JcnWw0G3E6+saVkVtmPw98Gg==
@@ -9112,7 +9112,7 @@ prettier-linter-helpers@^1.0.0:
   dependencies:
     fast-diff "^1.1.2"
 
-prettier-plugin-solidity@^1.0.0-beta.24:
+prettier-plugin-solidity@^1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/prettier-plugin-solidity/-/prettier-plugin-solidity-1.1.2.tgz#452be4df925a4b16a974a04235839c9f56c2d10d"
   integrity sha512-KC5oNbFJfyBaFiO0kl56J6AXnDmr9tUlBV1iqo864x4KQrKYKaBZvW9jhT2oC0NHoNp7/GoMJNxqL8pp8k7C/g==
@@ -10340,7 +10340,7 @@ solhint@^2.0.0:
   optionalDependencies:
     prettier "^1.14.3"
 
-solhint@^3.3.7:
+solhint@^3.3.8:
   version "3.3.8"
   resolved "https://registry.yarnpkg.com/solhint/-/solhint-3.3.8.tgz#b1773c881cfaf0b5008c78ad658a69603d3fa051"
   integrity sha512-TkYyJ6uUJCaiqRKuhHhFuoAoyco9Ia+RDKhl3usjG/rkaNk8/LdLRla2Xln7MVdBTaPKNAU8ezTRSit50Yy4qw==
