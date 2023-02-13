@@ -16,6 +16,7 @@ import "solidity-coverage";
 import { NetworksUserConfig } from "hardhat/types";
 
 const getInfuraURL = (network: string) => {
+  console.log(`https://${network}.infura.io/v3/${getInfuraApiKey()}`);
   return `https://${network}.infura.io/v3/${getInfuraApiKey()}`;
 };
 
