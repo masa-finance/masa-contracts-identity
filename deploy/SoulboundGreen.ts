@@ -51,66 +51,61 @@ const func: DeployFunction = async ({
     ]
   ];
 
-  if (network.name != "mainnet") {
-    const soulboundGreenDeploymentResult = await deploy("SoulboundGreen", {
-      from: deployer,
-      args: constructorArguments,
-      log: true
-      // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
-    });
+  const soulboundGreenDeploymentResult = await deploy("SoulboundGreen", {
+    from: deployer,
+    args: constructorArguments,
+    log: true
+    // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
+  });
 
-    // verify contract with etherscan, if its not a local network
-    if (network.name === "goerli") {
-      try {
-        await hre.run("verify:verify", {
-          address: soulboundGreenDeploymentResult.address,
-          constructorArguments
-        });
-      } catch (error) {
-        if (
-          !error.message.includes("Contract source code already verified") &&
-          !error.message.includes("Reason: Already Verified")
-        ) {
-          throw error;
-        }
+  // verify contract with etherscan, if its not a local network
+  if (network.name === "mainnet" || network.name === "goerli") {
+    try {
+      await hre.run("verify:verify", {
+        address: soulboundGreenDeploymentResult.address,
+        constructorArguments
+      });
+    } catch (error) {
+      if (
+        !error.message.includes("Contract source code already verified") &&
+        !error.message.includes("Reason: Already Verified")
+      ) {
+        throw error;
       }
     }
+  }
 
-    if (
-      network.name === "hardhat" ||
-      network.name === "alfajores" ||
-      network.name === "bsctest" ||
-      network.name === "mumbai"
-    ) {
-      const signer = env.ADMIN
-        ? new ethers.Wallet(getPrivateKey(network.name), ethers.provider)
-        : admin;
+  if (
+    network.name === "hardhat" ||
+    network.name === "alfajores" ||
+    network.name === "bsctest" ||
+    network.name === "mumbai"
+  ) {
+    const signer = env.ADMIN
+      ? new ethers.Wallet(getPrivateKey(network.name), ethers.provider)
+      : admin;
 
-      const soulboundGreen = await ethers.getContractAt(
-        "SoulboundGreen",
-        soulboundGreenDeploymentResult.address
-      );
+    const soulboundGreen = await ethers.getContractAt(
+      "SoulboundGreen",
+      soulboundGreenDeploymentResult.address
+    );
 
-      // add authority to soulboundGreen
-      await soulboundGreen
-        .connect(signer)
-        .addAuthority(env.AUTHORITY_WALLET || admin.address);
+    // add authority to soulboundGreen
+    await soulboundGreen
+      .connect(signer)
+      .addAuthority(env.AUTHORITY_WALLET || admin.address);
 
-      // we add payment methods
-      env.PAYMENT_METHODS_SOULBOUNDGREEN.split(" ").forEach(
-        async (paymentMethod) => {
-          await soulboundGreen
-            .connect(signer)
-            .enablePaymentMethod(paymentMethod);
-        }
-      );
-    }
+    // we add payment methods
+    env.PAYMENT_METHODS_SOULBOUNDGREEN.split(" ").forEach(
+      async (paymentMethod) => {
+        await soulboundGreen
+          .connect(signer)
+          .enablePaymentMethod(paymentMethod);
+      }
+    );
   }
 };
 
-func.skip = async ({ network }) => {
-  return network.name === "mainnet";
-};
 func.tags = ["SoulboundGreen"];
 func.dependencies = ["SoulboundIdentity"];
 export default func;
