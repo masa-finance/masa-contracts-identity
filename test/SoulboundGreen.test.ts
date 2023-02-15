@@ -166,7 +166,7 @@ describe("Soulbound Two-factor authentication (Green)", () => {
     it("should be able to get sbt information", async () => {
       expect(await soulboundGreen.name()).to.equal("Masa Green");
 
-      expect(await soulboundGreen.symbol()).to.equal("M2F");
+      expect(await soulboundGreen.symbol()).to.equal("MG-2FA");
     });
   });
 
