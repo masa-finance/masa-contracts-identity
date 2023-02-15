@@ -134,6 +134,8 @@ describe("Soulbound Two-factor authentication (Green)", () => {
     // we add authority account
     await soulboundGreen.addAuthority(authority.address);
 
+    await soulboundGreen.setMintPrice(0); // 0 USDC
+
     signatureToIdentity = await signMintCreditGreenToIdentity(
       identityId1,
       authority

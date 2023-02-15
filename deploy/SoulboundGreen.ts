@@ -95,6 +95,9 @@ const func: DeployFunction = async ({
       .connect(signer)
       .addAuthority(env.AUTHORITY_WALLET || admin.address);
 
+    // add mint price to soulboundCreditScore
+    await soulboundGreen.connect(signer).setMintPrice(1_000_000); // 1 USDC
+
     // we add payment methods
     env.PAYMENT_METHODS_SOULBOUNDGREEN.split(" ").forEach(
       async (paymentMethod) => {
