@@ -10,11 +10,9 @@ library Utils {
         uint256 _ptr;
     }
 
-    function toLowerCase(string memory _str)
-        internal
-        pure
-        returns (string memory)
-    {
+    function toLowerCase(
+        string memory _str
+    ) internal pure returns (string memory) {
         bytes memory bStr = bytes(_str);
         bytes memory bLower = new bytes(bStr.length);
 
@@ -38,11 +36,10 @@ library Utils {
         return slice(bytes(self).length, ptr);
     }
 
-    function startsWith(string memory str, string memory needle)
-        internal
-        pure
-        returns (bool)
-    {
+    function startsWith(
+        string memory str,
+        string memory needle
+    ) internal pure returns (bool) {
         slice memory s_str = toSlice(str);
         slice memory s_needle = toSlice(needle);
 

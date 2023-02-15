@@ -98,9 +98,7 @@ const func: DeployFunction = async ({
     // we add payment methods
     env.PAYMENT_METHODS_SOULBOUNDGREEN.split(" ").forEach(
       async (paymentMethod) => {
-        await soulboundGreen
-          .connect(signer)
-          .enablePaymentMethod(paymentMethod);
+        await soulboundGreen.connect(signer).enablePaymentMethod(paymentMethod);
       }
     );
   }

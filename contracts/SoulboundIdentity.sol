@@ -27,19 +27,19 @@ contract SoulboundIdentity is
     /// @dev Creates a new soulbound identity, inheriting from the SBT contract.
     /// @param admin Administrator of the smart contract
     /// @param baseTokenURI Base URI of the token
-    constructor(address admin, string memory baseTokenURI)
-        MasaSBTAuthority(admin, "Masa Identity", "MID", baseTokenURI)
-    {}
+    constructor(
+        address admin,
+        string memory baseTokenURI
+    ) MasaSBTAuthority(admin, "Masa Identity", "MID", baseTokenURI) {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
     /// @notice Sets the SoulName contract address linked to this identity
     /// @dev The caller must have the admin role to call this function
     /// @param _soulName Address of the SoulName contract
-    function setSoulName(ISoulName _soulName)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setSoulName(
+        ISoulName _soulName
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (address(_soulName) == address(0)) revert ZeroAddress();
         if (soulName == _soulName) revert SameValue();
         soulName = _soulName;
@@ -95,12 +95,9 @@ contract SoulboundIdentity is
     /// @dev This function returns the owner address of the identity specified by the tokenId
     /// @param tokenId TokenId of the identity
     /// @return Address of the owner of the identity
-    function ownerOf(uint256 tokenId)
-        public
-        view
-        override(SBT, ISBT)
-        returns (address)
-    {
+    function ownerOf(
+        uint256 tokenId
+    ) public view override(SBT, ISBT) returns (address) {
         return super.ownerOf(tokenId);
     }
 
@@ -108,12 +105,9 @@ contract SoulboundIdentity is
     /// @dev This function returns the owner address of the soul name identity specified by the name
     /// @param name Name of the soul name
     /// @return Address of the owner of the identity
-    function ownerOf(string memory name)
-        external
-        view
-        soulNameAlreadySet
-        returns (address)
-    {
+    function ownerOf(
+        string memory name
+    ) external view soulNameAlreadySet returns (address) {
         (, , uint256 identityId, , , ) = soulName.getTokenData(name);
         return super.ownerOf(identityId);
     }
@@ -122,12 +116,9 @@ contract SoulboundIdentity is
     /// @dev This function returns the token URI of the soul name identity specified by the name
     /// @param name Name of the soul name
     /// @return URI of the identity associated to a soul name
-    function tokenURI(string memory name)
-        external
-        view
-        soulNameAlreadySet
-        returns (string memory)
-    {
+    function tokenURI(
+        string memory name
+    ) external view soulNameAlreadySet returns (string memory) {
         (, , uint256 identityId, , , ) = soulName.getTokenData(name);
         return super.tokenURI(identityId);
     }
@@ -145,12 +136,9 @@ contract SoulboundIdentity is
     /// @dev This function returns the tokenId of the identity owned by an account
     /// @param owner Address of the owner of the identity
     /// @return TokenId of the identity owned by the account
-    function tokenOfOwner(address owner)
-        public
-        view
-        override
-        returns (uint256)
-    {
+    function tokenOfOwner(
+        address owner
+    ) public view override returns (uint256) {
         return super.tokenOfOwnerByIndex(owner, 0);
     }
 
@@ -158,12 +146,9 @@ contract SoulboundIdentity is
     /// @dev This function queries if a soul name already exists and is in the available state
     /// @param name Name of the soul name
     /// @return available `true` if the soul name is available, `false` otherwise
-    function isAvailable(string memory name)
-        external
-        view
-        soulNameAlreadySet
-        returns (bool available)
-    {
+    function isAvailable(
+        string memory name
+    ) external view soulNameAlreadySet returns (bool available) {
         return soulName.isAvailable(name);
     }
 
@@ -176,7 +161,9 @@ contract SoulboundIdentity is
     /// @return tokenId SoulName id of the soul name
     /// @return expirationDate Expiration date of the soul name
     /// @return active `true` if the soul name is active, `false` otherwise
-    function getTokenData(string memory name)
+    function getTokenData(
+        string memory name
+    )
         external
         view
         soulNameAlreadySet
@@ -196,12 +183,9 @@ contract SoulboundIdentity is
     /// @dev This function queries all the identity names of the specified account
     /// @param owner Address of the owner of the identities
     /// @return sbtNames Array of soul names associated to the account
-    function getSoulNames(address owner)
-        external
-        view
-        soulNameAlreadySet
-        returns (string[] memory sbtNames)
-    {
+    function getSoulNames(
+        address owner
+    ) external view soulNameAlreadySet returns (string[] memory sbtNames) {
         return soulName.getSoulNames(owner);
     }
 
@@ -212,12 +196,9 @@ contract SoulboundIdentity is
     /// @dev This function queries all the identity names of the specified identity Id
     /// @param tokenId TokenId of the identity
     /// @return sbtNames Array of soul names associated to the identity Id
-    function getSoulNames(uint256 tokenId)
-        external
-        view
-        soulNameAlreadySet
-        returns (string[] memory sbtNames)
-    {
+    function getSoulNames(
+        uint256 tokenId
+    ) external view soulNameAlreadySet returns (string[] memory sbtNames) {
         return soulName.getSoulNames(tokenId);
     }
 
