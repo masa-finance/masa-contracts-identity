@@ -99,7 +99,7 @@ const func: DeployFunction = async ({
     // add mint price to soulboundCreditScore
     await soulboundGreen
       .connect(signer)
-      .setMintPrice(parseUnits("1", env.STABLECOIN_DECIMALS)); // 1 USDC
+      .setMintPrice(parseUnits("1", env.STABLECOIN_DECIMALS || 6)); // 1 USDC
 
     // we add payment methods
     env.PAYMENT_METHODS_SOULBOUNDGREEN.split(" ").forEach(
