@@ -2,6 +2,7 @@ import hre from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
 import { getEnvParams, getPrivateKey } from "../src/EnvParams";
+import { parseUnits } from "ethers/lib/utils";
 
 let admin: SignerWithAddress;
 
@@ -96,7 +97,9 @@ const func: DeployFunction = async ({
       .addAuthority(env.AUTHORITY_WALLET || admin.address);
 
     // add mint price to soulboundCreditScore
-    await soulboundGreen.connect(signer).setMintPrice(1_000_000); // 1 USDC
+    await soulboundGreen
+      .connect(signer)
+      .setMintPrice(parseUnits("1", env.STABLECOIN_DECIMALS)); // 1 USDC
 
     // we add payment methods
     env.PAYMENT_METHODS_SOULBOUNDGREEN.split(" ").forEach(
