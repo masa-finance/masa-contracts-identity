@@ -2,7 +2,7 @@ import {
   getPrivateKey,
   getInfuraApiKey,
   getCoinMarketCapApiKey,
-  getEtherscanApiKey
+  getEtherscanApiKey,
   getBscscanApiKey,
   getPolygonscanApiKey
 } from "./src/EnvParams";
