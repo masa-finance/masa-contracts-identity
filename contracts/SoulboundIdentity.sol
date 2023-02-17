@@ -21,10 +21,10 @@ contract SoulboundIdentity is MasaSBTAuthority, ISoulboundIdentity {
     /// @dev Creates a new soulbound identity, inheriting from the SBT contract.
     /// @param admin Administrator of the smart contract
     /// @param baseTokenURI Base URI of the token
-    function initialize(address admin, string memory baseTokenURI)
-        public
-        initializer
-    {
+    function initialize(
+        address admin,
+        string memory baseTokenURI
+    ) public initializer {
         MasaSBTAuthority.initialize(
             admin,
             "Masa Identity",
@@ -208,13 +208,9 @@ contract SoulboundIdentity is MasaSBTAuthority, ISoulboundIdentity {
     /// @param interfaceId The interface identifier, as specified in ERC-165
     /// @return `true` if the contract implements `interfaceId` and
     ///  `interfaceId` is not 0xffffffff, `false` otherwise
-    function supportsInterface(bytes4 interfaceId)
-        public
-        view
-        virtual
-        override(IERC165, MasaSBT)
-        returns (bool)
-    {
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view virtual override(IERC165, MasaSBT) returns (bool) {
         return super.supportsInterface(interfaceId);
     }
 

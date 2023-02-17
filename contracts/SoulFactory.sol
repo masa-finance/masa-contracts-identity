@@ -60,10 +60,9 @@ contract SoulFactory is
     /// @notice Sets the SoulboundIdentity contract address linked to this store
     /// @dev The caller must have the admin role to call this function
     /// @param _soulboundIdentity New SoulboundIdentity contract address
-    function setSoulboundIdentity(ISoulboundIdentity _soulboundIdentity)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setSoulboundIdentity(
+        ISoulboundIdentity _soulboundIdentity
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
         if (soulboundIdentity == _soulboundIdentity) revert SameValue();
         soulboundIdentity = _soulboundIdentity;
@@ -72,10 +71,9 @@ contract SoulFactory is
     /// @notice Sets the template SBT contract address linked to this factory
     /// @dev The caller must have the admin role to call this function
     /// @param _templateSBT New SBT template contract address
-    function setTemplateSBT(SoulboundBaseSelfSovereign _templateSBT)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setTemplateSBT(
+        SoulboundBaseSelfSovereign _templateSBT
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (address(_templateSBT) == address(0)) revert ZeroAddress();
         if (templateSBT == _templateSBT) revert SameValue();
         templateSBT = _templateSBT;
@@ -84,10 +82,9 @@ contract SoulFactory is
     /// @notice Sets the price for create an SBT in stable coin
     /// @dev The caller must have the admin role to call this function
     /// @param _creationPrice New price for create an SBT in stable coin
-    function setCreationPrice(uint256 _creationPrice)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setCreationPrice(
+        uint256 _creationPrice
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (creationPrice == _creationPrice) revert SameValue();
         creationPrice = _creationPrice;
     }
@@ -95,10 +92,9 @@ contract SoulFactory is
     /// @notice Sets the price for create an SBT in MASA
     /// @dev The caller must have the admin role to call this function
     /// @param _creationPriceMASA New price for create an SBT in MASA
-    function setCreationPriceMASA(uint256 _creationPriceMASA)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setCreationPriceMASA(
+        uint256 _creationPriceMASA
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (creationPriceMASA == _creationPriceMASA) revert SameValue();
         creationPriceMASA = _creationPriceMASA;
     }
@@ -201,11 +197,9 @@ contract SoulFactory is
     /// @dev Returns current pricing for creating a new SBT
     /// @param paymentMethod Address of token that user want to pay
     /// @return Current price for creating a new SBT in the given payment method
-    function getCreationPrice(address paymentMethod)
-        public
-        view
-        returns (uint256)
-    {
+    function getCreationPrice(
+        address paymentMethod
+    ) public view returns (uint256) {
         if (creationPrice == 0 && creationPriceMASA == 0) {
             return 0;
         } else if (
