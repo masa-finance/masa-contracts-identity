@@ -2,8 +2,7 @@ import {
   getPrivateKey,
   getInfuraApiKey,
   getCoinMarketCapApiKey,
-  getEtherscanApiKey,
-  getCeloscanApiKey,
+  getEtherscanApiKey
   getBscscanApiKey,
   getPolygonscanApiKey
 } from "./src/EnvParams";
@@ -100,8 +99,6 @@ export default {
   },
   etherscan: {
     apiKey: {
-      alfajores: getCeloscanApiKey(),
-      celo: getCeloscanApiKey(),
       bscTestnet: getBscscanApiKey(),
       bsc: getBscscanApiKey(),
       polygonMumbai: getPolygonscanApiKey(),
