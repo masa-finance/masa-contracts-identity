@@ -62,10 +62,9 @@ abstract contract MasaSBT is
     /// @notice Sets the price for adding the link in SoulLinker in stable coin
     /// @dev The caller must have the admin role to call this function
     /// @param _addLinkPrice New price for adding the link in SoulLinker in stable coin
-    function setAddLinkPrice(uint256 _addLinkPrice)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setAddLinkPrice(
+        uint256 _addLinkPrice
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (addLinkPrice == _addLinkPrice) revert SameValue();
         addLinkPrice = _addLinkPrice;
     }
@@ -73,10 +72,9 @@ abstract contract MasaSBT is
     /// @notice Sets the price for adding the link in SoulLinker in MASA
     /// @dev The caller must have the admin role to call this function
     /// @param _addLinkPriceMASA New price for adding the link in SoulLinker in MASA
-    function setAddLinkPriceMASA(uint256 _addLinkPriceMASA)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setAddLinkPriceMASA(
+        uint256 _addLinkPriceMASA
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (addLinkPriceMASA == _addLinkPriceMASA) revert SameValue();
         addLinkPriceMASA = _addLinkPriceMASA;
     }
@@ -84,10 +82,9 @@ abstract contract MasaSBT is
     /// @notice Sets the price for reading data in SoulLinker in stable coin
     /// @dev The caller must have the admin role to call this function
     /// @param _queryLinkPrice New price for reading data in SoulLinker in stable coin
-    function setQueryLinkPrice(uint256 _queryLinkPrice)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setQueryLinkPrice(
+        uint256 _queryLinkPrice
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (queryLinkPrice == _queryLinkPrice) revert SameValue();
         queryLinkPrice = _queryLinkPrice;
     }
@@ -95,10 +92,9 @@ abstract contract MasaSBT is
     /// @notice Sets the price for reading data in SoulLinker in MASA
     /// @dev The caller must have the admin role to call this function
     /// @param _queryLinkPriceMASA New price for reading data in SoulLinker in MASA
-    function setQueryLinkPriceMASA(uint256 _queryLinkPriceMASA)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setQueryLinkPriceMASA(
+        uint256 _queryLinkPriceMASA
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (queryLinkPriceMASA == _queryLinkPriceMASA) revert SameValue();
         queryLinkPriceMASA = _queryLinkPriceMASA;
     }
@@ -121,13 +117,9 @@ abstract contract MasaSBT is
     ///  Metadata JSON Schema".
     /// @param tokenId SBT to get the URI of
     /// @return URI of the SBT
-    function tokenURI(uint256 tokenId)
-        public
-        view
-        virtual
-        override
-        returns (string memory)
-    {
+    function tokenURI(
+        uint256 tokenId
+    ) public view virtual override returns (string memory) {
         _requireMinted(tokenId);
 
         string memory baseURI = _baseURI();
@@ -142,7 +134,9 @@ abstract contract MasaSBT is
     /// @param interfaceId The interface identifier, as specified in ERC-165
     /// @return `true` if the contract implements `interfaceId` and
     ///  `interfaceId` is not 0xffffffff, `false` otherwise
-    function supportsInterface(bytes4 interfaceId)
+    function supportsInterface(
+        bytes4 interfaceId
+    )
         public
         view
         virtual

@@ -80,10 +80,9 @@ contract SoulLinker is
     /// @notice Sets the SoulboundIdentity contract address linked to this soul name
     /// @dev The caller must have the admin role to call this function
     /// @param _soulboundIdentity Address of the SoulboundIdentity contract
-    function setSoulboundIdentity(ISoulboundIdentity _soulboundIdentity)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setSoulboundIdentity(
+        ISoulboundIdentity _soulboundIdentity
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
         if (soulboundIdentity == _soulboundIdentity) revert SameValue();
         soulboundIdentity = _soulboundIdentity;
@@ -255,11 +254,10 @@ contract SoulLinker is
     /// @param token Address of the SBT contract
     /// @param tokenId Id of the token
     /// @return Id of the identity
-    function getIdentityId(address token, uint256 tokenId)
-        external
-        view
-        returns (uint256)
-    {
+    function getIdentityId(
+        address token,
+        uint256 tokenId
+    ) external view returns (uint256) {
         address owner = IERC721Enumerable(token).ownerOf(tokenId);
         return soulboundIdentity.tokenOfOwner(owner);
     }
@@ -268,11 +266,10 @@ contract SoulLinker is
     /// @param identityId Id of the identity
     /// @param token Address of the SBT contract
     /// @return List of connected SBTs
-    function getSBTConnections(uint256 identityId, address token)
-        external
-        view
-        returns (uint256[] memory)
-    {
+    function getSBTConnections(
+        uint256 identityId,
+        address token
+    ) external view returns (uint256[] memory) {
         address owner = soulboundIdentity.ownerOf(identityId);
 
         return getSBTConnections(owner, token);
@@ -282,11 +279,10 @@ contract SoulLinker is
     /// @param owner Address of the owner of the identity
     /// @param token Address of the SBT contract
     /// @return List of connectec SBTs
-    function getSBTConnections(address owner, address token)
-        public
-        view
-        returns (uint256[] memory)
-    {
+    function getSBTConnections(
+        address owner,
+        address token
+    ) public view returns (uint256[] memory) {
         uint256 connections = IERC721Enumerable(token).balanceOf(owner);
         uint256[] memory sbtConnections = new uint256[](connections);
         for (uint256 i = 0; i < connections; i++) {
@@ -303,11 +299,10 @@ contract SoulLinker is
     /// @param token Address of the SBT contract
     /// @param tokenId Id of the token
     /// @return List of linked SBTs
-    function getLinks(address token, uint256 tokenId)
-        public
-        view
-        returns (LinkKey[] memory)
-    {
+    function getLinks(
+        address token,
+        uint256 tokenId
+    ) public view returns (LinkKey[] memory) {
         uint256 nLinkKeys = 0;
         for (
             uint256 i = 0;
@@ -385,11 +380,9 @@ contract SoulLinker is
     /// @notice Returns the list of links for a given reader identity id
     /// @param readerIdentityId Id of the identity of the reader of the SBT
     /// @return List of links for the reader
-    function getReaderLinks(uint256 readerIdentityId)
-        public
-        view
-        returns (ReaderLink[] memory)
-    {
+    function getReaderLinks(
+        uint256 readerIdentityId
+    ) public view returns (ReaderLink[] memory) {
         return _readerLinks[readerIdentityId];
     }
 
@@ -431,11 +424,10 @@ contract SoulLinker is
     /// @param paymentMethod Address of token that user want to pay
     /// @param token Token that user want to store link
     /// @return Current price for storing a link
-    function getPriceForAddLink(address paymentMethod, address token)
-        public
-        view
-        returns (uint256)
-    {
+    function getPriceForAddLink(
+        address paymentMethod,
+        address token
+    ) public view returns (uint256) {
         uint256 addLinkPrice = ILinkableSBT(token).addLinkPrice();
         uint256 addLinkPriceMASA = ILinkableSBT(token).addLinkPriceMASA();
         if (addLinkPrice == 0 && addLinkPriceMASA == 0) {

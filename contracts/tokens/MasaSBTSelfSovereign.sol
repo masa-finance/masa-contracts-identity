@@ -63,10 +63,9 @@ abstract contract MasaSBTSelfSovereign is
     /// @notice Sets the SoulboundIdentity contract address linked to this SBT
     /// @dev The caller must be the admin to call this function
     /// @param _soulboundIdentity Address of the SoulboundIdentity contract
-    function setSoulboundIdentity(ISoulboundIdentity _soulboundIdentity)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setSoulboundIdentity(
+        ISoulboundIdentity _soulboundIdentity
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (soulboundIdentity == _soulboundIdentity) revert SameValue();
         soulboundIdentity = _soulboundIdentity;
     }
@@ -74,10 +73,9 @@ abstract contract MasaSBTSelfSovereign is
     /// @notice Sets the price of minting in stable coin
     /// @dev The caller must have the admin role to call this function
     /// @param _mintPrice New price of minting in stable coin
-    function setMintPrice(uint256 _mintPrice)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setMintPrice(
+        uint256 _mintPrice
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (mintPrice == _mintPrice) revert SameValue();
         mintPrice = _mintPrice;
     }
@@ -85,10 +83,9 @@ abstract contract MasaSBTSelfSovereign is
     /// @notice Sets the price of minting in MASA
     /// @dev The caller must have the admin role to call this function
     /// @param _mintPriceMASA New price of minting in MASA
-    function setMintPriceMASA(uint256 _mintPriceMASA)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setMintPriceMASA(
+        uint256 _mintPriceMASA
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (mintPriceMASA == _mintPriceMASA) revert SameValue();
         mintPriceMASA = _mintPriceMASA;
     }
@@ -96,10 +93,9 @@ abstract contract MasaSBTSelfSovereign is
     /// @notice Adds a new authority to the list of authorities
     /// @dev The caller must have the admin role to call this function
     /// @param _authority New authority to add
-    function addAuthority(address _authority)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function addAuthority(
+        address _authority
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (_authority == address(0)) revert ZeroAddress();
         if (authorities[_authority]) revert AlreadyAdded();
 
@@ -109,10 +105,9 @@ abstract contract MasaSBTSelfSovereign is
     /// @notice Removes an authority from the list of authorities
     /// @dev The caller must have the admin role to call this function
     /// @param _authority Authority to remove
-    function removeAuthority(address _authority)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function removeAuthority(
+        address _authority
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (_authority == address(0)) revert ZeroAddress();
         if (!authorities[_authority]) revert AuthorityNotExists(_authority);
 

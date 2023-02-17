@@ -37,12 +37,9 @@ abstract contract MasaSBTAuthority is MasaSBT {
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
-    function _mintWithCounter(address to)
-        internal
-        virtual
-        onlyRole(MINTER_ROLE)
-        returns (uint256)
-    {
+    function _mintWithCounter(
+        address to
+    ) internal virtual onlyRole(MINTER_ROLE) returns (uint256) {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _mint(to, tokenId);

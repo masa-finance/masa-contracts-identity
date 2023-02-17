@@ -48,8 +48,12 @@ const func: DeployFunction = async ({
     // initialize contract
     await soulboundIdentity.initialize(env.ADMIN || admin.address, baseUri);
 
-    // verify contract with etherscan, if its not a local network
-    if (network.name === "mainnet" || network.name === "goerli") {
+    // verify contract with etherscan, if its not a local network or celo
+    if (
+      network.name !== "hardhat" &&
+      network.name !== "celo" &&
+      network.name !== "alfajores"
+    ) {
       try {
         await hre.run("verify:verify", {
           address: soulboundIdentityDeploymentResult.address,

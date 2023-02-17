@@ -71,10 +71,9 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     /// @notice Sets the SoulboundIdentity contract address linked to this soul name
     /// @dev The caller must have the admin role to call this function
     /// @param _soulboundIdentity Address of the SoulboundIdentity contract
-    function setSoulboundIdentity(ISoulboundIdentity _soulboundIdentity)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setSoulboundIdentity(
+        ISoulboundIdentity _soulboundIdentity
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
         if (soulboundIdentity == _soulboundIdentity) revert SameValue();
         soulboundIdentity = _soulboundIdentity;
@@ -83,10 +82,9 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     /// @notice Sets the extension of the soul name
     /// @dev The caller must have the admin role to call this function
     /// @param _extension Extension of the soul name
-    function setExtension(string memory _extension)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setExtension(
+        string memory _extension
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (
             keccak256(abi.encodePacked((extension))) ==
             keccak256(abi.encodePacked((_extension)))
@@ -97,10 +95,9 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     /// @notice Sets the URI of the smart contract metadata
     /// @dev The caller must have the admin role to call this function
     /// @param _contractURI URI of the smart contract metadata
-    function setContractURI(string memory _contractURI)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setContractURI(
+        string memory _contractURI
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (
             keccak256(abi.encodePacked((contractURI))) ==
             keccak256(abi.encodePacked((_contractURI)))
@@ -221,12 +218,9 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     /// @dev This function queries if a soul name already exists and is in the available state
     /// @param name Name of the soul name
     /// @return available `true` if the soul name is available, `false` otherwise
-    function isAvailable(string memory name)
-        public
-        view
-        override
-        returns (bool available)
-    {
+    function isAvailable(
+        string memory name
+    ) public view override returns (bool available) {
         string memory lowercaseName = Utils.toLowerCase(name);
         if (nameData[lowercaseName].exists) {
             uint256 tokenId = nameData[lowercaseName].tokenId;
@@ -245,7 +239,9 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     /// @return tokenId SoulName id of the soul name
     /// @return expirationDate Expiration date of the soul name
     /// @return active `true` if the soul name is active, `false` otherwise
-    function getTokenData(string memory name)
+    function getTokenData(
+        string memory name
+    )
         external
         view
         override
@@ -282,12 +278,9 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     /// @dev This function queries the token id of a soul name
     /// @param name Name of the soul name
     /// @return SoulName id of the soul name
-    function getTokenId(string memory name)
-        external
-        view
-        override
-        returns (uint256)
-    {
+    function getTokenId(
+        string memory name
+    ) external view override returns (uint256) {
         return _getTokenId(name);
     }
 
@@ -295,12 +288,9 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     /// @dev This function queries all the identity names of the specified identity Id
     /// @param identityId TokenId of the identity
     /// @return sbtNames Array of soul names associated to the identity Id
-    function getSoulNames(uint256 identityId)
-        external
-        view
-        override
-        returns (string[] memory sbtNames)
-    {
+    function getSoulNames(
+        uint256 identityId
+    ) external view override returns (string[] memory sbtNames) {
         // return owner if exists
         address _owner = soulboundIdentity.ownerOf(identityId);
 
@@ -311,12 +301,9 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     /// @dev This function queries all the identity names of the specified account
     /// @param owner Address of the owner of the identities
     /// @return sbtNames Array of soul names associated to the account
-    function getSoulNames(address owner)
-        public
-        view
-        override
-        returns (string[] memory sbtNames)
-    {
+    function getSoulNames(
+        address owner
+    ) public view override returns (string[] memory sbtNames) {
         uint256 results = 0;
         uint256 balance = balanceOf(owner);
 
@@ -346,12 +333,9 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     /// @dev This function returns the token URI of the soul name specified by the name
     /// @param name Name of the soul name
     /// @return URI of the soulname associated to a name
-    function tokenURI(string memory name)
-        external
-        view
-        virtual
-        returns (string memory)
-    {
+    function tokenURI(
+        string memory name
+    ) external view virtual returns (string memory) {
         uint256 tokenId = _getTokenId(name);
         return tokenURI(tokenId);
     }
@@ -362,13 +346,9 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     ///  Metadata JSON Schema".
     /// @param tokenId NFT to get the URI of
     /// @return URI of the NFT
-    function tokenURI(uint256 tokenId)
-        public
-        view
-        virtual
-        override
-        returns (string memory)
-    {
+    function tokenURI(
+        uint256 tokenId
+    ) public view virtual override returns (string memory) {
         _requireMinted(tokenId);
 
         string memory _tokenURI = _tokenURIs[tokenId];
@@ -399,10 +379,10 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         return nameData[lowercaseName].tokenId;
     }
 
-    function _setTokenURI(uint256 tokenId, string memory _tokenURI)
-        internal
-        virtual
-    {
+    function _setTokenURI(
+        uint256 tokenId,
+        string memory _tokenURI
+    ) internal virtual {
         if (!_exists(tokenId)) revert TokenNotFound(tokenId);
         if (_URIs[_tokenURI]) revert URIAlreadyExists(_tokenURI);
 

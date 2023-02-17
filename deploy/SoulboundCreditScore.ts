@@ -2,6 +2,7 @@ import hre from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
 import { getEnvParams, getPrivateKey } from "../src/EnvParams";
+import { parseUnits } from "ethers/lib/utils";
 
 let admin: SignerWithAddress;
 
@@ -61,8 +62,12 @@ const func: DeployFunction = async ({
       }
     );
 
-    // verify contract with etherscan, if its not a local network
-    if (network.name === "mainnet" || network.name === "goerli") {
+    // verify contract with etherscan, if its not a local network or celo
+    if (
+      network.name !== "hardhat" &&
+      network.name !== "celo" &&
+      network.name !== "alfajores"
+    ) {
       try {
         await hre.run("verify:verify", {
           address: soulboundCreditScoreDeploymentResult.address,
@@ -88,8 +93,11 @@ const func: DeployFunction = async ({
         .connect(signer)
         .addAuthority(env.AUTHORITY_WALLET || admin.address);
 
-      // add authority to soulboundCreditScore
-      await soulboundCreditScore.connect(signer).setMintPrice(20_000_000); // 20 USDC
+      // add mint price to soulboundCreditScore
+
+      await soulboundCreditScore
+        .connect(signer)
+        .setMintPrice(parseUnits("20", env.STABLECOIN_DECIMALS || 6)); // 20 USDC
 
       // we add payment methods
       env.PAYMENT_METHODS_SOULBOUNDCREDITSCORE.split(" ").forEach(

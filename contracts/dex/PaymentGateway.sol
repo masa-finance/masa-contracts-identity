@@ -73,10 +73,9 @@ abstract contract PaymentGateway is Initializable, AccessControlUpgradeable {
     /// @notice Sets the swap router address
     /// @dev The caller must have the admin role to call this function
     /// @param _swapRouter New swap router address
-    function setSwapRouter(address _swapRouter)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setSwapRouter(
+        address _swapRouter
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (_swapRouter == address(0)) revert ZeroAddress();
         if (swapRouter == _swapRouter) revert SameValue();
         swapRouter = _swapRouter;
@@ -85,10 +84,9 @@ abstract contract PaymentGateway is Initializable, AccessControlUpgradeable {
     /// @notice Sets the wrapped native token address
     /// @dev The caller must have the admin role to call this function
     /// @param _wrappedNativeToken New wrapped native token address
-    function setWrappedNativeToken(address _wrappedNativeToken)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setWrappedNativeToken(
+        address _wrappedNativeToken
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (_wrappedNativeToken == address(0)) revert ZeroAddress();
         if (wrappedNativeToken == _wrappedNativeToken) revert SameValue();
         wrappedNativeToken = _wrappedNativeToken;
@@ -97,10 +95,9 @@ abstract contract PaymentGateway is Initializable, AccessControlUpgradeable {
     /// @notice Sets the stable coin to pay the fee in (USDC)
     /// @dev The caller must have the admin role to call this function
     /// @param _stableCoin New stable coin to pay the fee in
-    function setStableCoin(address _stableCoin)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setStableCoin(
+        address _stableCoin
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (_stableCoin == address(0)) revert ZeroAddress();
         if (stableCoin == _stableCoin) revert SameValue();
         stableCoin = _stableCoin;
@@ -110,10 +107,9 @@ abstract contract PaymentGateway is Initializable, AccessControlUpgradeable {
     /// @dev The caller must have the admin role to call this function
     /// It can be set to address(0) to disable paying in MASA
     /// @param _masaToken New utility token to pay the fee in
-    function setMasaToken(address _masaToken)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setMasaToken(
+        address _masaToken
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (masaToken == _masaToken) revert SameValue();
         masaToken = _masaToken;
     }
@@ -121,10 +117,9 @@ abstract contract PaymentGateway is Initializable, AccessControlUpgradeable {
     /// @notice Adds a new token as a valid payment method
     /// @dev The caller must have the admin role to call this function
     /// @param _paymentMethod New token to add
-    function enablePaymentMethod(address _paymentMethod)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function enablePaymentMethod(
+        address _paymentMethod
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (enabledPaymentMethod[_paymentMethod]) revert AlreadyAdded();
 
         enabledPaymentMethod[_paymentMethod] = true;
@@ -134,10 +129,9 @@ abstract contract PaymentGateway is Initializable, AccessControlUpgradeable {
     /// @notice Removes a token as a valid payment method
     /// @dev The caller must have the admin role to call this function
     /// @param _paymentMethod Token to remove
-    function disablePaymentMethod(address _paymentMethod)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function disablePaymentMethod(
+        address _paymentMethod
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (!enabledPaymentMethod[_paymentMethod])
             revert NonExistingErc20Token(_paymentMethod);
 
@@ -156,10 +150,9 @@ abstract contract PaymentGateway is Initializable, AccessControlUpgradeable {
     /// @notice Set the reserve wallet
     /// @dev The caller must have the admin role to call this function
     /// @param _reserveWallet New reserve wallet
-    function setReserveWallet(address _reserveWallet)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setReserveWallet(
+        address _reserveWallet
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (_reserveWallet == address(0)) revert ZeroAddress();
         if (_reserveWallet == reserveWallet) revert SameValue();
         reserveWallet = _reserveWallet;
@@ -188,11 +181,10 @@ abstract contract PaymentGateway is Initializable, AccessControlUpgradeable {
     /// performing the swap if necessary
     /// @param paymentMethod Address of token that user want to pay
     /// @param amount Price to be converted in the specified payment method
-    function _convertFromStableCoin(address paymentMethod, uint256 amount)
-        internal
-        view
-        returns (uint256)
-    {
+    function _convertFromStableCoin(
+        address paymentMethod,
+        uint256 amount
+    ) internal view returns (uint256) {
         if (!enabledPaymentMethod[paymentMethod] || paymentMethod == stableCoin)
             revert InvalidToken(paymentMethod);
 
@@ -245,11 +237,10 @@ abstract contract PaymentGateway is Initializable, AccessControlUpgradeable {
         return amounts[0];
     }
 
-    function _getPathFromTokenToToken(address fromToken, address toToken)
-        private
-        view
-        returns (address[] memory)
-    {
+    function _getPathFromTokenToToken(
+        address fromToken,
+        address toToken
+    ) private view returns (address[] memory) {
         if (fromToken == wrappedNativeToken || toToken == wrappedNativeToken) {
             address[] memory path = new address[](2);
             path[0] = fromToken == wrappedNativeToken

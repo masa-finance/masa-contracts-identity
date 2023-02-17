@@ -28,7 +28,7 @@ contract SoulboundGreen is MasaSBTSelfSovereign {
         MasaSBTSelfSovereign.initialize(
             admin,
             "Masa Green",
-            "M2F",
+            "MG-2FA",
             baseTokenURI,
             soulboundIdentity,
             paymentParams

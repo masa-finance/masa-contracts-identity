@@ -25,13 +25,9 @@ abstract contract SBTEnumerable is SBT, ISBTEnumerable {
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(bytes4 interfaceId)
-        public
-        view
-        virtual
-        override(IERC165, SBT)
-        returns (bool)
-    {
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view virtual override(IERC165, SBT) returns (bool) {
         return
             interfaceId == type(ISBTEnumerable).interfaceId ||
             super.supportsInterface(interfaceId);
@@ -40,13 +36,10 @@ abstract contract SBTEnumerable is SBT, ISBTEnumerable {
     /**
      * @dev See {ISBTEnumerable-tokenOfOwnerByIndex}.
      */
-    function tokenOfOwnerByIndex(address owner, uint256 index)
-        public
-        view
-        virtual
-        override
-        returns (uint256)
-    {
+    function tokenOfOwnerByIndex(
+        address owner,
+        uint256 index
+    ) public view virtual override returns (uint256) {
         require(
             index < SBT.balanceOf(owner),
             "SBTEnumerable: owner index out of bounds"
@@ -64,13 +57,9 @@ abstract contract SBTEnumerable is SBT, ISBTEnumerable {
     /**
      * @dev See {ISBTEnumerable-tokenByIndex}.
      */
-    function tokenByIndex(uint256 index)
-        public
-        view
-        virtual
-        override
-        returns (uint256)
-    {
+    function tokenByIndex(
+        uint256 index
+    ) public view virtual override returns (uint256) {
         require(
             index < SBTEnumerable.totalSupply(),
             "SBTEnumerable: global index out of bounds"
@@ -140,9 +129,10 @@ abstract contract SBTEnumerable is SBT, ISBTEnumerable {
      * @param from address representing the previous owner of the given token ID
      * @param tokenId uint256 ID of the token to be removed from the tokens list of the given address
      */
-    function _removeTokenFromOwnerEnumeration(address from, uint256 tokenId)
-        private
-    {
+    function _removeTokenFromOwnerEnumeration(
+        address from,
+        uint256 tokenId
+    ) private {
         // To prevent a gap in from's tokens array, we store the last token in the index of the token to delete, and
         // then delete the last slot (swap and pop).
 

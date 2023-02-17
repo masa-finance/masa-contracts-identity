@@ -11,12 +11,13 @@ interface ISoulName {
 
     function getExtension() external view returns (string memory);
 
-    function isAvailable(string memory name)
-        external
-        view
-        returns (bool available);
+    function isAvailable(
+        string memory name
+    ) external view returns (bool available);
 
-    function getTokenData(string memory name)
+    function getTokenData(
+        string memory name
+    )
         external
         view
         returns (
@@ -30,13 +31,11 @@ interface ISoulName {
 
     function getTokenId(string memory name) external view returns (uint256);
 
-    function getSoulNames(address owner)
-        external
-        view
-        returns (string[] memory sbtNames);
+    function getSoulNames(
+        address owner
+    ) external view returns (string[] memory sbtNames);
 
-    function getSoulNames(uint256 identityId)
-        external
-        view
-        returns (string[] memory sbtNames);
+    function getSoulNames(
+        uint256 identityId
+    ) external view returns (string[] memory sbtNames);
 }
