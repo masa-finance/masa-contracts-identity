@@ -37,13 +37,9 @@ contract SBT is Context, ERC165, ISBT, ISBTMetadata {
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(bytes4 interfaceId)
-        public
-        view
-        virtual
-        override(ERC165, IERC165)
-        returns (bool)
-    {
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view virtual override(ERC165, IERC165) returns (bool) {
         return
             interfaceId == type(ISBT).interfaceId ||
             interfaceId == type(ISBTMetadata).interfaceId ||
@@ -53,13 +49,9 @@ contract SBT is Context, ERC165, ISBT, ISBTMetadata {
     /**
      * @dev See {ISBT-balanceOf}.
      */
-    function balanceOf(address owner)
-        public
-        view
-        virtual
-        override
-        returns (uint256)
-    {
+    function balanceOf(
+        address owner
+    ) public view virtual override returns (uint256) {
         require(owner != address(0), "SBT: address zero is not a valid owner");
         return _balances[owner];
     }
@@ -67,13 +59,9 @@ contract SBT is Context, ERC165, ISBT, ISBTMetadata {
     /**
      * @dev See {ISBT-ownerOf}.
      */
-    function ownerOf(uint256 tokenId)
-        public
-        view
-        virtual
-        override
-        returns (address)
-    {
+    function ownerOf(
+        uint256 tokenId
+    ) public view virtual override returns (address) {
         address owner = _owners[tokenId];
         require(owner != address(0), "SBT: invalid token ID");
         return owner;
@@ -96,13 +84,9 @@ contract SBT is Context, ERC165, ISBT, ISBTMetadata {
     /**
      * @dev See {ISBTMetadata-tokenURI}.
      */
-    function tokenURI(uint256 tokenId)
-        public
-        view
-        virtual
-        override
-        returns (string memory)
-    {
+    function tokenURI(
+        uint256 tokenId
+    ) public view virtual override returns (string memory) {
         _requireMinted(tokenId);
 
         string memory baseURI = _baseURI();
@@ -128,12 +112,10 @@ contract SBT is Context, ERC165, ISBT, ISBTMetadata {
      *
      * - `tokenId` must exist.
      */
-    function _isOwner(address spender, uint256 tokenId)
-        internal
-        view
-        virtual
-        returns (bool)
-    {
+    function _isOwner(
+        address spender,
+        uint256 tokenId
+    ) internal view virtual returns (bool) {
         address owner = SBT.ownerOf(tokenId);
         return (spender == owner);
     }
@@ -217,11 +199,7 @@ contract SBT is Context, ERC165, ISBT, ISBTMetadata {
      *
      * To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
      */
-    function _beforeTokenTransfer(
-        address,
-        address,
-        uint256
-    ) internal virtual {}
+    function _beforeTokenTransfer(address, address, uint256) internal virtual {}
 
     /**
      * @dev Hook that is called after any minting/burning of tokens
@@ -232,9 +210,5 @@ contract SBT is Context, ERC165, ISBT, ISBTMetadata {
      *
      * To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
      */
-    function _afterTokenTransfer(
-        address,
-        address,
-        uint256
-    ) internal virtual {}
+    function _afterTokenTransfer(address, address, uint256) internal virtual {}
 }

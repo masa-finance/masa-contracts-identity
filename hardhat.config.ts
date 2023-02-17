@@ -2,7 +2,9 @@ import {
   getPrivateKey,
   getInfuraApiKey,
   getCoinMarketCapApiKey,
-  getEtherscanApiKey
+  getEtherscanApiKey,
+  getBscscanApiKey,
+  getPolygonscanApiKey
 } from "./src/EnvParams";
 import "hardhat-deploy";
 import "@nomiclabs/hardhat-ethers";
@@ -28,13 +30,6 @@ const networks: NetworksUserConfig = {
     forking: {
       url: getInfuraURL("goerli")
     }
-  },
-  goerli: {
-    url: getInfuraURL("goerli"),
-    chainId: 5,
-    accounts: [getPrivateKey("goerli")],
-    gas: "auto", // 20000000
-    gasPrice: 200000000000 //"auto"
   },
   alfajores: {
     url: "https://alfajores-forno.celo-testnet.org",
@@ -62,9 +57,16 @@ const networks: NetworksUserConfig = {
     accounts: [getPrivateKey("mumbai")]
   },
   polygon: {
-    url: "https://rpc-mainnet.maticvigil.com",
+    url: "https://polygon-rpc.com/",
     chainId: 137,
     accounts: [getPrivateKey("polygon")]
+  },
+  goerli: {
+    url: getInfuraURL("goerli"),
+    chainId: 5,
+    accounts: [getPrivateKey("goerli")],
+    gas: "auto", // 20000000
+    gasPrice: 200000000000 //"auto"
   },
   mainnet: {
     url: getInfuraURL("mainnet"),
@@ -96,7 +98,14 @@ export default {
     }
   },
   etherscan: {
-    apiKey: getEtherscanApiKey()
+    apiKey: {
+      bscTestnet: getBscscanApiKey(),
+      bsc: getBscscanApiKey(),
+      polygonMumbai: getPolygonscanApiKey(),
+      polygon: getPolygonscanApiKey(),
+      goerli: getEtherscanApiKey(),
+      mainnet: getEtherscanApiKey()
+    }
   },
   gasReporter: {
     currency: "USD",

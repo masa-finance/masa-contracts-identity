@@ -370,7 +370,7 @@ describe("Soulbound Credit Score", () => {
 
   describe("mint paying a minting fee", () => {
     beforeEach(async () => {
-      await soulboundCreditScore.connect(owner).setMintPrice(1); // 1 USD
+      await soulboundCreditScore.connect(owner).setMintPrice(1_000_000); // 1 USD
     });
 
     it("should mint from final user address paying with ETH", async () => {

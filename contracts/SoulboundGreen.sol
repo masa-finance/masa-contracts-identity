@@ -30,7 +30,7 @@ contract SoulboundGreen is MasaSBTSelfSovereign, ReentrancyGuard {
         MasaSBTSelfSovereign(
             admin,
             "Masa Green",
-            "M2F",
+            "MG-2FA",
             baseTokenURI,
             soulboundIdentity,
             paymentParams

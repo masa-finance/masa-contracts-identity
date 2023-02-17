@@ -54,10 +54,9 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @notice Sets the SoulboundIdentity contract address linked to this store
     /// @dev The caller must have the admin role to call this function
     /// @param _soulboundIdentity New SoulboundIdentity contract address
-    function setSoulboundIdentity(ISoulboundIdentity _soulboundIdentity)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setSoulboundIdentity(
+        ISoulboundIdentity _soulboundIdentity
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
         if (soulboundIdentity == _soulboundIdentity) revert SameValue();
         soulboundIdentity = _soulboundIdentity;
@@ -84,10 +83,9 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @notice Adds a new authority to the list of authorities
     /// @dev The caller must have the admin role to call this function
     /// @param _authority New authority to add
-    function addAuthority(address _authority)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function addAuthority(
+        address _authority
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (_authority == address(0)) revert ZeroAddress();
         if (authorities[_authority]) revert AlreadyAdded();
 
@@ -97,10 +95,9 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @notice Removes an authority from the list of authorities
     /// @dev The caller must have the admin role to call this function
     /// @param _authority Authority to remove
-    function removeAuthority(address _authority)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function removeAuthority(
+        address _authority
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (_authority == address(0)) revert ZeroAddress();
         if (!authorities[_authority]) revert AuthorityNotExists(_authority);
 
@@ -218,11 +215,9 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @dev Returns the price for registering per year in USD for an specific name length
     /// @param nameLength Length of the name
     /// @return Price in stable coin for that name length
-    function getNameRegistrationPricePerYear(uint256 nameLength)
-        public
-        view
-        returns (uint256)
-    {
+    function getNameRegistrationPricePerYear(
+        uint256 nameLength
+    ) public view returns (uint256) {
         uint256 price = nameRegistrationPricePerYear[nameLength];
         if (price == 0) {
             // if not found, return the default price

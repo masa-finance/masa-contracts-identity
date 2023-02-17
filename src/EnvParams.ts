@@ -45,6 +45,16 @@ export function getEtherscanApiKey() {
   return process.env.ETHERSCAN_API_KEY || getSecretParam("ETHERSCAN_API_KEY");
 }
 
+export function getBscscanApiKey() {
+  return process.env.BSCSCAN_API_KEY || getSecretParam("BSCSCAN_API_KEY");
+}
+
+export function getPolygonscanApiKey() {
+  return (
+    process.env.POLYGONSCAN_API_KEY || getSecretParam("POLYGONSCAN_API_KEY")
+  );
+}
+
 export function getCoinMarketCapApiKey() {
   return (
     process.env.COINMARKETCAP_API_KEY || getSecretParam("COINMARKETCAP_API_KEY")
