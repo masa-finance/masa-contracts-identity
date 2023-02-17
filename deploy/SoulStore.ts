@@ -47,8 +47,12 @@ const func: DeployFunction = async ({
       log: true
     });
 
-    // verify contract with etherscan, if its not a local network
-    if (network.name !== "hardhat") {
+    // verify contract with etherscan, if its not a local network or celo
+    if (
+      network.name !== "hardhat" &&
+      network.name !== "celo" &&
+      network.name !== "alfajores"
+    ) {
       try {
         await hre.run("verify:verify", {
           address: soulStoreDeploymentResult.address,

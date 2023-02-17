@@ -50,7 +50,9 @@ export function getBscscanApiKey() {
 }
 
 export function getPolygonscanApiKey() {
-  return process.env.POLYGONSCAN_API_KEY || getSecretParam("POLYGONSCAN_API_KEY");
+  return (
+    process.env.POLYGONSCAN_API_KEY || getSecretParam("POLYGONSCAN_API_KEY")
+  );
 }
 
 export function getCoinMarketCapApiKey() {

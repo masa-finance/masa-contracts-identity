@@ -59,8 +59,12 @@ const func: DeployFunction = async ({
     // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
   });
 
-  // verify contract with etherscan, if its not a local network
-  if (network.name !== "hardhat") {
+  // verify contract with etherscan, if its not a local network or celo
+  if (
+    network.name !== "hardhat" &&
+    network.name !== "celo" &&
+    network.name !== "alfajores"
+  ) {
     try {
       await hre.run("verify:verify", {
         address: soulboundGreenDeploymentResult.address,
