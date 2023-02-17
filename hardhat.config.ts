@@ -102,9 +102,9 @@ export default {
     apiKey: {
       alfajores: getCeloscanApiKey(),
       celo: getCeloscanApiKey(),
-      bsctest: getBscscanApiKey(),
+      bscTestnet: getBscscanApiKey(),
       bsc: getBscscanApiKey(),
-      mumbai: getPolygonscanApiKey(),
+      polygonMumbai: getPolygonscanApiKey(),
       polygon: getPolygonscanApiKey(),
       goerli: getEtherscanApiKey(),
       mainnet: getEtherscanApiKey()
