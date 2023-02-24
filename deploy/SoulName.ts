@@ -25,14 +25,16 @@ const func: DeployFunction = async ({
   const constructorArguments = [
     env.ADMIN || admin.address,
     soulboundIdentityDeployed.address,
-    ".soul",
+    network.name == "celo" || network.name == "alfajores" ? ".celo" : ".soul",
     env.SOUL_NAME_CONTRACT_URI
   ];
 
   if (
     network.name === "mainnet" ||
     network.name === "goerli" ||
-    network.name === "hardhat"
+    network.name === "hardhat" ||
+    network.name === "celo" ||
+    network.name === "alfajores"
   ) {
     const soulNameDeploymentResult = await deploy("SoulName", {
       from: deployer,
@@ -91,7 +93,9 @@ func.skip = async ({ network }) => {
   return (
     network.name !== "mainnet" &&
     network.name !== "goerli" &&
-    network.name !== "hardhat"
+    network.name !== "hardhat" &&
+    network.name !== "celo" &&
+    network.name !== "alfajores"
   );
 };
 func.tags = ["SoulName"];
