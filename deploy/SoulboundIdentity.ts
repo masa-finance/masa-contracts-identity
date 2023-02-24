@@ -26,9 +26,9 @@ const func: DeployFunction = async ({
 
   const constructorArguments = [
     env.ADMIN || admin.address,
-    baseUri,
     env.SOULBOUNDIDENTITY_NAME,
-    env.SOULBOUNDIDENTITY_SYMBOL
+    env.SOULBOUNDIDENTITY_SYMBOL,
+    baseUri
   ];
 
   if (
