@@ -29,6 +29,8 @@ const func: DeployFunction = async ({
 
   const constructorArguments = [
     env.ADMIN || admin.address,
+    env.SOULBOUNDCREDITSCORE_NAME,
+    env.SOULBOUNDCREDITSCORE_SYMBOL,
     baseUri,
     soulboundIdentityDeployed.address,
     [

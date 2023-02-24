@@ -24,7 +24,12 @@ const func: DeployFunction = async ({
   const env = getEnvParams(network.name);
   const baseUri = `${env.BASE_URI}/identity/${network.name}/`;
 
-  const constructorArguments = [env.ADMIN || admin.address, baseUri];
+  const constructorArguments = [
+    env.ADMIN || admin.address,
+    baseUri,
+    env.SOULBOUNDIDENTITY_NAME,
+    env.SOULBOUNDIDENTITY_SYMBOL
+  ];
 
   if (
     network.name === "mainnet" ||
