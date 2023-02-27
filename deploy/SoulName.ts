@@ -27,7 +27,7 @@ const func: DeployFunction = async ({
     env.SOULNAME_NAME,
     env.SOULNAME_SYMBOL,
     soulboundIdentityDeployed.address,
-    network.name == "celo" || network.name == "alfajores" ? ".celo" : ".soul",
+    env.SOULNAME_EXTENSION || ".soul",
     env.SOUL_NAME_CONTRACT_URI
   ];
 
