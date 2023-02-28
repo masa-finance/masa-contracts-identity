@@ -122,7 +122,7 @@ export default {
         network: "alfajores",
         chainId: 44787,
         urls: {
-          apiURL: "https://alfajores.celoscan.io/api",
+          apiURL: "https://api-alfajores.celoscan.io/api",
           browserURL: "https://alfajores.celoscan.io/"
         }
       }
