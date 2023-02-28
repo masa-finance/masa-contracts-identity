@@ -70,7 +70,7 @@ const func: DeployFunction = async ({
       }
     }
 
-    if (network.name === "hardhat") {
+    if (network.name === "hardhat" || network.name === "alfajores") {
       const soulboundIdentity = await ethers.getContractAt(
         "SoulboundIdentity",
         soulboundIdentityDeployed.address
