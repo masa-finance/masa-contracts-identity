@@ -114,7 +114,7 @@ export default {
         network: "celo",
         chainId: 42220,
         urls: {
-          apiURL: "https://api.celoscan.io",
+          apiURL: "https://api.celoscan.io/api",
           browserURL: "https://celoscan.io/"
         }
       },
