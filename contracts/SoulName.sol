@@ -130,6 +130,7 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
             revert AddressDoesNotHaveIdentity(to);
         if (
             !Utils.startsWith(_tokenURI, "ar://") &&
+            !Utils.startsWith(_tokenURI, "https://arweave.net/") &&
             !Utils.startsWith(_tokenURI, "ipfs://")
         ) revert InvalidTokenURI(_tokenURI);
 
