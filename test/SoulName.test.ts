@@ -21,7 +21,7 @@ const YEAR_PERIOD = 31536000; // 60 seconds * 60 minutes * 24 hours * 365 days
 const ARWEAVE_LINK1 = "ar://jK9sR4OrYvODj7PD3czIAyNJalub0-vdV_JAg1NqQ-o";
 const ARWEAVE_LINK2 = "ar://2Ohog_ya_61nTJlKox43L4ZQzZ9DGRao8NU6WZRxs8";
 const ARWEAVE_LINK_INVALID =
-  "https://arweave.net/jK9sR4OrYvODj7PD3czIAyNJalub0-vdV_JAg1NqQ-o";
+  "https://invalidurl.net/jK9sR4OrYvODj7PD3czIAyNJalub0-vdV_JAg1NqQ-o";
 
 // contract instances
 let soulboundIdentity: SoulboundIdentity;

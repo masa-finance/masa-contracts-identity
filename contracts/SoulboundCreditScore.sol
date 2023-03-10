@@ -18,19 +18,23 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign, ReentrancyGuard {
     /// @notice Creates a new soulbound credit score
     /// @dev Creates a new soulbound credit score, inheriting from the SBT contract.
     /// @param admin Administrator of the smart contract
+    /// @param name Name of the token
+    /// @param symbol Symbol of the token
     /// @param baseTokenURI Base URI of the token
     /// @param soulboundIdentity Address of the SoulboundIdentity contract
     /// @param paymentParams Payment gateway params
     constructor(
         address admin,
+        string memory name,
+        string memory symbol,
         string memory baseTokenURI,
         ISoulboundIdentity soulboundIdentity,
         PaymentParams memory paymentParams
     )
         MasaSBTSelfSovereign(
             admin,
-            "Masa Credit Score",
-            "MCS",
+            name,
+            symbol,
             baseTokenURI,
             soulboundIdentity,
             paymentParams

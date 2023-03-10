@@ -24,12 +24,19 @@ const func: DeployFunction = async ({
   const env = getEnvParams(network.name);
   const baseUri = `${env.BASE_URI}/identity/${network.name}/`;
 
-  const constructorArguments = [env.ADMIN || admin.address, baseUri];
+  const constructorArguments = [
+    env.ADMIN || admin.address,
+    env.SOULBOUNDIDENTITY_NAME,
+    env.SOULBOUNDIDENTITY_SYMBOL,
+    baseUri
+  ];
 
   if (
     network.name === "mainnet" ||
     network.name === "goerli" ||
-    network.name === "hardhat"
+    network.name === "hardhat" ||
+    network.name === "celo" ||
+    network.name === "alfajores"
   ) {
     const soulboundIdentityDeploymentResult = await deploy(
       "SoulboundIdentity",
@@ -42,11 +49,7 @@ const func: DeployFunction = async ({
     );
 
     // verify contract with etherscan, if its not a local network or celo
-    if (
-      network.name !== "hardhat" &&
-      network.name !== "celo" &&
-      network.name !== "alfajores"
-    ) {
+    if (network.name !== "hardhat") {
       try {
         await hre.run("verify:verify", {
           address: soulboundIdentityDeploymentResult.address,
@@ -68,7 +71,9 @@ func.skip = async ({ network }) => {
   return (
     network.name !== "mainnet" &&
     network.name !== "goerli" &&
-    network.name !== "hardhat"
+    network.name !== "hardhat" &&
+    network.name !== "celo" &&
+    network.name !== "alfajores"
   );
 };
 func.tags = ["SoulboundIdentity"];

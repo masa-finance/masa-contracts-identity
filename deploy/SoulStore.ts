@@ -26,7 +26,7 @@ const func: DeployFunction = async ({
   const constructorArguments = [
     env.ADMIN || admin.address,
     soulboundIdentityDeployed.address,
-    "10000000", // 10 USDC, with 6 decimals
+    env.SOULNAME_PRICE_5LEN, // 5+ length price
     [
       env.SWAP_ROUTER,
       env.WETH_TOKEN,
@@ -39,7 +39,9 @@ const func: DeployFunction = async ({
   if (
     network.name === "mainnet" ||
     network.name === "goerli" ||
-    network.name === "hardhat"
+    network.name === "hardhat" ||
+    network.name === "celo" ||
+    network.name === "alfajores"
   ) {
     const soulStoreDeploymentResult = await deploy("SoulStore", {
       from: deployer,
@@ -48,11 +50,7 @@ const func: DeployFunction = async ({
     });
 
     // verify contract with etherscan, if its not a local network or celo
-    if (
-      network.name !== "hardhat" &&
-      network.name !== "celo" &&
-      network.name !== "alfajores"
-    ) {
+    if (network.name !== "hardhat") {
       try {
         await hre.run("verify:verify", {
           address: soulStoreDeploymentResult.address,
@@ -68,7 +66,7 @@ const func: DeployFunction = async ({
       }
     }
 
-    if (network.name === "hardhat") {
+    if (network.name === "hardhat" || network.name === "alfajores") {
       const soulboundIdentity = await ethers.getContractAt(
         "SoulboundIdentity",
         soulboundIdentityDeployed.address
@@ -89,16 +87,16 @@ const func: DeployFunction = async ({
       );
       await soulStore
         .connect(signer)
-        .setNameRegistrationPricePerYear(1, 6_250_000_000); // 1 length, 6,250 USDC USDC
+        .setNameRegistrationPricePerYear(1, env.SOULNAME_PRICE_1LEN); // 1 length
       await soulStore
         .connect(signer)
-        .setNameRegistrationPricePerYear(2, 1_250_000_000); // 2 length, 1,250 USDC
+        .setNameRegistrationPricePerYear(2, env.SOULNAME_PRICE_2LEN); // 2 length
       await soulStore
         .connect(signer)
-        .setNameRegistrationPricePerYear(3, 250_000_000); // 3 length, 250 USDC
+        .setNameRegistrationPricePerYear(3, env.SOULNAME_PRICE_3LEN); // 3 length
       await soulStore
         .connect(signer)
-        .setNameRegistrationPricePerYear(4, 50_000_000); // 4 length, 50 USDC
+        .setNameRegistrationPricePerYear(4, env.SOULNAME_PRICE_4LEN); // 4 length
 
       // add authority to soulStore
       await soulStore
@@ -131,7 +129,9 @@ func.skip = async ({ network }) => {
   return (
     network.name !== "mainnet" &&
     network.name !== "goerli" &&
-    network.name !== "hardhat"
+    network.name !== "hardhat" &&
+    network.name !== "celo" &&
+    network.name !== "alfajores"
   );
 };
 func.tags = ["SoulStore"];

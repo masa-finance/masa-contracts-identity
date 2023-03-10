@@ -26,11 +26,15 @@ contract SoulboundIdentity is
     /// @notice Creates a new soulbound identity
     /// @dev Creates a new soulbound identity, inheriting from the SBT contract.
     /// @param admin Administrator of the smart contract
+    /// @param name Name of the token
+    /// @param symbol Symbol of the token
     /// @param baseTokenURI Base URI of the token
     constructor(
         address admin,
+        string memory name,
+        string memory symbol,
         string memory baseTokenURI
-    ) MasaSBTAuthority(admin, "Masa Identity", "MID", baseTokenURI) {}
+    ) MasaSBTAuthority(admin, name, symbol, baseTokenURI) {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 

@@ -4,7 +4,8 @@ import {
   getCoinMarketCapApiKey,
   getEtherscanApiKey,
   getBscscanApiKey,
-  getPolygonscanApiKey
+  getPolygonscanApiKey,
+  getCeloscanApiKey
 } from "./src/EnvParams";
 import "hardhat-deploy";
 import "@nomiclabs/hardhat-ethers";
@@ -104,8 +105,28 @@ export default {
       polygonMumbai: getPolygonscanApiKey(),
       polygon: getPolygonscanApiKey(),
       goerli: getEtherscanApiKey(),
-      mainnet: getEtherscanApiKey()
-    }
+      mainnet: getEtherscanApiKey(),
+      celo: getCeloscanApiKey(),
+      alfajores: getCeloscanApiKey()
+    },
+    customChains: [
+      {
+        network: "celo",
+        chainId: 42220,
+        urls: {
+          apiURL: "https://api.celoscan.io/api",
+          browserURL: "https://celoscan.io/"
+        }
+      },
+      {
+        network: "alfajores",
+        chainId: 44787,
+        urls: {
+          apiURL: "https://api-alfajores.celoscan.io/api",
+          browserURL: "https://alfajores.celoscan.io/"
+        }
+      }
+    ]
   },
   gasReporter: {
     currency: "USD",

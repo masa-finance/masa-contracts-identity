@@ -24,15 +24,19 @@ const func: DeployFunction = async ({
 
   const constructorArguments = [
     env.ADMIN || admin.address,
+    env.SOULNAME_NAME,
+    env.SOULNAME_SYMBOL,
     soulboundIdentityDeployed.address,
-    ".soul",
+    env.SOULNAME_EXTENSION || ".soul",
     env.SOUL_NAME_CONTRACT_URI
   ];
 
   if (
     network.name === "mainnet" ||
     network.name === "goerli" ||
-    network.name === "hardhat"
+    network.name === "hardhat" ||
+    network.name === "celo" ||
+    network.name === "alfajores"
   ) {
     const soulNameDeploymentResult = await deploy("SoulName", {
       from: deployer,
@@ -41,11 +45,7 @@ const func: DeployFunction = async ({
     });
 
     // verify contract with etherscan, if its not a local network or celo
-    if (
-      network.name !== "hardhat" &&
-      network.name !== "celo" &&
-      network.name !== "alfajores"
-    ) {
+    if (network.name !== "hardhat") {
       try {
         await hre.run("verify:verify", {
           address: soulNameDeploymentResult.address,
@@ -61,7 +61,7 @@ const func: DeployFunction = async ({
       }
     }
 
-    if (network.name === "hardhat") {
+    if (network.name === "hardhat" || network.name === "alfajores") {
       const soulboundIdentity = await ethers.getContractAt(
         "SoulboundIdentity",
         soulboundIdentityDeployed.address
@@ -91,7 +91,9 @@ func.skip = async ({ network }) => {
   return (
     network.name !== "mainnet" &&
     network.name !== "goerli" &&
-    network.name !== "hardhat"
+    network.name !== "hardhat" &&
+    network.name !== "celo" &&
+    network.name !== "alfajores"
   );
 };
 func.tags = ["SoulName"];
