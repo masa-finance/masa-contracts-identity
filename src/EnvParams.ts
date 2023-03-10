@@ -55,6 +55,10 @@ export function getPolygonscanApiKey() {
   );
 }
 
+export function getCeloscanApiKey() {
+  return process.env.CELOSCAN_API_KEY || getSecretParam("CELOSCAN_API_KEY");
+}
+
 export function getCoinMarketCapApiKey() {
   return (
     process.env.COINMARKETCAP_API_KEY || getSecretParam("COINMARKETCAP_API_KEY")

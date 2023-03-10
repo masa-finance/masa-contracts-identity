@@ -55,6 +55,8 @@ const func: DeployFunction = async ({
   // initialize contract
   await soulboundGreen.initialize(
     env.ADMIN || admin.address,
+    env.SOULBOUNDGREEN_NAME,
+    env.SOULBOUNDGREEN_SYMBOL,
     baseUri,
     soulboundIdentityDeployedAddress,
     {
@@ -67,11 +69,7 @@ const func: DeployFunction = async ({
   );
 
   // verify contract with etherscan, if its not a local network or celo
-  if (
-    network.name !== "hardhat" &&
-    network.name !== "celo" &&
-    network.name !== "alfajores"
-  ) {
+  if (network.name !== "hardhat") {
     try {
       await hre.run("verify:verify", {
         address: soulboundGreenDeploymentResult.address,

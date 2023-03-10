@@ -50,15 +50,19 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     /// @notice Creates a new SoulName NFT
     /// @dev Creates a new SoulName NFT, that points to a Soulbound identity, inheriting from the NFT contract.
     /// @param admin Administrator of the smart contract
+    /// @param name Name of the token
+    /// @param symbol Symbol of the token
     /// @param _soulboundIdentity Address of the Soulbound identity contract
     /// @param _extension Extension of the soul name
     /// @param _contractURI URI of the smart contract metadata
     constructor(
         address admin,
+        string memory name,
+        string memory symbol,
         ISoulboundIdentity _soulboundIdentity,
         string memory _extension,
         string memory _contractURI
-    ) MasaNFT(admin, "Masa Soul Name", "MSN", "") {
+    ) MasaNFT(admin, name, symbol, "") {
         if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
 
         soulboundIdentity = _soulboundIdentity;
@@ -126,6 +130,7 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
             revert AddressDoesNotHaveIdentity(to);
         if (
             !Utils.startsWith(_tokenURI, "ar://") &&
+            !Utils.startsWith(_tokenURI, "https://arweave.net/") &&
             !Utils.startsWith(_tokenURI, "ipfs://")
         ) revert InvalidTokenURI(_tokenURI);
 
