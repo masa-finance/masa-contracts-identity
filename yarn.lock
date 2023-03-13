@@ -1173,13 +1173,6 @@
   dependencies:
     antlr4ts "^0.5.0-alpha.4"
 
-"@solidity-parser/parser@^0.15.0":
-  version "0.15.0"
-  resolved "https://registry.yarnpkg.com/@solidity-parser/parser/-/parser-0.15.0.tgz#1d359be40be84f174dd616ccfadcf43346c6bf63"
-  integrity sha512-5UFJJTzWi1hgFk6aGCZ5rxG2DJkCJOzJ74qg7UkWSNCDSigW+CJLoYUb5bLiKrtI34Nr9rpFSUNHfkqtlL+N/w==
-  dependencies:
-    antlr4ts "^0.5.0-alpha.4"
-
 "@solidity-parser/parser@^0.16.0":
   version "0.16.0"
   resolved "https://registry.yarnpkg.com/@solidity-parser/parser/-/parser-0.16.0.tgz#1fb418c816ca1fc3a1e94b08bcfe623ec4e1add4"
@@ -7046,12 +7039,12 @@ solhint-plugin-prettier@^0.0.5:
   dependencies:
     prettier-linter-helpers "^1.0.0"
 
-solhint@^3.0.0, solhint@^3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/solhint/-/solhint-3.4.0.tgz#a7e4f2d73e679cb197a1ca5279aa7534bd323e4d"
-  integrity sha512-FYEs/LoTxMsWFP/OGsEqR1CBDn3Bn7hrTWsgtjai17MzxITgearIdlo374KKZjjIycu8E2xBcJ+RSWeoBvQmkw==
+solhint@^3.0.0, solhint@^3.4.1:
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/solhint/-/solhint-3.4.1.tgz#8ea15b21c13d1be0b53fd46d605a24d0b36a0c46"
+  integrity sha512-pzZn2RlZhws1XwvLPVSsxfHrwsteFf5eySOhpAytzXwKQYbTCJV6z8EevYDiSVKMpWrvbKpEtJ055CuEmzp4Xg==
   dependencies:
-    "@solidity-parser/parser" "^0.15.0"
+    "@solidity-parser/parser" "^0.16.0"
     ajv "^6.12.6"
     antlr4 "^4.11.0"
     ast-parents "^0.0.1"
