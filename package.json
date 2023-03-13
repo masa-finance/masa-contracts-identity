@@ -4,6 +4,7 @@
   "main": "dist/typechain/index.js",
   "types": "dist/typechain/index.d.ts",
   "files": [
+    "contracts/**/*",
     "deployments/**/*",
     "dist/**/*",
     "hardhat.config.ts",
