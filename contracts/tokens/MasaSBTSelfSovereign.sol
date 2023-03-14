@@ -184,6 +184,20 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
         return tokenId;
     }
 
+    function _verifyAndMint(
+        address paymentMethod,
+        address to,
+        bytes32 digest,
+        address authorityAddress,
+        bytes calldata signature
+    ) internal virtual returns (uint256) {
+        _verify(digest, signature, authorityAddress);
+
+        _pay(paymentMethod, getMintPrice(paymentMethod));
+
+        return _mintWithCounter(to);
+    }
+
     /* ========== MODIFIERS ================================================= */
 
     /* ========== EVENTS ==================================================== */
