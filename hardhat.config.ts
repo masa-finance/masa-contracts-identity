@@ -62,6 +62,11 @@ const networks: NetworksUserConfig = {
     chainId: 137,
     accounts: [getPrivateKey("polygon")]
   },
+  basegoerli: {
+    url: 'https://goerli.base.org',
+    chainId: 84531,
+    accounts: [getPrivateKey("polygon")]
+  },
   goerli: {
     url: getInfuraURL("goerli"),
     chainId: 5,
