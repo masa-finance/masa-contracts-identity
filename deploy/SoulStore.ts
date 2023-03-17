@@ -121,11 +121,12 @@ const func: DeployFunction = async ({
         .grantRole(NAME_MINTER_ROLE, soulStoreDeploymentResult.address);
 
       // we add payment methods
-      env.PAYMENT_METHODS_SOULSTORE.split(" ").forEach(
-        async (paymentMethod) => {
-          await soulStore.connect(signer).enablePaymentMethod(paymentMethod);
-        }
-      );
+      const paymentMethods = env.PAYMENT_METHODS_SOULSTORE.split(" ");
+      for (let i = 0; i < paymentMethods.length; i++) {
+        const tx = await soulStore
+          .connect(signer)
+          .enablePaymentMethod(paymentMethods[i]);
+      }
     }
   }
 };

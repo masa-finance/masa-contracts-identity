@@ -104,11 +104,12 @@ const func: DeployFunction = async ({
       .setMintPrice(parseUnits("1", env.STABLECOIN_DECIMALS || 6)); // 1 USDC
 
     // we add payment methods
-    env.PAYMENT_METHODS_SOULBOUNDGREEN.split(" ").forEach(
-      async (paymentMethod) => {
-        await soulboundGreen.connect(signer).enablePaymentMethod(paymentMethod);
-      }
-    );
+    const paymentMethods = env.PAYMENT_METHODS_SOULBOUNDGREEN.split(" ");
+    for (let i = 0; i < paymentMethods.length; i++) {
+      const tx = await soulboundGreen
+        .connect(signer)
+        .enablePaymentMethod(paymentMethods[i]);
+    }
   }
 };
 

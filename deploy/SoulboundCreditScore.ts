@@ -96,13 +96,13 @@ const func: DeployFunction = async ({
         .setMintPrice(parseUnits("20", env.STABLECOIN_DECIMALS || 6)); // 20 USDC
 
       // we add payment methods
-      env.PAYMENT_METHODS_SOULBOUNDCREDITSCORE.split(" ").forEach(
-        async (paymentMethod) => {
-          await soulboundCreditScore
-            .connect(signer)
-            .enablePaymentMethod(paymentMethod);
-        }
-      );
+      const paymentMethods =
+        env.PAYMENT_METHODS_SOULBOUNDCREDITSCORE.split(" ");
+      for (let i = 0; i < paymentMethods.length; i++) {
+        const tx = await soulboundCreditScore
+          .connect(signer)
+          .enablePaymentMethod(paymentMethods[i]);
+      }
     }
   }
 };
