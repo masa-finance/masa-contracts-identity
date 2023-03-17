@@ -112,7 +112,8 @@ export default {
       goerli: getEtherscanApiKey(),
       mainnet: getEtherscanApiKey(),
       celo: getCeloscanApiKey(),
-      alfajores: getCeloscanApiKey()
+      alfajores: getCeloscanApiKey(),
+      basegoerli: getEtherscanApiKey()
     },
     customChains: [
       {
@@ -129,6 +130,14 @@ export default {
         urls: {
           apiURL: "https://api-alfajores.celoscan.io/api",
           browserURL: "https://alfajores.celoscan.io/"
+        }
+      },
+      {
+        network: "basegoerli",
+        chainId: 84531,
+        urls: {
+          apiURL: "https://api-goerli.basescan.org",
+          browserURL: "https://goerli.basescan.org/"
         }
       }
     ]
