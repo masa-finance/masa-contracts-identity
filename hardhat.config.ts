@@ -63,7 +63,7 @@ const networks: NetworksUserConfig = {
     accounts: [getPrivateKey("polygon")]
   },
   basegoerli: {
-    url: 'https://goerli.base.org',
+    url: "https://goerli.base.org",
     chainId: 84531,
     accounts: [getPrivateKey("basegoerli")]
   },
