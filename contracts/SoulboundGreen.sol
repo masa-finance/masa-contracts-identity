@@ -62,15 +62,13 @@ contract SoulboundGreen is MasaSBTSelfSovereign {
         address to = soulboundIdentity.ownerOf(identityId);
         if (to != _msgSender()) revert CallerNotOwner(_msgSender());
 
-        _verify(
+        uint256 tokenId = _verifyAndMint(
+            paymentMethod,
+            to,
             _hash(identityId, authorityAddress, signatureDate),
-            signature,
-            authorityAddress
+            authorityAddress,
+            signature
         );
-
-        _pay(paymentMethod, getMintPrice(paymentMethod));
-
-        uint256 tokenId = _mintWithCounter(to);
 
         emit SoulboundGreenMintedToIdentity(
             tokenId,
@@ -101,15 +99,13 @@ contract SoulboundGreen is MasaSBTSelfSovereign {
     ) external payable virtual returns (uint256) {
         if (to != _msgSender()) revert CallerNotOwner(_msgSender());
 
-        _verify(
+        uint256 tokenId = _verifyAndMint(
+            paymentMethod,
+            to,
             _hash(to, authorityAddress, signatureDate),
-            signature,
-            authorityAddress
+            authorityAddress,
+            signature
         );
-
-        _pay(paymentMethod, getMintPrice(paymentMethod));
-
-        uint256 tokenId = _mintWithCounter(to);
 
         emit SoulboundGreenMintedToAddress(
             tokenId,

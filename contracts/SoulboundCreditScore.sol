@@ -63,15 +63,13 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
         if (to != _msgSender()) revert CallerNotOwner(_msgSender());
         if (balanceOf(to) > 0) revert CreditScoreAlreadyCreated(to);
 
-        _verify(
+        uint256 tokenId = _verifyAndMint(
+            paymentMethod,
+            to,
             _hash(identityId, authorityAddress, signatureDate),
-            signature,
-            authorityAddress
+            authorityAddress,
+            signature
         );
-
-        _pay(paymentMethod, getMintPrice(paymentMethod));
-
-        uint256 tokenId = _mintWithCounter(to);
 
         emit SoulboundCreditScoreMintedToIdentity(
             tokenId,
@@ -103,15 +101,13 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
         if (to != _msgSender()) revert CallerNotOwner(_msgSender());
         if (balanceOf(to) > 0) revert CreditScoreAlreadyCreated(to);
 
-        _verify(
+        uint256 tokenId = _verifyAndMint(
+            paymentMethod,
+            to,
             _hash(to, authorityAddress, signatureDate),
-            signature,
-            authorityAddress
+            authorityAddress,
+            signature
         );
-
-        _pay(paymentMethod, getMintPrice(paymentMethod));
-
-        uint256 tokenId = _mintWithCounter(to);
 
         emit SoulboundCreditScoreMintedToAddress(
             tokenId,
