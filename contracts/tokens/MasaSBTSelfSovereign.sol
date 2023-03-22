@@ -52,7 +52,7 @@ abstract contract MasaSBTSelfSovereign is
         string memory baseTokenURI,
         ISoulboundIdentity _soulboundIdentity,
         PaymentParams memory paymentParams
-    ) internal onlyInitializing {
+    ) public virtual onlyInitializing {
         PaymentGateway.initialize(admin, paymentParams);
         MasaSBT.initialize(admin, name, symbol, baseTokenURI);
         soulboundIdentity = _soulboundIdentity;

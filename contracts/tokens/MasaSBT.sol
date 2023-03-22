@@ -47,7 +47,7 @@ abstract contract MasaSBT is
         string memory name,
         string memory symbol,
         string memory baseTokenURI
-    ) internal virtual onlyInitializing {
+    ) public virtual onlyInitializing {
         SBT.initialize(name, symbol);
         __ReentrancyGuard_init();
         __AccessControl_init();

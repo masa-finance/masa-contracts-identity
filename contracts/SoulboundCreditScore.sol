@@ -28,7 +28,7 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
         string memory baseTokenURI,
         ISoulboundIdentity soulboundIdentity,
         PaymentParams memory paymentParams
-    ) public initializer {
+    ) public override initializer {
         MasaSBTSelfSovereign.initialize(
             admin,
             name,

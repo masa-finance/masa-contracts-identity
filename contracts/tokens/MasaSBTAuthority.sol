@@ -30,7 +30,7 @@ abstract contract MasaSBTAuthority is MasaSBT {
         string memory name,
         string memory symbol,
         string memory baseTokenURI
-    ) internal override onlyInitializing {
+    ) public virtual override onlyInitializing {
         MasaSBT.initialize(admin, name, symbol, baseTokenURI);
         _grantRole(MINTER_ROLE, admin);
     }
