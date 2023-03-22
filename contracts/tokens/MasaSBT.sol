@@ -42,13 +42,13 @@ abstract contract MasaSBT is
     /// @param name Name of the token
     /// @param symbol Symbol of the token
     /// @param baseTokenURI Base URI of the token
-    function initialize(
+    function _initialize(
         address admin,
         string memory name,
         string memory symbol,
         string memory baseTokenURI
-    ) public virtual onlyInitializing {
-        SBT.initialize(name, symbol);
+    ) internal virtual onlyInitializing {
+        SBT._initialize(name, symbol);
         __ReentrancyGuard_init();
         __AccessControl_init();
 

@@ -48,7 +48,7 @@ abstract contract PaymentGateway is Initializable, AccessControlUpgradeable {
     // that will call the Uniswap Router interface
     /// @param admin Administrator of the smart contract
     /// @param paymentParams Payment params
-    function initialize(
+    function _initialize(
         address admin,
         PaymentParams memory paymentParams
     ) internal onlyInitializing {

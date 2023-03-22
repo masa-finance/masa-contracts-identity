@@ -67,7 +67,7 @@ contract SoulLinker is
     ) public initializer {
         if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
 
-        PaymentGateway.initialize(admin, paymentParams);
+        PaymentGateway._initialize(admin, paymentParams);
         __ReentrancyGuard_init();
         __Pausable_init();
         __EIP712_init("SoulLinker", "1.0.0");

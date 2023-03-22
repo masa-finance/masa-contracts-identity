@@ -45,16 +45,16 @@ abstract contract MasaSBTSelfSovereign is
     /// @param baseTokenURI Base URI of the token
     /// @param _soulboundIdentity Address of the SoulboundIdentity contract
     /// @param paymentParams Payment gateway params
-    function initialize(
+    function _initialize(
         address admin,
         string memory name,
         string memory symbol,
         string memory baseTokenURI,
         ISoulboundIdentity _soulboundIdentity,
         PaymentParams memory paymentParams
-    ) public virtual onlyInitializing {
-        PaymentGateway.initialize(admin, paymentParams);
-        MasaSBT.initialize(admin, name, symbol, baseTokenURI);
+    ) internal onlyInitializing {
+        PaymentGateway._initialize(admin, paymentParams);
+        MasaSBT._initialize(admin, name, symbol, baseTokenURI);
         soulboundIdentity = _soulboundIdentity;
     }
 

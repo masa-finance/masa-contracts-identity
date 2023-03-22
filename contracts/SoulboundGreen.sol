@@ -28,8 +28,8 @@ contract SoulboundGreen is MasaSBTSelfSovereign {
         string memory baseTokenURI,
         ISoulboundIdentity soulboundIdentity,
         PaymentParams memory paymentParams
-    ) public override initializer {
-        MasaSBTSelfSovereign.initialize(
+    ) public initializer {
+        MasaSBTSelfSovereign._initialize(
             admin,
             name,
             symbol,

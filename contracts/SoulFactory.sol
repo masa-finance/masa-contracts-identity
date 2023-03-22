@@ -45,7 +45,7 @@ contract SoulFactory is
         SoulboundBaseSelfSovereign _templateSBT,
         PaymentParams memory paymentParams
     ) public initializer {
-        PaymentGateway.initialize(admin, paymentParams);
+        PaymentGateway._initialize(admin, paymentParams);
         __ReentrancyGuard_init();
         __Pausable_init();
         if (address(_soulBoundIdentity) == address(0)) revert ZeroAddress();

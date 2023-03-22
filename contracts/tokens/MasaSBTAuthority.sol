@@ -25,13 +25,13 @@ abstract contract MasaSBTAuthority is MasaSBT {
     /// @param name Name of the token
     /// @param symbol Symbol of the token
     /// @param baseTokenURI Base URI of the token
-    function initialize(
+    function _initialize(
         address admin,
         string memory name,
         string memory symbol,
         string memory baseTokenURI
-    ) public virtual override onlyInitializing {
-        MasaSBT.initialize(admin, name, symbol, baseTokenURI);
+    ) internal override onlyInitializing {
+        MasaSBT._initialize(admin, name, symbol, baseTokenURI);
         _grantRole(MINTER_ROLE, admin);
     }
 

@@ -49,7 +49,7 @@ contract SoulStore is
     ) public initializer {
         if (address(_soulBoundIdentity) == address(0)) revert ZeroAddress();
 
-        PaymentGateway.initialize(admin, paymentParams);
+        PaymentGateway._initialize(admin, paymentParams);
         __ReentrancyGuard_init();
         __Pausable_init();
         __EIP712_init("SoulStore", "1.0.0");

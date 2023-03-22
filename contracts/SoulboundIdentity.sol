@@ -28,8 +28,8 @@ contract SoulboundIdentity is MasaSBTAuthority, ISoulboundIdentity {
         string memory name,
         string memory symbol,
         string memory baseTokenURI
-    ) public override initializer {
-        MasaSBTAuthority.initialize(
+    ) public initializer {
+        MasaSBTAuthority._initialize(
             admin,
             name,
             symbol,

@@ -32,7 +32,7 @@ contract SoulboundBaseSelfSovereign is MasaSBTSelfSovereign {
         ISoulboundIdentity soulboundIdentity,
         PaymentParams memory paymentParams
     ) public initializer {
-        MasaSBTSelfSovereign.initialize(
+        MasaSBTSelfSovereign._initialize(
             admin,
             name,
             symbol,
