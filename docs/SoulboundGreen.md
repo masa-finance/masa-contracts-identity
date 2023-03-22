@@ -379,25 +379,6 @@ function initialize(address admin, string name, string symbol, string baseTokenU
 | soulboundIdentity | contract ISoulboundIdentity | undefined |
 | paymentParams | PaymentGateway.PaymentParams | undefined |
 
-### initialize
-
-```solidity
-function initialize(address admin, string name, string symbol, string baseTokenURI) external nonpayable
-```
-
-Creates a new soulbound token
-
-*Creates a new soulbound token*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| admin | address | Administrator of the smart contract |
-| name | string | Name of the token |
-| symbol | string | Symbol of the token |
-| baseTokenURI | string | Base URI of the token |
-
 ### masaToken
 
 ```solidity
