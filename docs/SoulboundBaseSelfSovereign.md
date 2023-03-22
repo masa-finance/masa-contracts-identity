@@ -361,6 +361,27 @@ function hasRole(bytes32 role, address account) external view returns (bool)
 ### initialize
 
 ```solidity
+function initialize(address admin, string name, string symbol, string baseTokenURI, contract ISoulboundIdentity _soulboundIdentity, PaymentGateway.PaymentParams paymentParams) external nonpayable
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| admin | address | undefined |
+| name | string | undefined |
+| symbol | string | undefined |
+| baseTokenURI | string | undefined |
+| _soulboundIdentity | contract ISoulboundIdentity | undefined |
+| paymentParams | PaymentGateway.PaymentParams | undefined |
+
+### initialize
+
+```solidity
 function initialize(address admin, string name, string symbol, string nameEIP712, string baseTokenURI, contract ISoulboundIdentity soulboundIdentity, PaymentGateway.PaymentParams paymentParams) external nonpayable
 ```
 
@@ -379,6 +400,25 @@ function initialize(address admin, string name, string symbol, string nameEIP712
 | baseTokenURI | string | undefined |
 | soulboundIdentity | contract ISoulboundIdentity | undefined |
 | paymentParams | PaymentGateway.PaymentParams | undefined |
+
+### initialize
+
+```solidity
+function initialize(address admin, string name, string symbol, string baseTokenURI) external nonpayable
+```
+
+Creates a new soulbound token
+
+*Creates a new soulbound token*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| admin | address | Administrator of the smart contract |
+| name | string | Name of the token |
+| symbol | string | Symbol of the token |
+| baseTokenURI | string | Base URI of the token |
 
 ### masaToken
 

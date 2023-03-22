@@ -308,7 +308,7 @@ function hasRole(bytes32 role, address account) external view returns (bool)
 ### initialize
 
 ```solidity
-function initialize(address admin, string baseTokenURI) external nonpayable
+function initialize(address admin, string name, string symbol, string baseTokenURI) external nonpayable
 ```
 
 Creates a new soulbound identity
@@ -320,6 +320,8 @@ Creates a new soulbound identity
 | Name | Type | Description |
 |---|---|---|
 | admin | address | Administrator of the smart contract |
+| name | string | Name of the token |
+| symbol | string | Symbol of the token |
 | baseTokenURI | string | Base URI of the token |
 
 ### isAvailable
