@@ -45,7 +45,9 @@ const func: DeployFunction = async ({
   if (
     network.name === "mainnet" ||
     network.name === "goerli" ||
-    network.name === "hardhat"
+    network.name === "hardhat" ||
+    network.name === "mumbai" ||
+    network.name === "polygon"
   ) {
     const soulboundCreditScoreDeploymentResult = await deploy(
       "SoulboundCreditScore",
@@ -74,7 +76,7 @@ const func: DeployFunction = async ({
       }
     }
 
-    if (network.name === "hardhat") {
+    if (network.name === "hardhat" || network.name === "mumbai") {
       const signer = env.ADMIN
         ? new ethers.Wallet(getPrivateKey(network.name), ethers.provider)
         : admin;
@@ -111,7 +113,9 @@ func.skip = async ({ network }) => {
   return (
     network.name !== "mainnet" &&
     network.name !== "goerli" &&
-    network.name !== "hardhat"
+    network.name !== "hardhat" &&
+    network.name !== "mumbai" &&
+    network.name !== "polygon"
   );
 };
 func.tags = ["SoulboundCreditScore"];
