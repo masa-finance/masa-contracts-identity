@@ -28,7 +28,10 @@ const func: DeployFunction = async ({
   if (
     network.name === "mainnet" ||
     network.name === "goerli" ||
-    network.name === "hardhat"
+    network.name === "hardhat" ||
+    network.name === "celo" ||
+    network.name === "alfajores" ||
+    network.name === "basegoerli"
   ) {
     const soulboundIdentityDeployed = await deployments.get(
       "SoulboundIdentity"
@@ -81,7 +84,8 @@ const func: DeployFunction = async ({
     network.name === "hardhat" ||
     network.name === "alfajores" ||
     network.name === "bsctest" ||
-    network.name === "mumbai"
+    network.name === "mumbai" ||
+    network.name === "basegoerli"
   ) {
     const signer = env.ADMIN
       ? new ethers.Wallet(getPrivateKey(network.name), ethers.provider)
