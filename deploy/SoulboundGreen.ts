@@ -28,7 +28,10 @@ const func: DeployFunction = async ({
   if (
     network.name === "mainnet" ||
     network.name === "goerli" ||
-    network.name === "hardhat"
+    network.name === "hardhat" ||
+    network.name === "celo" ||
+    network.name === "alfajores" ||
+    network.name === "basegoerli"
   ) {
     const soulboundIdentityDeployed = await deployments.get(
       "SoulboundIdentity"
@@ -61,7 +64,7 @@ const func: DeployFunction = async ({
   });
 
   // verify contract with etherscan, if its not a local network or celo
-  if (network.name !== "hardhat") {
+  if (network.name !== "hardhat" && network.name !== "basegoerli") {
     try {
       await hre.run("verify:verify", {
         address: soulboundGreenDeploymentResult.address,
@@ -81,7 +84,8 @@ const func: DeployFunction = async ({
     network.name === "hardhat" ||
     network.name === "alfajores" ||
     network.name === "bsctest" ||
-    network.name === "mumbai"
+    network.name === "mumbai" ||
+    network.name === "basegoerli"
   ) {
     const signer = env.ADMIN
       ? new ethers.Wallet(getPrivateKey(network.name), ethers.provider)
@@ -103,11 +107,12 @@ const func: DeployFunction = async ({
       .setMintPrice(env.SOULBOUNDGREEN_MINTING_PRICE || 1000000); // 1 USDC
 
     // we add payment methods
-    env.PAYMENT_METHODS_SOULBOUNDGREEN.split(" ").forEach(
-      async (paymentMethod) => {
-        await soulboundGreen.connect(signer).enablePaymentMethod(paymentMethod);
-      }
-    );
+    const paymentMethods = env.PAYMENT_METHODS_SOULBOUNDGREEN.split(" ");
+    for (let i = 0; i < paymentMethods.length; i++) {
+      await soulboundGreen
+        .connect(signer)
+        .enablePaymentMethod(paymentMethods[i]);
+    }
   }
 };
 

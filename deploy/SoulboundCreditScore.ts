@@ -95,13 +95,13 @@ const func: DeployFunction = async ({
         .setMintPrice(env.SOULBOUNDCREDITSCORE_MINTING_PRICE || 1000000); // 1 USDC
 
       // we add payment methods
-      env.PAYMENT_METHODS_SOULBOUNDCREDITSCORE.split(" ").forEach(
-        async (paymentMethod) => {
-          await soulboundCreditScore
-            .connect(signer)
-            .enablePaymentMethod(paymentMethod);
-        }
-      );
+      const paymentMethods =
+        env.PAYMENT_METHODS_SOULBOUNDCREDITSCORE.split(" ");
+      for (let i = 0; i < paymentMethods.length; i++) {
+        await soulboundCreditScore
+          .connect(signer)
+          .enablePaymentMethod(paymentMethods[i]);
+      }
     }
   }
 };
