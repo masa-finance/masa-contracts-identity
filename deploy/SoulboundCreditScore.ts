@@ -98,7 +98,7 @@ const func: DeployFunction = async ({
       const paymentMethods =
         env.PAYMENT_METHODS_SOULBOUNDCREDITSCORE.split(" ");
       for (let i = 0; i < paymentMethods.length; i++) {
-        const tx = await soulboundCreditScore
+        await soulboundCreditScore
           .connect(signer)
           .enablePaymentMethod(paymentMethods[i]);
       }

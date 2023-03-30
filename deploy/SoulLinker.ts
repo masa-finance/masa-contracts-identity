@@ -80,9 +80,7 @@ const func: DeployFunction = async ({
 
       const paymentMethods = env.PAYMENT_METHODS_SOULLINKER.split(" ");
       for (let i = 0; i < paymentMethods.length; i++) {
-        const tx = await soulLinker
-          .connect(signer)
-          .enablePaymentMethod(paymentMethods[i]);
+        await soulLinker.connect(signer).enablePaymentMethod(paymentMethods[i]);
       }
     }
   }

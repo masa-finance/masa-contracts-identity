@@ -123,9 +123,7 @@ const func: DeployFunction = async ({
       // we add payment methods
       const paymentMethods = env.PAYMENT_METHODS_SOULSTORE.split(" ");
       for (let i = 0; i < paymentMethods.length; i++) {
-        const tx = await soulStore
-          .connect(signer)
-          .enablePaymentMethod(paymentMethods[i]);
+        await soulStore.connect(signer).enablePaymentMethod(paymentMethods[i]);
       }
     }
   }
