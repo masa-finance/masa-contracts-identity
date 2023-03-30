@@ -78,11 +78,10 @@ const func: DeployFunction = async ({
         soulLinkerDeploymentResult.address
       );
 
-      env.PAYMENT_METHODS_SOULLINKER.split(" ").forEach(
-        async (paymentMethod) => {
-          await soulLinker.connect(signer).enablePaymentMethod(paymentMethod);
-        }
-      );
+      const paymentMethods = env.PAYMENT_METHODS_SOULLINKER.split(" ");
+      for (let i = 0; i < paymentMethods.length; i++) {
+        await soulLinker.connect(signer).enablePaymentMethod(paymentMethods[i]);
+      }
     }
   }
 };
