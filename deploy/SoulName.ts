@@ -36,7 +36,8 @@ const func: DeployFunction = async ({
     network.name === "goerli" ||
     network.name === "hardhat" ||
     network.name === "celo" ||
-    network.name === "alfajores"
+    network.name === "alfajores" ||
+    network.name === "basegoerli"
   ) {
     const soulNameDeploymentResult = await deploy("SoulName", {
       from: deployer,
@@ -44,8 +45,8 @@ const func: DeployFunction = async ({
       log: true
     });
 
-    // verify contract with etherscan, if its not a local network
-    if (network.name !== "hardhat") {
+    // verify contract with etherscan, if its not a local network or basegoerli
+    if (network.name !== "hardhat" && network.name !== "basegoerli") {
       try {
         await hre.run("verify:verify", {
           address: soulNameDeploymentResult.address,
@@ -61,7 +62,11 @@ const func: DeployFunction = async ({
       }
     }
 
-    if (network.name === "hardhat" || network.name === "alfajores") {
+    if (
+      network.name === "hardhat" ||
+      network.name === "alfajores" ||
+      network.name === "basegoerli"
+    ) {
       const soulboundIdentity = await ethers.getContractAt(
         "SoulboundIdentity",
         soulboundIdentityDeployed.address
@@ -93,7 +98,8 @@ func.skip = async ({ network }) => {
     network.name !== "goerli" &&
     network.name !== "hardhat" &&
     network.name !== "celo" &&
-    network.name !== "alfajores"
+    network.name !== "alfajores" &&
+    network.name !== "basegoerli"
   );
 };
 func.tags = ["SoulName"];

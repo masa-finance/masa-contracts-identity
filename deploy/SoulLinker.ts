@@ -80,11 +80,15 @@ const func: DeployFunction = async ({
         ? new ethers.Wallet(getPrivateKey(network.name), ethers.provider)
         : admin;
 
-      env.PAYMENT_METHODS_SOULLINKER.split(" ").forEach(
-        async (paymentMethod) => {
-          await soulLinker.connect(signer).enablePaymentMethod(paymentMethod);
-        }
+      const soulLinker = await ethers.getContractAt(
+        "SoulLinker",
+        soulLinkerDeploymentResult.address
       );
+
+      const paymentMethods = env.PAYMENT_METHODS_SOULLINKER.split(" ");
+      for (let i = 0; i < paymentMethods.length; i++) {
+        await soulLinker.connect(signer).enablePaymentMethod(paymentMethods[i]);
+      }
     }
   }
 };

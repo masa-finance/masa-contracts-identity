@@ -28,7 +28,8 @@ const func: DeployFunction = async ({
     network.name === "goerli" ||
     network.name === "hardhat" ||
     network.name === "celo" ||
-    network.name === "alfajores"
+    network.name === "alfajores" ||
+    network.name === "basegoerli"
   ) {
     // deploy contract
     const soulStoreDeploymentResult = await deploy("SoulStore", {
@@ -56,8 +57,8 @@ const func: DeployFunction = async ({
       }
     );
 
-    // verify contract with etherscan, if its not a local network
-    if (network.name !== "hardhat") {
+    // verify contract with etherscan, if its not a local network or basegoerli
+    if (network.name !== "hardhat" && network.name !== "basegoerli") {
       try {
         await hre.run("verify:verify", {
           address: soulStoreDeploymentResult.address,
@@ -73,7 +74,11 @@ const func: DeployFunction = async ({
       }
     }
 
-    if (network.name === "hardhat" || network.name === "alfajores") {
+    if (
+      network.name === "hardhat" ||
+      network.name === "alfajores" ||
+      network.name === "basegoerli"
+    ) {
       const soulboundIdentity = await ethers.getContractAt(
         "SoulboundIdentity",
         soulboundIdentityDeployed.address
@@ -119,11 +124,10 @@ const func: DeployFunction = async ({
         .grantRole(NAME_MINTER_ROLE, soulStoreDeploymentResult.address);
 
       // we add payment methods
-      env.PAYMENT_METHODS_SOULSTORE.split(" ").forEach(
-        async (paymentMethod) => {
-          await soulStore.connect(signer).enablePaymentMethod(paymentMethod);
-        }
-      );
+      const paymentMethods = env.PAYMENT_METHODS_SOULSTORE.split(" ");
+      for (let i = 0; i < paymentMethods.length; i++) {
+        await soulStore.connect(signer).enablePaymentMethod(paymentMethods[i]);
+      }
     }
   }
 };
@@ -134,7 +138,8 @@ func.skip = async ({ network }) => {
     network.name !== "goerli" &&
     network.name !== "hardhat" &&
     network.name !== "celo" &&
-    network.name !== "alfajores"
+    network.name !== "alfajores" &&
+    network.name !== "basegoerli"
   );
 };
 func.tags = ["SoulStore"];
