@@ -53,7 +53,7 @@ contract SoulboundIdentity is
 
     /// @notice Mints a new soulbound identity
     /// @dev The caller can only mint one identity per address
-    /// @param to Address of the admin of the new identity
+    /// @param to Address of the owner of the new identity
     function mint(address to) public override returns (uint256) {
         // Soulbound identity already created!
         if (balanceOf(to) > 0) revert IdentityAlreadyCreated(to);
@@ -63,7 +63,7 @@ contract SoulboundIdentity is
 
     /// @notice Mints a new soulbound identity with a SoulName associated to it
     /// @dev The caller can only mint one identity per address, and the name must be unique
-    /// @param to Address of the admin of the new identity
+    /// @param to Address of the owner of the new identity
     /// @param name Name of the new identity
     /// @param yearsPeriod Years of validity of the name
     /// @param _tokenURI URI of the NFT
