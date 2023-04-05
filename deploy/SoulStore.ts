@@ -21,7 +21,20 @@ const func: DeployFunction = async ({
   const env = getEnvParams(network.name);
 
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
-  const soulNameDeployed = await deployments.get("SoulName");
+  let soulNameDeployedAddress;
+  if (
+    network.name === "mainnet" ||
+    network.name === "goerli" ||
+    network.name === "hardhat" ||
+    network.name === "celo" ||
+    network.name === "alfajores" ||
+    network.name === "basegoerli"
+  ) {
+    const soulNameDeployed = await deployments.get("SoulName");
+    soulNameDeployedAddress = soulNameDeployed.address;
+  } else {
+    soulNameDeployedAddress = ethers.constants.AddressZero;
+  }
 
   const constructorArguments = [
     env.ADMIN || admin.address,
@@ -79,10 +92,6 @@ const func: DeployFunction = async ({
         "SoulboundIdentity",
         soulboundIdentityDeployed.address
       );
-      const soulName = await ethers.getContractAt(
-        "SoulName",
-        soulNameDeployed.address
-      );
 
       const signer = env.ADMIN
         ? new ethers.Wallet(getPrivateKey(network.name), ethers.provider)
@@ -118,10 +127,17 @@ const func: DeployFunction = async ({
         .connect(signer)
         .grantRole(IDENTITY_MINTER_ROLE, soulStoreDeploymentResult.address);
 
-      const NAME_MINTER_ROLE = await soulName.MINTER_ROLE();
-      await soulName
-        .connect(signer)
-        .grantRole(NAME_MINTER_ROLE, soulStoreDeploymentResult.address);
+      if (soulNameDeployedAddress !== ethers.constants.AddressZero) {
+        const soulName = await ethers.getContractAt(
+          "SoulName",
+          soulNameDeployedAddress
+        );
+
+        const NAME_MINTER_ROLE = await soulName.MINTER_ROLE();
+        await soulName
+          .connect(signer)
+          .grantRole(NAME_MINTER_ROLE, soulStoreDeploymentResult.address);
+      }
 
       // we add payment methods
       const paymentMethods = env.PAYMENT_METHODS_SOULSTORE.split(" ");
