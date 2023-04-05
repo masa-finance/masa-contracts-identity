@@ -42,7 +42,9 @@ const func: DeployFunction = async ({
     network.name === "hardhat" ||
     network.name === "celo" ||
     network.name === "alfajores" ||
-    network.name === "basegoerli"
+    network.name === "basegoerli" ||
+    network.name === "mumbai" ||
+    network.name === "polygon"
   ) {
     const soulStoreDeploymentResult = await deploy("SoulStore", {
       from: deployer,
@@ -70,7 +72,8 @@ const func: DeployFunction = async ({
     if (
       network.name === "hardhat" ||
       network.name === "alfajores" ||
-      network.name === "basegoerli"
+      network.name === "basegoerli" ||
+      network.name === "mumbai"
     ) {
       const soulboundIdentity = await ethers.getContractAt(
         "SoulboundIdentity",
@@ -136,7 +139,9 @@ func.skip = async ({ network }) => {
     network.name !== "hardhat" &&
     network.name !== "celo" &&
     network.name !== "alfajores" &&
-    network.name !== "basegoerli"
+    network.name !== "basegoerli" &&
+    network.name !== "mumbai" &&
+    network.name !== "polygon"
   );
 };
 func.tags = ["SoulStore"];
