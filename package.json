@@ -1,6 +1,6 @@
 {
   "name": "@masa-finance/masa-contracts-identity",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "main": "dist/typechain/index.js",
   "types": "dist/typechain/index.d.ts",
   "files": [
