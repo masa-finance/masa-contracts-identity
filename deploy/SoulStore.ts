@@ -104,7 +104,7 @@ const func: DeployFunction = async ({
         .setNameRegistrationPricePerYear(4, env.SOULNAME_PRICE_4LEN); // 4 length
 
       // add authorities to soulStore
-      const authorities = env.AUTHORITY_WALLET.split(" ") || admin.address;
+      const authorities = (env.AUTHORITY_WALLET || admin.address).split(" ");
       for (let i = 0; i < authorities.length; i++) {
         await soulStore.connect(signer).addAuthority(authorities[i]);
       }

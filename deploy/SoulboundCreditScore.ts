@@ -84,7 +84,7 @@ const func: DeployFunction = async ({
       );
 
       // add authorities to soulboundCreditScore
-      const authorities = env.AUTHORITY_WALLET.split(" ") || admin.address;
+      const authorities = (env.AUTHORITY_WALLET || admin.address).split(" ");
       for (let i = 0; i < authorities.length; i++) {
         await soulboundCreditScore.connect(signer).addAuthority(authorities[i]);
       }
