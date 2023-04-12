@@ -96,10 +96,11 @@ const func: DeployFunction = async ({
       soulboundGreenDeploymentResult.address
     );
 
-    // add authority to soulboundGreen
-    await soulboundGreen
-      .connect(signer)
-      .addAuthority(env.AUTHORITY_WALLET || admin.address);
+    // add authorities to soulboundGreen
+    const authorities = (env.AUTHORITY_WALLET || admin.address).split(" ");
+    for (let i = 0; i < authorities.length; i++) {
+      await soulboundGreen.connect(signer).addAuthority(authorities[i]);
+    }
 
     // add mint price to soulboundCreditScore
     await soulboundGreen

@@ -103,13 +103,13 @@ const func: DeployFunction = async ({
         .connect(signer)
         .setNameRegistrationPricePerYear(4, env.SOULNAME_PRICE_4LEN); // 4 length
 
-      // add authority to soulStore
-      await soulStore
-        .connect(signer)
-        .addAuthority(env.AUTHORITY_WALLET || admin.address);
+      // add authorities to soulStore
+      const authorities = (env.AUTHORITY_WALLET || admin.address).split(" ");
+      for (let i = 0; i < authorities.length; i++) {
+        await soulStore.connect(signer).addAuthority(authorities[i]);
+      }
 
       // we add soulStore as soulboundIdentity and soulName minter
-
       const IDENTITY_MINTER_ROLE = await soulboundIdentity.MINTER_ROLE();
       await soulboundIdentity
         .connect(signer)
