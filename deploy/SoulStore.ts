@@ -32,7 +32,7 @@ const func: DeployFunction = async ({
       env.WETH_TOKEN,
       env.USDC_TOKEN,
       env.MASA_TOKEN,
-      env.RESERVE_WALLET || admin.address
+      env.TREASURY_WALLET || admin.address
     ]
   ];
 
