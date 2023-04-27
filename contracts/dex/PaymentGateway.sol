@@ -24,6 +24,8 @@ abstract contract PaymentGateway is AccessControl {
         address stableCoin; // Stable coin to pay the fee in (USDC)
         address masaToken; // Utility token to pay the fee in (MASA)
         address treasuryWallet; // Wallet that will receive the fee
+        address protocolFeeWallet; // Wallet that will receive the protocol fee
+        uint256 protocolFeeAmount; // Protocol fee amount
     }
 
     /* ========== STATE VARIABLES =========================================== */
@@ -39,6 +41,8 @@ abstract contract PaymentGateway is AccessControl {
     address[] public enabledPaymentMethods;
 
     address public treasuryWallet;
+    address public protocolFeeWallet;
+    uint256 public protocolFeeAmount;
 
     /* ========== INITIALIZE ================================================ */
 
@@ -61,6 +65,8 @@ abstract contract PaymentGateway is AccessControl {
         stableCoin = paymentParams.stableCoin;
         masaToken = paymentParams.masaToken;
         treasuryWallet = paymentParams.treasuryWallet;
+        protocolFeeWallet = paymentParams.protocolFeeWallet;
+        protocolFeeAmount = paymentParams.protocolFeeAmount;
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
@@ -151,6 +157,27 @@ abstract contract PaymentGateway is AccessControl {
         if (_treasuryWallet == address(0)) revert ZeroAddress();
         if (_treasuryWallet == treasuryWallet) revert SameValue();
         treasuryWallet = _treasuryWallet;
+    }
+
+    /// @notice Set the protocol fee wallet
+    /// @dev The caller must have the admin role to call this function
+    /// @param _protocolFeeWallet New protocol fee wallet
+    function setProtocolFeeWallet(
+        address _protocolFeeWallet
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        if (_protocolFeeWallet == address(0)) revert ZeroAddress();
+        if (_protocolFeeWallet == protocolFeeWallet) revert SameValue();
+        protocolFeeWallet = _protocolFeeWallet;
+    }
+
+    /// @notice Set the protocol fee amount
+    /// @dev The caller must have the admin role to call this function
+    /// @param _protocolFeeAmount New protocol fee amount
+    function setProtocolFeeAmount(
+        uint256 _protocolFeeAmount
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        if (_protocolFeeAmount == protocolFeeAmount) revert SameValue();
+        protocolFeeAmount = _protocolFeeAmount;
     }
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
