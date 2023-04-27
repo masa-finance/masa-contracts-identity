@@ -374,12 +374,12 @@ describe("Soulbound Credit Score", () => {
     });
 
     it("should mint from final user address paying with ETH", async () => {
-      const reserveWallet = await soulboundCreditScore.reserveWallet();
+      const treasuryWallet = await soulboundCreditScore.treasuryWallet();
       const priceInETH = await soulboundCreditScore.getMintPrice(
         ethers.constants.AddressZero
       );
-      const reserveWalletBalanceBefore = await ethers.provider.getBalance(
-        reserveWallet
+      const treasuryWalletBalanceBefore = await ethers.provider.getBalance(
+        treasuryWallet
       );
 
       const mintTx = await soulboundCreditScore
@@ -400,23 +400,23 @@ describe("Soulbound Credit Score", () => {
         identityId1
       );
 
-      const reserveWalletBalanceAfter = await ethers.provider.getBalance(
-        reserveWallet
+      const treasuryWalletBalanceAfter = await ethers.provider.getBalance(
+        treasuryWallet
       );
 
-      // we check that the reserve wallet received the ETH
+      // we check that the treasury wallet received the ETH
       expect(
-        reserveWalletBalanceAfter.sub(reserveWalletBalanceBefore)
+        treasuryWalletBalanceAfter.sub(treasuryWalletBalanceBefore)
       ).to.be.equal(priceInETH);
     });
 
     it("should mint from final user identity paying with ETH", async () => {
-      const reserveWallet = await soulboundCreditScore.reserveWallet();
+      const treasuryWallet = await soulboundCreditScore.treasuryWallet();
       const priceInETH = await soulboundCreditScore.getMintPrice(
         ethers.constants.AddressZero
       );
-      const reserveWalletBalanceBefore = await ethers.provider.getBalance(
-        reserveWallet
+      const treasuryWalletBalanceBefore = await ethers.provider.getBalance(
+        treasuryWallet
       );
 
       const mintTx = await soulboundCreditScore
@@ -437,13 +437,13 @@ describe("Soulbound Credit Score", () => {
         identityId1
       );
 
-      const reserveWalletBalanceAfter = await ethers.provider.getBalance(
-        reserveWallet
+      const treasuryWalletBalanceAfter = await ethers.provider.getBalance(
+        treasuryWallet
       );
 
-      // we check that the reserve wallet received the ETH
+      // we check that the treasury wallet received the ETH
       expect(
-        reserveWalletBalanceAfter.sub(reserveWalletBalanceBefore)
+        treasuryWalletBalanceAfter.sub(treasuryWalletBalanceBefore)
       ).to.be.equal(priceInETH);
     });
 

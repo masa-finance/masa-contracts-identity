@@ -11,7 +11,7 @@ import "../interfaces/dex/IUniswapRouter.sol";
 
 /// @title Pay using a Decentralized automated market maker (AMM) when needed
 /// @author Masa Finance
-/// @notice Smart contract to call a Dex AMM smart contract to pay to a reserve wallet recipient
+/// @notice Smart contract to call a Dex AMM smart contract to pay to a treasury wallet recipient
 /// @dev This smart contract will call the Uniswap Router interface, based on
 /// https://github.com/Uniswap/v2-periphery/blob/master/contracts/interfaces/IUniswapV2Router01.sol
 abstract contract PaymentGateway is AccessControl {
@@ -23,7 +23,7 @@ abstract contract PaymentGateway is AccessControl {
         address wrappedNativeToken; // Wrapped native token address
         address stableCoin; // Stable coin to pay the fee in (USDC)
         address masaToken; // Utility token to pay the fee in (MASA)
-        address reserveWallet; // Wallet that will receive the fee
+        address treasuryWallet; // Wallet that will receive the fee
     }
 
     /* ========== STATE VARIABLES =========================================== */
@@ -38,7 +38,7 @@ abstract contract PaymentGateway is AccessControl {
     mapping(address => bool) public enabledPaymentMethod;
     address[] public enabledPaymentMethods;
 
-    address public reserveWallet;
+    address public treasuryWallet;
 
     /* ========== INITIALIZE ================================================ */
 
@@ -52,7 +52,7 @@ abstract contract PaymentGateway is AccessControl {
         if (paymentParams.wrappedNativeToken == address(0))
             revert ZeroAddress();
         if (paymentParams.stableCoin == address(0)) revert ZeroAddress();
-        if (paymentParams.reserveWallet == address(0)) revert ZeroAddress();
+        if (paymentParams.treasuryWallet == address(0)) revert ZeroAddress();
 
         _grantRole(DEFAULT_ADMIN_ROLE, admin);
 
@@ -60,7 +60,7 @@ abstract contract PaymentGateway is AccessControl {
         wrappedNativeToken = paymentParams.wrappedNativeToken;
         stableCoin = paymentParams.stableCoin;
         masaToken = paymentParams.masaToken;
-        reserveWallet = paymentParams.reserveWallet;
+        treasuryWallet = paymentParams.treasuryWallet;
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
@@ -142,15 +142,15 @@ abstract contract PaymentGateway is AccessControl {
         }
     }
 
-    /// @notice Set the reserve wallet
+    /// @notice Set the treasury wallet
     /// @dev The caller must have the admin role to call this function
-    /// @param _reserveWallet New reserve wallet
-    function setReserveWallet(
-        address _reserveWallet
+    /// @param _treasuryWallet New treasury wallet
+    function setTreasuryWallet(
+        address _treasuryWallet
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        if (_reserveWallet == address(0)) revert ZeroAddress();
-        if (_reserveWallet == reserveWallet) revert SameValue();
-        reserveWallet = _reserveWallet;
+        if (_treasuryWallet == address(0)) revert ZeroAddress();
+        if (_treasuryWallet == treasuryWallet) revert SameValue();
+        treasuryWallet = _treasuryWallet;
     }
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
@@ -191,7 +191,7 @@ abstract contract PaymentGateway is AccessControl {
     }
 
     /// @notice Performs the payment in any payment method
-    /// @dev This method will transfer the funds to the reserve wallet, performing
+    /// @dev This method will transfer the funds to the treasury wallet, performing
     /// the swap if necessary
     /// @param paymentMethod Address of token that user want to pay
     /// @param amount Price to be paid in the specified payment method
@@ -202,7 +202,7 @@ abstract contract PaymentGateway is AccessControl {
         if (paymentMethod == address(0)) {
             // ETH
             if (msg.value < amount) revert InsufficientEthAmount(amount);
-            (bool success, ) = payable(reserveWallet).call{value: amount}("");
+            (bool success, ) = payable(treasuryWallet).call{value: amount}("");
             if (!success) revert TransferFailed();
             if (msg.value > amount) {
                 // return diff
@@ -214,7 +214,7 @@ abstract contract PaymentGateway is AccessControl {
             // ERC20 token, including MASA and USDC
             IERC20(paymentMethod).safeTransferFrom(
                 msg.sender,
-                reserveWallet,
+                treasuryWallet,
                 amount
             );
         }

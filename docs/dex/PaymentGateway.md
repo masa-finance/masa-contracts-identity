@@ -4,7 +4,7 @@
 
 > Pay using a Decentralized automated market maker (AMM) when needed
 
-Smart contract to call a Dex AMM smart contract to pay to a reserve wallet recipient
+Smart contract to call a Dex AMM smart contract to pay to a treasury wallet recipient
 
 *This smart contract will call the Uniswap Router interface, based on https://github.com/Uniswap/v2-periphery/blob/master/contracts/interfaces/IUniswapV2Router01.sol*
 
@@ -216,23 +216,6 @@ function renounceRole(bytes32 role, address account) external nonpayable
 | role | bytes32 | undefined |
 | account | address | undefined |
 
-### reserveWallet
-
-```solidity
-function reserveWallet() external view returns (address)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | address | undefined |
-
 ### revokeRole
 
 ```solidity
@@ -266,22 +249,6 @@ Sets the utility token to pay the fee in (MASA)
 |---|---|---|
 | _masaToken | address | New utility token to pay the fee in |
 
-### setReserveWallet
-
-```solidity
-function setReserveWallet(address _reserveWallet) external nonpayable
-```
-
-Set the reserve wallet
-
-*The caller must have the admin role to call this function*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _reserveWallet | address | New reserve wallet |
-
 ### setStableCoin
 
 ```solidity
@@ -313,6 +280,22 @@ Sets the swap router address
 | Name | Type | Description |
 |---|---|---|
 | _swapRouter | address | New swap router address |
+
+### setTreasuryWallet
+
+```solidity
+function setTreasuryWallet(address _treasuryWallet) external nonpayable
+```
+
+Set the treasury wallet
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _treasuryWallet | address | New treasury wallet |
 
 ### setWrappedNativeToken
 
@@ -373,6 +356,23 @@ function supportsInterface(bytes4 interfaceId) external view returns (bool)
 
 ```solidity
 function swapRouter() external view returns (address)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
+### treasuryWallet
+
+```solidity
+function treasuryWallet() external view returns (address)
 ```
 
 
