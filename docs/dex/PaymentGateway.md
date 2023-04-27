@@ -199,6 +199,40 @@ function masaToken() external view returns (address)
 |---|---|---|
 | _0 | address | undefined |
 
+### protocolFeeAmount
+
+```solidity
+function protocolFeeAmount() external view returns (uint256)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+### protocolFeeWallet
+
+```solidity
+function protocolFeeWallet() external view returns (address)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
 ### renounceRole
 
 ```solidity
@@ -248,6 +282,38 @@ Sets the utility token to pay the fee in (MASA)
 | Name | Type | Description |
 |---|---|---|
 | _masaToken | address | New utility token to pay the fee in |
+
+### setProtocolFeeAmount
+
+```solidity
+function setProtocolFeeAmount(uint256 _protocolFeeAmount) external nonpayable
+```
+
+Set the protocol fee amount
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _protocolFeeAmount | uint256 | New protocol fee amount |
+
+### setProtocolFeeWallet
+
+```solidity
+function setProtocolFeeWallet(address _protocolFeeWallet) external nonpayable
+```
+
+Set the protocol fee wallet
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _protocolFeeWallet | address | New protocol fee wallet |
 
 ### setStableCoin
 
