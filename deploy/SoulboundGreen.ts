@@ -98,10 +98,16 @@ const func: DeployFunction = async ({
       ? new ethers.Wallet(getPrivateKey(network.name), ethers.provider)
       : admin;
 
-    // add authority to soulboundGreen
-    await soulboundGreen
-      .connect(signer)
-      .addAuthority(env.AUTHORITY_WALLET || admin.address);
+    const soulboundGreen = await ethers.getContractAt(
+      "SoulboundGreen",
+      soulboundGreenDeploymentResult.address
+    );
+
+    // add authorities to soulboundGreen
+    const authorities = (env.AUTHORITY_WALLET || admin.address).split(" ");
+    for (let i = 0; i < authorities.length; i++) {
+      await soulboundGreen.connect(signer).addAuthority(authorities[i]);
+    }
 
     // add mint price to soulboundCreditScore
     await soulboundGreen

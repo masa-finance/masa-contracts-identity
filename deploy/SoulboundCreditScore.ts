@@ -85,13 +85,18 @@ const func: DeployFunction = async ({
         ? new ethers.Wallet(getPrivateKey(network.name), ethers.provider)
         : admin;
 
-      // add authority to soulboundCreditScore
-      await soulboundCreditScore
-        .connect(signer)
-        .addAuthority(env.AUTHORITY_WALLET || admin.address);
+      const soulboundCreditScore = await ethers.getContractAt(
+        "SoulboundCreditScore",
+        soulboundCreditScoreDeploymentResult.address
+      );
+
+      // add authorities to soulboundCreditScore
+      const authorities = (env.AUTHORITY_WALLET || admin.address).split(" ");
+      for (let i = 0; i < authorities.length; i++) {
+        await soulboundCreditScore.connect(signer).addAuthority(authorities[i]);
+      }
 
       // add mint price to soulboundCreditScore
-
       await soulboundCreditScore
         .connect(signer)
         .setMintPrice(env.SOULBOUNDCREDITSCORE_MINTING_PRICE || 1000000); // 1 USDC
