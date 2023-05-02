@@ -375,9 +375,10 @@ describe("Soulbound Credit Score", () => {
 
     it("should mint from final user address paying with ETH", async () => {
       const treasuryWallet = await soulboundCreditScore.treasuryWallet();
-      const priceInETH = await soulboundCreditScore.getMintPrice(
+      const { price: priceInETH } = await soulboundCreditScore.getMintPrice(
         ethers.constants.AddressZero
       );
+      console.log("priceInETH", priceInETH);
       const treasuryWalletBalanceBefore = await ethers.provider.getBalance(
         treasuryWallet
       );
@@ -412,7 +413,7 @@ describe("Soulbound Credit Score", () => {
 
     it("should mint from final user identity paying with ETH", async () => {
       const treasuryWallet = await soulboundCreditScore.treasuryWallet();
-      const priceInETH = await soulboundCreditScore.getMintPrice(
+      const { price: priceInETH } = await soulboundCreditScore.getMintPrice(
         ethers.constants.AddressZero
       );
       const treasuryWalletBalanceBefore = await ethers.provider.getBalance(
@@ -448,9 +449,8 @@ describe("Soulbound Credit Score", () => {
     });
 
     it("should mint from final user identity paying with stable coin", async () => {
-      const priceInStableCoin = await soulboundCreditScore.getMintPrice(
-        env.USDC_TOKEN
-      );
+      const { price: priceInStableCoin } =
+        await soulboundCreditScore.getMintPrice(env.USDC_TOKEN);
 
       // set allowance for soul store
       const usdc: IERC20 = IERC20__factory.connect(env.USDC_TOKEN, owner);
@@ -477,9 +477,8 @@ describe("Soulbound Credit Score", () => {
     });
 
     it("should mint from final user identity paying with MASA coin", async () => {
-      const priceInStableCoin = await soulboundCreditScore.getMintPrice(
-        env.MASA_TOKEN
-      );
+      const { price: priceInStableCoin } =
+        await soulboundCreditScore.getMintPrice(env.MASA_TOKEN);
 
       // set allowance for soul store
       const usdc: IERC20 = IERC20__factory.connect(env.MASA_TOKEN, owner);
