@@ -54,7 +54,8 @@ const func: DeployFunction = async ({
       env.MASA_TOKEN,
       env.TREASURY_WALLET || admin.address,
       env.PROTOCOLFEE_WALLET || ethers.constants.AddressZero,
-      env.PROTOCOLFEE_AMOUNT || 0
+      env.PROTOCOLFEE_AMOUNT || 0,
+      env.PROTOCOLFEE_PERCENT || 0
     ]
   ];
 
