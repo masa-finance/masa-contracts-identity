@@ -129,28 +129,32 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
     /// @notice Returns the price for minting
     /// @dev Returns current pricing for minting
     /// @param paymentMethod Address of token that user want to pay
-    /// @return Current price for minting in the given payment method
-    function getMintPrice(address paymentMethod) public view returns (uint256) {
+    /// @return price Current price for minting in the given payment method
+    /// @return protocolFee Current protocol fee for minting in the given payment method
+    function getMintPrice(
+        address paymentMethod
+    ) public view returns (uint256 price, uint256 protocolFee) {
         if (mintPrice == 0 && mintPriceMASA == 0) {
-            return 0;
+            price = 0;
         } else if (
             paymentMethod == masaToken &&
             enabledPaymentMethod[paymentMethod] &&
             mintPriceMASA > 0
         ) {
             // price in MASA without conversion rate
-            return mintPriceMASA;
+            price = mintPriceMASA;
         } else if (
             paymentMethod == stableCoin && enabledPaymentMethod[paymentMethod]
         ) {
             // stable coin
-            return mintPrice;
+            price = mintPrice;
         } else if (enabledPaymentMethod[paymentMethod]) {
             // ETH and ERC 20 token
-            return _convertFromStableCoin(paymentMethod, mintPrice);
+            price = _convertFromStableCoin(paymentMethod, mintPrice);
         } else {
             revert InvalidPaymentMethod(paymentMethod);
         }
+        return (price, _getProtocolFee(paymentMethod, price));
     }
 
     /// @notice Query if a contract implements an interface
@@ -193,7 +197,8 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
     ) internal virtual returns (uint256) {
         _verify(digest, signature, authorityAddress);
 
-        _pay(paymentMethod, getMintPrice(paymentMethod));
+        (uint256 price, ) = getMintPrice(paymentMethod);
+        _pay(paymentMethod, price);
 
         return _mintWithCounter(to);
     }

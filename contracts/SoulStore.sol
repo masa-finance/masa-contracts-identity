@@ -138,10 +138,12 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         address authorityAddress,
         bytes calldata signature
     ) external payable whenNotPaused nonReentrant returns (uint256) {
-        _pay(
+        (uint256 price, ) = getPriceForMintingName(
             paymentMethod,
-            getPriceForMintingName(paymentMethod, nameLength, yearsPeriod)
+            nameLength,
+            yearsPeriod
         );
+        _pay(paymentMethod, price);
 
         // finalize purchase
         return
@@ -191,10 +193,12 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         address authorityAddress,
         bytes calldata signature
     ) external payable whenNotPaused nonReentrant returns (uint256) {
-        _pay(
+        (uint256 price, ) = getPriceForMintingName(
             paymentMethod,
-            getPriceForMintingName(paymentMethod, nameLength, yearsPeriod)
+            nameLength,
+            yearsPeriod
         );
+        _pay(paymentMethod, price);
 
         // finalize purchase
         return
@@ -231,29 +235,31 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @param paymentMethod Address of token that user want to pay
     /// @param nameLength Length of the name
     /// @param yearsPeriod Years of validity of the name
-    /// @return Current price of the name minting in the given payment method
+    /// @return price Current price of the name minting in the given payment method
+    /// @return protocolFee Current protocol fee of the name minting in the given payment method
     function getPriceForMintingName(
         address paymentMethod,
         uint256 nameLength,
         uint256 yearsPeriod
-    ) public view returns (uint256) {
+    ) public view returns (uint256 price, uint256 protocolFee) {
         uint256 mintPrice = getNameRegistrationPricePerYear(nameLength).mul(
             yearsPeriod
         );
 
         if (mintPrice == 0) {
-            return 0;
+            price = 0;
         } else if (
             paymentMethod == stableCoin && enabledPaymentMethod[paymentMethod]
         ) {
             // stable coin
-            return mintPrice;
+            price = mintPrice;
         } else if (enabledPaymentMethod[paymentMethod]) {
             // ETH and ERC 20 token
-            return _convertFromStableCoin(paymentMethod, mintPrice);
+            price = _convertFromStableCoin(paymentMethod, mintPrice);
         } else {
             revert InvalidPaymentMethod(paymentMethod);
         }
+        return (price, _getProtocolFee(paymentMethod, price));
     }
 
     /* ========== PRIVATE FUNCTIONS ========== */
