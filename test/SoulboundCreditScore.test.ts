@@ -371,7 +371,7 @@ describe("Soulbound Credit Score", () => {
 
   describe("mint paying a minting fee", () => {
     beforeEach(async () => {
-      await soulboundCreditScore.connect(owner).setMintPrice(1_000_000); // 1 USD
+      await soulboundCreditScore.connect(owner).setMintPrice(10_000_000); // 10 USD
     });
 
     it("should mint from final user address paying with ETH", async () => {
@@ -698,6 +698,63 @@ describe("Soulbound Credit Score", () => {
       const protocolWalletBalanceAfter = await usdc.balanceOf(
         protocolFeeWallet
       );
+
+      // we check that the treasury wallet received the ETH
+      expect(
+        treasuryWalletBalanceAfter.sub(treasuryWalletBalanceBefore)
+      ).to.be.equal(price);
+      expect(
+        protocolWalletBalanceAfter.sub(protocolWalletBalanceBefore)
+      ).to.be.equal(protocolFee);
+    });
+
+    it("should mint from final user address paying with stable coin (with protocol fee amount)", async () => {
+      await soulboundCreditScore
+        .connect(owner)
+        .setProtocolFeeWallet(protocolWallet.address);
+      await soulboundCreditScore.connect(owner).setProtocolFeeAmount(1_000_000); // 1 USD
+
+      const treasuryWallet = await soulboundCreditScore.treasuryWallet();
+      const protocolFeeWallet = await soulboundCreditScore.protocolFeeWallet();
+      const { price, protocolFee } = await soulboundCreditScore.getMintPrice(
+        env.USDC_TOKEN
+      );
+
+      const usdc: IERC20 = IERC20__factory.connect(env.USDC_TOKEN, owner);
+      const treasuryWalletBalanceBefore = await usdc.balanceOf(treasuryWallet);
+      const protocolWalletBalanceBefore = await usdc.balanceOf(
+        protocolFeeWallet
+      );
+
+      // set allowance for soul store
+      await usdc
+        .connect(address1)
+        .approve(soulboundCreditScore.address, price.add(protocolFee));
+
+      const mintTx = await soulboundCreditScore
+        .connect(address1)
+        ["mint(address,address,address,uint256,bytes)"](
+          env.USDC_TOKEN,
+          address1.address,
+          authority.address,
+          signatureDate,
+          signatureToAddress
+        );
+      const mintReceipt = await mintTx.wait();
+
+      const tokenId = mintReceipt.events![2].args![1].toNumber();
+
+      expect(await soulboundCreditScore.getIdentityId(tokenId)).to.equal(
+        identityId1
+      );
+
+      const treasuryWalletBalanceAfter = await usdc.balanceOf(treasuryWallet);
+      const protocolWalletBalanceAfter = await usdc.balanceOf(
+        protocolFeeWallet
+      );
+
+      console.log(price);
+      console.log(protocolFee);
 
       // we check that the treasury wallet received the ETH
       expect(
