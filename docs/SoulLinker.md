@@ -241,7 +241,7 @@ Returns the list of link signature dates for a given SBT token and reader
 ### getPriceForAddLink
 
 ```solidity
-function getPriceForAddLink(address paymentMethod, address token) external view returns (uint256)
+function getPriceForAddLink(address paymentMethod, address token) external view returns (uint256 price, uint256 protocolFee)
 ```
 
 Returns the price for storing a link
@@ -259,7 +259,8 @@ Returns the price for storing a link
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256 | Current price for storing a link |
+| price | uint256 | Current price for storing a link |
+| protocolFee | uint256 | Current protocol fee for storing a link |
 
 ### getReaderLinks
 

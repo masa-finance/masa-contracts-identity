@@ -183,7 +183,7 @@ Returns the price of register a name per year in stable coin for an specific len
 ### getPriceForMintingName
 
 ```solidity
-function getPriceForMintingName(address paymentMethod, uint256 nameLength, uint256 yearsPeriod) external view returns (uint256)
+function getPriceForMintingName(address paymentMethod, uint256 nameLength, uint256 yearsPeriod) external view returns (uint256 price, uint256 protocolFee)
 ```
 
 Returns the price of the name minting
@@ -202,7 +202,8 @@ Returns the price of the name minting
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256 | Current price of the name minting in the given payment method |
+| price | uint256 | Current price of the name minting in the given payment method |
+| protocolFee | uint256 | Current protocol fee of the name minting in the given payment method |
 
 ### getRoleAdmin
 

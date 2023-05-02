@@ -277,7 +277,7 @@ Returns the identityId owned by the given token
 ### getMintPrice
 
 ```solidity
-function getMintPrice(address paymentMethod) external view returns (uint256)
+function getMintPrice(address paymentMethod) external view returns (uint256 price, uint256 protocolFee)
 ```
 
 Returns the price for minting
@@ -294,7 +294,8 @@ Returns the price for minting
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256 | Current price for minting in the given payment method |
+| price | uint256 | Current price for minting in the given payment method |
+| protocolFee | uint256 | Current protocol fee for minting in the given payment method |
 
 ### getRoleAdmin
 
