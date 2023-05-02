@@ -25,7 +25,8 @@ abstract contract PaymentGateway is AccessControl {
         address masaToken; // Utility token to pay the fee in (MASA)
         address treasuryWallet; // Wallet that will receive the fee
         address protocolFeeWallet; // Wallet that will receive the protocol fee
-        uint256 protocolFeeAmount; // Protocol fee amount
+        uint256 protocolFeeAmount; // Protocol fee amount in USD
+        uint256 protocolFeePercent; // Protocol fee amount
     }
 
     /* ========== STATE VARIABLES =========================================== */
@@ -43,6 +44,7 @@ abstract contract PaymentGateway is AccessControl {
     address public treasuryWallet;
     address public protocolFeeWallet;
     uint256 public protocolFeeAmount;
+    uint256 public protocolFeePercent;
 
     /* ========== INITIALIZE ================================================ */
 
@@ -67,6 +69,7 @@ abstract contract PaymentGateway is AccessControl {
         treasuryWallet = paymentParams.treasuryWallet;
         protocolFeeWallet = paymentParams.protocolFeeWallet;
         protocolFeeAmount = paymentParams.protocolFeeAmount;
+        protocolFeePercent = paymentParams.protocolFeePercent;
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
@@ -178,6 +181,16 @@ abstract contract PaymentGateway is AccessControl {
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (_protocolFeeAmount == protocolFeeAmount) revert SameValue();
         protocolFeeAmount = _protocolFeeAmount;
+    }
+
+    /// @notice Set the protocol fee percent
+    /// @dev The caller must have the admin role to call this function
+    /// @param _protocolFeePercent New protocol fee percent
+    function setProtocolFeePercent(
+        uint256 _protocolFeePercent
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        if (_protocolFeePercent == protocolFeePercent) revert SameValue();
+        protocolFeePercent = _protocolFeePercent;
     }
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
