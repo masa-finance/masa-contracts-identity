@@ -259,7 +259,7 @@ abstract contract PaymentGateway is AccessControl {
 
     /// @notice Performs the payment in any payment method
     /// @dev This method will transfer the funds to the treasury wallet, performing
-    /// the swap if necessary
+    /// the swap if necessary, and transfer the protocol fee to the protocol fee wallet
     /// @param paymentMethod Address of token that user want to pay
     /// @param amount Price to be paid in the specified payment method
     function _pay(address paymentMethod, uint256 amount) internal {
@@ -272,12 +272,19 @@ abstract contract PaymentGateway is AccessControl {
             revert InvalidPaymentMethod(paymentMethod);
         if (paymentMethod == address(0)) {
             // ETH
-            if (msg.value < amount) revert InsufficientEthAmount(amount);
+            if (msg.value < amount.add(protocolFee))
+                revert InsufficientEthAmount(amount.add(protocolFee));
             (bool success, ) = payable(treasuryWallet).call{value: amount}("");
             if (!success) revert TransferFailed();
-            if (msg.value > amount) {
+            if (protocolFee > 0) {
+                (success, ) = payable(protocolFeeWallet).call{
+                    value: protocolFee
+                }("");
+                if (!success) revert TransferFailed();
+            }
+            if (msg.value > amount.add(protocolFee)) {
                 // return diff
-                uint256 refund = msg.value.sub(amount);
+                uint256 refund = msg.value.sub(amount.add(protocolFee));
                 (success, ) = payable(msg.sender).call{value: refund}("");
                 if (!success) revert RefundFailed();
             }
@@ -288,6 +295,13 @@ abstract contract PaymentGateway is AccessControl {
                 treasuryWallet,
                 amount
             );
+            if (protocolFee > 0) {
+                IERC20(paymentMethod).safeTransferFrom(
+                    msg.sender,
+                    protocolFeeWallet,
+                    protocolFee
+                );
+            }
         }
     }
 
