@@ -45,7 +45,7 @@ const func: DeployFunction = async ({
       log: true
     });
 
-    // verify contract with etherscan, if its not a local network or basegoerli
+    // verify contract with etherscan, if its not a local network
     if (network.name !== "hardhat" && network.name !== "basegoerli") {
       try {
         await hre.run("verify:verify", {

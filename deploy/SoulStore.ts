@@ -21,8 +21,7 @@ const func: DeployFunction = async ({
   const env = getEnvParams(network.name);
 
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
-  const soulNameDeployed = await deployments.get("SoulName");
-
+  let soulNameDeployedAddress;
   if (
     network.name === "mainnet" ||
     network.name === "goerli" ||
@@ -30,6 +29,22 @@ const func: DeployFunction = async ({
     network.name === "celo" ||
     network.name === "alfajores" ||
     network.name === "basegoerli"
+  ) {
+    const soulNameDeployed = await deployments.get("SoulName");
+    soulNameDeployedAddress = soulNameDeployed.address;
+  } else {
+    soulNameDeployedAddress = ethers.constants.AddressZero;
+  }
+
+  if (
+    network.name === "mainnet" ||
+    network.name === "goerli" ||
+    network.name === "hardhat" ||
+    network.name === "celo" ||
+    network.name === "alfajores" ||
+    network.name === "basegoerli" ||
+    network.name === "mumbai" ||
+    network.name === "polygon"
   ) {
     // deploy contract
     const soulStoreDeploymentResult = await deploy("SoulStore", {
@@ -57,8 +72,8 @@ const func: DeployFunction = async ({
       }
     );
 
-    // verify contract with etherscan, if its not a local network or basegoerli
-    if (network.name !== "hardhat" && network.name !== "basegoerli") {
+    // verify contract with etherscan, if its not a local network
+    if (network.name !== "hardhat") {
       try {
         await hre.run("verify:verify", {
           address: soulStoreDeploymentResult.address,
@@ -77,15 +92,12 @@ const func: DeployFunction = async ({
     if (
       network.name === "hardhat" ||
       network.name === "alfajores" ||
-      network.name === "basegoerli"
+      network.name === "basegoerli" ||
+      network.name === "mumbai"
     ) {
       const soulboundIdentity = await ethers.getContractAt(
         "SoulboundIdentity",
         soulboundIdentityDeployed.address
-      );
-      const soulName = await ethers.getContractAt(
-        "SoulName",
-        soulNameDeployed.address
       );
 
       const signer = env.ADMIN
@@ -118,10 +130,17 @@ const func: DeployFunction = async ({
         .connect(signer)
         .grantRole(IDENTITY_MINTER_ROLE, soulStoreDeploymentResult.address);
 
-      const NAME_MINTER_ROLE = await soulName.MINTER_ROLE();
-      await soulName
-        .connect(signer)
-        .grantRole(NAME_MINTER_ROLE, soulStoreDeploymentResult.address);
+      if (soulNameDeployedAddress !== ethers.constants.AddressZero) {
+        const soulName = await ethers.getContractAt(
+          "SoulName",
+          soulNameDeployedAddress
+        );
+
+        const NAME_MINTER_ROLE = await soulName.MINTER_ROLE();
+        await soulName
+          .connect(signer)
+          .grantRole(NAME_MINTER_ROLE, soulStoreDeploymentResult.address);
+      }
 
       // we add payment methods
       const paymentMethods = env.PAYMENT_METHODS_SOULSTORE.split(" ");
@@ -139,7 +158,9 @@ func.skip = async ({ network }) => {
     network.name !== "hardhat" &&
     network.name !== "celo" &&
     network.name !== "alfajores" &&
-    network.name !== "basegoerli"
+    network.name !== "basegoerli" &&
+    network.name !== "mumbai" &&
+    network.name !== "polygon"
   );
 };
 func.tags = ["SoulStore"];
