@@ -657,6 +657,62 @@ describe("Soulbound Credit Score", () => {
         protocolWalletBalanceAfter.sub(protocolWalletBalanceBefore)
       ).to.be.equal(protocolFee);
     });
+
+    it("should mint from final user address paying with stable coin (with protocol fee percent)", async () => {
+      await soulboundCreditScore
+        .connect(owner)
+        .setProtocolFeeWallet(protocolWallet.address);
+      await soulboundCreditScore.connect(owner).setProtocolFeePercent(10); // 10%
+
+      const treasuryWallet = await soulboundCreditScore.treasuryWallet();
+      const protocolFeeWallet = await soulboundCreditScore.protocolFeeWallet();
+      const { price: priceInStableCoin, protocolFee } =
+        await soulboundCreditScore.getMintPrice(env.USDC_TOKEN);
+
+      const usdc: IERC20 = IERC20__factory.connect(env.USDC_TOKEN, owner);
+      const treasuryWalletBalanceBefore = await usdc.balanceOf(treasuryWallet);
+      const protocolWalletBalanceBefore = await usdc.balanceOf(
+        protocolFeeWallet
+      );
+
+      // set allowance for soul store
+      await usdc
+        .connect(address1)
+        .approve(
+          soulboundCreditScore.address,
+          priceInStableCoin.add(protocolFee)
+        );
+
+      const mintTx = await soulboundCreditScore
+        .connect(address1)
+        ["mint(address,address,address,uint256,bytes)"](
+          env.USDC_TOKEN,
+          address1.address,
+          authority.address,
+          signatureDate,
+          signatureToAddress
+        );
+      const mintReceipt = await mintTx.wait();
+
+      const tokenId = mintReceipt.events![2].args![1].toNumber();
+
+      expect(await soulboundCreditScore.getIdentityId(tokenId)).to.equal(
+        identityId1
+      );
+
+      const treasuryWalletBalanceAfter = await usdc.balanceOf(treasuryWallet);
+      const protocolWalletBalanceAfter = await usdc.balanceOf(
+        protocolFeeWallet
+      );
+
+      // we check that the treasury wallet received the ETH
+      expect(
+        treasuryWalletBalanceAfter.sub(treasuryWalletBalanceBefore)
+      ).to.be.equal(priceInStableCoin);
+      expect(
+        protocolWalletBalanceAfter.sub(protocolWalletBalanceBefore)
+      ).to.be.equal(protocolFee);
+    });
   });
 
   describe("burn", () => {
