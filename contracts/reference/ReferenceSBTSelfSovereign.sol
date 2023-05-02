@@ -29,7 +29,7 @@ contract ReferenceSBTSelfSovereign is MasaSBTSelfSovereign, ReentrancyGuard {
         string memory name,
         string memory symbol,
         string memory baseTokenURI,
-        ISoulboundIdentity soulboundIdentity,
+        address soulboundIdentity,
         PaymentParams memory paymentParams
     )
         MasaSBTSelfSovereign(
@@ -54,14 +54,14 @@ contract ReferenceSBTSelfSovereign is MasaSBTSelfSovereign, ReentrancyGuard {
     /// @param authorityAddress Address of the authority that signed the message
     /// @param signatureDate Date of the signature
     /// @param signature Signature of the message
-    /// @return The NFT ID of the newly minted SBT
+    /// @return The SBT ID of the newly minted SBT
     function mint(
         address paymentMethod,
         uint256 identityId,
         address authorityAddress,
         uint256 signatureDate,
         bytes calldata signature
-    ) public payable virtual nonReentrant returns (uint256) {
+    ) external payable virtual nonReentrant returns (uint256) {
         address to = soulboundIdentity.ownerOf(identityId);
         if (balanceOf(to) > 0) revert SBTAlreadyCreated(to);
         if (to != _msgSender()) revert CallerNotOwner(_msgSender());
