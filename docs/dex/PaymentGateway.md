@@ -216,6 +216,23 @@ function protocolFeeAmount() external view returns (uint256)
 |---|---|---|
 | _0 | uint256 | undefined |
 
+### protocolFeePercent
+
+```solidity
+function protocolFeePercent() external view returns (uint256)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
 ### protocolFeeWallet
 
 ```solidity
@@ -298,6 +315,22 @@ Set the protocol fee amount
 | Name | Type | Description |
 |---|---|---|
 | _protocolFeeAmount | uint256 | New protocol fee amount |
+
+### setProtocolFeePercent
+
+```solidity
+function setProtocolFeePercent(uint256 _protocolFeePercent) external nonpayable
+```
+
+Set the protocol fee percent
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _protocolFeePercent | uint256 | New protocol fee percent |
 
 ### setProtocolFeeWallet
 
