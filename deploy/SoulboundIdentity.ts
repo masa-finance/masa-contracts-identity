@@ -37,7 +37,9 @@ const func: DeployFunction = async ({
     network.name === "hardhat" ||
     network.name === "celo" ||
     network.name === "alfajores" ||
-    network.name === "basegoerli"
+    network.name === "basegoerli" ||
+    network.name === "mumbai" ||
+    network.name === "polygon"
   ) {
     const soulboundIdentityDeploymentResult = await deploy(
       "SoulboundIdentity",
@@ -50,7 +52,7 @@ const func: DeployFunction = async ({
     );
 
     // verify contract with etherscan, if its not a local network or celo
-    if (network.name !== "hardhat" && network.name !== "basegoerli") {
+    if (network.name !== "hardhat") {
       try {
         await hre.run("verify:verify", {
           address: soulboundIdentityDeploymentResult.address,
@@ -75,7 +77,9 @@ func.skip = async ({ network }) => {
     network.name !== "hardhat" &&
     network.name !== "celo" &&
     network.name !== "alfajores" &&
-    network.name !== "basegoerli"
+    network.name !== "basegoerli" &&
+    network.name !== "mumbai" &&
+    network.name !== "polygon"
   );
 };
 func.tags = ["SoulboundIdentity"];

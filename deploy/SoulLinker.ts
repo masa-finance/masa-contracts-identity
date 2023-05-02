@@ -43,7 +43,9 @@ const func: DeployFunction = async ({
   if (
     network.name === "mainnet" ||
     network.name === "goerli" ||
-    network.name === "hardhat"
+    network.name === "hardhat" ||
+    network.name === "mumbai" ||
+    network.name === "polygon"
   ) {
     const soulLinkerDeploymentResult = await deploy("SoulLinker", {
       from: deployer,
@@ -69,7 +71,7 @@ const func: DeployFunction = async ({
       }
     }
 
-    if (network.name === "hardhat") {
+    if (network.name === "hardhat" || network.name === "mumbai") {
       // we add payment methods
 
       const signer = env.ADMIN
@@ -93,7 +95,9 @@ func.skip = async ({ network }) => {
   return (
     network.name !== "mainnet" &&
     network.name !== "goerli" &&
-    network.name !== "hardhat"
+    network.name !== "hardhat" &&
+    network.name !== "mumbai" &&
+    network.name !== "polygon"
   );
 };
 func.tags = ["SoulLinker"];
