@@ -527,7 +527,7 @@ describe("Soulbound Credit Score", () => {
 
   describe("mint paying a minting fee and protocol fee", () => {
     beforeEach(async () => {
-      await soulboundCreditScore.connect(owner).setMintPrice(1_000_000); // 1 USD
+      await soulboundCreditScore.connect(owner).setMintPrice(10_000_000); // 10 USD
     });
 
     it("should mint from final user address paying with ETH (with protocol fee percent)", async () => {
@@ -535,6 +535,70 @@ describe("Soulbound Credit Score", () => {
         .connect(owner)
         .setProtocolFeeWallet(protocolWallet.address);
       await soulboundCreditScore.connect(owner).setProtocolFeePercent(10); // 10%
+
+      const treasuryWallet = await soulboundCreditScore.treasuryWallet();
+      const protocolFeeWallet = await soulboundCreditScore.protocolFeeWallet();
+      const { price: priceInETH, protocolFee } =
+        await soulboundCreditScore.getMintPrice(ethers.constants.AddressZero);
+      const treasuryWalletBalanceBefore = await ethers.provider.getBalance(
+        treasuryWallet
+      );
+      const protocolWalletBalanceBefore = await ethers.provider.getBalance(
+        protocolFeeWallet
+      );
+
+      await expect(
+        soulboundCreditScore
+          .connect(address1)
+          ["mint(address,address,address,uint256,bytes)"](
+            ethers.constants.AddressZero,
+            address1.address,
+            authority.address,
+            signatureDate,
+            signatureToAddress,
+            { value: priceInETH }
+          )
+      ).to.be.revertedWith("InsufficientEthAmount");
+
+      const mintTx = await soulboundCreditScore
+        .connect(address1)
+        ["mint(address,address,address,uint256,bytes)"](
+          ethers.constants.AddressZero,
+          address1.address,
+          authority.address,
+          signatureDate,
+          signatureToAddress,
+          { value: priceInETH.add(protocolFee) }
+        );
+      const mintReceipt = await mintTx.wait();
+
+      const tokenId = mintReceipt.events![0].args![1].toNumber();
+
+      expect(await soulboundCreditScore.getIdentityId(tokenId)).to.equal(
+        identityId1
+      );
+
+      const treasuryWalletBalanceAfter = await ethers.provider.getBalance(
+        treasuryWallet
+      );
+      const protocolWalletBalanceAfter = await ethers.provider.getBalance(
+        protocolFeeWallet
+      );
+
+      // we check that the treasury wallet received the ETH
+      expect(
+        treasuryWalletBalanceAfter.sub(treasuryWalletBalanceBefore)
+      ).to.be.equal(priceInETH);
+      expect(
+        protocolWalletBalanceAfter.sub(protocolWalletBalanceBefore)
+      ).to.be.equal(protocolFee);
+    });
+
+    it("should mint from final user address paying with ETH (with protocol fee amount)", async () => {
+      await soulboundCreditScore
+        .connect(owner)
+        .setProtocolFeeWallet(protocolWallet.address);
+      await soulboundCreditScore.connect(owner).setProtocolFeeAmount(1_000_000); // 1 USD
 
       const treasuryWallet = await soulboundCreditScore.treasuryWallet();
       const protocolFeeWallet = await soulboundCreditScore.protocolFeeWallet();
