@@ -113,7 +113,7 @@ export default {
       mainnet: getEtherscanApiKey(),
       celo: getCeloscanApiKey(),
       alfajores: getCeloscanApiKey(),
-      basegoerli: getEtherscanApiKey()
+      basegoerli: "PLACEHOLDER_STRING"
     },
     customChains: [
       {
@@ -136,8 +136,8 @@ export default {
         network: "basegoerli",
         chainId: 84531,
         urls: {
-          apiURL: "https://api-goerli.basescan.org",
-          browserURL: "https://goerli.basescan.org/"
+          apiURL: "https://api-goerli.basescan.org/api",
+          browserURL: "https://goerli.basescan.org"
         }
       }
     ]
