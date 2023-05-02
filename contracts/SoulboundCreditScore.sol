@@ -28,7 +28,7 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign, ReentrancyGuard {
         string memory name,
         string memory symbol,
         string memory baseTokenURI,
-        ISoulboundIdentity soulboundIdentity,
+        address soulboundIdentity,
         PaymentParams memory paymentParams
     )
         MasaSBTSelfSovereign(
