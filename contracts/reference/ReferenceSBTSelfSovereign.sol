@@ -5,9 +5,9 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 import "../tokens/MasaSBTSelfSovereign.sol";
 
-/// @title Soulbound reference SBT Self-Sovereign
+/// @title Soulbound reference Self-Sovereign SBT
 /// @author Masa Finance
-/// @notice Soulbound token that represents a SBT Self-Sovereign
+/// @notice Soulbound token that represents a Self-Sovereign SBT
 /// @dev Inherits from the SBT contract.
 contract ReferenceSBTSelfSovereign is MasaSBTSelfSovereign, ReentrancyGuard {
     error SBTAlreadyCreated(address to);
@@ -16,8 +16,8 @@ contract ReferenceSBTSelfSovereign is MasaSBTSelfSovereign, ReentrancyGuard {
 
     /* ========== INITIALIZE ================================================ */
 
-    /// @notice Creates a new SBT Self-Sovereign
-    /// @dev Creates a new SBT Self-Sovereign, inheriting from the SBT contract.
+    /// @notice Creates a new Self-Sovereign SBT
+    /// @dev Creates a new Self-Sovereign SBT, inheriting from the SBT contract.
     /// @param admin Administrator of the smart contract
     /// @param name Name of the token
     /// @param symbol Symbol of the token
