@@ -230,6 +230,33 @@ abstract contract PaymentGateway is AccessControl {
         }
     }
 
+    /// @notice Calculates the protocol fee
+    /// @dev This method will calculate the protocol fee based on the payment method
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param amount Price to be paid in the specified payment method
+    function _getProtocolFee(
+        address paymentMethod,
+        uint256 amount
+    ) internal view returns (uint256) {
+        uint256 protocolFee = 0;
+        if (protocolFeeAmount > 0) {
+            if (paymentMethod == stableCoin) {
+                protocolFee = protocolFeeAmount;
+            } else {
+                protocolFee = _convertFromStableCoin(
+                    paymentMethod,
+                    protocolFeeAmount
+                );
+            }
+        }
+        if (protocolFeePercent > 0) {
+            protocolFee = protocolFee.add(
+                amount.mul(protocolFeePercent).div(100)
+            );
+        }
+        return protocolFee;
+    }
+
     /// @notice Performs the payment in any payment method
     /// @dev This method will transfer the funds to the treasury wallet, performing
     /// the swap if necessary
@@ -237,6 +264,10 @@ abstract contract PaymentGateway is AccessControl {
     /// @param amount Price to be paid in the specified payment method
     function _pay(address paymentMethod, uint256 amount) internal {
         if (amount == 0) return;
+
+        // calculate protocol fee
+        uint256 protocolFee = _getProtocolFee(paymentMethod, amount);
+
         if (!enabledPaymentMethod[paymentMethod])
             revert InvalidPaymentMethod(paymentMethod);
         if (paymentMethod == address(0)) {
