@@ -515,7 +515,7 @@ describe("Soul Store", () => {
   describe("purchase identity and name", () => {
     it("we can purchase an identity and name with ETH", async () => {
       const treasuryWallet = await soulStore.treasuryWallet();
-      const { price: priceInETH } = await soulStore.getPriceForMintingName(
+      const { price } = await soulStore.getPriceForMintingName(
         ethers.constants.AddressZero,
         SOUL_NAME.length,
         YEAR
@@ -541,7 +541,7 @@ describe("Soul Store", () => {
         ARWEAVE_LINK,
         authority.address,
         signature,
-        { value: priceInETH }
+        { value: price }
       );
 
       const treasuryWalletBalanceAfter = await ethers.provider.getBalance(
@@ -551,23 +551,20 @@ describe("Soul Store", () => {
       // we check that the treasury wallet received the ETH
       expect(
         treasuryWalletBalanceAfter.sub(treasuryWalletBalanceBefore)
-      ).to.be.equal(priceInETH);
+      ).to.be.equal(price);
     });
 
     it("we can purchase an identity and name with stable coin", async () => {
       const treasuryWallet = await soulStore.treasuryWallet();
-      const { price: priceInStableCoin } =
-        await soulStore.getPriceForMintingName(
-          await soulStore.stableCoin(),
-          SOUL_NAME.length,
-          YEAR
-        );
+      const { price } = await soulStore.getPriceForMintingName(
+        await soulStore.stableCoin(),
+        SOUL_NAME.length,
+        YEAR
+      );
 
       // set allowance for soul store
       const usdc: IERC20 = IERC20__factory.connect(env.USDC_TOKEN, owner);
-      await usdc
-        .connect(address1)
-        .approve(soulStore.address, priceInStableCoin);
+      await usdc.connect(address1).approve(soulStore.address, price);
       const treasuryWalletBalanceBefore = await usdc.balanceOf(treasuryWallet);
 
       const signature = await signMintSoulName(
@@ -594,21 +591,20 @@ describe("Soul Store", () => {
       // we check that the treasury wallet received the stable coin
       expect(
         treasuryWalletBalanceAfter.sub(treasuryWalletBalanceBefore)
-      ).to.be.equal(priceInStableCoin);
+      ).to.be.equal(price);
     });
 
     it("we can purchase an identity and name with MASA coin", async () => {
       const treasuryWallet = await soulStore.treasuryWallet();
-      const { price: priceInMasaToken } =
-        await soulStore.getPriceForMintingName(
-          await soulStore.masaToken(),
-          SOUL_NAME.length,
-          YEAR
-        );
+      const { price } = await soulStore.getPriceForMintingName(
+        await soulStore.masaToken(),
+        SOUL_NAME.length,
+        YEAR
+      );
 
       // set allowance for soul store
       const masa: IERC20 = IERC20__factory.connect(env.MASA_TOKEN, owner);
-      await masa.connect(address1).approve(soulStore.address, priceInMasaToken);
+      await masa.connect(address1).approve(soulStore.address, price);
       const treasuryWalletBalanceBefore = await masa.balanceOf(treasuryWallet);
 
       const signature = await signMintSoulName(
@@ -635,11 +631,11 @@ describe("Soul Store", () => {
       // we check that the treasury wallet received the stable coin
       expect(
         treasuryWalletBalanceAfter.sub(treasuryWalletBalanceBefore)
-      ).to.be.equal(priceInMasaToken);
+      ).to.be.equal(price);
     });
 
     it("we can't purchase an identity and name with ETH if we pay less", async () => {
-      const { price: priceInETH } = await soulStore.getPriceForMintingName(
+      const { price } = await soulStore.getPriceForMintingName(
         ethers.constants.AddressZero,
         SOUL_NAME.length,
         YEAR
@@ -663,24 +659,21 @@ describe("Soul Store", () => {
           ARWEAVE_LINK,
           authority.address,
           signature,
-          { value: priceInETH.div(2) }
+          { value: price.div(2) }
         )
       ).to.be.rejectedWith("InsufficientEthAmount");
     });
 
     it("we can't purchase an identity and name with stable coin if we don't have funds", async () => {
-      const { price: priceInStableCoin } =
-        await soulStore.getPriceForMintingName(
-          await soulStore.stableCoin(),
-          SOUL_NAME.length,
-          YEAR
-        );
+      const { price } = await soulStore.getPriceForMintingName(
+        await soulStore.stableCoin(),
+        SOUL_NAME.length,
+        YEAR
+      );
 
       // set allowance for soul store
       const usdc: IERC20 = IERC20__factory.connect(env.USDC_TOKEN, owner);
-      await usdc
-        .connect(address2)
-        .approve(soulStore.address, priceInStableCoin);
+      await usdc.connect(address2).approve(soulStore.address, price);
 
       const signature = await signMintSoulName(
         address1.address,
@@ -705,16 +698,15 @@ describe("Soul Store", () => {
     });
 
     it("we can't purchase an identity and name with MASA coin if we don't have funds", async () => {
-      const { price: priceInMasaToken } =
-        await soulStore.getPriceForMintingName(
-          await soulStore.masaToken(),
-          SOUL_NAME.length,
-          YEAR
-        );
+      const { price } = await soulStore.getPriceForMintingName(
+        await soulStore.masaToken(),
+        SOUL_NAME.length,
+        YEAR
+      );
 
       // set allowance for soul store
       const masa: IERC20 = IERC20__factory.connect(env.MASA_TOKEN, owner);
-      await masa.connect(address2).approve(soulStore.address, priceInMasaToken);
+      await masa.connect(address2).approve(soulStore.address, price);
 
       const signature = await signMintSoulName(
         address1.address,
@@ -739,7 +731,7 @@ describe("Soul Store", () => {
     });
 
     it("we can purchase an identity and name with more ETH receiving the refund", async () => {
-      const { price: priceInETH } = await soulStore.getPriceForMintingName(
+      const { price } = await soulStore.getPriceForMintingName(
         ethers.constants.AddressZero,
         SOUL_NAME.length,
         YEAR
@@ -764,18 +756,16 @@ describe("Soul Store", () => {
         ARWEAVE_LINK,
         authority.address,
         signature,
-        { value: priceInETH.mul(2) }
+        { value: price.mul(2) }
       );
       const receipt = await tx.wait();
 
       const balanceAfter = await address1.getBalance();
-      const price = await address1.provider?.getGasPrice();
-      const gasCost = price?.mul(receipt.gasUsed) || 0;
+      const gasPrice = await address1.provider?.getGasPrice();
+      const gasCost = gasPrice?.mul(receipt.gasUsed) || 0;
 
       // TODO: it fails on coverage, but works on test
-      await expect(balanceAfter).to.be.equal(
-        balance.sub(priceInETH).sub(gasCost)
-      );
+      await expect(balanceAfter).to.be.equal(balance.sub(price).sub(gasCost));
     });
   });
 
@@ -792,7 +782,7 @@ describe("Soul Store", () => {
     });
 
     it("we can purchase a name with ETH", async () => {
-      const { price: priceInETH } = await soulStore.getPriceForMintingName(
+      const { price } = await soulStore.getPriceForMintingName(
         ethers.constants.AddressZero,
         SOUL_NAME.length,
         YEAR
@@ -816,23 +806,20 @@ describe("Soul Store", () => {
         ARWEAVE_LINK,
         authority.address,
         signature,
-        { value: priceInETH }
+        { value: price }
       );
     });
 
     it("we can purchase a name with stable coin", async () => {
-      const { price: priceInStableCoin } =
-        await soulStore.getPriceForMintingName(
-          await soulStore.stableCoin(),
-          SOUL_NAME.length,
-          YEAR
-        );
+      const { price } = await soulStore.getPriceForMintingName(
+        await soulStore.stableCoin(),
+        SOUL_NAME.length,
+        YEAR
+      );
 
       // set allowance for soul store
       const usdc: IERC20 = IERC20__factory.connect(env.USDC_TOKEN, owner);
-      await usdc
-        .connect(address1)
-        .approve(soulStore.address, priceInStableCoin);
+      await usdc.connect(address1).approve(soulStore.address, price);
 
       const signature = await signMintSoulName(
         address1.address,
@@ -856,16 +843,15 @@ describe("Soul Store", () => {
     });
 
     it("we can purchase a name with MASA coin", async () => {
-      const { price: priceInMasaToken } =
-        await soulStore.getPriceForMintingName(
-          await soulStore.masaToken(),
-          SOUL_NAME.length,
-          YEAR
-        );
+      const { price } = await soulStore.getPriceForMintingName(
+        await soulStore.masaToken(),
+        SOUL_NAME.length,
+        YEAR
+      );
 
       // set allowance for soul store
       const masa: IERC20 = IERC20__factory.connect(env.MASA_TOKEN, owner);
-      await masa.connect(address1).approve(soulStore.address, priceInMasaToken);
+      await masa.connect(address1).approve(soulStore.address, price);
 
       const signature = await signMintSoulName(
         address1.address,
@@ -889,7 +875,7 @@ describe("Soul Store", () => {
     });
 
     it("we can't purchase a name with ETH if we pay less", async () => {
-      const { price: priceInETH } = await soulStore.getPriceForMintingName(
+      const { price } = await soulStore.getPriceForMintingName(
         ethers.constants.AddressZero,
         SOUL_NAME.length,
         YEAR
@@ -914,24 +900,21 @@ describe("Soul Store", () => {
           ARWEAVE_LINK,
           authority.address,
           signature,
-          { value: priceInETH.div(2) }
+          { value: price.div(2) }
         )
       ).to.be.rejectedWith("InsufficientEthAmount");
     });
 
     it("we can't purchase a name with stable coin if we don't have funds", async () => {
-      const { price: priceInStableCoin } =
-        await soulStore.getPriceForMintingName(
-          await soulStore.stableCoin(),
-          SOUL_NAME.length,
-          YEAR
-        );
+      const { price } = await soulStore.getPriceForMintingName(
+        await soulStore.stableCoin(),
+        SOUL_NAME.length,
+        YEAR
+      );
 
       // set allowance for soul store
       const usdc: IERC20 = IERC20__factory.connect(env.USDC_TOKEN, owner);
-      await usdc
-        .connect(address2)
-        .approve(soulStore.address, priceInStableCoin);
+      await usdc.connect(address2).approve(soulStore.address, price);
 
       const signature = await signMintSoulName(
         address1.address,
@@ -957,16 +940,15 @@ describe("Soul Store", () => {
     });
 
     it("we can't purchase a name with MASA coin if we don't have funds", async () => {
-      const { price: priceInMasaToken } =
-        await soulStore.getPriceForMintingName(
-          await soulStore.masaToken(),
-          SOUL_NAME.length,
-          YEAR
-        );
+      const { price } = await soulStore.getPriceForMintingName(
+        await soulStore.masaToken(),
+        SOUL_NAME.length,
+        YEAR
+      );
 
       // set allowance for soul store
       const masa: IERC20 = IERC20__factory.connect(env.MASA_TOKEN, owner);
-      await masa.connect(address2).approve(soulStore.address, priceInMasaToken);
+      await masa.connect(address2).approve(soulStore.address, price);
 
       const signature = await signMintSoulName(
         address1.address,
@@ -1044,7 +1026,7 @@ describe("Soul Store", () => {
     it("we can purchase a name with other ERC-20 token", async () => {
       await soulStore.connect(owner).enablePaymentMethod(DAI_GOERLI);
 
-      const { price: priceInDAI } = await soulStore.getPriceForMintingName(
+      const { price } = await soulStore.getPriceForMintingName(
         DAI_GOERLI,
         SOUL_NAME.length,
         YEAR
@@ -1052,7 +1034,7 @@ describe("Soul Store", () => {
 
       // set allowance for soul store
       const dai: IERC20 = IERC20__factory.connect(DAI_GOERLI, owner);
-      await dai.connect(address1).approve(soulStore.address, priceInDAI);
+      await dai.connect(address1).approve(soulStore.address, price);
 
       const signature = await signMintSoulName(
         address1.address,
@@ -1109,7 +1091,7 @@ describe("Soul Store", () => {
 
   describe("use invalid signature", () => {
     it("we can't use an invalid signature", async () => {
-      const { price: priceInETH } = await soulStore.getPriceForMintingName(
+      const { price } = await soulStore.getPriceForMintingName(
         ethers.constants.AddressZero,
         SOUL_NAME.length,
         YEAR
@@ -1135,13 +1117,13 @@ describe("Soul Store", () => {
             ARWEAVE_LINK,
             authority.address,
             signature,
-            { value: priceInETH }
+            { value: price }
           )
       ).to.be.rejectedWith("InvalidSignature");
     });
 
     it("we can't use a non authority signature", async () => {
-      const { price: priceInETH } = await soulStore.getPriceForMintingName(
+      const { price } = await soulStore.getPriceForMintingName(
         ethers.constants.AddressZero,
         SOUL_NAME.length,
         YEAR
@@ -1167,7 +1149,7 @@ describe("Soul Store", () => {
             ARWEAVE_LINK,
             address1.address,
             signature,
-            { value: priceInETH }
+            { value: price }
           )
       ).to.be.rejectedWith("NotAuthorized");
     });
