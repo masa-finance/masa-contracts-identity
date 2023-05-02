@@ -138,6 +138,28 @@ Returns true if the token exists
 |---|---|---|
 | _0 | bool | True if the token exists |
 
+### getIdentityId
+
+```solidity
+function getIdentityId(uint256 tokenId) external view returns (uint256)
+```
+
+Returns the identityId owned by the given token
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId | uint256 | Id of the token |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | Id of the identity |
+
 ### getRoleAdmin
 
 ```solidity
@@ -214,13 +236,35 @@ Mints a new SBT
 
 | Name | Type | Description |
 |---|---|---|
-| to | address | Address of the owner of the new identity |
+| to | address | The address to mint the SBT to |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256 | The NFT ID of the newly minted SBT |
+| _0 | uint256 | The SBT ID of the newly minted SBT |
+
+### mint
+
+```solidity
+function mint(uint256 identityId) external nonpayable returns (uint256)
+```
+
+Mints a new SBT
+
+*The caller must have the MINTER role*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| identityId | uint256 | TokenId of the identity to mint the NFT to |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | The SBT ID of the newly minted SBT |
 
 ### name
 
@@ -393,6 +437,39 @@ Sets the price for reading data in SoulLinker in MASA
 |---|---|---|
 | _queryLinkPriceMASA | uint256 | New price for reading data in SoulLinker in MASA |
 
+### setSoulboundIdentity
+
+```solidity
+function setSoulboundIdentity(address _soulboundIdentity) external nonpayable
+```
+
+Sets the SoulboundIdentity contract address linked to this SBT
+
+*The caller must be the admin to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _soulboundIdentity | address | Address of the SoulboundIdentity contract |
+
+### soulboundIdentity
+
+```solidity
+function soulboundIdentity() external view returns (contract ISoulboundIdentity)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | contract ISoulboundIdentity | undefined |
+
 ### supportsInterface
 
 ```solidity
@@ -554,10 +631,10 @@ event Mint(address indexed _owner, uint256 indexed _tokenId)
 | _owner `indexed` | address | undefined |
 | _tokenId `indexed` | uint256 | undefined |
 
-### Minted
+### MintedToAddress
 
 ```solidity
-event Minted(uint256 tokenId, address to)
+event MintedToAddress(uint256 tokenId, address to)
 ```
 
 
@@ -570,6 +647,23 @@ event Minted(uint256 tokenId, address to)
 |---|---|---|
 | tokenId  | uint256 | undefined |
 | to  | address | undefined |
+
+### MintedToIdentity
+
+```solidity
+event MintedToIdentity(uint256 tokenId, uint256 identityId)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId  | uint256 | undefined |
+| identityId  | uint256 | undefined |
 
 ### RoleAdminChanged
 
@@ -628,6 +722,33 @@ event RoleRevoked(bytes32 indexed role, address indexed account, address indexed
 
 
 ## Errors
+
+### NotLinkedToAnIdentitySBT
+
+```solidity
+error NotLinkedToAnIdentitySBT()
+```
+
+
+
+
+
+
+### SBTAlreadyCreated
+
+```solidity
+error SBTAlreadyCreated(address to)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| to | address | undefined |
 
 ### SameValue
 
