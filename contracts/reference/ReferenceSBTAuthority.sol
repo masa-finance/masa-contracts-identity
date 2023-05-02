@@ -8,30 +8,77 @@ import "../tokens/MasaSBTAuthority.sol";
 /// @notice Soulbound token that represents a Authority SBT
 /// @dev Inherits from the SBT contract.
 contract ReferenceSBTAuthority is MasaSBTAuthority {
+    error SBTAlreadyCreated(address to);
+
+    /* ========== STATE VARIABLES =========================================== */
+
+    /* ========== INITIALIZE ================================================ */
+
     /// @notice Creates a new Authority SBT
     /// @dev Creates a new Authority SBT, inheriting from the SBT contract.
     /// @param admin Administrator of the smart contract
     /// @param name Name of the token
     /// @param symbol Symbol of the token
     /// @param baseTokenURI Base URI of the token
+    /// @param soulboundIdentity Address of the SoulboundIdentity contract
     constructor(
         address admin,
         string memory name,
         string memory symbol,
-        string memory baseTokenURI
-    ) MasaSBTAuthority(admin, name, symbol, baseTokenURI) {}
+        string memory baseTokenURI,
+        address soulboundIdentity
+    ) MasaSBTAuthority(admin, name, symbol, baseTokenURI, soulboundIdentity) {}
+
+    /* ========== RESTRICTED FUNCTIONS ====================================== */
+
+    /* ========== MUTATIVE FUNCTIONS ======================================== */
 
     /// @notice Mints a new SBT
     /// @dev The caller must have the MINTER role
-    /// @param to Address of the owner of the new identity
-    /// @return The NFT ID of the newly minted SBT
-    function mint(address to) public returns (uint256) {
+    /// @param identityId TokenId of the identity to mint the NFT to
+    /// @return The SBT ID of the newly minted SBT
+    function mint(uint256 identityId) external virtual returns (uint256) {
+        address to = soulboundIdentity.ownerOf(identityId);
+        if (balanceOf(to) > 0) revert SBTAlreadyCreated(to);
+
         uint256 tokenId = _mintWithCounter(to);
 
-        emit Minted(tokenId, to);
+        emit MintedToIdentity(tokenId, identityId);
 
         return tokenId;
     }
 
-    event Minted(uint256 tokenId, address to);
+    /// @notice Mints a new SBT
+    /// @dev The caller must have the MINTER role
+    /// @param to The address to mint the SBT to
+    /// @return The SBT ID of the newly minted SBT
+    function mint(address to) external virtual returns (uint256) {
+        if (balanceOf(to) > 0) revert SBTAlreadyCreated(to);
+
+        uint256 tokenId = _mintWithCounter(to);
+
+        emit MintedToAddress(tokenId, to);
+
+        return tokenId;
+    }
+
+    /* ========== VIEWS ===================================================== */
+
+    function tokenURI(
+        uint256 tokenId
+    ) public view virtual override returns (string memory) {
+        _requireMinted(tokenId);
+
+        return _baseURI();
+    }
+
+    /* ========== PRIVATE FUNCTIONS ========================================= */
+
+    /* ========== MODIFIERS ================================================= */
+
+    /* ========== EVENTS ==================================================== */
+
+    event MintedToIdentity(uint256 tokenId, uint256 identityId);
+
+    event MintedToAddress(uint256 tokenId, address to);
 }
