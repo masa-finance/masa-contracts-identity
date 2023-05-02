@@ -24,14 +24,28 @@ const func: DeployFunction = async ({
   const env = getEnvParams(network.name);
   const baseUri = `${env.BASE_URI}/credit-score/${network.name}/`;
 
-  const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
+  let soulboundIdentityDeployedAddress;
+  if (
+    network.name === "mainnet" ||
+    network.name === "goerli" ||
+    network.name === "hardhat" ||
+    network.name === "mumbai" ||
+    network.name === "polygon"
+  ) {
+    const soulboundIdentityDeployed = await deployments.get(
+      "SoulboundIdentity"
+    );
+    soulboundIdentityDeployedAddress = soulboundIdentityDeployed.address;
+  } else {
+    soulboundIdentityDeployedAddress = ethers.constants.AddressZero;
+  }
 
   const constructorArguments = [
     env.ADMIN || admin.address,
     env.SOULBOUNDCREDITSCORE_NAME,
     env.SOULBOUNDCREDITSCORE_SYMBOL,
     baseUri,
-    soulboundIdentityDeployed.address,
+    soulboundIdentityDeployedAddress,
     [
       env.SWAP_ROUTER,
       env.WETH_TOKEN,
@@ -44,7 +58,9 @@ const func: DeployFunction = async ({
   if (
     network.name === "mainnet" ||
     network.name === "goerli" ||
-    network.name === "hardhat"
+    network.name === "hardhat" ||
+    network.name === "mumbai" ||
+    network.name === "polygon"
   ) {
     const soulboundCreditScoreDeploymentResult = await deploy(
       "SoulboundCreditScore",
@@ -73,7 +89,7 @@ const func: DeployFunction = async ({
       }
     }
 
-    if (network.name === "hardhat") {
+    if (network.name === "hardhat" || network.name === "mumbai") {
       const signer = env.ADMIN
         ? new ethers.Wallet(getPrivateKey(network.name), ethers.provider)
         : admin;
@@ -110,7 +126,9 @@ func.skip = async ({ network }) => {
   return (
     network.name !== "mainnet" &&
     network.name !== "goerli" &&
-    network.name !== "hardhat"
+    network.name !== "hardhat" &&
+    network.name !== "mumbai" &&
+    network.name !== "polygon"
   );
 };
 func.tags = ["SoulboundCreditScore"];
