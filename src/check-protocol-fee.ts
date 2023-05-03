@@ -1,13 +1,8 @@
 /* eslint-disable no-console */
 import "@nomiclabs/hardhat-ethers";
-import { ethers, deployments, getChainId } from "hardhat";
+import { ethers, deployments } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import {
-  IUniswapRouter,
-  IUniswapRouter__factory,
-  SoulStore,
-  SoulStore__factory
-} from "../typechain";
+import { SoulStore, SoulStore__factory } from "../typechain";
 import { getEnvParams } from "../src/EnvParams";
 
 const env = getEnvParams("hardhat");
@@ -17,61 +12,33 @@ let soulStore: SoulStore;
 
 let owner: SignerWithAddress;
 let protocolWallet: SignerWithAddress;
-let address1: SignerWithAddress;
-let address2: SignerWithAddress;
-let authority: SignerWithAddress;
 
-const SOUL_NAME = "soulNameTest";
 const YEAR = 1; // 1 year
-const ARWEAVE_LINK = "ar://jK9sR4OrYvODj7PD3czIAyNJalub0-vdV_JAg1NqQ-o";
 
-const signMintSoulName = async (
-  to: string,
-  name: string,
-  nameLength: number,
-  yearsPeriod: number,
-  tokenURI: string,
-  authoritySigner: SignerWithAddress
-) => {
-  const chainId = await getChainId();
-
-  const signature = await authoritySigner._signTypedData(
-    // Domain
-    {
-      name: "SoulStore",
-      version: "1.0.0",
-      chainId: chainId,
-      verifyingContract: soulStore.address
-    },
-    // Types
-    {
-      MintSoulName: [
-        { name: "to", type: "address" },
-        { name: "name", type: "string" },
-        { name: "nameLength", type: "uint256" },
-        { name: "yearsPeriod", type: "uint256" },
-        { name: "tokenURI", type: "string" }
-      ]
-    },
-    // Value
-    {
-      to: to,
-      name: name,
-      nameLength: nameLength,
-      yearsPeriod: yearsPeriod,
-      tokenURI: tokenURI
-    }
+async function showPrice(length, paymentMethod) {
+  const { price, protocolFee } = await soulStore.getPriceForMintingName(
+    paymentMethod,
+    length,
+    YEAR
   );
-
-  return signature;
-};
+  const paymentMethodStr =
+    paymentMethod === ethers.constants.AddressZero ? "ETH" : "USDC";
+  console.log(
+    `price      , length ${length}, ${paymentMethodStr}: ${price.toString()}`
+  );
+  console.log(
+    `protocolFee, length ${length}, ${paymentMethodStr}: ${protocolFee.toString()}`
+  );
+  console.log(
+    `TOTAL PRICE, length ${length}, ${paymentMethodStr}: ${price.add(protocolFee).toString()}`
+  );
+}
 
 /**
  * main function
  */
 async function main() {
-  [, owner, protocolWallet, address1, , address2, authority] =
-    await ethers.getSigners();
+  [, owner, protocolWallet] = await ethers.getSigners();
 
   await deployments.fixture("SoulboundIdentity", { fallbackToGlobal: false });
   await deployments.fixture("SoulName", { fallbackToGlobal: false });
@@ -80,43 +47,62 @@ async function main() {
   const { address: soulStoreAddress } = await deployments.get("SoulStore");
 
   soulStore = SoulStore__factory.connect(soulStoreAddress, owner);
-  const uniswapRouter: IUniswapRouter = IUniswapRouter__factory.connect(
-    env.SWAP_ROUTER,
-    owner
-  );
-
-  // we get stable coins for address1
-  await uniswapRouter.swapExactETHForTokens(
-    0,
-    [env.WETH_TOKEN, env.USDC_TOKEN],
-    address1.address,
-    Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
-    {
-      value: ethers.utils.parseEther("10")
-    }
-  );
-
-  // we add authority account
-  await soulStore.addAuthority(authority.address);
-
-  await soulStore.connect(address1).purchaseIdentity();
 
   await soulStore.connect(owner).setProtocolFeeWallet(protocolWallet.address);
-  await soulStore.connect(owner).setProtocolFeePercent(10); // 10%
-  const { price, protocolFee } = await soulStore.getPriceForMintingName(
-    ethers.constants.AddressZero,
-    SOUL_NAME.length,
-    YEAR
-  );
 
-  const signature = await signMintSoulName(
-    address1.address,
-    SOUL_NAME,
-    SOUL_NAME.length,
-    YEAR,
-    ARWEAVE_LINK,
-    authority
+  console.log(
+    "=============================================================================="
   );
+  console.log(`protocolFee: 0`);
+
+  await showPrice(1, ethers.constants.AddressZero);
+  await showPrice(2, ethers.constants.AddressZero);
+  await showPrice(3, ethers.constants.AddressZero);
+  await showPrice(4, ethers.constants.AddressZero);
+  await showPrice(5, ethers.constants.AddressZero);
+
+  await showPrice(1, env.USDC_TOKEN);
+  await showPrice(2, env.USDC_TOKEN);
+  await showPrice(3, env.USDC_TOKEN);
+  await showPrice(4, env.USDC_TOKEN);
+  await showPrice(5, env.USDC_TOKEN);
+
+  console.log(
+    "=============================================================================="
+  );
+  console.log(`protocolFee: 10%`);
+  await soulStore.connect(owner).setProtocolFeePercent(10); // 10%
+
+  await showPrice(1, ethers.constants.AddressZero);
+  await showPrice(2, ethers.constants.AddressZero);
+  await showPrice(3, ethers.constants.AddressZero);
+  await showPrice(4, ethers.constants.AddressZero);
+  await showPrice(5, ethers.constants.AddressZero);
+
+  await showPrice(1, env.USDC_TOKEN);
+  await showPrice(2, env.USDC_TOKEN);
+  await showPrice(3, env.USDC_TOKEN);
+  await showPrice(4, env.USDC_TOKEN);
+  await showPrice(5, env.USDC_TOKEN);
+
+  console.log(
+    "=============================================================================="
+  );
+  console.log(`protocolFee: 1 USDC`);
+  await soulStore.connect(owner).setProtocolFeePercent(0); // 0%
+  await soulStore.connect(owner).setProtocolFeeAmount(1_000_000); // 1 USDC
+
+  await showPrice(1, ethers.constants.AddressZero);
+  await showPrice(2, ethers.constants.AddressZero);
+  await showPrice(3, ethers.constants.AddressZero);
+  await showPrice(4, ethers.constants.AddressZero);
+  await showPrice(5, ethers.constants.AddressZero);
+
+  await showPrice(1, env.USDC_TOKEN);
+  await showPrice(2, env.USDC_TOKEN);
+  await showPrice(3, env.USDC_TOKEN);
+  await showPrice(4, env.USDC_TOKEN);
+  await showPrice(5, env.USDC_TOKEN);
 }
 
 main()
