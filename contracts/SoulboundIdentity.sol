@@ -34,7 +34,7 @@ contract SoulboundIdentity is
         string memory name,
         string memory symbol,
         string memory baseTokenURI
-    ) MasaSBTAuthority(admin, name, symbol, baseTokenURI) {}
+    ) MasaSBTAuthority(admin, name, symbol, baseTokenURI, address(0)) {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
