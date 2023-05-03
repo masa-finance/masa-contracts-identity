@@ -24,13 +24,20 @@ async function showPrice(length, paymentMethod) {
   const paymentMethodStr =
     paymentMethod === ethers.constants.AddressZero ? "ETH " : "USDC";
   console.log(
-    `price      , length ${length}, ${paymentMethodStr}: ${price.toString().padStart(13, ' ')}`
+    `price      , length ${length}, ${paymentMethodStr}: ${price
+      .toString()
+      .padStart(13, " ")}`
   );
   console.log(
-    `protocolFee, length ${length}, ${paymentMethodStr}: ${protocolFee.toString().padStart(13, ' ')}`
+    `protocolFee, length ${length}, ${paymentMethodStr}: ${protocolFee
+      .toString()
+      .padStart(13, " ")}`
   );
   console.log(
-    `TOTAL PRICE, length ${length}, ${paymentMethodStr}: ${price.add(protocolFee).toString().padStart(13, ' ')}`
+    `TOTAL PRICE, length ${length}, ${paymentMethodStr}: ${price
+      .add(protocolFee)
+      .toString()
+      .padStart(13, " ")}`
   );
 }
 
@@ -84,21 +91,11 @@ async function main() {
     "=============================================================================="
   );
   console.log(`SET ALL PRICES TO ZERO`);
-  await soulStore
-    .connect(owner)
-    .setNameRegistrationPricePerYear(0, 0); // default value
-  await soulStore
-    .connect(owner)
-    .setNameRegistrationPricePerYear(1, 0); // 1 length
-  await soulStore
-    .connect(owner)
-    .setNameRegistrationPricePerYear(2, 0); // 2 length
-  await soulStore
-    .connect(owner)
-    .setNameRegistrationPricePerYear(3, 0); // 3 length
-  await soulStore
-    .connect(owner)
-    .setNameRegistrationPricePerYear(4, 0); // 4 length
+  await soulStore.connect(owner).setNameRegistrationPricePerYear(0, 0); // default value
+  await soulStore.connect(owner).setNameRegistrationPricePerYear(1, 0); // 1 length
+  await soulStore.connect(owner).setNameRegistrationPricePerYear(2, 0); // 2 length
+  await soulStore.connect(owner).setNameRegistrationPricePerYear(3, 0); // 3 length
+  await soulStore.connect(owner).setNameRegistrationPricePerYear(4, 0); // 4 length
   console.log(
     "=============================================================================="
   );
