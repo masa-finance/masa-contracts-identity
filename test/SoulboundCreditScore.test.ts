@@ -159,7 +159,7 @@ describe("Soulbound Credit Score", () => {
     // we mint identity SBT
     const mintTx = await soulboundIdentity
       .connect(owner)
-      .mint(address1.address);
+      ["mint(address)"](address1.address);
     const mintReceipt = await mintTx.wait();
 
     identityId1 = mintReceipt.events![0].args![1].toNumber();

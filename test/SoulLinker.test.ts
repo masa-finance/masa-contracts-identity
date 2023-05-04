@@ -147,13 +147,17 @@ describe("Soul Linker", () => {
     soulLinker = SoulLinker__factory.connect(soulLinkerAddress, owner);
 
     // we mint identity SBT for dataOwner
-    let mintTx = await soulboundIdentity.connect(owner).mint(dataOwner.address);
+    let mintTx = await soulboundIdentity
+      .connect(owner)
+      ["mint(address)"](dataOwner.address);
     let mintReceipt = await mintTx.wait();
 
     ownerIdentityId = mintReceipt.events![0].args![1].toNumber();
 
     // we mint identity SBT for dataReader
-    mintTx = await soulboundIdentity.connect(owner).mint(dataReader.address);
+    mintTx = await soulboundIdentity
+      .connect(owner)
+      ["mint(address)"](dataReader.address);
     mintReceipt = await mintTx.wait();
 
     readerIdentityId = mintReceipt.events![0].args![1].toNumber();
