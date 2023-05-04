@@ -6,16 +6,14 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 import "../libraries/Errors.sol";
-import "../dex/PaymentGateway.sol";
 import "./MasaSBT.sol";
 
 /// @title MasaSBTSelfSovereign
 /// @author Masa Finance
 /// @notice Soulbound token. Non-fungible token that is not transferable.
-/// Adds a payment gateway to let minting paying a fee
 /// Adds a self-sovereign protocol to let minting using an authority signature
 /// @dev Implementation of https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763 Soulbound token.
-abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
+abstract contract MasaSBTSelfSovereign is MasaSBT, EIP712 {
     /* ========== STATE VARIABLES =========================================== */
 
     using Counters for Counters.Counter;
@@ -45,8 +43,14 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
         address soulboundIdentity,
         PaymentParams memory paymentParams
     )
-        PaymentGateway(admin, paymentParams)
-        MasaSBT(admin, name, symbol, baseTokenURI, soulboundIdentity)
+        MasaSBT(
+            admin,
+            name,
+            symbol,
+            baseTokenURI,
+            soulboundIdentity,
+            paymentParams
+        )
     {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
@@ -128,17 +132,6 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
             revert InvalidPaymentMethod(paymentMethod);
         }
         return (price, _getProtocolFee(paymentMethod, price));
-    }
-
-    /// @notice Query if a contract implements an interface
-    /// @dev Interface identification is specified in ERC-165.
-    /// @param interfaceId The interface identifier, as specified in ERC-165
-    /// @return `true` if the contract implements `interfaceId` and
-    ///  `interfaceId` is not 0xffffffff, `false` otherwise
-    function supportsInterface(
-        bytes4 interfaceId
-    ) public view virtual override(AccessControl, MasaSBT) returns (bool) {
-        return super.supportsInterface(interfaceId);
     }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */

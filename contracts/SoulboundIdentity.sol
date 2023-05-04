@@ -29,12 +29,23 @@ contract SoulboundIdentity is
     /// @param name Name of the token
     /// @param symbol Symbol of the token
     /// @param baseTokenURI Base URI of the token
+    /// @param paymentParams Payment gateway params
     constructor(
         address admin,
         string memory name,
         string memory symbol,
-        string memory baseTokenURI
-    ) MasaSBTAuthority(admin, name, symbol, baseTokenURI, address(0)) {}
+        string memory baseTokenURI,
+        PaymentParams memory paymentParams
+    )
+        MasaSBTAuthority(
+            admin,
+            name,
+            symbol,
+            baseTokenURI,
+            address(0),
+            paymentParams
+        )
+    {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 

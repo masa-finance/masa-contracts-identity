@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
+import "../dex/PaymentGateway.sol";
 import "../libraries/Errors.sol";
 import "../interfaces/ISoulboundIdentity.sol";
 import "../interfaces/ILinkableSBT.sol";
@@ -16,10 +16,11 @@ import "./SBT/extensions/SBTBurnable.sol";
 /// @notice Soulbound token. Non-fungible token that is not transferable.
 /// @dev Implementation of https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763 Soulbound token.
 /// Adds a link to a SoulboundIdentity SC to let minting using the identityId
+/// Adds a payment gateway to let minting paying a fee
 abstract contract MasaSBT is
+    PaymentGateway,
     SBT,
     SBTEnumerable,
-    AccessControl,
     SBTBurnable,
     ILinkableSBT
 {
@@ -45,13 +46,15 @@ abstract contract MasaSBT is
     /// @param symbol Symbol of the token
     /// @param baseTokenURI Base URI of the token
     /// @param _soulboundIdentity Address of the SoulboundIdentity contract
+    /// @param paymentParams Payment gateway params
     constructor(
         address admin,
         string memory name,
         string memory symbol,
         string memory baseTokenURI,
-        address _soulboundIdentity
-    ) SBT(name, symbol) {
+        address _soulboundIdentity,
+        PaymentParams memory paymentParams
+    ) SBT(name, symbol) PaymentGateway(admin, paymentParams) {
         _grantRole(DEFAULT_ADMIN_ROLE, admin);
 
         _baseTokenURI = baseTokenURI;
