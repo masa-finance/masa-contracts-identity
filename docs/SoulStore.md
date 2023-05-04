@@ -1055,6 +1055,28 @@ error NotAuthorized(address signer)
 |---|---|---|
 | signer | address | undefined |
 
+### PaymentParamsNotSet
+
+```solidity
+error PaymentParamsNotSet()
+```
+
+
+
+
+
+
+### ProtocolFeeWalletNotSet
+
+```solidity
+error ProtocolFeeWalletNotSet()
+```
+
+
+
+
+
+
 ### RefundFailed
 
 ```solidity

@@ -1214,6 +1214,17 @@ error NotLinkedToAnIdentitySBT()
 
 
 
+### PaymentParamsNotSet
+
+```solidity
+error PaymentParamsNotSet()
+```
+
+
+
+
+
+
 ### SameValue
 
 ```solidity

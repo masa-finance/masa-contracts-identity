@@ -1383,6 +1383,28 @@ error NotLinkedToAnIdentitySBT()
 
 
 
+### PaymentParamsNotSet
+
+```solidity
+error PaymentParamsNotSet()
+```
+
+
+
+
+
+
+### ProtocolFeeWalletNotSet
+
+```solidity
+error ProtocolFeeWalletNotSet()
+```
+
+
+
+
+
+
 ### RefundFailed
 
 ```solidity

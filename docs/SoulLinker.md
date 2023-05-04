@@ -1173,6 +1173,28 @@ error NonExistingErc20Token(address erc20token)
 |---|---|---|
 | erc20token | address | undefined |
 
+### PaymentParamsNotSet
+
+```solidity
+error PaymentParamsNotSet()
+```
+
+
+
+
+
+
+### ProtocolFeeWalletNotSet
+
+```solidity
+error ProtocolFeeWalletNotSet()
+```
+
+
+
+
+
+
 ### RefundFailed
 
 ```solidity

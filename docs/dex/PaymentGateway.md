@@ -602,15 +602,4 @@ error SameValue()
 
 
 
-### ZeroAddress
-
-```solidity
-error ZeroAddress()
-```
-
-
-
-
-
-
 
