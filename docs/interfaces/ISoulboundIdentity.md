@@ -52,7 +52,7 @@ function getSoulName() external view returns (contract ISoulName)
 ### mint
 
 ```solidity
-function mint(address to) external nonpayable returns (uint256)
+function mint(address to) external payable returns (uint256)
 ```
 
 
@@ -74,7 +74,7 @@ function mint(address to) external nonpayable returns (uint256)
 ### mint
 
 ```solidity
-function mint(address paymentMethod, address to) external nonpayable returns (uint256)
+function mint(address paymentMethod, address to) external payable returns (uint256)
 ```
 
 
@@ -97,7 +97,7 @@ function mint(address paymentMethod, address to) external nonpayable returns (ui
 ### mintIdentityWithName
 
 ```solidity
-function mintIdentityWithName(address to, string name, uint256 yearsPeriod, string _tokenURI) external nonpayable returns (uint256)
+function mintIdentityWithName(address to, string name, uint256 yearsPeriod, string _tokenURI) external payable returns (uint256)
 ```
 
 
@@ -122,7 +122,7 @@ function mintIdentityWithName(address to, string name, uint256 yearsPeriod, stri
 ### mintIdentityWithName
 
 ```solidity
-function mintIdentityWithName(address paymentMethod, address to, string name, uint256 yearsPeriod, string _tokenURI) external nonpayable returns (uint256)
+function mintIdentityWithName(address paymentMethod, address to, string name, uint256 yearsPeriod, string _tokenURI) external payable returns (uint256)
 ```
 
 

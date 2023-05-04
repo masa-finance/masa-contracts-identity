@@ -485,7 +485,7 @@ function masaToken() external view returns (address)
 ### mint
 
 ```solidity
-function mint(address to) external nonpayable returns (uint256)
+function mint(address to) external payable returns (uint256)
 ```
 
 Mints a new soulbound identity
@@ -507,7 +507,7 @@ Mints a new soulbound identity
 ### mint
 
 ```solidity
-function mint(address paymentMethod, address to) external nonpayable returns (uint256)
+function mint(address paymentMethod, address to) external payable returns (uint256)
 ```
 
 Mints a new soulbound identity
@@ -530,7 +530,7 @@ Mints a new soulbound identity
 ### mintIdentityWithName
 
 ```solidity
-function mintIdentityWithName(address to, string name, uint256 yearsPeriod, string _tokenURI) external nonpayable returns (uint256)
+function mintIdentityWithName(address to, string name, uint256 yearsPeriod, string _tokenURI) external payable returns (uint256)
 ```
 
 Mints a new soulbound identity with a SoulName associated to it
@@ -555,7 +555,7 @@ Mints a new soulbound identity with a SoulName associated to it
 ### mintIdentityWithName
 
 ```solidity
-function mintIdentityWithName(address paymentMethod, address to, string name, uint256 yearsPeriod, string _tokenURI) external nonpayable returns (uint256)
+function mintIdentityWithName(address paymentMethod, address to, string name, uint256 yearsPeriod, string _tokenURI) external payable returns (uint256)
 ```
 
 Mints a new soulbound identity with a SoulName associated to it

@@ -66,7 +66,7 @@ contract SoulboundIdentity is
     /// @dev The caller can only mint one identity per address
     /// @param to Address of the owner of the new identity
     /// @return The identity ID of the newly minted identity
-    function mint(address to) external override returns (uint256) {
+    function mint(address to) external payable override returns (uint256) {
         return mint(address(0), to);
     }
 
@@ -78,7 +78,7 @@ contract SoulboundIdentity is
     function mint(
         address paymentMethod,
         address to
-    ) public override returns (uint256) {
+    ) public payable override returns (uint256) {
         // Soulbound identity already created!
         if (balanceOf(to) > 0) revert IdentityAlreadyCreated(to);
 
@@ -96,7 +96,7 @@ contract SoulboundIdentity is
         string memory name,
         uint256 yearsPeriod,
         string memory _tokenURI
-    ) external override soulNameAlreadySet returns (uint256) {
+    ) external payable override soulNameAlreadySet returns (uint256) {
         return
             mintIdentityWithName(address(0), to, name, yearsPeriod, _tokenURI);
     }
@@ -114,7 +114,14 @@ contract SoulboundIdentity is
         string memory name,
         uint256 yearsPeriod,
         string memory _tokenURI
-    ) public override soulNameAlreadySet nonReentrant returns (uint256) {
+    )
+        public
+        payable
+        override
+        soulNameAlreadySet
+        nonReentrant
+        returns (uint256)
+    {
         uint256 identityId = mint(paymentMethod, to);
         soulName.mint(to, name, yearsPeriod, _tokenURI);
 
