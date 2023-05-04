@@ -753,9 +753,6 @@ describe("Soulbound Credit Score", () => {
         protocolFeeWallet
       );
 
-      console.log(price);
-      console.log(protocolFee);
-
       // we check that the treasury wallet received the ETH
       expect(
         treasuryWalletBalanceAfter.sub(treasuryWalletBalanceBefore)
