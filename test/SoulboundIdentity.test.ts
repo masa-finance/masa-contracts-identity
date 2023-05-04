@@ -13,6 +13,7 @@ const expect = chai.expect;
 let soulboundIdentity: SoulboundIdentity;
 
 let owner: SignerWithAddress;
+let protocolWallet: SignerWithAddress;
 let someone: SignerWithAddress;
 let address1: SignerWithAddress;
 let address2: SignerWithAddress;
@@ -24,7 +25,8 @@ const ARWEAVE_LINK = "ar://jK9sR4OrYvODj7PD3czIAyNJalub0-vdV_JAg1NqQ-o";
 
 describe("Soulbound Identity", () => {
   before(async () => {
-    [, owner, someone, address1, address2] = await ethers.getSigners();
+    [, owner, protocolWallet, someone, address1, address2] =
+      await ethers.getSigners();
   });
 
   beforeEach(async () => {
@@ -104,6 +106,37 @@ describe("Soulbound Identity", () => {
       await expect(
         soulboundIdentity.connect(someone)["mint(address)"](someone.address)
       ).to.be.rejected;
+    });
+  });
+
+  describe("mint paying a protocol fee", () => {
+    beforeEach(async () => {
+      await soulboundIdentity
+        .connect(owner)
+        .setProtocolFeeWallet(protocolWallet.address);
+      await soulboundIdentity.connect(owner).setProtocolFeeAmount(1_000_000); // 1 USD
+
+      await soulboundIdentity
+        .connect(owner)
+        .enablePaymentMethod(ethers.constants.AddressZero);
+    });
+
+    it("should fail to mint from owner if he doesn't pay a fee", async () => {
+      await expect(
+        soulboundIdentity.connect(owner)["mint(address)"](someone.address)
+      ).to.be.rejected;
+    });
+
+    it("should mint from owner if he pays a fee", async () => {
+      const { price, protocolFee } = await soulboundIdentity.getMintPrice(
+        ethers.constants.AddressZero
+      );
+
+      await soulboundIdentity
+        .connect(owner)
+        ["mint(address)"](someone.address, { value: price.add(protocolFee) });
+
+      expect(await soulboundIdentity.balanceOf(someone.address)).to.be.equal(1);
     });
   });
 
