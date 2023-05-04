@@ -4,11 +4,13 @@
   "main": "dist/typechain/index.js",
   "types": "dist/typechain/index.d.ts",
   "files": [
+    "artifacts/contracts/reference/ReferenceSBTAuthority.sol/ReferenceSBTAuthority.json",
+    "artifacts/contracts/reference/ReferenceSBTSelfSovereign.sol/ReferenceSBTSelfSovereign.json",
     "contracts/**/*",
     "deployments/**/*",
     "dist/**/*",
     "hardhat.config.ts",
-    "tsconfig.json"
+    "!**/solcInputs/**"
   ],
   "repository": "git@github.com:masa-finance/masa-contracts-identity.git",
   "author": "Sebastian Gerske <13647606+H34D@users.noreply.github.com>",
