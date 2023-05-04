@@ -63,14 +63,18 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     }
 
     /// @notice Sets the price of the name registering per one year in stable coin
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the admin or project admin role to call this function
     /// @param _nameLength Length of the name
     /// @param _nameRegistrationPricePerYear New price of the name registering per one
     /// year in stable coin for that name length per year
     function setNameRegistrationPricePerYear(
         uint256 _nameLength,
         uint256 _nameRegistrationPricePerYear
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    ) external {
+        if (
+            !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
+            !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
+        ) revert UserMustHaveProtocolOrProjectAdminRole();
         if (
             nameRegistrationPricePerYear[_nameLength] ==
             _nameRegistrationPricePerYear
@@ -81,11 +85,13 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     }
 
     /// @notice Adds a new authority to the list of authorities
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the admin or project admin role to call this function
     /// @param _authority New authority to add
-    function addAuthority(
-        address _authority
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function addAuthority(address _authority) external {
+        if (
+            !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
+            !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
+        ) revert UserMustHaveProtocolOrProjectAdminRole();
         if (_authority == address(0)) revert ZeroAddress();
         if (authorities[_authority]) revert AlreadyAdded();
 
@@ -93,11 +99,13 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     }
 
     /// @notice Removes an authority from the list of authorities
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the admin or project admin role to call this function
     /// @param _authority Authority to remove
-    function removeAuthority(
-        address _authority
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function removeAuthority(address _authority) external {
+        if (
+            !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
+            !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
+        ) revert UserMustHaveProtocolOrProjectAdminRole();
         if (_authority == address(0)) revert ZeroAddress();
         if (!authorities[_authority]) revert AuthorityNotExists(_authority);
 

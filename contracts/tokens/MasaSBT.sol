@@ -67,21 +67,25 @@ abstract contract MasaSBT is
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
     /// @notice Sets the price of minting in stable coin
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the admin or project admin role to call this function
     /// @param _mintPrice New price of minting in stable coin
-    function setMintPrice(
-        uint256 _mintPrice
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setMintPrice(uint256 _mintPrice) external {
+        if (
+            !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
+            !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
+        ) revert UserMustHaveProtocolOrProjectAdminRole();
         if (mintPrice == _mintPrice) revert SameValue();
         mintPrice = _mintPrice;
     }
 
     /// @notice Sets the price of minting in MASA
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the admin or project admin role to call this function
     /// @param _mintPriceMASA New price of minting in MASA
-    function setMintPriceMASA(
-        uint256 _mintPriceMASA
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setMintPriceMASA(uint256 _mintPriceMASA) external {
+        if (
+            !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
+            !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
+        ) revert UserMustHaveProtocolOrProjectAdminRole();
         if (mintPriceMASA == _mintPriceMASA) revert SameValue();
         mintPriceMASA = _mintPriceMASA;
     }
@@ -98,41 +102,49 @@ abstract contract MasaSBT is
     }
 
     /// @notice Sets the price for adding the link in SoulLinker in stable coin
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the admin or project admin role to call this function
     /// @param _addLinkPrice New price for adding the link in SoulLinker in stable coin
-    function setAddLinkPrice(
-        uint256 _addLinkPrice
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setAddLinkPrice(uint256 _addLinkPrice) external {
+        if (
+            !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
+            !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
+        ) revert UserMustHaveProtocolOrProjectAdminRole();
         if (addLinkPrice == _addLinkPrice) revert SameValue();
         addLinkPrice = _addLinkPrice;
     }
 
     /// @notice Sets the price for adding the link in SoulLinker in MASA
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the admin or project admin role to call this function
     /// @param _addLinkPriceMASA New price for adding the link in SoulLinker in MASA
-    function setAddLinkPriceMASA(
-        uint256 _addLinkPriceMASA
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setAddLinkPriceMASA(uint256 _addLinkPriceMASA) external {
+        if (
+            !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
+            !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
+        ) revert UserMustHaveProtocolOrProjectAdminRole();
         if (addLinkPriceMASA == _addLinkPriceMASA) revert SameValue();
         addLinkPriceMASA = _addLinkPriceMASA;
     }
 
     /// @notice Sets the price for reading data in SoulLinker in stable coin
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the admin or project admin role to call this function
     /// @param _queryLinkPrice New price for reading data in SoulLinker in stable coin
-    function setQueryLinkPrice(
-        uint256 _queryLinkPrice
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setQueryLinkPrice(uint256 _queryLinkPrice) external {
+        if (
+            !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
+            !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
+        ) revert UserMustHaveProtocolOrProjectAdminRole();
         if (queryLinkPrice == _queryLinkPrice) revert SameValue();
         queryLinkPrice = _queryLinkPrice;
     }
 
     /// @notice Sets the price for reading data in SoulLinker in MASA
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the admin or project admin role to call this function
     /// @param _queryLinkPriceMASA New price for reading data in SoulLinker in MASA
-    function setQueryLinkPriceMASA(
-        uint256 _queryLinkPriceMASA
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setQueryLinkPriceMASA(uint256 _queryLinkPriceMASA) external {
+        if (
+            !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
+            !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
+        ) revert UserMustHaveProtocolOrProjectAdminRole();
         if (queryLinkPriceMASA == _queryLinkPriceMASA) revert SameValue();
         queryLinkPriceMASA = _queryLinkPriceMASA;
     }

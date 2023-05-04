@@ -18,6 +18,9 @@ abstract contract PaymentGateway is AccessControl {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
+    bytes32 public constant PROJECT_ADMIN_ROLE =
+        keccak256("PROJECT_ADMIN_ROLE");
+
     struct PaymentParams {
         address swapRouter; // Swap router address
         address wrappedNativeToken; // Wrapped native token address
@@ -143,11 +146,13 @@ abstract contract PaymentGateway is AccessControl {
     }
 
     /// @notice Set the treasury wallet
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the admin or project admin role to call this function
     /// @param _treasuryWallet New treasury wallet
-    function setTreasuryWallet(
-        address _treasuryWallet
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setTreasuryWallet(address _treasuryWallet) external {
+        if (
+            !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
+            !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
+        ) revert UserMustHaveProtocolOrProjectAdminRole();
         if (_treasuryWallet == treasuryWallet) revert SameValue();
         treasuryWallet = _treasuryWallet;
     }

@@ -39,6 +39,7 @@ error SoulNameContractNotSet();
 error TokenNotFound(uint256 tokenId);
 error TransferFailed();
 error URIAlreadyExists(string tokenURI);
+error UserMustHaveProtocolOrProjectAdminRole();
 error ValidPeriodExpired(uint256 expirationDate);
 error ZeroAddress();
 error ZeroLengthName(string name);
