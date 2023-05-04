@@ -294,7 +294,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
     function getLinks(
         address token,
         uint256 tokenId
-    ) public view returns (LinkKey[] memory) {
+    ) external view returns (LinkKey[] memory) {
         uint256 nLinkKeys = 0;
         for (
             uint256 i = 0;
@@ -374,7 +374,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
     /// @return List of links for the reader
     function getReaderLinks(
         uint256 readerIdentityId
-    ) public view returns (ReaderLink[] memory) {
+    ) external view returns (ReaderLink[] memory) {
         return _readerLinks[readerIdentityId];
     }
 

@@ -146,7 +146,7 @@ abstract contract MasaSBTSelfSovereign is MasaSBT, EIP712 {
         if (!authorities[_signer]) revert NotAuthorized(_signer);
     }
 
-    function _mintWithCounter(address to) internal virtual returns (uint256) {
+    function _mintWithCounter(address to) private returns (uint256) {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _mint(to, tokenId);
