@@ -116,6 +116,82 @@ function burn(uint256 tokenId) external nonpayable
 |---|---|---|
 | tokenId | uint256 | undefined |
 
+### disablePaymentMethod
+
+```solidity
+function disablePaymentMethod(address _paymentMethod) external nonpayable
+```
+
+Removes a token as a valid payment method
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _paymentMethod | address | Token to remove |
+
+### enablePaymentMethod
+
+```solidity
+function enablePaymentMethod(address _paymentMethod) external nonpayable
+```
+
+Adds a new token as a valid payment method
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _paymentMethod | address | New token to add |
+
+### enabledPaymentMethod
+
+```solidity
+function enabledPaymentMethod(address) external view returns (bool)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bool | undefined |
+
+### enabledPaymentMethods
+
+```solidity
+function enabledPaymentMethods(uint256) external view returns (address)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
 ### exists
 
 ```solidity
@@ -137,6 +213,23 @@ Returns true if the token exists
 | Name | Type | Description |
 |---|---|---|
 | _0 | bool | True if the token exists |
+
+### getEnabledPaymentMethods
+
+```solidity
+function getEnabledPaymentMethods() external view returns (address[])
+```
+
+Returns all available payment methods
+
+*Returns the address of all available payment methods*
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address[] | Array of all enabled payment methods |
 
 ### getExtension
 
@@ -349,6 +442,23 @@ Checks if a soul name is available
 |---|---|---|
 | available | bool | `true` if the soul name is available, `false` otherwise |
 
+### masaToken
+
+```solidity
+function masaToken() external view returns (address)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
 ### mint
 
 ```solidity
@@ -457,6 +567,57 @@ Returns the owner address of a soul name
 |---|---|---|
 | _0 | address | Address of the owner of the identity |
 
+### protocolFeeAmount
+
+```solidity
+function protocolFeeAmount() external view returns (uint256)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+### protocolFeePercent
+
+```solidity
+function protocolFeePercent() external view returns (uint256)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+### protocolFeeWallet
+
+```solidity
+function protocolFeeWallet() external view returns (address)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
 ### queryLinkPrice
 
 ```solidity
@@ -557,6 +718,70 @@ Sets the price for adding the link in SoulLinker in MASA
 |---|---|---|
 | _addLinkPriceMASA | uint256 | New price for adding the link in SoulLinker in MASA |
 
+### setMasaToken
+
+```solidity
+function setMasaToken(address _masaToken) external nonpayable
+```
+
+Sets the utility token to pay the fee in (MASA)
+
+*The caller must have the admin role to call this function It can be set to address(0) to disable paying in MASA*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _masaToken | address | New utility token to pay the fee in |
+
+### setProtocolFeeAmount
+
+```solidity
+function setProtocolFeeAmount(uint256 _protocolFeeAmount) external nonpayable
+```
+
+Set the protocol fee amount
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _protocolFeeAmount | uint256 | New protocol fee amount |
+
+### setProtocolFeePercent
+
+```solidity
+function setProtocolFeePercent(uint256 _protocolFeePercent) external nonpayable
+```
+
+Set the protocol fee percent
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _protocolFeePercent | uint256 | New protocol fee percent |
+
+### setProtocolFeeWallet
+
+```solidity
+function setProtocolFeeWallet(address _protocolFeeWallet) external nonpayable
+```
+
+Set the protocol fee wallet
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _protocolFeeWallet | address | New protocol fee wallet |
+
 ### setQueryLinkPrice
 
 ```solidity
@@ -621,6 +846,70 @@ Sets the SoulboundIdentity contract address linked to this SBT
 |---|---|---|
 | _soulboundIdentity | address | Address of the SoulboundIdentity contract |
 
+### setStableCoin
+
+```solidity
+function setStableCoin(address _stableCoin) external nonpayable
+```
+
+Sets the stable coin to pay the fee in (USDC)
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _stableCoin | address | New stable coin to pay the fee in |
+
+### setSwapRouter
+
+```solidity
+function setSwapRouter(address _swapRouter) external nonpayable
+```
+
+Sets the swap router address
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _swapRouter | address | New swap router address |
+
+### setTreasuryWallet
+
+```solidity
+function setTreasuryWallet(address _treasuryWallet) external nonpayable
+```
+
+Set the treasury wallet
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _treasuryWallet | address | New treasury wallet |
+
+### setWrappedNativeToken
+
+```solidity
+function setWrappedNativeToken(address _wrappedNativeToken) external nonpayable
+```
+
+Sets the wrapped native token address
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _wrappedNativeToken | address | New wrapped native token address |
+
 ### soulName
 
 ```solidity
@@ -655,6 +944,23 @@ function soulboundIdentity() external view returns (contract ISoulboundIdentity)
 |---|---|---|
 | _0 | contract ISoulboundIdentity | undefined |
 
+### stableCoin
+
+```solidity
+function stableCoin() external view returns (address)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
 ### supportsInterface
 
 ```solidity
@@ -676,6 +982,23 @@ Query if a contract implements an interface
 | Name | Type | Description |
 |---|---|---|
 | _0 | bool | `true` if the contract implements `interfaceId` and  `interfaceId` is not 0xffffffff, `false` otherwise |
+
+### swapRouter
+
+```solidity
+function swapRouter() external view returns (address)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
 
 ### symbol
 
@@ -844,6 +1167,40 @@ function totalSupply() external view returns (uint256)
 |---|---|---|
 | _0 | uint256 | undefined |
 
+### treasuryWallet
+
+```solidity
+function treasuryWallet() external view returns (address)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
+### wrappedNativeToken
+
+```solidity
+function wrappedNativeToken() external view returns (address)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
 
 
 ## Events
@@ -940,6 +1297,17 @@ event RoleRevoked(bytes32 indexed role, address indexed account, address indexed
 
 ## Errors
 
+### AlreadyAdded
+
+```solidity
+error AlreadyAdded()
+```
+
+
+
+
+
+
 ### IdentityAlreadyCreated
 
 ```solidity
@@ -955,6 +1323,22 @@ error IdentityAlreadyCreated(address to)
 | Name | Type | Description |
 |---|---|---|
 | to | address | undefined |
+
+### NonExistingErc20Token
+
+```solidity
+error NonExistingErc20Token(address erc20token)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| erc20token | address | undefined |
 
 ### NotLinkedToAnIdentitySBT
 

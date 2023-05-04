@@ -4,7 +4,7 @@
 
 > MasaSBTSelfSovereign
 
-Soulbound token. Non-fungible token that is not transferable. Adds a payment gateway to let minting paying a fee Adds a self-sovereign protocol to let minting using an authority signature
+Soulbound token. Non-fungible token that is not transferable. Adds a self-sovereign protocol to let minting using an authority signature
 
 *Implementation of https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763 Soulbound token.*
 
