@@ -208,9 +208,11 @@ abstract contract PaymentGateway is AccessControl {
     function _convertFromStableCoin(
         address paymentMethod,
         uint256 amount
-    ) internal view paymentParamsAlreadySet returns (uint256) {
+    ) internal view paymentParamsAlreadySet(amount) returns (uint256) {
         if (!enabledPaymentMethod[paymentMethod] || paymentMethod == stableCoin)
             revert InvalidToken(paymentMethod);
+
+        if (amount == 0) return 0;
 
         if (paymentMethod == address(0)) {
             return _estimateSwapAmount(wrappedNativeToken, stableCoin, amount);
@@ -256,7 +258,7 @@ abstract contract PaymentGateway is AccessControl {
         address paymentMethod,
         uint256 amount,
         uint256 protocolFee
-    ) internal paymentParamsAlreadySet {
+    ) internal paymentParamsAlreadySet(amount.add(protocolFee)) {
         if (amount == 0 && protocolFee == 0) return;
         if (protocolFee > 0 && protocolFeeWallet == address(0))
             revert ProtocolFeeWalletNotSet();
@@ -340,11 +342,15 @@ abstract contract PaymentGateway is AccessControl {
 
     /* ========== MODIFIERS ================================================= */
 
-    modifier paymentParamsAlreadySet() {
-        if (swapRouter == address(0)) revert PaymentParamsNotSet();
-        if (wrappedNativeToken == address(0)) revert PaymentParamsNotSet();
-        if (stableCoin == address(0)) revert PaymentParamsNotSet();
-        if (treasuryWallet == address(0)) revert PaymentParamsNotSet();
+    modifier paymentParamsAlreadySet(uint256 amount) {
+        if (amount > 0 && swapRouter == address(0))
+            revert PaymentParamsNotSet();
+        if (amount > 0 && wrappedNativeToken == address(0))
+            revert PaymentParamsNotSet();
+        if (amount > 0 && stableCoin == address(0))
+            revert PaymentParamsNotSet();
+        if (amount > 0 && treasuryWallet == address(0))
+            revert PaymentParamsNotSet();
         _;
     }
 
