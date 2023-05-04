@@ -405,7 +405,7 @@ function setTreasuryWallet(address _treasuryWallet) external nonpayable
 
 Set the treasury wallet
 
-*The caller must have the admin role to call this function*
+*The caller must have the admin or project admin role to call this function*
 
 #### Parameters
 

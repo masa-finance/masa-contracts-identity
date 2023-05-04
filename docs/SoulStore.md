@@ -52,7 +52,7 @@ function addAuthority(address _authority) external nonpayable
 
 Adds a new authority to the list of authorities
 
-*The caller must have the admin role to call this function*
+*The caller must have the admin or project admin role to call this function*
 
 #### Parameters
 
@@ -506,7 +506,7 @@ function removeAuthority(address _authority) external nonpayable
 
 Removes an authority from the list of authorities
 
-*The caller must have the admin role to call this function*
+*The caller must have the admin or project admin role to call this function*
 
 #### Parameters
 
@@ -572,7 +572,7 @@ function setNameRegistrationPricePerYear(uint256 _nameLength, uint256 _nameRegis
 
 Sets the price of the name registering per one year in stable coin
 
-*The caller must have the admin role to call this function*
+*The caller must have the admin or project admin role to call this function*
 
 #### Parameters
 
@@ -685,7 +685,7 @@ function setTreasuryWallet(address _treasuryWallet) external nonpayable
 
 Set the treasury wallet
 
-*The caller must have the admin role to call this function*
+*The caller must have the admin or project admin role to call this function*
 
 #### Parameters
 

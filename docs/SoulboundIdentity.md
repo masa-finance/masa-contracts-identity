@@ -817,7 +817,7 @@ function setAddLinkPrice(uint256 _addLinkPrice) external nonpayable
 
 Sets the price for adding the link in SoulLinker in stable coin
 
-*The caller must have the admin role to call this function*
+*The caller must have the admin or project admin role to call this function*
 
 #### Parameters
 
@@ -833,7 +833,7 @@ function setAddLinkPriceMASA(uint256 _addLinkPriceMASA) external nonpayable
 
 Sets the price for adding the link in SoulLinker in MASA
 
-*The caller must have the admin role to call this function*
+*The caller must have the admin or project admin role to call this function*
 
 #### Parameters
 
@@ -865,7 +865,7 @@ function setMintPrice(uint256 _mintPrice) external nonpayable
 
 Sets the price of minting in stable coin
 
-*The caller must have the admin role to call this function*
+*The caller must have the admin or project admin role to call this function*
 
 #### Parameters
 
@@ -881,7 +881,7 @@ function setMintPriceMASA(uint256 _mintPriceMASA) external nonpayable
 
 Sets the price of minting in MASA
 
-*The caller must have the admin role to call this function*
+*The caller must have the admin or project admin role to call this function*
 
 #### Parameters
 
@@ -945,7 +945,7 @@ function setQueryLinkPrice(uint256 _queryLinkPrice) external nonpayable
 
 Sets the price for reading data in SoulLinker in stable coin
 
-*The caller must have the admin role to call this function*
+*The caller must have the admin or project admin role to call this function*
 
 #### Parameters
 
@@ -961,7 +961,7 @@ function setQueryLinkPriceMASA(uint256 _queryLinkPriceMASA) external nonpayable
 
 Sets the price for reading data in SoulLinker in MASA
 
-*The caller must have the admin role to call this function*
+*The caller must have the admin or project admin role to call this function*
 
 #### Parameters
 
@@ -1041,7 +1041,7 @@ function setTreasuryWallet(address _treasuryWallet) external nonpayable
 
 Set the treasury wallet
 
-*The caller must have the admin role to call this function*
+*The caller must have the admin or project admin role to call this function*
 
 #### Parameters
 
