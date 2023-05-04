@@ -6,14 +6,12 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 import "../libraries/Errors.sol";
-import "../interfaces/ISoulboundIdentity.sol";
 import "../dex/PaymentGateway.sol";
 import "./MasaSBT.sol";
 
 /// @title MasaSBTSelfSovereign
 /// @author Masa Finance
 /// @notice Soulbound token. Non-fungible token that is not transferable.
-/// Adds a link to a SoulboundIdentity SC to let minting using the identityId
 /// Adds a payment gateway to let minting paying a fee
 /// Adds a self-sovereign protocol to let minting using an authority signature
 /// @dev Implementation of https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763 Soulbound token.
@@ -28,8 +26,6 @@ abstract contract MasaSBTSelfSovereign is
 
     Counters.Counter private _tokenIdCounter;
 
-    ISoulboundIdentity public soulboundIdentity;
-
     uint256 public mintPrice; // price in stable coin
     uint256 public mintPriceMASA; // price in MASA
 
@@ -43,32 +39,21 @@ abstract contract MasaSBTSelfSovereign is
     /// @param name Name of the token
     /// @param symbol Symbol of the token
     /// @param baseTokenURI Base URI of the token
-    /// @param _soulboundIdentity Address of the SoulboundIdentity contract
+    /// @param soulboundIdentity Address of the SoulboundIdentity contract
     /// @param paymentParams Payment gateway params
     function _initialize(
         address admin,
         string memory name,
         string memory symbol,
         string memory baseTokenURI,
-        ISoulboundIdentity _soulboundIdentity,
+        address soulboundIdentity,
         PaymentParams memory paymentParams
     ) internal onlyInitializing {
         PaymentGateway._initialize(admin, paymentParams);
-        MasaSBT._initialize(admin, name, symbol, baseTokenURI);
-        soulboundIdentity = _soulboundIdentity;
+        MasaSBT._initialize(admin, name, symbol, baseTokenURI, soulboundIdentity);
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
-
-    /// @notice Sets the SoulboundIdentity contract address linked to this SBT
-    /// @dev The caller must be the admin to call this function
-    /// @param _soulboundIdentity Address of the SoulboundIdentity contract
-    function setSoulboundIdentity(
-        ISoulboundIdentity _soulboundIdentity
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        if (soulboundIdentity == _soulboundIdentity) revert SameValue();
-        soulboundIdentity = _soulboundIdentity;
-    }
 
     /// @notice Sets the price of minting in stable coin
     /// @dev The caller must have the admin role to call this function
@@ -117,17 +102,6 @@ abstract contract MasaSBTSelfSovereign is
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
     /* ========== VIEWS ===================================================== */
-
-    /// @notice Returns the identityId owned by the given token
-    /// @param tokenId Id of the token
-    /// @return Id of the identity
-    function getIdentityId(uint256 tokenId) external view returns (uint256) {
-        if (soulboundIdentity == ISoulboundIdentity(address(0)))
-            revert NotLinkedToAnIdentitySBT();
-
-        address owner = super.ownerOf(tokenId);
-        return soulboundIdentity.tokenOfOwner(owner);
-    }
 
     /// @notice Returns the price for minting
     /// @dev Returns current pricing for minting

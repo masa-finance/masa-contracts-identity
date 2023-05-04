@@ -29,9 +29,10 @@ abstract contract MasaSBTAuthority is MasaSBT {
         address admin,
         string memory name,
         string memory symbol,
-        string memory baseTokenURI
+        string memory baseTokenURI,
+        address soulboundIdentity
     ) internal override onlyInitializing {
-        MasaSBT._initialize(admin, name, symbol, baseTokenURI);
+        MasaSBT._initialize(admin, name, symbol, baseTokenURI, soulboundIdentity);
         _grantRole(MINTER_ROLE, admin);
     }
 

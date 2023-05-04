@@ -1,12 +1,12 @@
-# MasaSBTSelfSovereign
+# ReferenceSBTSelfSovereign
 
 *Masa Finance*
 
-> MasaSBTSelfSovereign
+> Soulbound reference Self-Sovereign SBT
 
-Soulbound token. Non-fungible token that is not transferable. Adds a payment gateway to let minting paying a fee Adds a self-sovereign protocol to let minting using an authority signature
+Soulbound token that represents a Self-Sovereign SBT
 
-*Implementation of https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763 Soulbound token.*
+*Inherits from the SBT contract.*
 
 ## Methods
 
@@ -374,6 +374,58 @@ function masaToken() external view returns (address)
 | Name | Type | Description |
 |---|---|---|
 | _0 | address | undefined |
+
+### mint
+
+```solidity
+function mint(address paymentMethod, uint256 identityId, address authorityAddress, uint256 signatureDate, bytes signature) external payable returns (uint256)
+```
+
+Mints a new SBT
+
+*The caller must have the MINTER role*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| paymentMethod | address | Address of token that user want to pay |
+| identityId | uint256 | TokenId of the identity to mint the NFT to |
+| authorityAddress | address | Address of the authority that signed the message |
+| signatureDate | uint256 | Date of the signature |
+| signature | bytes | Signature of the message |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | The SBT ID of the newly minted SBT |
+
+### mint
+
+```solidity
+function mint(address paymentMethod, address to, address authorityAddress, uint256 signatureDate, bytes signature) external payable returns (uint256)
+```
+
+Mints a new SBT
+
+*The caller must have the MINTER role*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| paymentMethod | address | Address of token that user want to pay |
+| to | address | The address to mint the SBT to |
+| authorityAddress | address | Address of the authority that signed the message |
+| signatureDate | uint256 | Date of the signature |
+| signature | bytes | Signature of the message |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | The SBT ID of the newly minted SBT |
 
 ### mintPrice
 
@@ -953,22 +1005,6 @@ event Burn(address indexed _owner, uint256 indexed _tokenId)
 | _owner `indexed` | address | undefined |
 | _tokenId `indexed` | uint256 | undefined |
 
-### Initialized
-
-```solidity
-event Initialized(uint8 version)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| version  | uint8 | undefined |
-
 ### Mint
 
 ```solidity
@@ -985,6 +1021,48 @@ event Mint(address indexed _owner, uint256 indexed _tokenId)
 |---|---|---|
 | _owner `indexed` | address | undefined |
 | _tokenId `indexed` | uint256 | undefined |
+
+### MintedToAddress
+
+```solidity
+event MintedToAddress(uint256 tokenId, address to, address authorityAddress, uint256 signatureDate, address paymentMethod, uint256 mintPrice)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId  | uint256 | undefined |
+| to  | address | undefined |
+| authorityAddress  | address | undefined |
+| signatureDate  | uint256 | undefined |
+| paymentMethod  | address | undefined |
+| mintPrice  | uint256 | undefined |
+
+### MintedToIdentity
+
+```solidity
+event MintedToIdentity(uint256 tokenId, uint256 identityId, address authorityAddress, uint256 signatureDate, address paymentMethod, uint256 mintPrice)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId  | uint256 | undefined |
+| identityId  | uint256 | undefined |
+| authorityAddress  | address | undefined |
+| signatureDate  | uint256 | undefined |
+| paymentMethod  | address | undefined |
+| mintPrice  | uint256 | undefined |
 
 ### RoleAdminChanged
 
@@ -1071,6 +1149,38 @@ error AuthorityNotExists(address authority)
 |---|---|---|
 | authority | address | undefined |
 
+### CallerNotOwner
+
+```solidity
+error CallerNotOwner(address caller)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| caller | address | undefined |
+
+### InsufficientEthAmount
+
+```solidity
+error InsufficientEthAmount(uint256 amount)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| amount | uint256 | undefined |
+
 ### InvalidPaymentMethod
 
 ```solidity
@@ -1086,6 +1196,17 @@ error InvalidPaymentMethod(address paymentMethod)
 | Name | Type | Description |
 |---|---|---|
 | paymentMethod | address | undefined |
+
+### InvalidSignature
+
+```solidity
+error InvalidSignature()
+```
+
+
+
+
+
 
 ### InvalidToken
 
@@ -1119,6 +1240,22 @@ error NonExistingErc20Token(address erc20token)
 |---|---|---|
 | erc20token | address | undefined |
 
+### NotAuthorized
+
+```solidity
+error NotAuthorized(address signer)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| signer | address | undefined |
+
 ### NotLinkedToAnIdentitySBT
 
 ```solidity
@@ -1130,10 +1267,48 @@ error NotLinkedToAnIdentitySBT()
 
 
 
+### RefundFailed
+
+```solidity
+error RefundFailed()
+```
+
+
+
+
+
+
+### SBTAlreadyCreated
+
+```solidity
+error SBTAlreadyCreated(address to)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| to | address | undefined |
+
 ### SameValue
 
 ```solidity
 error SameValue()
+```
+
+
+
+
+
+
+### TransferFailed
+
+```solidity
+error TransferFailed()
 ```
 
 

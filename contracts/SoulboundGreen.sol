@@ -26,7 +26,7 @@ contract SoulboundGreen is MasaSBTSelfSovereign {
         string memory name,
         string memory symbol,
         string memory baseTokenURI,
-        ISoulboundIdentity soulboundIdentity,
+        address soulboundIdentity,
         PaymentParams memory paymentParams
     ) public initializer {
         MasaSBTSelfSovereign._initialize(

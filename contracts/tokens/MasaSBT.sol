@@ -6,6 +6,7 @@ import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol"
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 
 import "../libraries/Errors.sol";
+import "../interfaces/ISoulboundIdentity.sol";
 import "../interfaces/ILinkableSBT.sol";
 import "./SBT/SBT.sol";
 import "./SBT/extensions/SBTEnumerable.sol";
@@ -15,6 +16,7 @@ import "./SBT/extensions/SBTBurnable.sol";
 /// @author Masa Finance
 /// @notice Soulbound token. Non-fungible token that is not transferable.
 /// @dev Implementation of https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763 Soulbound token.
+/// Adds a link to a SoulboundIdentity SC to let minting using the identityId
 abstract contract MasaSBT is
     SBT,
     SBTEnumerable,
@@ -28,6 +30,8 @@ abstract contract MasaSBT is
     using Strings for uint256;
 
     string private _baseTokenURI;
+
+    ISoulboundIdentity public soulboundIdentity;
 
     uint256 public override addLinkPrice; // price in stable coin
     uint256 public override addLinkPriceMASA; // price in MASA
@@ -46,7 +50,8 @@ abstract contract MasaSBT is
         address admin,
         string memory name,
         string memory symbol,
-        string memory baseTokenURI
+        string memory baseTokenURI,
+        address _soulboundIdentity
     ) internal virtual onlyInitializing {
         SBT._initialize(name, symbol);
         __ReentrancyGuard_init();
@@ -55,9 +60,21 @@ abstract contract MasaSBT is
         _grantRole(DEFAULT_ADMIN_ROLE, admin);
 
         _baseTokenURI = baseTokenURI;
+        soulboundIdentity = ISoulboundIdentity(_soulboundIdentity);
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
+
+    /// @notice Sets the SoulboundIdentity contract address linked to this SBT
+    /// @dev The caller must be the admin to call this function
+    /// @param _soulboundIdentity Address of the SoulboundIdentity contract
+    function setSoulboundIdentity(
+        address _soulboundIdentity
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        if (address(soulboundIdentity) == _soulboundIdentity)
+            revert SameValue();
+        soulboundIdentity = ISoulboundIdentity(_soulboundIdentity);
+    }
 
     /// @notice Sets the price for adding the link in SoulLinker in stable coin
     /// @dev The caller must have the admin role to call this function
@@ -102,6 +119,17 @@ abstract contract MasaSBT is
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
     /* ========== VIEWS ===================================================== */
+
+    /// @notice Returns the identityId owned by the given token
+    /// @param tokenId Id of the token
+    /// @return Id of the identity
+    function getIdentityId(uint256 tokenId) external view returns (uint256) {
+        if (soulboundIdentity == ISoulboundIdentity(address(0)))
+            revert NotLinkedToAnIdentitySBT();
+
+        address owner = super.ownerOf(tokenId);
+        return soulboundIdentity.tokenOfOwner(owner);
+    }
 
     /// @notice Returns true if the token exists
     /// @dev Returns true if the token has been minted
