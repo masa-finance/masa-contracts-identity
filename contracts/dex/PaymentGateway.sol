@@ -54,12 +54,6 @@ abstract contract PaymentGateway is AccessControl {
     /// @param admin Administrator of the smart contract
     /// @param paymentParams Payment params
     constructor(address admin, PaymentParams memory paymentParams) {
-        if (paymentParams.swapRouter == address(0)) revert ZeroAddress();
-        if (paymentParams.wrappedNativeToken == address(0))
-            revert ZeroAddress();
-        if (paymentParams.stableCoin == address(0)) revert ZeroAddress();
-        if (paymentParams.treasuryWallet == address(0)) revert ZeroAddress();
-
         _grantRole(DEFAULT_ADMIN_ROLE, admin);
 
         swapRouter = paymentParams.swapRouter;
@@ -80,7 +74,6 @@ abstract contract PaymentGateway is AccessControl {
     function setSwapRouter(
         address _swapRouter
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        if (_swapRouter == address(0)) revert ZeroAddress();
         if (swapRouter == _swapRouter) revert SameValue();
         swapRouter = _swapRouter;
     }
@@ -91,7 +84,6 @@ abstract contract PaymentGateway is AccessControl {
     function setWrappedNativeToken(
         address _wrappedNativeToken
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        if (_wrappedNativeToken == address(0)) revert ZeroAddress();
         if (wrappedNativeToken == _wrappedNativeToken) revert SameValue();
         wrappedNativeToken = _wrappedNativeToken;
     }
@@ -102,7 +94,6 @@ abstract contract PaymentGateway is AccessControl {
     function setStableCoin(
         address _stableCoin
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        if (_stableCoin == address(0)) revert ZeroAddress();
         if (stableCoin == _stableCoin) revert SameValue();
         stableCoin = _stableCoin;
     }
@@ -157,7 +148,6 @@ abstract contract PaymentGateway is AccessControl {
     function setTreasuryWallet(
         address _treasuryWallet
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        if (_treasuryWallet == address(0)) revert ZeroAddress();
         if (_treasuryWallet == treasuryWallet) revert SameValue();
         treasuryWallet = _treasuryWallet;
     }
@@ -168,7 +158,6 @@ abstract contract PaymentGateway is AccessControl {
     function setProtocolFeeWallet(
         address _protocolFeeWallet
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        if (_protocolFeeWallet == address(0)) revert ZeroAddress();
         if (_protocolFeeWallet == protocolFeeWallet) revert SameValue();
         protocolFeeWallet = _protocolFeeWallet;
     }
@@ -219,7 +208,7 @@ abstract contract PaymentGateway is AccessControl {
     function _convertFromStableCoin(
         address paymentMethod,
         uint256 amount
-    ) internal view returns (uint256) {
+    ) internal view paymentParamsAlreadySet returns (uint256) {
         if (!enabledPaymentMethod[paymentMethod] || paymentMethod == stableCoin)
             revert InvalidToken(paymentMethod);
 
@@ -262,7 +251,10 @@ abstract contract PaymentGateway is AccessControl {
     /// the swap if necessary, and transfer the protocol fee to the protocol fee wallet
     /// @param paymentMethod Address of token that user want to pay
     /// @param amount Price to be paid in the specified payment method
-    function _pay(address paymentMethod, uint256 amount) internal {
+    function _pay(
+        address paymentMethod,
+        uint256 amount
+    ) internal paymentParamsAlreadySet {
         if (amount == 0) return;
 
         // calculate protocol fee
@@ -277,6 +269,8 @@ abstract contract PaymentGateway is AccessControl {
             (bool success, ) = payable(treasuryWallet).call{value: amount}("");
             if (!success) revert TransferFailed();
             if (protocolFee > 0) {
+                if (protocolFeeWallet == address(0))
+                    revert ProtocolFeeWalletNotSet();
                 (success, ) = payable(protocolFeeWallet).call{
                     value: protocolFee
                 }("");
@@ -296,6 +290,8 @@ abstract contract PaymentGateway is AccessControl {
                 amount
             );
             if (protocolFee > 0) {
+                if (protocolFeeWallet == address(0))
+                    revert ProtocolFeeWalletNotSet();
                 IERC20(paymentMethod).safeTransferFrom(
                     msg.sender,
                     protocolFeeWallet,
@@ -340,6 +336,14 @@ abstract contract PaymentGateway is AccessControl {
     }
 
     /* ========== MODIFIERS ================================================= */
+
+    modifier paymentParamsAlreadySet() {
+        if (swapRouter == address(0)) revert PaymentParamsNotSet();
+        if (wrappedNativeToken == address(0)) revert PaymentParamsNotSet();
+        if (stableCoin == address(0)) revert PaymentParamsNotSet();
+        if (treasuryWallet == address(0)) revert PaymentParamsNotSet();
+        _;
+    }
 
     /* ========== EVENTS ==================================================== */
 }

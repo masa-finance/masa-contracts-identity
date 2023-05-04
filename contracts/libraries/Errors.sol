@@ -30,6 +30,8 @@ error NameRegisteredByOtherAccount(string name, uint256 tokenId);
 error NotAuthorized(address signer);
 error NonExistingErc20Token(address erc20token);
 error NotLinkedToAnIdentitySBT();
+error PaymentParamsNotSet();
+error ProtocolFeeWalletNotSet();
 error RefundFailed();
 error SameValue();
 error SBTAlreadyLinked(address token);
