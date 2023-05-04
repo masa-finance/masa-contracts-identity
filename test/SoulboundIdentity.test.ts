@@ -127,6 +127,22 @@ describe("Soulbound Identity", () => {
       ).to.be.rejected;
     });
 
+    it("should fail to mint from owner if we haven't set all payment parameters", async () => {
+      await soulboundIdentity
+        .connect(owner)
+        .setSwapRouter(ethers.constants.AddressZero);
+
+      await expect(
+        soulboundIdentity.getMintPrice(ethers.constants.AddressZero)
+      ).to.be.rejectedWith("PaymentParamsNotSet");
+
+      await expect(
+        soulboundIdentity
+          .connect(owner)
+          ["mint(address)"](someone.address, { value: 1_000_000 })
+      ).to.be.rejectedWith("PaymentParamsNotSet");
+    });
+
     it("should mint from owner if he pays a fee", async () => {
       const { price, protocolFee } = await soulboundIdentity.getMintPrice(
         ethers.constants.AddressZero
