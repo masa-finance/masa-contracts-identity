@@ -270,6 +270,29 @@ Returns the identityId owned by the given token
 |---|---|---|
 | _0 | uint256 | Id of the identity |
 
+### getMintPrice
+
+```solidity
+function getMintPrice(address paymentMethod) external view returns (uint256 price, uint256 protocolFee)
+```
+
+Returns the price for minting
+
+*Returns current pricing for minting*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| paymentMethod | address | Address of token that user want to pay |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| price | uint256 | Current price for minting in the given payment method |
+| protocolFee | uint256 | Current protocol fee for minting in the given payment method |
+
 ### getRoleAdmin
 
 ```solidity
@@ -506,6 +529,40 @@ Mints a new soulbound identity with a SoulName associated to it
 |---|---|---|
 | _0 | uint256 | undefined |
 
+### mintPrice
+
+```solidity
+function mintPrice() external view returns (uint256)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+### mintPriceMASA
+
+```solidity
+function mintPriceMASA() external view returns (uint256)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
 ### name
 
 ```solidity
@@ -733,6 +790,38 @@ Sets the utility token to pay the fee in (MASA)
 | Name | Type | Description |
 |---|---|---|
 | _masaToken | address | New utility token to pay the fee in |
+
+### setMintPrice
+
+```solidity
+function setMintPrice(uint256 _mintPrice) external nonpayable
+```
+
+Sets the price of minting in stable coin
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _mintPrice | uint256 | New price of minting in stable coin |
+
+### setMintPriceMASA
+
+```solidity
+function setMintPriceMASA(uint256 _mintPriceMASA) external nonpayable
+```
+
+Sets the price of minting in MASA
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _mintPriceMASA | uint256 | New price of minting in MASA |
 
 ### setProtocolFeeAmount
 
@@ -1324,6 +1413,38 @@ error IdentityAlreadyCreated(address to)
 |---|---|---|
 | to | address | undefined |
 
+### InvalidPaymentMethod
+
+```solidity
+error InvalidPaymentMethod(address paymentMethod)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| paymentMethod | address | undefined |
+
+### InvalidToken
+
+```solidity
+error InvalidToken(address token)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| token | address | undefined |
+
 ### NonExistingErc20Token
 
 ```solidity
@@ -1344,6 +1465,17 @@ error NonExistingErc20Token(address erc20token)
 
 ```solidity
 error NotLinkedToAnIdentitySBT()
+```
+
+
+
+
+
+
+### PaymentParamsNotSet
+
+```solidity
+error PaymentParamsNotSet()
 ```
 
 
