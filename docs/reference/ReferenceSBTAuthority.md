@@ -44,6 +44,23 @@ function MINTER_ROLE() external view returns (bytes32)
 |---|---|---|
 | _0 | bytes32 | undefined |
 
+### PROJECT_ADMIN_ROLE
+
+```solidity
+function PROJECT_ADMIN_ROLE() external view returns (bytes32)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bytes32 | undefined |
+
 ### addLinkPrice
 
 ```solidity
@@ -1321,6 +1338,17 @@ error SameValue()
 
 ```solidity
 error TransferFailed()
+```
+
+
+
+
+
+
+### UserMustHaveProtocolOrProjectAdminRole
+
+```solidity
+error UserMustHaveProtocolOrProjectAdminRole()
 ```
 
 
