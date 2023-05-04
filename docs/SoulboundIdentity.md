@@ -485,7 +485,7 @@ function masaToken() external view returns (address)
 ### mint
 
 ```solidity
-function mint(address to) external nonpayable returns (uint256)
+function mint(address paymentMethod, address to) external nonpayable returns (uint256)
 ```
 
 Mints a new soulbound identity
@@ -496,18 +496,19 @@ Mints a new soulbound identity
 
 | Name | Type | Description |
 |---|---|---|
+| paymentMethod | address | Address of the payment method to use |
 | to | address | Address of the owner of the new identity |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256 | undefined |
+| _0 | uint256 | The identity ID of the newly minted identity |
 
 ### mintIdentityWithName
 
 ```solidity
-function mintIdentityWithName(address to, string name, uint256 yearsPeriod, string _tokenURI) external nonpayable returns (uint256)
+function mintIdentityWithName(address paymentMethod, address to, string name, uint256 yearsPeriod, string _tokenURI) external nonpayable returns (uint256)
 ```
 
 Mints a new soulbound identity with a SoulName associated to it
@@ -518,6 +519,7 @@ Mints a new soulbound identity with a SoulName associated to it
 
 | Name | Type | Description |
 |---|---|---|
+| paymentMethod | address | Address of the payment method to use |
 | to | address | Address of the owner of the new identity |
 | name | string | Name of the new identity |
 | yearsPeriod | uint256 | Years of validity of the name |
@@ -1413,6 +1415,22 @@ error IdentityAlreadyCreated(address to)
 |---|---|---|
 | to | address | undefined |
 
+### InsufficientEthAmount
+
+```solidity
+error InsufficientEthAmount(uint256 amount)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| amount | uint256 | undefined |
+
 ### InvalidPaymentMethod
 
 ```solidity
@@ -1483,6 +1501,28 @@ error PaymentParamsNotSet()
 
 
 
+### ProtocolFeeWalletNotSet
+
+```solidity
+error ProtocolFeeWalletNotSet()
+```
+
+
+
+
+
+
+### RefundFailed
+
+```solidity
+error RefundFailed()
+```
+
+
+
+
+
+
 ### SameValue
 
 ```solidity
@@ -1498,6 +1538,17 @@ error SameValue()
 
 ```solidity
 error SoulNameContractNotSet()
+```
+
+
+
+
+
+
+### TransferFailed
+
+```solidity
+error TransferFailed()
 ```
 
 

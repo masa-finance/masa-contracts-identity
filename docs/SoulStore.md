@@ -388,13 +388,18 @@ function protocolFeeWallet() external view returns (address)
 ### purchaseIdentity
 
 ```solidity
-function purchaseIdentity() external nonpayable returns (uint256)
+function purchaseIdentity(address paymentMethod) external nonpayable returns (uint256)
 ```
 
 Mints a new Soulbound Identity purchasing it
 
 *This function allows the purchase of a soulbound identity for free*
 
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| paymentMethod | address | undefined |
 
 #### Returns
 

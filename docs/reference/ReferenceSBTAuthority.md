@@ -358,7 +358,7 @@ function masaToken() external view returns (address)
 ### mint
 
 ```solidity
-function mint(address to) external nonpayable returns (uint256)
+function mint(address paymentMethod, uint256 identityId) external nonpayable returns (uint256)
 ```
 
 Mints a new SBT
@@ -369,7 +369,8 @@ Mints a new SBT
 
 | Name | Type | Description |
 |---|---|---|
-| to | address | The address to mint the SBT to |
+| paymentMethod | address | Address of token that user want to pay |
+| identityId | uint256 | TokenId of the identity to mint the NFT to |
 
 #### Returns
 
@@ -380,7 +381,7 @@ Mints a new SBT
 ### mint
 
 ```solidity
-function mint(uint256 identityId) external nonpayable returns (uint256)
+function mint(address paymentMethod, address to) external nonpayable returns (uint256)
 ```
 
 Mints a new SBT
@@ -391,7 +392,8 @@ Mints a new SBT
 
 | Name | Type | Description |
 |---|---|---|
-| identityId | uint256 | TokenId of the identity to mint the NFT to |
+| paymentMethod | address | Address of token that user want to pay |
+| to | address | The address to mint the SBT to |
 
 #### Returns
 
@@ -1180,6 +1182,22 @@ error AlreadyAdded()
 
 
 
+### InsufficientEthAmount
+
+```solidity
+error InsufficientEthAmount(uint256 amount)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| amount | uint256 | undefined |
+
 ### InvalidPaymentMethod
 
 ```solidity
@@ -1250,6 +1268,28 @@ error PaymentParamsNotSet()
 
 
 
+### ProtocolFeeWalletNotSet
+
+```solidity
+error ProtocolFeeWalletNotSet()
+```
+
+
+
+
+
+
+### RefundFailed
+
+```solidity
+error RefundFailed()
+```
+
+
+
+
+
+
 ### SBTAlreadyCreated
 
 ```solidity
@@ -1270,6 +1310,17 @@ error SBTAlreadyCreated(address to)
 
 ```solidity
 error SameValue()
+```
+
+
+
+
+
+
+### TransferFailed
+
+```solidity
+error TransferFailed()
 ```
 
 
