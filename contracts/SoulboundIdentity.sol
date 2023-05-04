@@ -64,27 +64,34 @@ contract SoulboundIdentity is
 
     /// @notice Mints a new soulbound identity
     /// @dev The caller can only mint one identity per address
+    /// @param paymentMethod Address of the payment method to use
     /// @param to Address of the owner of the new identity
-    function mint(address to) public override returns (uint256) {
+    /// @return The identity ID of the newly minted identity
+    function mint(
+        address paymentMethod,
+        address to
+    ) public override returns (uint256) {
         // Soulbound identity already created!
         if (balanceOf(to) > 0) revert IdentityAlreadyCreated(to);
 
-        return _mintWithCounter(to);
+        return _mintWithCounter(paymentMethod, to);
     }
 
     /// @notice Mints a new soulbound identity with a SoulName associated to it
     /// @dev The caller can only mint one identity per address, and the name must be unique
+    /// @param paymentMethod Address of the payment method to use
     /// @param to Address of the owner of the new identity
     /// @param name Name of the new identity
     /// @param yearsPeriod Years of validity of the name
     /// @param _tokenURI URI of the NFT
     function mintIdentityWithName(
+        address paymentMethod,
         address to,
         string memory name,
         uint256 yearsPeriod,
         string memory _tokenURI
     ) external override soulNameAlreadySet nonReentrant returns (uint256) {
-        uint256 identityId = mint(to);
+        uint256 identityId = mint(paymentMethod, to);
         soulName.mint(to, name, yearsPeriod, _tokenURI);
 
         return identityId;

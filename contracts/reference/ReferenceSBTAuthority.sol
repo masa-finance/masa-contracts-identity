@@ -48,13 +48,17 @@ contract ReferenceSBTAuthority is MasaSBTAuthority, ReentrancyGuard {
 
     /// @notice Mints a new SBT
     /// @dev The caller must have the MINTER role
+    /// @param paymentMethod Address of token that user want to pay
     /// @param identityId TokenId of the identity to mint the NFT to
     /// @return The SBT ID of the newly minted SBT
-    function mint(uint256 identityId) external nonReentrant returns (uint256) {
+    function mint(
+        address paymentMethod,
+        uint256 identityId
+    ) external nonReentrant returns (uint256) {
         address to = soulboundIdentity.ownerOf(identityId);
         if (balanceOf(to) > 0) revert SBTAlreadyCreated(to);
 
-        uint256 tokenId = _mintWithCounter(to);
+        uint256 tokenId = _mintWithCounter(paymentMethod, to);
 
         emit MintedToIdentity(tokenId, identityId);
 
@@ -63,12 +67,16 @@ contract ReferenceSBTAuthority is MasaSBTAuthority, ReentrancyGuard {
 
     /// @notice Mints a new SBT
     /// @dev The caller must have the MINTER role
+    /// @param paymentMethod Address of token that user want to pay
     /// @param to The address to mint the SBT to
     /// @return The SBT ID of the newly minted SBT
-    function mint(address to) external nonReentrant returns (uint256) {
+    function mint(
+        address paymentMethod,
+        address to
+    ) external nonReentrant returns (uint256) {
         if (balanceOf(to) > 0) revert SBTAlreadyCreated(to);
 
-        uint256 tokenId = _mintWithCounter(to);
+        uint256 tokenId = _mintWithCounter(paymentMethod, to);
 
         emit MintedToAddress(tokenId, to);
 

@@ -148,6 +148,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         // finalize purchase
         return
             _mintSoulboundIdentityAndName(
+                paymentMethod,
                 _msgSender(),
                 name,
                 nameLength,
@@ -161,14 +162,11 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @notice Mints a new Soulbound Identity purchasing it
     /// @dev This function allows the purchase of a soulbound identity for free
     /// @return TokenId of the new soulbound identity
-    function purchaseIdentity()
-        external
-        whenNotPaused
-        nonReentrant
-        returns (uint256)
-    {
+    function purchaseIdentity(
+        address paymentMethod
+    ) external whenNotPaused nonReentrant returns (uint256) {
         // finalize purchase
-        return _mintSoulboundIdentity(_msgSender());
+        return _mintSoulboundIdentity(paymentMethod, _msgSender());
     }
 
     /// @notice Mints a new Soul Name purchasing it
@@ -267,6 +265,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @notice Mints a new Soulbound Identity and Name
     /// @dev The final step of all purchase options. Will mint a
     /// new Soulbound Identity and a Soul Name NFT and emit the purchase event
+    /// @param paymentMethod Address of token that user want to pay
     /// @param to Address of the owner of the new soul name
     /// @param name Name of the new soul name
     /// @param nameLength Length of the name
@@ -276,6 +275,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @param signature Signature of the authority
     /// @return TokenId of the new soulbound identity
     function _mintSoulboundIdentityAndName(
+        address paymentMethod,
         address to,
         string memory name,
         uint256 nameLength,
@@ -292,6 +292,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
 
         // mint Soulbound identity token
         uint256 tokenId = soulboundIdentity.mintIdentityWithName(
+            paymentMethod,
             to,
             name,
             yearsPeriod,
@@ -306,11 +307,15 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @notice Mints a new Soulbound Identity
     /// @dev The final step of all purchase options. Will mint a
     /// new Soulbound Identity and emit the purchase event
+    /// @param paymentMethod Address of token that user want to pay
     /// @param to Address of the owner of the new identity
     /// @return TokenId of the new soulbound identity
-    function _mintSoulboundIdentity(address to) internal returns (uint256) {
+    function _mintSoulboundIdentity(
+        address paymentMethod,
+        address to
+    ) internal returns (uint256) {
         // mint Soulbound identity token
-        uint256 tokenId = soulboundIdentity.mint(to);
+        uint256 tokenId = soulboundIdentity.mint(paymentMethod, to);
 
         emit SoulboundIdentityPurchased(to, tokenId);
 
