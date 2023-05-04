@@ -33,7 +33,7 @@ contract SoulboundIdentity is MasaSBTAuthority, ISoulboundIdentity {
             admin,
             name,
             symbol,
-            baseTokenUR,
+            baseTokenURI,
             address(0)
         );
     }
