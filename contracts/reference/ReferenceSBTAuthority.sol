@@ -21,13 +21,21 @@ contract ReferenceSBTAuthority is MasaSBTAuthority {
     /// @param symbol Symbol of the token
     /// @param baseTokenURI Base URI of the token
     /// @param soulboundIdentity Address of the SoulboundIdentity contract
-    constructor(
+    function initialize(
         address admin,
         string memory name,
         string memory symbol,
         string memory baseTokenURI,
         address soulboundIdentity
-    ) MasaSBTAuthority(admin, name, symbol, baseTokenURI, soulboundIdentity) {}
+    ) public initializer {
+        MasaSBTAuthority._initialize(
+            admin,
+            name,
+            symbol,
+            baseTokenURI,
+            soulboundIdentity
+        );
+    }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 

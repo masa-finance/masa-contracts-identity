@@ -29,7 +29,7 @@ contract SoulboundBaseSelfSovereign is MasaSBTSelfSovereign {
         string memory symbol,
         string memory nameEIP712,
         string memory baseTokenURI,
-        ISoulboundIdentity soulboundIdentity,
+        address soulboundIdentity,
         PaymentParams memory paymentParams
     ) public initializer {
         MasaSBTSelfSovereign._initialize(

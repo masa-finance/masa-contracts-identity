@@ -142,7 +142,7 @@ contract SoulFactory is
             symbol,
             nameEIP712,
             baseTokenURI,
-            soulboundIdentity,
+            address(soulboundIdentity),
             paymentParams
         );
 
@@ -182,7 +182,7 @@ contract SoulFactory is
             symbol,
             nameEIP712,
             baseTokenURI,
-            soulboundIdentity,
+            address(soulboundIdentity),
             paymentParams
         );
 
