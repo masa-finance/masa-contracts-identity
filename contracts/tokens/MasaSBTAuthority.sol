@@ -25,12 +25,14 @@ abstract contract MasaSBTAuthority is MasaSBT {
     /// @param name Name of the token
     /// @param symbol Symbol of the token
     /// @param baseTokenURI Base URI of the token
+    /// @param soulboundIdentity Address of the SoulboundIdentity contract
     constructor(
         address admin,
         string memory name,
         string memory symbol,
-        string memory baseTokenURI
-    ) MasaSBT(admin, name, symbol, baseTokenURI) {
+        string memory baseTokenURI,
+        address soulboundIdentity
+    ) MasaSBT(admin, name, symbol, baseTokenURI, soulboundIdentity) {
         _grantRole(MINTER_ROLE, admin);
     }
 

@@ -1,12 +1,12 @@
-# SoulboundCreditScore
+# ReferenceSBTSelfSovereign
 
 *Masa Finance*
 
-> Soulbound Credit Score
+> Soulbound reference Self-Sovereign SBT
 
-Soulbound token that represents a credit score.
+Soulbound token that represents a Self-Sovereign SBT
 
-*Soulbound credit score, that inherits from the SBT contract.*
+*Inherits from the SBT contract.*
 
 ## Methods
 
@@ -277,7 +277,7 @@ Returns the identityId owned by the given token
 ### getMintPrice
 
 ```solidity
-function getMintPrice(address paymentMethod) external view returns (uint256 price, uint256 protocolFee)
+function getMintPrice(address paymentMethod) external view returns (uint256)
 ```
 
 Returns the price for minting
@@ -294,8 +294,7 @@ Returns the price for minting
 
 | Name | Type | Description |
 |---|---|---|
-| price | uint256 | Current price for minting in the given payment method |
-| protocolFee | uint256 | Current protocol fee for minting in the given payment method |
+| _0 | uint256 | Current price for minting in the given payment method |
 
 ### getRoleAdmin
 
@@ -400,7 +399,7 @@ Mints a new SBT
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256 | The NFT ID of the newly minted SBT |
+| _0 | uint256 | The SBT ID of the newly minted SBT |
 
 ### mint
 
@@ -501,57 +500,6 @@ function ownerOf(uint256 tokenId) external view returns (address)
 |---|---|---|
 | _0 | address | undefined |
 
-### protocolFeeAmount
-
-```solidity
-function protocolFeeAmount() external view returns (uint256)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | undefined |
-
-### protocolFeePercent
-
-```solidity
-function protocolFeePercent() external view returns (uint256)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | undefined |
-
-### protocolFeeWallet
-
-```solidity
-function protocolFeeWallet() external view returns (address)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | address | undefined |
-
 ### queryLinkPrice
 
 ```solidity
@@ -618,6 +566,23 @@ function renounceRole(bytes32 role, address account) external nonpayable
 |---|---|---|
 | role | bytes32 | undefined |
 | account | address | undefined |
+
+### reserveWallet
+
+```solidity
+function reserveWallet() external view returns (address)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
 
 ### revokeRole
 
@@ -716,54 +681,6 @@ Sets the price of minting in MASA
 |---|---|---|
 | _mintPriceMASA | uint256 | New price of minting in MASA |
 
-### setProtocolFeeAmount
-
-```solidity
-function setProtocolFeeAmount(uint256 _protocolFeeAmount) external nonpayable
-```
-
-Set the protocol fee amount
-
-*The caller must have the admin role to call this function*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _protocolFeeAmount | uint256 | New protocol fee amount |
-
-### setProtocolFeePercent
-
-```solidity
-function setProtocolFeePercent(uint256 _protocolFeePercent) external nonpayable
-```
-
-Set the protocol fee percent
-
-*The caller must have the admin role to call this function*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _protocolFeePercent | uint256 | New protocol fee percent |
-
-### setProtocolFeeWallet
-
-```solidity
-function setProtocolFeeWallet(address _protocolFeeWallet) external nonpayable
-```
-
-Set the protocol fee wallet
-
-*The caller must have the admin role to call this function*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _protocolFeeWallet | address | New protocol fee wallet |
-
 ### setQueryLinkPrice
 
 ```solidity
@@ -795,6 +712,22 @@ Sets the price for reading data in SoulLinker in MASA
 | Name | Type | Description |
 |---|---|---|
 | _queryLinkPriceMASA | uint256 | New price for reading data in SoulLinker in MASA |
+
+### setReserveWallet
+
+```solidity
+function setReserveWallet(address _reserveWallet) external nonpayable
+```
+
+Set the reserve wallet
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _reserveWallet | address | New reserve wallet |
 
 ### setSoulboundIdentity
 
@@ -843,22 +776,6 @@ Sets the swap router address
 | Name | Type | Description |
 |---|---|---|
 | _swapRouter | address | New swap router address |
-
-### setTreasuryWallet
-
-```solidity
-function setTreasuryWallet(address _treasuryWallet) external nonpayable
-```
-
-Set the treasury wallet
-
-*The caller must have the admin role to call this function*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _treasuryWallet | address | New treasury wallet |
 
 ### setWrappedNativeToken
 
@@ -1050,23 +967,6 @@ function totalSupply() external view returns (uint256)
 |---|---|---|
 | _0 | uint256 | undefined |
 
-### treasuryWallet
-
-```solidity
-function treasuryWallet() external view returns (address)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | address | undefined |
-
 ### wrappedNativeToken
 
 ```solidity
@@ -1122,6 +1022,48 @@ event Mint(address indexed _owner, uint256 indexed _tokenId)
 | _owner `indexed` | address | undefined |
 | _tokenId `indexed` | uint256 | undefined |
 
+### MintedToAddress
+
+```solidity
+event MintedToAddress(uint256 tokenId, address to, address authorityAddress, uint256 signatureDate, address paymentMethod, uint256 mintPrice)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId  | uint256 | undefined |
+| to  | address | undefined |
+| authorityAddress  | address | undefined |
+| signatureDate  | uint256 | undefined |
+| paymentMethod  | address | undefined |
+| mintPrice  | uint256 | undefined |
+
+### MintedToIdentity
+
+```solidity
+event MintedToIdentity(uint256 tokenId, uint256 identityId, address authorityAddress, uint256 signatureDate, address paymentMethod, uint256 mintPrice)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId  | uint256 | undefined |
+| identityId  | uint256 | undefined |
+| authorityAddress  | address | undefined |
+| signatureDate  | uint256 | undefined |
+| paymentMethod  | address | undefined |
+| mintPrice  | uint256 | undefined |
+
 ### RoleAdminChanged
 
 ```solidity
@@ -1176,48 +1118,6 @@ event RoleRevoked(bytes32 indexed role, address indexed account, address indexed
 | account `indexed` | address | undefined |
 | sender `indexed` | address | undefined |
 
-### SoulboundCreditScoreMintedToAddress
-
-```solidity
-event SoulboundCreditScoreMintedToAddress(uint256 tokenId, address to, address authorityAddress, uint256 signatureDate, address paymentMethod, uint256 mintPrice)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| tokenId  | uint256 | undefined |
-| to  | address | undefined |
-| authorityAddress  | address | undefined |
-| signatureDate  | uint256 | undefined |
-| paymentMethod  | address | undefined |
-| mintPrice  | uint256 | undefined |
-
-### SoulboundCreditScoreMintedToIdentity
-
-```solidity
-event SoulboundCreditScoreMintedToIdentity(uint256 tokenId, uint256 identityId, address authorityAddress, uint256 signatureDate, address paymentMethod, uint256 mintPrice)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| tokenId  | uint256 | undefined |
-| identityId  | uint256 | undefined |
-| authorityAddress  | address | undefined |
-| signatureDate  | uint256 | undefined |
-| paymentMethod  | address | undefined |
-| mintPrice  | uint256 | undefined |
-
 
 
 ## Errors
@@ -1264,22 +1164,6 @@ error CallerNotOwner(address caller)
 | Name | Type | Description |
 |---|---|---|
 | caller | address | undefined |
-
-### CreditScoreAlreadyCreated
-
-```solidity
-error CreditScoreAlreadyCreated(address to)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| to | address | undefined |
 
 ### InsufficientEthAmount
 
@@ -1393,6 +1277,22 @@ error RefundFailed()
 
 
 
+
+### SBTAlreadyCreated
+
+```solidity
+error SBTAlreadyCreated(address to)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| to | address | undefined |
 
 ### SameValue
 
