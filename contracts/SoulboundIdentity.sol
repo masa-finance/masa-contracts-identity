@@ -65,7 +65,7 @@ contract SoulboundIdentity is
     /// @notice Mints a new soulbound identity
     /// @dev The caller can only mint one identity per address
     /// @param to Address of the owner of the new identity
-    function mint(address to) public override nonReentrant returns (uint256) {
+    function mint(address to) public override returns (uint256) {
         // Soulbound identity already created!
         if (balanceOf(to) > 0) revert IdentityAlreadyCreated(to);
 
