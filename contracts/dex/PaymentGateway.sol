@@ -251,14 +251,15 @@ abstract contract PaymentGateway is AccessControl {
     /// the swap if necessary, and transfer the protocol fee to the protocol fee wallet
     /// @param paymentMethod Address of token that user want to pay
     /// @param amount Price to be paid in the specified payment method
+    /// @param protocolFee Protocol fee to be paid in the specified payment method
     function _pay(
         address paymentMethod,
-        uint256 amount
+        uint256 amount,
+        uint256 protocolFee
     ) internal paymentParamsAlreadySet {
-        if (amount == 0) return;
-
-        // calculate protocol fee
-        uint256 protocolFee = _getProtocolFee(paymentMethod, amount);
+        if (amount == 0 && protocolFee == 0) return;
+        if (protocolFee > 0 && protocolFeeWallet == address(0))
+            revert ProtocolFeeWalletNotSet();
 
         if (!enabledPaymentMethod[paymentMethod])
             revert InvalidPaymentMethod(paymentMethod);
@@ -266,12 +267,14 @@ abstract contract PaymentGateway is AccessControl {
             // ETH
             if (msg.value < amount.add(protocolFee))
                 revert InsufficientEthAmount(amount.add(protocolFee));
-            (bool success, ) = payable(treasuryWallet).call{value: amount}("");
-            if (!success) revert TransferFailed();
+            if (amount > 0) {
+                (bool success, ) = payable(treasuryWallet).call{value: amount}(
+                    ""
+                );
+                if (!success) revert TransferFailed();
+            }
             if (protocolFee > 0) {
-                if (protocolFeeWallet == address(0))
-                    revert ProtocolFeeWalletNotSet();
-                (success, ) = payable(protocolFeeWallet).call{
+                (bool success, ) = payable(protocolFeeWallet).call{
                     value: protocolFee
                 }("");
                 if (!success) revert TransferFailed();
@@ -279,19 +282,19 @@ abstract contract PaymentGateway is AccessControl {
             if (msg.value > amount.add(protocolFee)) {
                 // return diff
                 uint256 refund = msg.value.sub(amount.add(protocolFee));
-                (success, ) = payable(msg.sender).call{value: refund}("");
+                (bool success, ) = payable(msg.sender).call{value: refund}("");
                 if (!success) revert RefundFailed();
             }
         } else {
             // ERC20 token, including MASA and USDC
-            IERC20(paymentMethod).safeTransferFrom(
-                msg.sender,
-                treasuryWallet,
-                amount
-            );
+            if (amount > 0) {
+                IERC20(paymentMethod).safeTransferFrom(
+                    msg.sender,
+                    treasuryWallet,
+                    amount
+                );
+            }
             if (protocolFee > 0) {
-                if (protocolFeeWallet == address(0))
-                    revert ProtocolFeeWalletNotSet();
                 IERC20(paymentMethod).safeTransferFrom(
                     msg.sender,
                     protocolFeeWallet,

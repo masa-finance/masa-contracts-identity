@@ -146,8 +146,11 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
             )
         ) revert InvalidSignature();
 
-        (uint256 price, ) = getPriceForAddLink(paymentMethod, token);
-        _pay(paymentMethod, price);
+        (uint256 price, uint256 protocolFee) = getPriceForAddLink(
+            paymentMethod,
+            token
+        );
+        _pay(paymentMethod, price, protocolFee);
 
         // token => tokenId => readerIdentityId => signatureDate => LinkData
         _links[token][tokenId][readerIdentityId][signatureDate] = LinkData(

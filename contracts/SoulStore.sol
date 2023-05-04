@@ -138,12 +138,12 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         address authorityAddress,
         bytes calldata signature
     ) external payable whenNotPaused nonReentrant returns (uint256) {
-        (uint256 price, ) = getPriceForMintingName(
+        (uint256 price, uint256 protocolFee) = getPriceForMintingName(
             paymentMethod,
             nameLength,
             yearsPeriod
         );
-        _pay(paymentMethod, price);
+        _pay(paymentMethod, price, protocolFee);
 
         // finalize purchase
         return
@@ -191,12 +191,12 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         address authorityAddress,
         bytes calldata signature
     ) external payable whenNotPaused nonReentrant returns (uint256) {
-        (uint256 price, ) = getPriceForMintingName(
+        (uint256 price, uint256 protocolFee) = getPriceForMintingName(
             paymentMethod,
             nameLength,
             yearsPeriod
         );
-        _pay(paymentMethod, price);
+        _pay(paymentMethod, price, protocolFee);
 
         // finalize purchase
         return
