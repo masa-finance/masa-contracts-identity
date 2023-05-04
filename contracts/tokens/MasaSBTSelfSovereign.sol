@@ -20,9 +20,6 @@ abstract contract MasaSBTSelfSovereign is MasaSBT, EIP712 {
 
     Counters.Counter private _tokenIdCounter;
 
-    uint256 public mintPrice; // price in stable coin
-    uint256 public mintPriceMASA; // price in MASA
-
     mapping(address => bool) public authorities;
 
     /* ========== INITIALIZE ================================================ */
@@ -55,26 +52,6 @@ abstract contract MasaSBTSelfSovereign is MasaSBT, EIP712 {
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
-    /// @notice Sets the price of minting in stable coin
-    /// @dev The caller must have the admin role to call this function
-    /// @param _mintPrice New price of minting in stable coin
-    function setMintPrice(
-        uint256 _mintPrice
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        if (mintPrice == _mintPrice) revert SameValue();
-        mintPrice = _mintPrice;
-    }
-
-    /// @notice Sets the price of minting in MASA
-    /// @dev The caller must have the admin role to call this function
-    /// @param _mintPriceMASA New price of minting in MASA
-    function setMintPriceMASA(
-        uint256 _mintPriceMASA
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        if (mintPriceMASA == _mintPriceMASA) revert SameValue();
-        mintPriceMASA = _mintPriceMASA;
-    }
-
     /// @notice Adds a new authority to the list of authorities
     /// @dev The caller must have the admin role to call this function
     /// @param _authority New authority to add
@@ -103,58 +80,19 @@ abstract contract MasaSBTSelfSovereign is MasaSBT, EIP712 {
 
     /* ========== VIEWS ===================================================== */
 
-    /// @notice Returns the price for minting
-    /// @dev Returns current pricing for minting
-    /// @param paymentMethod Address of token that user want to pay
-    /// @return price Current price for minting in the given payment method
-    /// @return protocolFee Current protocol fee for minting in the given payment method
-    function getMintPrice(
-        address paymentMethod
-    ) public view returns (uint256 price, uint256 protocolFee) {
-        if (mintPrice == 0 && mintPriceMASA == 0) {
-            price = 0;
-        } else if (
-            paymentMethod == masaToken &&
-            enabledPaymentMethod[paymentMethod] &&
-            mintPriceMASA > 0
-        ) {
-            // price in MASA without conversion rate
-            price = mintPriceMASA;
-        } else if (
-            paymentMethod == stableCoin && enabledPaymentMethod[paymentMethod]
-        ) {
-            // stable coin
-            price = mintPrice;
-        } else if (enabledPaymentMethod[paymentMethod]) {
-            // ETH and ERC 20 token
-            price = _convertFromStableCoin(paymentMethod, mintPrice);
-        } else {
-            revert InvalidPaymentMethod(paymentMethod);
-        }
-        return (price, _getProtocolFee(paymentMethod, price));
-    }
-
     /* ========== PRIVATE FUNCTIONS ========================================= */
 
     function _verify(
         bytes32 digest,
         bytes memory signature,
         address signer
-    ) internal view {
+    ) private view {
         address _signer = ECDSA.recover(digest, signature);
         if (_signer != signer) revert InvalidSignature();
         if (!authorities[_signer]) revert NotAuthorized(_signer);
     }
 
-    function _mintWithCounter(address to) private returns (uint256) {
-        uint256 tokenId = _tokenIdCounter.current();
-        _tokenIdCounter.increment();
-        _mint(to, tokenId);
-
-        return tokenId;
-    }
-
-    function _verifyAndMint(
+    function _mintWithCounter(
         address paymentMethod,
         address to,
         bytes32 digest,
@@ -166,7 +104,11 @@ abstract contract MasaSBTSelfSovereign is MasaSBT, EIP712 {
         (uint256 price, ) = getMintPrice(paymentMethod);
         _pay(paymentMethod, price);
 
-        return _mintWithCounter(to);
+        uint256 tokenId = _tokenIdCounter.current();
+        _tokenIdCounter.increment();
+        _mint(to, tokenId);
+
+        return tokenId;
     }
 
     /* ========== MODIFIERS ================================================= */
