@@ -277,7 +277,7 @@ Returns the identityId owned by the given token
 ### getMintPrice
 
 ```solidity
-function getMintPrice(address paymentMethod) external view returns (uint256)
+function getMintPrice(address paymentMethod) external view returns (uint256 price, uint256 protocolFee)
 ```
 
 Returns the price for minting
@@ -294,7 +294,8 @@ Returns the price for minting
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256 | Current price for minting in the given payment method |
+| price | uint256 | Current price for minting in the given payment method |
+| protocolFee | uint256 | Current protocol fee for minting in the given payment method |
 
 ### getRoleAdmin
 
@@ -500,6 +501,57 @@ function ownerOf(uint256 tokenId) external view returns (address)
 |---|---|---|
 | _0 | address | undefined |
 
+### protocolFeeAmount
+
+```solidity
+function protocolFeeAmount() external view returns (uint256)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+### protocolFeePercent
+
+```solidity
+function protocolFeePercent() external view returns (uint256)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+### protocolFeeWallet
+
+```solidity
+function protocolFeeWallet() external view returns (address)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
 ### queryLinkPrice
 
 ```solidity
@@ -566,23 +618,6 @@ function renounceRole(bytes32 role, address account) external nonpayable
 |---|---|---|
 | role | bytes32 | undefined |
 | account | address | undefined |
-
-### reserveWallet
-
-```solidity
-function reserveWallet() external view returns (address)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | address | undefined |
 
 ### revokeRole
 
@@ -681,6 +716,54 @@ Sets the price of minting in MASA
 |---|---|---|
 | _mintPriceMASA | uint256 | New price of minting in MASA |
 
+### setProtocolFeeAmount
+
+```solidity
+function setProtocolFeeAmount(uint256 _protocolFeeAmount) external nonpayable
+```
+
+Set the protocol fee amount
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _protocolFeeAmount | uint256 | New protocol fee amount |
+
+### setProtocolFeePercent
+
+```solidity
+function setProtocolFeePercent(uint256 _protocolFeePercent) external nonpayable
+```
+
+Set the protocol fee percent
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _protocolFeePercent | uint256 | New protocol fee percent |
+
+### setProtocolFeeWallet
+
+```solidity
+function setProtocolFeeWallet(address _protocolFeeWallet) external nonpayable
+```
+
+Set the protocol fee wallet
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _protocolFeeWallet | address | New protocol fee wallet |
+
 ### setQueryLinkPrice
 
 ```solidity
@@ -712,22 +795,6 @@ Sets the price for reading data in SoulLinker in MASA
 | Name | Type | Description |
 |---|---|---|
 | _queryLinkPriceMASA | uint256 | New price for reading data in SoulLinker in MASA |
-
-### setReserveWallet
-
-```solidity
-function setReserveWallet(address _reserveWallet) external nonpayable
-```
-
-Set the reserve wallet
-
-*The caller must have the admin role to call this function*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _reserveWallet | address | New reserve wallet |
 
 ### setSoulboundIdentity
 
@@ -776,6 +843,22 @@ Sets the swap router address
 | Name | Type | Description |
 |---|---|---|
 | _swapRouter | address | New swap router address |
+
+### setTreasuryWallet
+
+```solidity
+function setTreasuryWallet(address _treasuryWallet) external nonpayable
+```
+
+Set the treasury wallet
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _treasuryWallet | address | New treasury wallet |
 
 ### setWrappedNativeToken
 
@@ -966,6 +1049,23 @@ function totalSupply() external view returns (uint256)
 | Name | Type | Description |
 |---|---|---|
 | _0 | uint256 | undefined |
+
+### treasuryWallet
+
+```solidity
+function treasuryWallet() external view returns (address)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
 
 ### wrappedNativeToken
 
