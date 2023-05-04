@@ -773,14 +773,14 @@ describe("Soul Store", () => {
 
   describe("purchase identity", () => {
     it("we can purchase an identity", async () => {
-      await soulStore.connect(address1).purchaseIdentity();
+      await soulStore.connect(address1)["purchaseIdentity()"]();
     });
   });
 
   describe("purchase name", () => {
     beforeEach(async () => {
       // first we need to purchase an identity
-      await soulStore.connect(address1).purchaseIdentity();
+      await soulStore.connect(address1)["purchaseIdentity()"]();
     });
 
     it("we can purchase a name with ETH", async () => {
@@ -979,7 +979,7 @@ describe("Soul Store", () => {
   describe("purchase name paying a protocol fee", () => {
     beforeEach(async () => {
       // first we need to purchase an identity
-      await soulStore.connect(address1).purchaseIdentity();
+      await soulStore.connect(address1)["purchaseIdentity()"]();
     });
 
     it("we can purchase a name with ETH (with protocol fee percent)", async () => {
@@ -1156,7 +1156,7 @@ describe("Soul Store", () => {
   describe("purchase name with other ERC-20 token", () => {
     beforeEach(async () => {
       // first we need to purchase an identity
-      await soulStore.connect(address1).purchaseIdentity();
+      await soulStore.connect(address1)["purchaseIdentity()"]();
     });
 
     it("should add ERC-20 token from owner", async () => {
