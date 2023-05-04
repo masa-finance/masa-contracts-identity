@@ -28,7 +28,17 @@ const func: DeployFunction = async ({
     env.ADMIN || admin.address,
     env.SOULBOUNDIDENTITY_NAME,
     env.SOULBOUNDIDENTITY_SYMBOL,
-    baseUri
+    baseUri,
+    [
+      env.SWAP_ROUTER,
+      env.WETH_TOKEN,
+      env.USDC_TOKEN,
+      env.MASA_TOKEN,
+      env.TREASURY_WALLET || admin.address,
+      env.PROTOCOLFEE_WALLET || ethers.constants.AddressZero,
+      env.PROTOCOLFEE_AMOUNT || 0,
+      env.PROTOCOLFEE_PERCENT || 0
+    ]
   ];
 
   if (
