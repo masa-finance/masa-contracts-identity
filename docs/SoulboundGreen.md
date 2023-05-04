@@ -361,7 +361,7 @@ function hasRole(bytes32 role, address account) external view returns (bool)
 ### initialize
 
 ```solidity
-function initialize(address admin, string name, string symbol, string baseTokenURI, contract ISoulboundIdentity soulboundIdentity, PaymentGateway.PaymentParams paymentParams) external nonpayable
+function initialize(address admin, string name, string symbol, string baseTokenURI, address soulboundIdentity, PaymentGateway.PaymentParams paymentParams) external nonpayable
 ```
 
 
@@ -376,7 +376,7 @@ function initialize(address admin, string name, string symbol, string baseTokenU
 | name | string | undefined |
 | symbol | string | undefined |
 | baseTokenURI | string | undefined |
-| soulboundIdentity | contract ISoulboundIdentity | undefined |
+| soulboundIdentity | address | undefined |
 | paymentParams | PaymentGateway.PaymentParams | undefined |
 
 ### masaToken

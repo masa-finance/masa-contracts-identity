@@ -361,7 +361,7 @@ function hasRole(bytes32 role, address account) external view returns (bool)
 ### initialize
 
 ```solidity
-function initialize(address admin, string name, string symbol, string nameEIP712, string baseTokenURI, contract ISoulboundIdentity soulboundIdentity, PaymentGateway.PaymentParams paymentParams) external nonpayable
+function initialize(address admin, string name, string symbol, string nameEIP712, string baseTokenURI, address soulboundIdentity, PaymentGateway.PaymentParams paymentParams) external nonpayable
 ```
 
 
@@ -377,7 +377,7 @@ function initialize(address admin, string name, string symbol, string nameEIP712
 | symbol | string | undefined |
 | nameEIP712 | string | undefined |
 | baseTokenURI | string | undefined |
-| soulboundIdentity | contract ISoulboundIdentity | undefined |
+| soulboundIdentity | address | undefined |
 | paymentParams | PaymentGateway.PaymentParams | undefined |
 
 ### masaToken
@@ -702,7 +702,7 @@ Set the reserve wallet
 ### setSoulboundIdentity
 
 ```solidity
-function setSoulboundIdentity(contract ISoulboundIdentity _soulboundIdentity) external nonpayable
+function setSoulboundIdentity(address _soulboundIdentity) external nonpayable
 ```
 
 Sets the SoulboundIdentity contract address linked to this SBT
@@ -713,7 +713,7 @@ Sets the SoulboundIdentity contract address linked to this SBT
 
 | Name | Type | Description |
 |---|---|---|
-| _soulboundIdentity | contract ISoulboundIdentity | Address of the SoulboundIdentity contract |
+| _soulboundIdentity | address | Address of the SoulboundIdentity contract |
 
 ### setStableCoin
 

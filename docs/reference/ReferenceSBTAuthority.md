@@ -222,6 +222,26 @@ function hasRole(bytes32 role, address account) external view returns (bool)
 |---|---|---|
 | _0 | bool | undefined |
 
+### initialize
+
+```solidity
+function initialize(address admin, string name, string symbol, string baseTokenURI, address soulboundIdentity) external nonpayable
+```
+
+Creates a new Authority SBT
+
+*Creates a new Authority SBT, inheriting from the SBT contract.*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| admin | address | Administrator of the smart contract |
+| name | string | Name of the token |
+| symbol | string | Symbol of the token |
+| baseTokenURI | string | Base URI of the token |
+| soulboundIdentity | address | Address of the SoulboundIdentity contract |
+
 ### mint
 
 ```solidity
@@ -613,6 +633,22 @@ event Burn(address indexed _owner, uint256 indexed _tokenId)
 |---|---|---|
 | _owner `indexed` | address | undefined |
 | _tokenId `indexed` | uint256 | undefined |
+
+### Initialized
+
+```solidity
+event Initialized(uint8 version)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| version  | uint8 | undefined |
 
 ### Mint
 
