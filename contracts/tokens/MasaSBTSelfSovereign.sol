@@ -50,7 +50,13 @@ abstract contract MasaSBTSelfSovereign is
         PaymentParams memory paymentParams
     ) internal onlyInitializing {
         PaymentGateway._initialize(admin, paymentParams);
-        MasaSBT._initialize(admin, name, symbol, baseTokenURI, soulboundIdentity);
+        MasaSBT._initialize(
+            admin,
+            name,
+            symbol,
+            baseTokenURI,
+            soulboundIdentity
+        );
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */

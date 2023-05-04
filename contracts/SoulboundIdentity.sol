@@ -29,7 +29,13 @@ contract SoulboundIdentity is MasaSBTAuthority, ISoulboundIdentity {
         string memory symbol,
         string memory baseTokenURI
     ) public initializer {
-        MasaSBTAuthority._initialize(admin, name, symbol, baseTokenUR, address(0));
+        MasaSBTAuthority._initialize(
+            admin,
+            name,
+            symbol,
+            baseTokenUR,
+            address(0)
+        );
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
