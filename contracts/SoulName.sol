@@ -42,15 +42,15 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         uint256 tokenId;
     }
 
-    struct DefaultName {
-      bool exists;
-      uint256 tokenId;
+    struct DefaultSoulName {
+        bool exists;
+        uint256 tokenId;
     }
 
     mapping(uint256 => TokenData) public tokenData; // used to store the data of the token id
     mapping(string => NameData) public nameData; // stores the token id of the current active soul name
 
-    mapping(address => DefaultName) private defaultName; // stores the token id of the default soul name
+    mapping(address => DefaultSoulName) private defaultSoulName; // stores the token id of the default soul name
 
     /* ========== INITIALIZE ========== */
 
@@ -215,6 +215,17 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         }
 
         super.burn(tokenId);
+    }
+
+    /// @notice Sets the default soul name for the owner
+    /// @dev The caller must be the owner of the soul name.
+    /// @param tokenId TokenId of the soul name
+    function setDefaultSoulName(uint256 tokenId) external {
+        address owner = ERC721.ownerOf(tokenId);
+        if (_msgSender() != owner) revert CallerNotOwner(_msgSender());
+
+        defaultSoulName[_msgSender()].tokenId = tokenId;
+        defaultSoulName[_msgSender()].exists = true;
     }
 
     /* ========== VIEWS ========== */
