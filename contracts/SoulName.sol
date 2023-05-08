@@ -50,7 +50,7 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     mapping(uint256 => TokenData) public tokenData; // used to store the data of the token id
     mapping(string => NameData) public nameData; // stores the token id of the current active soul name
 
-    mapping(address => DefaultSoulName) private defaultSoulName; // stores the token id of the default soul name
+    mapping(address => DefaultSoulName) public defaultSoulName; // stores the token id of the default soul name
 
     /* ========== INITIALIZE ========== */
 
@@ -365,6 +365,22 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
 
         // return identity names if exists and are active
         return _sbtNames;
+    }
+
+    /// @notice Returns the default soul name of an account
+    /// @dev This function queries the default soul name of the specified account
+    /// @param owner Address of the owner of the identities
+    /// @return Default soul name associated to the account
+    function getDefaultSoulName(
+        address owner
+    ) external view returns (string memory) {
+        if (defaultSoulName[owner].exists) {
+            uint256 tokenId = defaultSoulName[owner].tokenId;
+            if (tokenData[tokenId].expirationDate >= block.timestamp) {
+                return _getName(tokenData[tokenId].name);
+            }
+        }
+        return "";
     }
 
     /// @notice A distinct Uniform Resource Identifier (URI) for a given asset.
