@@ -340,11 +340,26 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         string[] memory _sbtNames = new string[](results);
         uint256 index = 0;
 
-        for (uint256 i = 0; i < balance; i++) {
-            uint256 tokenId = tokenOfOwnerByIndex(owner, i);
+        if (defaultSoulName[owner].exists) {
+            uint256 tokenId = defaultSoulName[owner].tokenId;
             if (tokenData[tokenId].expirationDate >= block.timestamp) {
                 _sbtNames[index] = Utils.toLowerCase(tokenData[tokenId].name);
                 index = index.add(1);
+            }
+        }
+
+        for (uint256 i = 0; i < balance; i++) {
+            uint256 tokenId = tokenOfOwnerByIndex(owner, i);
+            if (
+                !defaultSoulName[owner].exists ||
+                tokenId != defaultSoulName[owner].tokenId
+            ) {
+                if (tokenData[tokenId].expirationDate >= block.timestamp) {
+                    _sbtNames[index] = Utils.toLowerCase(
+                        tokenData[tokenId].name
+                    );
+                    index = index.add(1);
+                }
             }
         }
 
