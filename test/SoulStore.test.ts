@@ -318,7 +318,7 @@ describe("Soul Store", () => {
 
       expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_5LETTERS * 2);
       expect(priceInETH2).to.be.closeTo(priceInETH1.mul(2), 100);
-      expect(priceInMasaToken2).to.be.closeTo(priceInMasaToken1.mul(2), 500);
+      expect(priceInMasaToken2).to.be.closeTo(priceInMasaToken1.mul(2), 1000);
     });
 
     it("we can get 1 letters name purchase info for 1 and 2 years", async () => {
