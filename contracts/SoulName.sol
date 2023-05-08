@@ -32,9 +32,6 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     mapping(uint256 => string) private _tokenURIs;
     mapping(string => bool) private _URIs; // used to check if a uri is already used
 
-    mapping(uint256 => TokenData) public tokenData; // used to store the data of the token id
-    mapping(string => NameData) public nameData; // stores the token id of the current active soul name
-
     struct TokenData {
         string name; // Name with lowercase and uppercase
         uint256 expirationDate;
@@ -44,6 +41,16 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         bool exists;
         uint256 tokenId;
     }
+
+    struct DefaultName {
+      bool exists;
+      uint256 tokenId;
+    }
+
+    mapping(uint256 => TokenData) public tokenData; // used to store the data of the token id
+    mapping(string => NameData) public nameData; // stores the token id of the current active soul name
+
+    mapping(address => DefaultName) private defaultName; // stores the token id of the default soul name
 
     /* ========== INITIALIZE ========== */
 
