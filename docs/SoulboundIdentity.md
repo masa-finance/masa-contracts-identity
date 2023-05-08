@@ -138,6 +138,28 @@ Returns true if the token exists
 |---|---|---|
 | _0 | bool | True if the token exists |
 
+### getDefaultSoulName
+
+```solidity
+function getDefaultSoulName(address owner) external view returns (string)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| owner | address | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string | undefined |
+
 ### getExtension
 
 ```solidity

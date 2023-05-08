@@ -116,6 +116,29 @@ function contractURI() external view returns (string)
 |---|---|---|
 | _0 | string | undefined |
 
+### defaultSoulName
+
+```solidity
+function defaultSoulName(address) external view returns (bool exists, uint256 tokenId)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| exists | bool | undefined |
+| tokenId | uint256 | undefined |
+
 ### exists
 
 ```solidity
@@ -176,6 +199,28 @@ function getApproved(uint256 tokenId) external view returns (address)
 | Name | Type | Description |
 |---|---|---|
 | _0 | address | undefined |
+
+### getDefaultSoulName
+
+```solidity
+function getDefaultSoulName(address owner) external view returns (string)
+```
+
+Returns the default soul name of an account
+
+*This function queries the default soul name of the specified account*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| owner | address | Address of the owner of the identities |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string | Default soul name associated to the account |
 
 ### getExtension
 
@@ -629,6 +674,22 @@ Sets the URI of the smart contract metadata
 | Name | Type | Description |
 |---|---|---|
 | _contractURI | string | URI of the smart contract metadata |
+
+### setDefaultSoulName
+
+```solidity
+function setDefaultSoulName(uint256 tokenId) external nonpayable
+```
+
+Sets the default soul name for the owner
+
+*The caller must be the owner of the soul name.*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId | uint256 | TokenId of the soul name |
 
 ### setExtension
 
