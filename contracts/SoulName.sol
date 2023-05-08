@@ -373,7 +373,7 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     /// @return Default soul name associated to the account
     function getDefaultSoulName(
         address owner
-    ) external view returns (string memory) {
+    ) external view override returns (string memory) {
         if (defaultSoulName[owner].exists) {
             uint256 tokenId = defaultSoulName[owner].tokenId;
             if (tokenData[tokenId].expirationDate >= block.timestamp) {

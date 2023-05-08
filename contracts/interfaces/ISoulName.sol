@@ -38,4 +38,8 @@ interface ISoulName {
     function getSoulNames(
         uint256 identityId
     ) external view returns (string[] memory sbtNames);
+
+    function getDefaultSoulName(
+        address owner
+    ) external view returns (string memory);
 }
