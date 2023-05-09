@@ -113,7 +113,7 @@ describe("Soulbound Identity", () => {
     beforeEach(async () => {
       await soulboundIdentity
         .connect(owner)
-        .setProtocolFeeWallet(protocolWallet.address);
+        .setProtocolFeeReceiver(protocolWallet.address);
       await soulboundIdentity.connect(owner).setProtocolFeeAmount(1_000_000); // 1 USD
 
       await soulboundIdentity
