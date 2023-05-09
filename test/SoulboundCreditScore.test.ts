@@ -527,11 +527,12 @@ describe("Soulbound Credit Score", () => {
     it("should mint from final user address paying with ETH (with protocol fee percent)", async () => {
       await soulboundCreditScore
         .connect(owner)
-        .setProtocolFeeWallet(protocolWallet.address);
+        .setProtocolFeeReceiver(protocolWallet.address);
       await soulboundCreditScore.connect(owner).setProtocolFeePercent(10); // 10%
 
       const treasuryWallet = await soulboundCreditScore.treasuryWallet();
-      const protocolFeeWallet = await soulboundCreditScore.protocolFeeWallet();
+      const protocolFeeReceiver =
+        await soulboundCreditScore.protocolFeeReceiver();
       const { price, protocolFee } = await soulboundCreditScore.getMintPrice(
         ethers.constants.AddressZero
       );
@@ -539,7 +540,7 @@ describe("Soulbound Credit Score", () => {
         treasuryWallet
       );
       const protocolWalletBalanceBefore = await ethers.provider.getBalance(
-        protocolFeeWallet
+        protocolFeeReceiver
       );
 
       await expect(
@@ -577,7 +578,7 @@ describe("Soulbound Credit Score", () => {
         treasuryWallet
       );
       const protocolWalletBalanceAfter = await ethers.provider.getBalance(
-        protocolFeeWallet
+        protocolFeeReceiver
       );
 
       // we check that the treasury wallet received the ETH
@@ -592,11 +593,12 @@ describe("Soulbound Credit Score", () => {
     it("should mint from final user address paying with ETH (with protocol fee amount)", async () => {
       await soulboundCreditScore
         .connect(owner)
-        .setProtocolFeeWallet(protocolWallet.address);
+        .setProtocolFeeReceiver(protocolWallet.address);
       await soulboundCreditScore.connect(owner).setProtocolFeeAmount(1_000_000); // 1 USD
 
       const treasuryWallet = await soulboundCreditScore.treasuryWallet();
-      const protocolFeeWallet = await soulboundCreditScore.protocolFeeWallet();
+      const protocolFeeReceiver =
+        await soulboundCreditScore.protocolFeeReceiver();
       const { price, protocolFee } = await soulboundCreditScore.getMintPrice(
         ethers.constants.AddressZero
       );
@@ -604,7 +606,7 @@ describe("Soulbound Credit Score", () => {
         treasuryWallet
       );
       const protocolWalletBalanceBefore = await ethers.provider.getBalance(
-        protocolFeeWallet
+        protocolFeeReceiver
       );
 
       await expect(
@@ -642,7 +644,7 @@ describe("Soulbound Credit Score", () => {
         treasuryWallet
       );
       const protocolWalletBalanceAfter = await ethers.provider.getBalance(
-        protocolFeeWallet
+        protocolFeeReceiver
       );
 
       // we check that the treasury wallet received the ETH
@@ -657,11 +659,12 @@ describe("Soulbound Credit Score", () => {
     it("should mint from final user address paying with stable coin (with protocol fee percent)", async () => {
       await soulboundCreditScore
         .connect(owner)
-        .setProtocolFeeWallet(protocolWallet.address);
+        .setProtocolFeeReceiver(protocolWallet.address);
       await soulboundCreditScore.connect(owner).setProtocolFeePercent(10); // 10%
 
       const treasuryWallet = await soulboundCreditScore.treasuryWallet();
-      const protocolFeeWallet = await soulboundCreditScore.protocolFeeWallet();
+      const protocolFeeReceiver =
+        await soulboundCreditScore.protocolFeeReceiver();
       const { price, protocolFee } = await soulboundCreditScore.getMintPrice(
         env.USDC_TOKEN
       );
@@ -669,7 +672,7 @@ describe("Soulbound Credit Score", () => {
       const usdc: IERC20 = IERC20__factory.connect(env.USDC_TOKEN, owner);
       const treasuryWalletBalanceBefore = await usdc.balanceOf(treasuryWallet);
       const protocolWalletBalanceBefore = await usdc.balanceOf(
-        protocolFeeWallet
+        protocolFeeReceiver
       );
 
       // set allowance for soul store
@@ -696,7 +699,7 @@ describe("Soulbound Credit Score", () => {
 
       const treasuryWalletBalanceAfter = await usdc.balanceOf(treasuryWallet);
       const protocolWalletBalanceAfter = await usdc.balanceOf(
-        protocolFeeWallet
+        protocolFeeReceiver
       );
 
       // we check that the treasury wallet received the ETH
@@ -711,11 +714,12 @@ describe("Soulbound Credit Score", () => {
     it("should mint from final user address paying with stable coin (with protocol fee amount)", async () => {
       await soulboundCreditScore
         .connect(owner)
-        .setProtocolFeeWallet(protocolWallet.address);
+        .setProtocolFeeReceiver(protocolWallet.address);
       await soulboundCreditScore.connect(owner).setProtocolFeeAmount(1_000_000); // 1 USD
 
       const treasuryWallet = await soulboundCreditScore.treasuryWallet();
-      const protocolFeeWallet = await soulboundCreditScore.protocolFeeWallet();
+      const protocolFeeReceiver =
+        await soulboundCreditScore.protocolFeeReceiver();
       const { price, protocolFee } = await soulboundCreditScore.getMintPrice(
         env.USDC_TOKEN
       );
@@ -723,7 +727,7 @@ describe("Soulbound Credit Score", () => {
       const usdc: IERC20 = IERC20__factory.connect(env.USDC_TOKEN, owner);
       const treasuryWalletBalanceBefore = await usdc.balanceOf(treasuryWallet);
       const protocolWalletBalanceBefore = await usdc.balanceOf(
-        protocolFeeWallet
+        protocolFeeReceiver
       );
 
       // set allowance for soul store
@@ -750,7 +754,7 @@ describe("Soulbound Credit Score", () => {
 
       const treasuryWalletBalanceAfter = await usdc.balanceOf(treasuryWallet);
       const protocolWalletBalanceAfter = await usdc.balanceOf(
-        protocolFeeWallet
+        protocolFeeReceiver
       );
 
       // we check that the treasury wallet received the ETH

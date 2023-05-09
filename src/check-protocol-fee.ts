@@ -55,7 +55,7 @@ async function main() {
 
   soulStore = SoulStore__factory.connect(soulStoreAddress, owner);
 
-  await soulStore.connect(owner).setProtocolFeeWallet(protocolWallet.address);
+  await soulStore.connect(owner).setProtocolFeeReceiver(protocolWallet.address);
 
   console.log(
     "=============================================================================="

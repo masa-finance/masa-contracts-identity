@@ -31,7 +31,7 @@ error NotAuthorized(address signer);
 error NonExistingErc20Token(address erc20token);
 error NotLinkedToAnIdentitySBT();
 error PaymentParamsNotSet();
-error ProtocolFeeWalletNotSet();
+error ProtocolFeeReceiverNotSet();
 error RefundFailed();
 error SameValue();
 error SBTAlreadyLinked(address token);

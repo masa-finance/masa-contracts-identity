@@ -985,7 +985,7 @@ describe("Soul Store", () => {
     it("we can purchase a name with ETH (with protocol fee percent)", async () => {
       await soulStore
         .connect(owner)
-        .setProtocolFeeWallet(protocolWallet.address);
+        .setProtocolFeeReceiver(protocolWallet.address);
       await soulStore.connect(owner).setProtocolFeePercent(10); // 10%
       const { price, protocolFee } = await soulStore.getPriceForMintingName(
         ethers.constants.AddressZero,
@@ -1032,7 +1032,7 @@ describe("Soul Store", () => {
     it("we can purchase a name with ETH (with protocol fee amount)", async () => {
       await soulStore
         .connect(owner)
-        .setProtocolFeeWallet(protocolWallet.address);
+        .setProtocolFeeReceiver(protocolWallet.address);
       await soulStore.connect(owner).setProtocolFeeAmount(1_000_000); // 1 USD
       const { price, protocolFee } = await soulStore.getPriceForMintingName(
         ethers.constants.AddressZero,
@@ -1079,7 +1079,7 @@ describe("Soul Store", () => {
     it("we can purchase a name with stable coin (with protocol fee percent)", async () => {
       await soulStore
         .connect(owner)
-        .setProtocolFeeWallet(protocolWallet.address);
+        .setProtocolFeeReceiver(protocolWallet.address);
       await soulStore.connect(owner).setProtocolFeePercent(10); // 10%
       const { price, protocolFee } = await soulStore.getPriceForMintingName(
         await soulStore.stableCoin(),
@@ -1117,7 +1117,7 @@ describe("Soul Store", () => {
     it("we can purchase a name with stable coin (with protocol fee amount)", async () => {
       await soulStore
         .connect(owner)
-        .setProtocolFeeWallet(protocolWallet.address);
+        .setProtocolFeeReceiver(protocolWallet.address);
       await soulStore.connect(owner).setProtocolFeeAmount(1_000_000); // 1 USD
       const { price, protocolFee } = await soulStore.getPriceForMintingName(
         await soulStore.stableCoin(),

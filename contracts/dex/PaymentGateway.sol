@@ -27,7 +27,7 @@ abstract contract PaymentGateway is AccessControl {
         address stableCoin; // Stable coin to pay the fee in (USDC)
         address masaToken; // Utility token to pay the fee in (MASA)
         address treasuryWallet; // Wallet that will receive the fee
-        address protocolFeeWallet; // Wallet that will receive the protocol fee
+        address protocolFeeReceiver; // Wallet that will receive the protocol fee
         uint256 protocolFeeAmount; // Protocol fee amount in USD
         uint256 protocolFeePercent; // Protocol fee amount
     }
@@ -45,7 +45,7 @@ abstract contract PaymentGateway is AccessControl {
     address[] public enabledPaymentMethods;
 
     address public treasuryWallet;
-    address public protocolFeeWallet;
+    address public protocolFeeReceiver;
     uint256 public protocolFeeAmount;
     uint256 public protocolFeePercent;
 
@@ -64,7 +64,7 @@ abstract contract PaymentGateway is AccessControl {
         stableCoin = paymentParams.stableCoin;
         masaToken = paymentParams.masaToken;
         treasuryWallet = paymentParams.treasuryWallet;
-        protocolFeeWallet = paymentParams.protocolFeeWallet;
+        protocolFeeReceiver = paymentParams.protocolFeeReceiver;
         protocolFeeAmount = paymentParams.protocolFeeAmount;
         protocolFeePercent = paymentParams.protocolFeePercent;
     }
@@ -159,12 +159,12 @@ abstract contract PaymentGateway is AccessControl {
 
     /// @notice Set the protocol fee wallet
     /// @dev The caller must have the admin role to call this function
-    /// @param _protocolFeeWallet New protocol fee wallet
-    function setProtocolFeeWallet(
-        address _protocolFeeWallet
+    /// @param _protocolFeeReceiver New protocol fee wallet
+    function setProtocolFeeReceiver(
+        address _protocolFeeReceiver
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        if (_protocolFeeWallet == protocolFeeWallet) revert SameValue();
-        protocolFeeWallet = _protocolFeeWallet;
+        if (_protocolFeeReceiver == protocolFeeReceiver) revert SameValue();
+        protocolFeeReceiver = _protocolFeeReceiver;
     }
 
     /// @notice Set the protocol fee amount
@@ -265,8 +265,8 @@ abstract contract PaymentGateway is AccessControl {
         uint256 protocolFee
     ) internal paymentParamsAlreadySet(amount.add(protocolFee)) {
         if (amount == 0 && protocolFee == 0) return;
-        if (protocolFee > 0 && protocolFeeWallet == address(0))
-            revert ProtocolFeeWalletNotSet();
+        if (protocolFee > 0 && protocolFeeReceiver == address(0))
+            revert ProtocolFeeReceiverNotSet();
 
         if (!enabledPaymentMethod[paymentMethod])
             revert InvalidPaymentMethod(paymentMethod);
@@ -281,7 +281,7 @@ abstract contract PaymentGateway is AccessControl {
                 if (!success) revert TransferFailed();
             }
             if (protocolFee > 0) {
-                (bool success, ) = payable(protocolFeeWallet).call{
+                (bool success, ) = payable(protocolFeeReceiver).call{
                     value: protocolFee
                 }("");
                 if (!success) revert TransferFailed();
@@ -304,7 +304,7 @@ abstract contract PaymentGateway is AccessControl {
             if (protocolFee > 0) {
                 IERC20(paymentMethod).safeTransferFrom(
                     msg.sender,
-                    protocolFeeWallet,
+                    protocolFeeReceiver,
                     protocolFee
                 );
             }
