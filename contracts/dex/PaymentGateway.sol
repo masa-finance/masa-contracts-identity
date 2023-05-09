@@ -11,7 +11,8 @@ import "../interfaces/dex/IUniswapRouter.sol";
 
 /// @title Pay using a Decentralized automated market maker (AMM) when needed
 /// @author Masa Finance
-/// @notice Smart contract to call a Dex AMM smart contract to pay to a treasury wallet recipient
+/// @notice Smart contract to call a Dex AMM smart contract to pay to a project fee receiver
+/// wallet recipient
 /// @dev This smart contract will call the Uniswap Router interface, based on
 /// https://github.com/Uniswap/v2-periphery/blob/master/contracts/interfaces/IUniswapV2Router01.sol
 abstract contract PaymentGateway is AccessControl {
@@ -26,7 +27,7 @@ abstract contract PaymentGateway is AccessControl {
         address wrappedNativeToken; // Wrapped native token address
         address stableCoin; // Stable coin to pay the fee in (USDC)
         address masaToken; // Utility token to pay the fee in (MASA)
-        address treasuryWallet; // Wallet that will receive the fee
+        address projectFeeReceiver; // Wallet that will receive the project fee
         address protocolFeeReceiver; // Wallet that will receive the protocol fee
         uint256 protocolFeeAmount; // Protocol fee amount in USD
         uint256 protocolFeePercent; // Protocol fee amount
@@ -44,7 +45,7 @@ abstract contract PaymentGateway is AccessControl {
     mapping(address => bool) public enabledPaymentMethod;
     address[] public enabledPaymentMethods;
 
-    address public treasuryWallet;
+    address public projectFeeReceiver;
     address public protocolFeeReceiver;
     uint256 public protocolFeeAmount;
     uint256 public protocolFeePercent;
@@ -63,7 +64,7 @@ abstract contract PaymentGateway is AccessControl {
         wrappedNativeToken = paymentParams.wrappedNativeToken;
         stableCoin = paymentParams.stableCoin;
         masaToken = paymentParams.masaToken;
-        treasuryWallet = paymentParams.treasuryWallet;
+        projectFeeReceiver = paymentParams.projectFeeReceiver;
         protocolFeeReceiver = paymentParams.protocolFeeReceiver;
         protocolFeeAmount = paymentParams.protocolFeeAmount;
         protocolFeePercent = paymentParams.protocolFeePercent;
@@ -145,16 +146,16 @@ abstract contract PaymentGateway is AccessControl {
         }
     }
 
-    /// @notice Set the treasury wallet
+    /// @notice Set the project fee receiver wallet
     /// @dev The caller must have the admin or project admin role to call this function
-    /// @param _treasuryWallet New treasury wallet
-    function setTreasuryWallet(address _treasuryWallet) external {
+    /// @param _projectFeeReceiver New project fee receiver wallet
+    function setProjectFeeReceiver(address _projectFeeReceiver) external {
         if (
             !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
             !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
         ) revert UserMustHaveProtocolOrProjectAdminRole();
-        if (_treasuryWallet == treasuryWallet) revert SameValue();
-        treasuryWallet = _treasuryWallet;
+        if (_projectFeeReceiver == projectFeeReceiver) revert SameValue();
+        projectFeeReceiver = _projectFeeReceiver;
     }
 
     /// @notice Set the protocol fee wallet
@@ -254,7 +255,7 @@ abstract contract PaymentGateway is AccessControl {
     }
 
     /// @notice Performs the payment in any payment method
-    /// @dev This method will transfer the funds to the treasury wallet, performing
+    /// @dev This method will transfer the funds to the project fee receiver wallet, performing
     /// the swap if necessary, and transfer the protocol fee to the protocol fee wallet
     /// @param paymentMethod Address of token that user want to pay
     /// @param amount Price to be paid in the specified payment method
@@ -275,9 +276,9 @@ abstract contract PaymentGateway is AccessControl {
             if (msg.value < amount.add(protocolFee))
                 revert InsufficientEthAmount(amount.add(protocolFee));
             if (amount > 0) {
-                (bool success, ) = payable(treasuryWallet).call{value: amount}(
-                    ""
-                );
+                (bool success, ) = payable(projectFeeReceiver).call{
+                    value: amount
+                }("");
                 if (!success) revert TransferFailed();
             }
             if (protocolFee > 0) {
@@ -297,7 +298,7 @@ abstract contract PaymentGateway is AccessControl {
             if (amount > 0) {
                 IERC20(paymentMethod).safeTransferFrom(
                     msg.sender,
-                    treasuryWallet,
+                    projectFeeReceiver,
                     amount
                 );
             }
@@ -354,7 +355,7 @@ abstract contract PaymentGateway is AccessControl {
             revert PaymentParamsNotSet();
         if (amount > 0 && stableCoin == address(0))
             revert PaymentParamsNotSet();
-        if (amount > 0 && treasuryWallet == address(0))
+        if (amount > 0 && projectFeeReceiver == address(0))
             revert PaymentParamsNotSet();
         _;
     }
