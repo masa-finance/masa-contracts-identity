@@ -724,10 +724,10 @@ function protocolFeePercent() external view returns (uint256)
 |---|---|---|
 | _0 | uint256 | undefined |
 
-### protocolFeeWallet
+### protocolFeeReceiver
 
 ```solidity
-function protocolFeeWallet() external view returns (address)
+function protocolFeeReceiver() external view returns (address)
 ```
 
 
@@ -921,10 +921,10 @@ Set the protocol fee percent
 |---|---|---|
 | _protocolFeePercent | uint256 | New protocol fee percent |
 
-### setProtocolFeeWallet
+### setProtocolFeeReceiver
 
 ```solidity
-function setProtocolFeeWallet(address _protocolFeeWallet) external nonpayable
+function setProtocolFeeReceiver(address _protocolFeeReceiver) external nonpayable
 ```
 
 Set the protocol fee wallet
@@ -935,7 +935,7 @@ Set the protocol fee wallet
 
 | Name | Type | Description |
 |---|---|---|
-| _protocolFeeWallet | address | New protocol fee wallet |
+| _protocolFeeReceiver | address | New protocol fee wallet |
 
 ### setQueryLinkPrice
 
@@ -1565,10 +1565,10 @@ error PaymentParamsNotSet()
 
 
 
-### ProtocolFeeWalletNotSet
+### ProtocolFeeReceiverNotSet
 
 ```solidity
-error ProtocolFeeWalletNotSet()
+error ProtocolFeeReceiverNotSet()
 ```
 
 
