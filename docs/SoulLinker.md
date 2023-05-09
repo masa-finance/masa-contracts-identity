@@ -454,6 +454,23 @@ function paused() external view returns (bool)
 |---|---|---|
 | _0 | bool | undefined |
 
+### projectFeeReceiver
+
+```solidity
+function projectFeeReceiver() external view returns (address)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
 ### protocolFeeAmount
 
 ```solidity
@@ -575,6 +592,22 @@ Sets the utility token to pay the fee in (MASA)
 |---|---|---|
 | _masaToken | address | New utility token to pay the fee in |
 
+### setProjectFeeReceiver
+
+```solidity
+function setProjectFeeReceiver(address _projectFeeReceiver) external nonpayable
+```
+
+Set the project fee receiver wallet
+
+*The caller must have the admin or project admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _projectFeeReceiver | address | New project fee receiver wallet |
+
 ### setProtocolFeeAmount
 
 ```solidity
@@ -671,22 +704,6 @@ Sets the swap router address
 |---|---|---|
 | _swapRouter | address | New swap router address |
 
-### setTreasuryWallet
-
-```solidity
-function setTreasuryWallet(address _treasuryWallet) external nonpayable
-```
-
-Set the treasury wallet
-
-*The caller must have the admin or project admin role to call this function*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _treasuryWallet | address | New treasury wallet |
-
 ### setWrappedNativeToken
 
 ```solidity
@@ -763,23 +780,6 @@ function supportsInterface(bytes4 interfaceId) external view returns (bool)
 
 ```solidity
 function swapRouter() external view returns (address)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | address | undefined |
-
-### treasuryWallet
-
-```solidity
-function treasuryWallet() external view returns (address)
 ```
 
 

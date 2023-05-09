@@ -445,6 +445,23 @@ function ownerOf(uint256 tokenId) external view returns (address)
 |---|---|---|
 | _0 | address | undefined |
 
+### projectFeeReceiver
+
+```solidity
+function projectFeeReceiver() external view returns (address)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
 ### protocolFeeAmount
 
 ```solidity
@@ -644,6 +661,22 @@ Sets the price of minting in MASA
 |---|---|---|
 | _mintPriceMASA | uint256 | New price of minting in MASA |
 
+### setProjectFeeReceiver
+
+```solidity
+function setProjectFeeReceiver(address _projectFeeReceiver) external nonpayable
+```
+
+Set the project fee receiver wallet
+
+*The caller must have the admin or project admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _projectFeeReceiver | address | New project fee receiver wallet |
+
 ### setProtocolFeeAmount
 
 ```solidity
@@ -771,22 +804,6 @@ Sets the swap router address
 | Name | Type | Description |
 |---|---|---|
 | _swapRouter | address | New swap router address |
-
-### setTreasuryWallet
-
-```solidity
-function setTreasuryWallet(address _treasuryWallet) external nonpayable
-```
-
-Set the treasury wallet
-
-*The caller must have the admin or project admin role to call this function*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _treasuryWallet | address | New treasury wallet |
 
 ### setWrappedNativeToken
 
@@ -977,23 +994,6 @@ function totalSupply() external view returns (uint256)
 | Name | Type | Description |
 |---|---|---|
 | _0 | uint256 | undefined |
-
-### treasuryWallet
-
-```solidity
-function treasuryWallet() external view returns (address)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | address | undefined |
 
 ### wrappedNativeToken
 
