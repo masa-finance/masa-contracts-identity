@@ -325,15 +325,17 @@ describe("Soul Linker", () => {
         .be.rejected;
     });
 
-    it("should set TreasuryWallet from owner", async () => {
-      await soulLinker.connect(owner).setTreasuryWallet(someone.address);
+    it("should set projectFeeReceiver from owner", async () => {
+      await soulLinker.connect(owner).setProjectFeeReceiver(someone.address);
 
-      expect(await soulLinker.treasuryWallet()).to.be.equal(someone.address);
+      expect(await soulLinker.projectFeeReceiver()).to.be.equal(
+        someone.address
+      );
     });
 
-    it("should fail to set TreasuryWallet from non owner", async () => {
+    it("should fail to set projectFeeReceiver from non owner", async () => {
       await expect(
-        soulLinker.connect(someone).setTreasuryWallet(someone.address)
+        soulLinker.connect(someone).setProjectFeeReceiver(someone.address)
       ).to.be.rejected;
     });
 

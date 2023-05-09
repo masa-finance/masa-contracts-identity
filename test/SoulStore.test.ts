@@ -190,15 +190,17 @@ describe("Soul Store", () => {
         .to.be.rejected;
     });
 
-    it("should set TreasuryWallet from owner", async () => {
-      await soulStore.connect(owner).setTreasuryWallet(address1.address);
+    it("should set projectFeeReceiver from owner", async () => {
+      await soulStore.connect(owner).setProjectFeeReceiver(address1.address);
 
-      expect(await soulStore.treasuryWallet()).to.be.equal(address1.address);
+      expect(await soulStore.projectFeeReceiver()).to.be.equal(
+        address1.address
+      );
     });
 
-    it("should fail to set TreasuryWallet from non owner", async () => {
+    it("should fail to set projectFeeReceiver from non owner", async () => {
       await expect(
-        soulStore.connect(address1).setTreasuryWallet(address1.address)
+        soulStore.connect(address1).setProjectFeeReceiver(address1.address)
       ).to.be.rejected;
     });
 
@@ -516,14 +518,14 @@ describe("Soul Store", () => {
 
   describe("purchase identity and name", () => {
     it("we can purchase an identity and name with ETH", async () => {
-      const treasuryWallet = await soulStore.treasuryWallet();
+      const projectFeeReceiver = await soulStore.projectFeeReceiver();
       const { price } = await soulStore.getPriceForMintingName(
         ethers.constants.AddressZero,
         SOUL_NAME.length,
         YEAR
       );
-      const treasuryWalletBalanceBefore = await ethers.provider.getBalance(
-        treasuryWallet
+      const projectFeeWalletBalanceBefore = await ethers.provider.getBalance(
+        projectFeeReceiver
       );
 
       const signature = await signMintSoulName(
@@ -546,18 +548,18 @@ describe("Soul Store", () => {
         { value: price }
       );
 
-      const treasuryWalletBalanceAfter = await ethers.provider.getBalance(
-        treasuryWallet
+      const projectFeeWalletBalanceAfter = await ethers.provider.getBalance(
+        projectFeeReceiver
       );
 
-      // we check that the treasury wallet received the ETH
+      // we check that the project fee wallet received the ETH
       expect(
-        treasuryWalletBalanceAfter.sub(treasuryWalletBalanceBefore)
+        projectFeeWalletBalanceAfter.sub(projectFeeWalletBalanceBefore)
       ).to.be.equal(price);
     });
 
     it("we can purchase an identity and name with stable coin", async () => {
-      const treasuryWallet = await soulStore.treasuryWallet();
+      const projectFeeReceiver = await soulStore.projectFeeReceiver();
       const { price } = await soulStore.getPriceForMintingName(
         await soulStore.stableCoin(),
         SOUL_NAME.length,
@@ -567,7 +569,9 @@ describe("Soul Store", () => {
       // set allowance for soul store
       const usdc: IERC20 = IERC20__factory.connect(env.USDC_TOKEN, owner);
       await usdc.connect(address1).approve(soulStore.address, price);
-      const treasuryWalletBalanceBefore = await usdc.balanceOf(treasuryWallet);
+      const projectFeeWalletBalanceBefore = await usdc.balanceOf(
+        projectFeeReceiver
+      );
 
       const signature = await signMintSoulName(
         address1.address,
@@ -588,16 +592,18 @@ describe("Soul Store", () => {
         signature
       );
 
-      const treasuryWalletBalanceAfter = await usdc.balanceOf(treasuryWallet);
+      const projectFeeWalletBalanceAfter = await usdc.balanceOf(
+        projectFeeReceiver
+      );
 
-      // we check that the treasury wallet received the stable coin
+      // we check that the project fee wallet received the stable coin
       expect(
-        treasuryWalletBalanceAfter.sub(treasuryWalletBalanceBefore)
+        projectFeeWalletBalanceAfter.sub(projectFeeWalletBalanceBefore)
       ).to.be.equal(price);
     });
 
     it("we can purchase an identity and name with MASA coin", async () => {
-      const treasuryWallet = await soulStore.treasuryWallet();
+      const projectFeeReceiver = await soulStore.projectFeeReceiver();
       const { price } = await soulStore.getPriceForMintingName(
         await soulStore.masaToken(),
         SOUL_NAME.length,
@@ -607,7 +613,9 @@ describe("Soul Store", () => {
       // set allowance for soul store
       const masa: IERC20 = IERC20__factory.connect(env.MASA_TOKEN, owner);
       await masa.connect(address1).approve(soulStore.address, price);
-      const treasuryWalletBalanceBefore = await masa.balanceOf(treasuryWallet);
+      const projectFeeWalletBalanceBefore = await masa.balanceOf(
+        projectFeeReceiver
+      );
 
       const signature = await signMintSoulName(
         address1.address,
@@ -628,11 +636,13 @@ describe("Soul Store", () => {
         signature
       );
 
-      const treasuryWalletBalanceAfter = await masa.balanceOf(treasuryWallet);
+      const projectFeeWalletBalanceAfter = await masa.balanceOf(
+        projectFeeReceiver
+      );
 
-      // we check that the treasury wallet received the stable coin
+      // we check that the project fee wallet received the stable coin
       expect(
-        treasuryWalletBalanceAfter.sub(treasuryWalletBalanceBefore)
+        projectFeeWalletBalanceAfter.sub(projectFeeWalletBalanceBefore)
       ).to.be.equal(price);
     });
 

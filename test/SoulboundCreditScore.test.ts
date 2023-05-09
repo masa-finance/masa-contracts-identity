@@ -375,12 +375,13 @@ describe("Soulbound Credit Score", () => {
     });
 
     it("should mint from final user address paying with ETH", async () => {
-      const treasuryWallet = await soulboundCreditScore.treasuryWallet();
+      const projectFeeReceiver =
+        await soulboundCreditScore.projectFeeReceiver();
       const { price } = await soulboundCreditScore.getMintPrice(
         ethers.constants.AddressZero
       );
-      const treasuryWalletBalanceBefore = await ethers.provider.getBalance(
-        treasuryWallet
+      const projectFeeWalletBalanceBefore = await ethers.provider.getBalance(
+        projectFeeReceiver
       );
 
       const mintTx = await soulboundCreditScore
@@ -401,23 +402,24 @@ describe("Soulbound Credit Score", () => {
         identityId1
       );
 
-      const treasuryWalletBalanceAfter = await ethers.provider.getBalance(
-        treasuryWallet
+      const projectFeeWalletBalanceAfter = await ethers.provider.getBalance(
+        projectFeeReceiver
       );
 
-      // we check that the treasury wallet received the ETH
+      // we check that the project fee wallet received the ETH
       expect(
-        treasuryWalletBalanceAfter.sub(treasuryWalletBalanceBefore)
+        projectFeeWalletBalanceAfter.sub(projectFeeWalletBalanceBefore)
       ).to.be.equal(price);
     });
 
     it("should mint from final user identity paying with ETH", async () => {
-      const treasuryWallet = await soulboundCreditScore.treasuryWallet();
+      const projectFeeReceiver =
+        await soulboundCreditScore.projectFeeReceiver();
       const { price } = await soulboundCreditScore.getMintPrice(
         ethers.constants.AddressZero
       );
-      const treasuryWalletBalanceBefore = await ethers.provider.getBalance(
-        treasuryWallet
+      const projectFeeWalletBalanceBefore = await ethers.provider.getBalance(
+        projectFeeReceiver
       );
 
       const mintTx = await soulboundCreditScore
@@ -438,13 +440,13 @@ describe("Soulbound Credit Score", () => {
         identityId1
       );
 
-      const treasuryWalletBalanceAfter = await ethers.provider.getBalance(
-        treasuryWallet
+      const projectFeeWalletBalanceAfter = await ethers.provider.getBalance(
+        projectFeeReceiver
       );
 
-      // we check that the treasury wallet received the ETH
+      // we check that the project fee wallet received the ETH
       expect(
-        treasuryWalletBalanceAfter.sub(treasuryWalletBalanceBefore)
+        projectFeeWalletBalanceAfter.sub(projectFeeWalletBalanceBefore)
       ).to.be.equal(price);
     });
 
@@ -530,14 +532,15 @@ describe("Soulbound Credit Score", () => {
         .setProtocolFeeReceiver(protocolWallet.address);
       await soulboundCreditScore.connect(owner).setProtocolFeePercent(10); // 10%
 
-      const treasuryWallet = await soulboundCreditScore.treasuryWallet();
+      const projectFeeReceiver =
+        await soulboundCreditScore.projectFeeReceiver();
       const protocolFeeReceiver =
         await soulboundCreditScore.protocolFeeReceiver();
       const { price, protocolFee } = await soulboundCreditScore.getMintPrice(
         ethers.constants.AddressZero
       );
-      const treasuryWalletBalanceBefore = await ethers.provider.getBalance(
-        treasuryWallet
+      const projectFeeWalletBalanceBefore = await ethers.provider.getBalance(
+        projectFeeReceiver
       );
       const protocolWalletBalanceBefore = await ethers.provider.getBalance(
         protocolFeeReceiver
@@ -574,16 +577,16 @@ describe("Soulbound Credit Score", () => {
         identityId1
       );
 
-      const treasuryWalletBalanceAfter = await ethers.provider.getBalance(
-        treasuryWallet
+      const projectFeeWalletBalanceAfter = await ethers.provider.getBalance(
+        projectFeeReceiver
       );
       const protocolWalletBalanceAfter = await ethers.provider.getBalance(
         protocolFeeReceiver
       );
 
-      // we check that the treasury wallet received the ETH
+      // we check that the project fee wallet received the ETH
       expect(
-        treasuryWalletBalanceAfter.sub(treasuryWalletBalanceBefore)
+        projectFeeWalletBalanceAfter.sub(projectFeeWalletBalanceBefore)
       ).to.be.equal(price);
       expect(
         protocolWalletBalanceAfter.sub(protocolWalletBalanceBefore)
@@ -596,14 +599,15 @@ describe("Soulbound Credit Score", () => {
         .setProtocolFeeReceiver(protocolWallet.address);
       await soulboundCreditScore.connect(owner).setProtocolFeeAmount(1_000_000); // 1 USD
 
-      const treasuryWallet = await soulboundCreditScore.treasuryWallet();
+      const projectFeeReceiver =
+        await soulboundCreditScore.projectFeeReceiver();
       const protocolFeeReceiver =
         await soulboundCreditScore.protocolFeeReceiver();
       const { price, protocolFee } = await soulboundCreditScore.getMintPrice(
         ethers.constants.AddressZero
       );
-      const treasuryWalletBalanceBefore = await ethers.provider.getBalance(
-        treasuryWallet
+      const projectFeeWalletBalanceBefore = await ethers.provider.getBalance(
+        projectFeeReceiver
       );
       const protocolWalletBalanceBefore = await ethers.provider.getBalance(
         protocolFeeReceiver
@@ -640,16 +644,16 @@ describe("Soulbound Credit Score", () => {
         identityId1
       );
 
-      const treasuryWalletBalanceAfter = await ethers.provider.getBalance(
-        treasuryWallet
+      const projectFeeWalletBalanceAfter = await ethers.provider.getBalance(
+        projectFeeReceiver
       );
       const protocolWalletBalanceAfter = await ethers.provider.getBalance(
         protocolFeeReceiver
       );
 
-      // we check that the treasury wallet received the ETH
+      // we check that the project fee wallet received the ETH
       expect(
-        treasuryWalletBalanceAfter.sub(treasuryWalletBalanceBefore)
+        projectFeeWalletBalanceAfter.sub(projectFeeWalletBalanceBefore)
       ).to.be.equal(price);
       expect(
         protocolWalletBalanceAfter.sub(protocolWalletBalanceBefore)
@@ -662,7 +666,8 @@ describe("Soulbound Credit Score", () => {
         .setProtocolFeeReceiver(protocolWallet.address);
       await soulboundCreditScore.connect(owner).setProtocolFeePercent(10); // 10%
 
-      const treasuryWallet = await soulboundCreditScore.treasuryWallet();
+      const projectFeeReceiver =
+        await soulboundCreditScore.projectFeeReceiver();
       const protocolFeeReceiver =
         await soulboundCreditScore.protocolFeeReceiver();
       const { price, protocolFee } = await soulboundCreditScore.getMintPrice(
@@ -670,7 +675,9 @@ describe("Soulbound Credit Score", () => {
       );
 
       const usdc: IERC20 = IERC20__factory.connect(env.USDC_TOKEN, owner);
-      const treasuryWalletBalanceBefore = await usdc.balanceOf(treasuryWallet);
+      const projectFeeWalletBalanceBefore = await usdc.balanceOf(
+        projectFeeReceiver
+      );
       const protocolWalletBalanceBefore = await usdc.balanceOf(
         protocolFeeReceiver
       );
@@ -697,14 +704,16 @@ describe("Soulbound Credit Score", () => {
         identityId1
       );
 
-      const treasuryWalletBalanceAfter = await usdc.balanceOf(treasuryWallet);
+      const projectFeeWalletBalanceAfter = await usdc.balanceOf(
+        projectFeeReceiver
+      );
       const protocolWalletBalanceAfter = await usdc.balanceOf(
         protocolFeeReceiver
       );
 
-      // we check that the treasury wallet received the ETH
+      // we check that the project fee wallet received the ETH
       expect(
-        treasuryWalletBalanceAfter.sub(treasuryWalletBalanceBefore)
+        projectFeeWalletBalanceAfter.sub(projectFeeWalletBalanceBefore)
       ).to.be.equal(price);
       expect(
         protocolWalletBalanceAfter.sub(protocolWalletBalanceBefore)
@@ -717,7 +726,8 @@ describe("Soulbound Credit Score", () => {
         .setProtocolFeeReceiver(protocolWallet.address);
       await soulboundCreditScore.connect(owner).setProtocolFeeAmount(1_000_000); // 1 USD
 
-      const treasuryWallet = await soulboundCreditScore.treasuryWallet();
+      const projectFeeReceiver =
+        await soulboundCreditScore.projectFeeReceiver();
       const protocolFeeReceiver =
         await soulboundCreditScore.protocolFeeReceiver();
       const { price, protocolFee } = await soulboundCreditScore.getMintPrice(
@@ -725,7 +735,9 @@ describe("Soulbound Credit Score", () => {
       );
 
       const usdc: IERC20 = IERC20__factory.connect(env.USDC_TOKEN, owner);
-      const treasuryWalletBalanceBefore = await usdc.balanceOf(treasuryWallet);
+      const projectFeeWalletBalanceBefore = await usdc.balanceOf(
+        projectFeeReceiver
+      );
       const protocolWalletBalanceBefore = await usdc.balanceOf(
         protocolFeeReceiver
       );
@@ -752,14 +764,16 @@ describe("Soulbound Credit Score", () => {
         identityId1
       );
 
-      const treasuryWalletBalanceAfter = await usdc.balanceOf(treasuryWallet);
+      const projectFeeWalletBalanceAfter = await usdc.balanceOf(
+        projectFeeReceiver
+      );
       const protocolWalletBalanceAfter = await usdc.balanceOf(
         protocolFeeReceiver
       );
 
-      // we check that the treasury wallet received the ETH
+      // we check that the project fee wallet received the ETH
       expect(
-        treasuryWalletBalanceAfter.sub(treasuryWalletBalanceBefore)
+        projectFeeWalletBalanceAfter.sub(projectFeeWalletBalanceBefore)
       ).to.be.equal(price);
       expect(
         protocolWalletBalanceAfter.sub(protocolWalletBalanceBefore)
