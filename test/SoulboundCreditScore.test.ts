@@ -29,6 +29,7 @@ let owner: SignerWithAddress;
 let protocolWallet: SignerWithAddress;
 let address1: SignerWithAddress;
 let authority: SignerWithAddress;
+let projectWallet: SignerWithAddress;
 
 let identityId1: number;
 
@@ -105,7 +106,7 @@ const signMintCreditScoreToAddress = async (
 
 describe("Soulbound Credit Score", () => {
   before(async () => {
-    [, owner, protocolWallet, address1, authority] = await ethers.getSigners();
+    [, owner, protocolWallet, address1, authority, projectWallet] = await ethers.getSigners();
   });
 
   beforeEach(async () => {
@@ -179,7 +180,13 @@ describe("Soulbound Credit Score", () => {
     );
   });
 
-  describe("owner functions", () => {
+  describe("owner and project admin functions", () => {
+    beforeEach(async () => {
+      const PROJECT_ADMIN_ROLE = await soulboundCreditScore.PROJECT_ADMIN_ROLE();
+
+      await soulboundCreditScore.connect(owner).grantRole(PROJECT_ADMIN_ROLE, projectWallet.address);
+    });
+
     it("should set SoulboundIdentity from owner", async () => {
       await soulboundCreditScore
         .connect(owner)
@@ -205,6 +212,13 @@ describe("Soulbound Credit Score", () => {
         .true;
     });
 
+    it("should add authority from project admin", async () => {
+      await soulboundCreditScore.connect(projectWallet).addAuthority(address1.address);
+
+      expect(await soulboundCreditScore.authorities(address1.address)).to.be
+        .true;
+    });
+
     it("should fail to add authority from non owner", async () => {
       await expect(
         soulboundCreditScore.connect(address1).addAuthority(address1.address)
@@ -214,6 +228,15 @@ describe("Soulbound Credit Score", () => {
     it("should remove authority from owner", async () => {
       await soulboundCreditScore
         .connect(owner)
+        .removeAuthority(authority.address);
+
+      expect(await soulboundCreditScore.authorities(authority.address)).to.be
+        .false;
+    });
+
+    it("should remove authority from project admin", async () => {
+      await soulboundCreditScore
+        .connect(projectWallet)
         .removeAuthority(authority.address);
 
       expect(await soulboundCreditScore.authorities(authority.address)).to.be
@@ -230,6 +253,12 @@ describe("Soulbound Credit Score", () => {
 
     it("should set mint price from owner", async () => {
       await soulboundCreditScore.connect(owner).setMintPrice(2_000_000);
+
+      expect(await soulboundCreditScore.mintPrice()).to.be.equal(2_000_000);
+    });
+
+    it("should set mint price from project admin", async () => {
+      await soulboundCreditScore.connect(projectWallet).setMintPrice(2_000_000);
 
       expect(await soulboundCreditScore.mintPrice()).to.be.equal(2_000_000);
     });
