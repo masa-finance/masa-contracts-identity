@@ -255,12 +255,6 @@ contract SoulboundIdentity is
         return soulName.getSoulNames(tokenId);
     }
 
-    function getDefaultSoulName(
-        address owner
-    ) external view returns (string memory) {
-        return soulName.getDefaultSoulName(owner);
-    }
-
     /* ========== PRIVATE FUNCTIONS ========================================= */
 
     /* ========== MODIFIERS ================================================= */
