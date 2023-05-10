@@ -470,6 +470,26 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
         return (price, _getProtocolFee(paymentMethod, price));
     }
 
+    /// @notice Returns all the active soul names of an account
+    /// @dev This function queries all the identity names of the specified account
+    /// @param owner Address of the owner of the identities
+    /// @return sbtNames Array of soul names associated to the account
+    function getSoulNames(
+        address owner
+    ) external view returns (string[] memory sbtNames) {
+        return ISoulName(soulboundIdentity.getSoulName()).getSoulNames(owner);
+    }
+
+    /// @notice Returns all the active soul names of an account
+    /// @dev This function queries all the identity names of the specified identity Id
+    /// @param tokenId TokenId of the identity
+    /// @return sbtNames Array of soul names associated to the identity Id
+    function getSoulNames(
+        uint256 tokenId
+    ) external view returns (string[] memory sbtNames) {
+        return ISoulName(soulboundIdentity.getSoulName()).getSoulNames(tokenId);
+    }
+
     /// @notice Returns the default soul name of an account
     /// @dev This function queries the default soul name of the specified account
     /// @param owner Address of the owner of the identities
