@@ -50,6 +50,13 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
         uint256 signatureDate;
     }
 
+    struct DefaultSoulName {
+        bool exists;
+        uint256 tokenId;
+    }
+
+    mapping(address => DefaultSoulName) public defaultSoulName; // stores the token id of the default soul name
+
     /* ========== INITIALIZE ================================================ */
 
     /// @notice Creates a new soul linker
@@ -240,6 +247,17 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
             tokenId,
             signatureDate
         );
+    }
+
+    /// @notice Sets the default soul name for the owner
+    /// @dev The caller must be the owner of the soul name.
+    /// @param tokenId TokenId of the soul name
+    function setDefaultSoulName(uint256 tokenId) external {
+        address owner = IERC721Enumerable(soulboundIdentity.getSoulName()).ownerOf(tokenId);
+        if (_msgSender() != owner) revert CallerNotOwner(_msgSender());
+
+        defaultSoulName[_msgSender()].tokenId = tokenId;
+        defaultSoulName[_msgSender()].exists = true;
     }
 
     /* ========== VIEWS ===================================================== */
