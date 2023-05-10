@@ -32,6 +32,9 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     mapping(uint256 => string) private _tokenURIs;
     mapping(string => bool) private _URIs; // used to check if a uri is already used
 
+    mapping(uint256 => TokenData) public tokenData; // used to store the data of the token id
+    mapping(string => NameData) public nameData; // stores the token id of the current active soul name
+
     struct TokenData {
         string name; // Name with lowercase and uppercase
         uint256 expirationDate;
@@ -41,16 +44,6 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         bool exists;
         uint256 tokenId;
     }
-
-    struct DefaultSoulName {
-        bool exists;
-        uint256 tokenId;
-    }
-
-    mapping(uint256 => TokenData) public tokenData; // used to store the data of the token id
-    mapping(string => NameData) public nameData; // stores the token id of the current active soul name
-
-    mapping(address => DefaultSoulName) public defaultSoulName; // stores the token id of the default soul name
 
     /* ========== INITIALIZE ========== */
 
@@ -217,17 +210,6 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         super.burn(tokenId);
     }
 
-    /// @notice Sets the default soul name for the owner
-    /// @dev The caller must be the owner of the soul name.
-    /// @param tokenId TokenId of the soul name
-    function setDefaultSoulName(uint256 tokenId) external {
-        address owner = ERC721.ownerOf(tokenId);
-        if (_msgSender() != owner) revert CallerNotOwner(_msgSender());
-
-        defaultSoulName[_msgSender()].tokenId = tokenId;
-        defaultSoulName[_msgSender()].exists = true;
-    }
-
     /* ========== VIEWS ========== */
 
     /// @notice Returns the extension of the soul name
@@ -340,47 +322,16 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         string[] memory _sbtNames = new string[](results);
         uint256 index = 0;
 
-        if (defaultSoulName[owner].exists) {
-            uint256 tokenId = defaultSoulName[owner].tokenId;
+        for (uint256 i = 0; i < balance; i++) {
+            uint256 tokenId = tokenOfOwnerByIndex(owner, i);
             if (tokenData[tokenId].expirationDate >= block.timestamp) {
                 _sbtNames[index] = Utils.toLowerCase(tokenData[tokenId].name);
                 index = index.add(1);
             }
         }
 
-        for (uint256 i = 0; i < balance; i++) {
-            uint256 tokenId = tokenOfOwnerByIndex(owner, i);
-            if (
-                !defaultSoulName[owner].exists ||
-                tokenId != defaultSoulName[owner].tokenId
-            ) {
-                if (tokenData[tokenId].expirationDate >= block.timestamp) {
-                    _sbtNames[index] = Utils.toLowerCase(
-                        tokenData[tokenId].name
-                    );
-                    index = index.add(1);
-                }
-            }
-        }
-
         // return identity names if exists and are active
         return _sbtNames;
-    }
-
-    /// @notice Returns the default soul name of an account
-    /// @dev This function queries the default soul name of the specified account
-    /// @param owner Address of the owner of the identities
-    /// @return Default soul name associated to the account
-    function getDefaultSoulName(
-        address owner
-    ) external view override returns (string memory) {
-        if (defaultSoulName[owner].exists) {
-            uint256 tokenId = defaultSoulName[owner].tokenId;
-            if (tokenData[tokenId].expirationDate >= block.timestamp) {
-                return _getName(tokenData[tokenId].name);
-            }
-        }
-        return "";
     }
 
     /// @notice A distinct Uniform Resource Identifier (URI) for a given asset.
