@@ -67,6 +67,29 @@ Stores the link, validating the signature of the given read link request
 | expirationDate | uint256 | Expiration date of the signature |
 | signature | bytes | Signature of the read link request made by the owner |
 
+### defaultSoulName
+
+```solidity
+function defaultSoulName(address) external view returns (bool exists, uint256 tokenId)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| exists | bool | undefined |
+| tokenId | uint256 | undefined |
+
 ### disablePaymentMethod
 
 ```solidity
@@ -142,6 +165,28 @@ function enabledPaymentMethods(uint256) external view returns (address)
 | Name | Type | Description |
 |---|---|---|
 | _0 | address | undefined |
+
+### getDefaultSoulName
+
+```solidity
+function getDefaultSoulName(address owner) external view returns (string)
+```
+
+Returns the default soul name of an account
+
+*This function queries the default soul name of the specified account*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| owner | address | Address of the owner of the identities |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string | Default soul name associated to the account |
 
 ### getEnabledPaymentMethods
 
@@ -575,6 +620,22 @@ function revokeRole(bytes32 role, address account) external nonpayable
 |---|---|---|
 | role | bytes32 | undefined |
 | account | address | undefined |
+
+### setDefaultSoulName
+
+```solidity
+function setDefaultSoulName(uint256 tokenId) external nonpayable
+```
+
+Sets the default soul name for the owner
+
+*The caller must be the owner of the soul name.*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId | uint256 | TokenId of the soul name |
 
 ### setMasaToken
 
