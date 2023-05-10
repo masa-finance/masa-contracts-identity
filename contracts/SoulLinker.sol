@@ -473,21 +473,38 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
     /// @notice Returns all the active soul names of an account
     /// @dev This function queries all the identity names of the specified account
     /// @param owner Address of the owner of the identities
+    /// @return defaultName Default soul name of the account
     /// @return sbtNames Array of soul names associated to the account
     function getSoulNames(
         address owner
-    ) external view returns (string[] memory sbtNames) {
-        return ISoulName(soulboundIdentity.getSoulName()).getSoulNames(owner);
+    )
+        external
+        view
+        returns (string memory defaultName, string[] memory sbtNames)
+    {
+        return (
+            getDefaultSoulName(owner),
+            ISoulName(soulboundIdentity.getSoulName()).getSoulNames(owner)
+        );
     }
 
     /// @notice Returns all the active soul names of an account
     /// @dev This function queries all the identity names of the specified identity Id
     /// @param tokenId TokenId of the identity
-    /// @return sbtNames Array of soul names associated to the identity Id
+    /// @return defaultName Default soul name of the account
+    /// @return sbtNames Array of soul names associated to the account
     function getSoulNames(
         uint256 tokenId
-    ) external view returns (string[] memory sbtNames) {
-        return ISoulName(soulboundIdentity.getSoulName()).getSoulNames(tokenId);
+    )
+        external
+        view
+        returns (string memory defaultName, string[] memory sbtNames)
+    {
+        address owner = soulboundIdentity.ownerOf(tokenId);
+        return (
+            getDefaultSoulName(owner),
+            ISoulName(soulboundIdentity.getSoulName()).getSoulNames(tokenId)
+        );
     }
 
     /// @notice Returns the default soul name of an account
@@ -496,7 +513,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
     /// @return Default soul name associated to the account
     function getDefaultSoulName(
         address owner
-    ) external view returns (string memory) {
+    ) public view returns (string memory) {
         // we have set a default soul name
         if (defaultSoulName[owner].exists) {
             uint256 tokenId = defaultSoulName[owner].tokenId;
