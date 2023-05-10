@@ -11,6 +11,7 @@ import "./libraries/Errors.sol";
 import "./dex/PaymentGateway.sol";
 import "./interfaces/ILinkableSBT.sol";
 import "./interfaces/ISoulboundIdentity.sol";
+import "./interfaces/ISoulName.sol";
 
 /// @title Soul linker
 /// @author Masa Finance
@@ -253,8 +254,10 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
     /// @dev The caller must be the owner of the soul name.
     /// @param tokenId TokenId of the soul name
     function setDefaultSoulName(uint256 tokenId) external {
-        address owner = IERC721Enumerable(soulboundIdentity.getSoulName()).ownerOf(tokenId);
-        if (_msgSender() != owner) revert CallerNotOwner(_msgSender());
+        address soulNameOwner = IERC721Enumerable(
+            address(soulboundIdentity.getSoulName())
+        ).ownerOf(tokenId);
+        if (_msgSender() != soulNameOwner) revert CallerNotOwner(_msgSender());
 
         defaultSoulName[_msgSender()].tokenId = tokenId;
         defaultSoulName[_msgSender()].exists = true;
@@ -465,6 +468,33 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
             revert InvalidPaymentMethod(paymentMethod);
         }
         return (price, _getProtocolFee(paymentMethod, price));
+    }
+
+    /// @notice Returns the default soul name of an account
+    /// @dev This function queries the default soul name of the specified account
+    /// @param owner Address of the owner of the identities
+    /// @return Default soul name associated to the account
+    function getDefaultSoulName(
+        address owner
+    ) external view returns (string memory) {
+        // we have set a default soul name
+        if (defaultSoulName[owner].exists) {
+            uint256 tokenId = defaultSoulName[owner].tokenId;
+            address soulNameOwner = IERC721Enumerable(
+                address(soulboundIdentity.getSoulName())
+            ).ownerOf(tokenId);
+            // the soul name has not changed owner
+            if (soulNameOwner == owner) {
+                // the soul name is not expired
+                (string memory name, uint256 expirationDate) = ISoulName(
+                    soulboundIdentity.getSoulName()
+                ).tokenData(tokenId);
+                if (expirationDate >= block.timestamp) {
+                    return name;
+                }
+            }
+        }
+        return "";
     }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */

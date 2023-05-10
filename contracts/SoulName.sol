@@ -32,7 +32,7 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     mapping(uint256 => string) private _tokenURIs;
     mapping(string => bool) private _URIs; // used to check if a uri is already used
 
-    mapping(uint256 => TokenData) public tokenData; // used to store the data of the token id
+    mapping(uint256 => TokenData) public override tokenData; // used to store the data of the token id
     mapping(string => NameData) public nameData; // stores the token id of the current active soul name
 
     struct TokenData {

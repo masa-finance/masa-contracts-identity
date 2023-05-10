@@ -15,6 +15,10 @@ interface ISoulName {
         string memory name
     ) external view returns (bool available);
 
+    function tokenData(
+        uint256 tokenId
+    ) external view returns (string memory name, uint256 expirationDate);
+
     function getTokenData(
         string memory name
     )
