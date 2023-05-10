@@ -227,6 +227,18 @@ describe("Soulbound Credit Score", () => {
           .removeAuthority(authority.address)
       ).to.be.rejected;
     });
+
+    it("should set mint price from owner", async () => {
+      await soulboundCreditScore.connect(owner).setMintPrice(2_000_000);
+
+      expect(await soulboundCreditScore.mintPrice()).to.be.equal(2_000_000);
+    });
+
+    it("should fail to set mint price from non owner", async () => {
+      await expect(
+        soulboundCreditScore.connect(address1).setMintPrice(2_000_000)
+      ).to.be.rejected;
+    });
   });
 
   describe("sbt information", () => {
