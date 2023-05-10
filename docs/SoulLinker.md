@@ -414,6 +414,52 @@ Returns the list of connected SBTs by a given SBT token
 |---|---|---|
 | _0 | uint256[] | List of connectec SBTs |
 
+### getSoulNames
+
+```solidity
+function getSoulNames(uint256 tokenId) external view returns (string defaultName, string[] sbtNames)
+```
+
+Returns all the active soul names of an account
+
+*This function queries all the identity names of the specified identity Id*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId | uint256 | TokenId of the identity |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| defaultName | string | Default soul name of the account |
+| sbtNames | string[] | Array of soul names associated to the account |
+
+### getSoulNames
+
+```solidity
+function getSoulNames(address owner) external view returns (string defaultName, string[] sbtNames)
+```
+
+Returns all the active soul names of an account
+
+*This function queries all the identity names of the specified account*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| owner | address | Address of the owner of the identities |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| defaultName | string | Default soul name of the account |
+| sbtNames | string[] | Array of soul names associated to the account |
+
 ### grantRole
 
 ```solidity
