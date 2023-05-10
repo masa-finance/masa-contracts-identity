@@ -338,6 +338,11 @@ describe("Soul Name", () => {
       nameId2 = mintReceipt.events![0].args![2].toNumber();
     });
 
+    it("only owner of the name can set a default SoulName", async () => {
+      await expect(soulName.connect(owner).setDefaultSoulName(nameId2)).to.be
+        .rejected;
+    });
+
     it("getSoulNames(uint256) returns array of SBT names with the default name as first", async () => {
       expect(
         await soulName["getSoulNames(uint256)"](identityId1)
