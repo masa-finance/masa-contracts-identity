@@ -26,21 +26,36 @@ abstract contract MasaSBTAuthority is MasaSBT {
     /// @param symbol Symbol of the token
     /// @param baseTokenURI Base URI of the token
     /// @param soulboundIdentity Address of the SoulboundIdentity contract
+    /// @param paymentParams Payment gateway params
     constructor(
         address admin,
         string memory name,
         string memory symbol,
         string memory baseTokenURI,
-        address soulboundIdentity
-    ) MasaSBT(admin, name, symbol, baseTokenURI, soulboundIdentity) {
+        address soulboundIdentity,
+        PaymentParams memory paymentParams
+    )
+        MasaSBT(
+            admin,
+            name,
+            symbol,
+            baseTokenURI,
+            soulboundIdentity,
+            paymentParams
+        )
+    {
         _grantRole(MINTER_ROLE, admin);
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
     function _mintWithCounter(
+        address paymentMethod,
         address to
     ) internal virtual onlyRole(MINTER_ROLE) returns (uint256) {
+        (uint256 price, uint256 protocolFee) = getMintPrice(paymentMethod);
+        _pay(paymentMethod, price, protocolFee);
+
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _mint(to, tokenId);

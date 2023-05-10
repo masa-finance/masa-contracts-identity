@@ -129,7 +129,7 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         string memory name,
         uint256 yearsPeriod,
         string memory _tokenURI
-    ) public override nonReentrant returns (uint256) {
+    ) external override nonReentrant returns (uint256) {
         if (!isAvailable(name)) revert NameAlreadyExists(name);
         if (bytes(name).length == 0) revert ZeroLengthName(name);
         if (yearsPeriod == 0) revert ZeroYearsPeriod(yearsPeriod);

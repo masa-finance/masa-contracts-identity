@@ -147,13 +147,17 @@ describe("Soul Linker", () => {
     soulLinker = SoulLinker__factory.connect(soulLinkerAddress, owner);
 
     // we mint identity SBT for dataOwner
-    let mintTx = await soulboundIdentity.connect(owner).mint(dataOwner.address);
+    let mintTx = await soulboundIdentity
+      .connect(owner)
+      ["mint(address)"](dataOwner.address);
     let mintReceipt = await mintTx.wait();
 
     ownerIdentityId = mintReceipt.events![0].args![1].toNumber();
 
     // we mint identity SBT for dataReader
-    mintTx = await soulboundIdentity.connect(owner).mint(dataReader.address);
+    mintTx = await soulboundIdentity
+      .connect(owner)
+      ["mint(address)"](dataReader.address);
     mintReceipt = await mintTx.wait();
 
     readerIdentityId = mintReceipt.events![0].args![1].toNumber();
@@ -321,15 +325,17 @@ describe("Soul Linker", () => {
         .be.rejected;
     });
 
-    it("should set ReserveWallet from owner", async () => {
-      await soulLinker.connect(owner).setReserveWallet(someone.address);
+    it("should set projectFeeReceiver from owner", async () => {
+      await soulLinker.connect(owner).setProjectFeeReceiver(someone.address);
 
-      expect(await soulLinker.reserveWallet()).to.be.equal(someone.address);
+      expect(await soulLinker.projectFeeReceiver()).to.be.equal(
+        someone.address
+      );
     });
 
-    it("should fail to set ReserveWallet from non owner", async () => {
+    it("should fail to set projectFeeReceiver from non owner", async () => {
       await expect(
-        soulLinker.connect(someone).setReserveWallet(someone.address)
+        soulLinker.connect(someone).setProjectFeeReceiver(someone.address)
       ).to.be.rejected;
     });
 
@@ -488,7 +494,7 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const price = await soulLinker.getPriceForAddLink(
+      const { price } = await soulLinker.getPriceForAddLink(
         env.MASA_TOKEN,
         soulboundCreditScore.address
       );
@@ -568,7 +574,7 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const price = await soulLinker.getPriceForAddLink(
+      const { price } = await soulLinker.getPriceForAddLink(
         ethers.constants.AddressZero,
         soulboundCreditScore.address
       );

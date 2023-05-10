@@ -55,12 +55,16 @@ describe("Soul Name", () => {
     soulName = SoulName__factory.connect(soulNameAddress, owner);
 
     // we mint identity SBT for address1
-    let mintTx = await soulboundIdentity.connect(owner).mint(address1.address);
+    let mintTx = await soulboundIdentity
+      .connect(owner)
+      ["mint(address)"](address1.address);
     let mintReceipt = await mintTx.wait();
 
     identityId1 = mintReceipt.events![0].args![1].toNumber();
 
-    mintTx = await soulboundIdentity.connect(owner).mint(address2.address);
+    mintTx = await soulboundIdentity
+      .connect(owner)
+      ["mint(address)"](address2.address);
     mintReceipt = await mintTx.wait();
 
     identityId2 = mintReceipt.events![0].args![1].toNumber();
