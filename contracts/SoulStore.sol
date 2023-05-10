@@ -63,14 +63,18 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     }
 
     /// @notice Sets the price of the name registering per one year in stable coin
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the admin or project admin role to call this function
     /// @param _nameLength Length of the name
     /// @param _nameRegistrationPricePerYear New price of the name registering per one
     /// year in stable coin for that name length per year
     function setNameRegistrationPricePerYear(
         uint256 _nameLength,
         uint256 _nameRegistrationPricePerYear
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    ) external {
+        if (
+            !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
+            !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
+        ) revert UserMustHaveProtocolOrProjectAdminRole();
         if (
             nameRegistrationPricePerYear[_nameLength] ==
             _nameRegistrationPricePerYear
@@ -81,11 +85,13 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     }
 
     /// @notice Adds a new authority to the list of authorities
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the admin or project admin role to call this function
     /// @param _authority New authority to add
-    function addAuthority(
-        address _authority
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function addAuthority(address _authority) external {
+        if (
+            !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
+            !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
+        ) revert UserMustHaveProtocolOrProjectAdminRole();
         if (_authority == address(0)) revert ZeroAddress();
         if (authorities[_authority]) revert AlreadyAdded();
 
@@ -93,11 +99,13 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     }
 
     /// @notice Removes an authority from the list of authorities
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the admin or project admin role to call this function
     /// @param _authority Authority to remove
-    function removeAuthority(
-        address _authority
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function removeAuthority(address _authority) external {
+        if (
+            !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
+            !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
+        ) revert UserMustHaveProtocolOrProjectAdminRole();
         if (_authority == address(0)) revert ZeroAddress();
         if (!authorities[_authority]) revert AuthorityNotExists(_authority);
 
@@ -106,13 +114,13 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
 
     /// @notice Pauses the smart contract
     /// @dev The caller must have the admin role to call this function
-    function pause() public onlyRole(DEFAULT_ADMIN_ROLE) {
+    function pause() external onlyRole(DEFAULT_ADMIN_ROLE) {
         _pause();
     }
 
     /// @notice Unpauses the smart contract
     /// @dev The caller must have the admin role to call this function
-    function unpause() public onlyRole(DEFAULT_ADMIN_ROLE) {
+    function unpause() external onlyRole(DEFAULT_ADMIN_ROLE) {
         _unpause();
     }
 
@@ -138,14 +146,17 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         address authorityAddress,
         bytes calldata signature
     ) external payable whenNotPaused nonReentrant returns (uint256) {
-        _pay(
+        (uint256 price, uint256 protocolFee) = getPriceForMintingName(
             paymentMethod,
-            getPriceForMintingName(paymentMethod, nameLength, yearsPeriod)
+            nameLength,
+            yearsPeriod
         );
+        _pay(paymentMethod, price, protocolFee);
 
         // finalize purchase
         return
             _mintSoulboundIdentityAndName(
+                paymentMethod,
                 _msgSender(),
                 name,
                 nameLength,
@@ -159,14 +170,19 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @notice Mints a new Soulbound Identity purchasing it
     /// @dev This function allows the purchase of a soulbound identity for free
     /// @return TokenId of the new soulbound identity
-    function purchaseIdentity()
-        external
-        whenNotPaused
-        nonReentrant
-        returns (uint256)
-    {
+    function purchaseIdentity() external returns (uint256) {
+        return purchaseIdentity(address(0));
+    }
+
+    /// @notice Mints a new Soulbound Identity purchasing it
+    /// @dev This function allows the purchase of a soulbound identity for free
+    /// @param paymentMethod Address of token that user want to pay
+    /// @return TokenId of the new soulbound identity
+    function purchaseIdentity(
+        address paymentMethod
+    ) public whenNotPaused nonReentrant returns (uint256) {
         // finalize purchase
-        return _mintSoulboundIdentity(_msgSender());
+        return _mintSoulboundIdentity(paymentMethod, _msgSender());
     }
 
     /// @notice Mints a new Soul Name purchasing it
@@ -191,10 +207,12 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         address authorityAddress,
         bytes calldata signature
     ) external payable whenNotPaused nonReentrant returns (uint256) {
-        _pay(
+        (uint256 price, uint256 protocolFee) = getPriceForMintingName(
             paymentMethod,
-            getPriceForMintingName(paymentMethod, nameLength, yearsPeriod)
+            nameLength,
+            yearsPeriod
         );
+        _pay(paymentMethod, price, protocolFee);
 
         // finalize purchase
         return
@@ -231,29 +249,31 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @param paymentMethod Address of token that user want to pay
     /// @param nameLength Length of the name
     /// @param yearsPeriod Years of validity of the name
-    /// @return Current price of the name minting in the given payment method
+    /// @return price Current price of the name minting in the given payment method
+    /// @return protocolFee Current protocol fee of the name minting in the given payment method
     function getPriceForMintingName(
         address paymentMethod,
         uint256 nameLength,
         uint256 yearsPeriod
-    ) public view returns (uint256) {
+    ) public view returns (uint256 price, uint256 protocolFee) {
         uint256 mintPrice = getNameRegistrationPricePerYear(nameLength).mul(
             yearsPeriod
         );
 
         if (mintPrice == 0) {
-            return 0;
+            price = 0;
         } else if (
             paymentMethod == stableCoin && enabledPaymentMethod[paymentMethod]
         ) {
             // stable coin
-            return mintPrice;
+            price = mintPrice;
         } else if (enabledPaymentMethod[paymentMethod]) {
             // ETH and ERC 20 token
-            return _convertFromStableCoin(paymentMethod, mintPrice);
+            price = _convertFromStableCoin(paymentMethod, mintPrice);
         } else {
             revert InvalidPaymentMethod(paymentMethod);
         }
+        return (price, _getProtocolFee(paymentMethod, price));
     }
 
     /* ========== PRIVATE FUNCTIONS ========== */
@@ -261,6 +281,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @notice Mints a new Soulbound Identity and Name
     /// @dev The final step of all purchase options. Will mint a
     /// new Soulbound Identity and a Soul Name NFT and emit the purchase event
+    /// @param paymentMethod Address of token that user want to pay
     /// @param to Address of the owner of the new soul name
     /// @param name Name of the new soul name
     /// @param nameLength Length of the name
@@ -270,6 +291,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @param signature Signature of the authority
     /// @return TokenId of the new soulbound identity
     function _mintSoulboundIdentityAndName(
+        address paymentMethod,
         address to,
         string memory name,
         uint256 nameLength,
@@ -286,6 +308,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
 
         // mint Soulbound identity token
         uint256 tokenId = soulboundIdentity.mintIdentityWithName(
+            paymentMethod,
             to,
             name,
             yearsPeriod,
@@ -300,11 +323,15 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @notice Mints a new Soulbound Identity
     /// @dev The final step of all purchase options. Will mint a
     /// new Soulbound Identity and emit the purchase event
+    /// @param paymentMethod Address of token that user want to pay
     /// @param to Address of the owner of the new identity
     /// @return TokenId of the new soulbound identity
-    function _mintSoulboundIdentity(address to) internal returns (uint256) {
+    function _mintSoulboundIdentity(
+        address paymentMethod,
+        address to
+    ) internal returns (uint256) {
         // mint Soulbound identity token
-        uint256 tokenId = soulboundIdentity.mint(to);
+        uint256 tokenId = soulboundIdentity.mint(paymentMethod, to);
 
         emit SoulboundIdentityPurchased(to, tokenId);
 

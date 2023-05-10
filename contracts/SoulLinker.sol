@@ -146,7 +146,11 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
             )
         ) revert InvalidSignature();
 
-        _pay(paymentMethod, getPriceForAddLink(paymentMethod, token));
+        (uint256 price, uint256 protocolFee) = getPriceForAddLink(
+            paymentMethod,
+            token
+        );
+        _pay(paymentMethod, price, protocolFee);
 
         // token => tokenId => readerIdentityId => signatureDate => LinkData
         _links[token][tokenId][readerIdentityId][signatureDate] = LinkData(
@@ -293,7 +297,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
     function getLinks(
         address token,
         uint256 tokenId
-    ) public view returns (LinkKey[] memory) {
+    ) external view returns (LinkKey[] memory) {
         uint256 nLinkKeys = 0;
         for (
             uint256 i = 0;
@@ -373,7 +377,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
     /// @return List of links for the reader
     function getReaderLinks(
         uint256 readerIdentityId
-    ) public view returns (ReaderLink[] memory) {
+    ) external view returns (ReaderLink[] memory) {
         return _readerLinks[readerIdentityId];
     }
 
@@ -414,33 +418,35 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
     /// @dev Returns the current pricing for storing a link
     /// @param paymentMethod Address of token that user want to pay
     /// @param token Token that user want to store link
-    /// @return Current price for storing a link
+    /// @return price Current price for storing a link
+    /// @return protocolFee Current protocol fee for storing a link
     function getPriceForAddLink(
         address paymentMethod,
         address token
-    ) public view returns (uint256) {
+    ) public view returns (uint256 price, uint256 protocolFee) {
         uint256 addLinkPrice = ILinkableSBT(token).addLinkPrice();
         uint256 addLinkPriceMASA = ILinkableSBT(token).addLinkPriceMASA();
         if (addLinkPrice == 0 && addLinkPriceMASA == 0) {
-            return 0;
+            price = 0;
         } else if (
             paymentMethod == masaToken &&
             enabledPaymentMethod[paymentMethod] &&
             addLinkPriceMASA > 0
         ) {
             // price in MASA without conversion rate
-            return addLinkPriceMASA;
+            price = addLinkPriceMASA;
         } else if (
             paymentMethod == stableCoin && enabledPaymentMethod[paymentMethod]
         ) {
             // stable coin
-            return addLinkPrice;
+            price = addLinkPrice;
         } else if (enabledPaymentMethod[paymentMethod]) {
             // ETH and ERC 20 token
-            return _convertFromStableCoin(paymentMethod, addLinkPrice);
+            price = _convertFromStableCoin(paymentMethod, addLinkPrice);
         } else {
             revert InvalidPaymentMethod(paymentMethod);
         }
+        return (price, _getProtocolFee(paymentMethod, price));
     }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */

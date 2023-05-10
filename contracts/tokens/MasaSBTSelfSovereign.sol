@@ -6,24 +6,19 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 import "../libraries/Errors.sol";
-import "../dex/PaymentGateway.sol";
 import "./MasaSBT.sol";
 
 /// @title MasaSBTSelfSovereign
 /// @author Masa Finance
 /// @notice Soulbound token. Non-fungible token that is not transferable.
-/// Adds a payment gateway to let minting paying a fee
 /// Adds a self-sovereign protocol to let minting using an authority signature
 /// @dev Implementation of https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763 Soulbound token.
-abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
+abstract contract MasaSBTSelfSovereign is MasaSBT, EIP712 {
     /* ========== STATE VARIABLES =========================================== */
 
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIdCounter;
-
-    uint256 public mintPrice; // price in stable coin
-    uint256 public mintPriceMASA; // price in MASA
 
     mapping(address => bool) public authorities;
 
@@ -45,38 +40,26 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
         address soulboundIdentity,
         PaymentParams memory paymentParams
     )
-        PaymentGateway(admin, paymentParams)
-        MasaSBT(admin, name, symbol, baseTokenURI, soulboundIdentity)
+        MasaSBT(
+            admin,
+            name,
+            symbol,
+            baseTokenURI,
+            soulboundIdentity,
+            paymentParams
+        )
     {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
-    /// @notice Sets the price of minting in stable coin
-    /// @dev The caller must have the admin role to call this function
-    /// @param _mintPrice New price of minting in stable coin
-    function setMintPrice(
-        uint256 _mintPrice
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        if (mintPrice == _mintPrice) revert SameValue();
-        mintPrice = _mintPrice;
-    }
-
-    /// @notice Sets the price of minting in MASA
-    /// @dev The caller must have the admin role to call this function
-    /// @param _mintPriceMASA New price of minting in MASA
-    function setMintPriceMASA(
-        uint256 _mintPriceMASA
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        if (mintPriceMASA == _mintPriceMASA) revert SameValue();
-        mintPriceMASA = _mintPriceMASA;
-    }
-
     /// @notice Adds a new authority to the list of authorities
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the admin or project admin role to call this function
     /// @param _authority New authority to add
-    function addAuthority(
-        address _authority
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function addAuthority(address _authority) external {
+        if (
+            !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
+            !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
+        ) revert UserMustHaveProtocolOrProjectAdminRole();
         if (_authority == address(0)) revert ZeroAddress();
         if (authorities[_authority]) revert AlreadyAdded();
 
@@ -84,11 +67,13 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
     }
 
     /// @notice Removes an authority from the list of authorities
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the admin or project admin role to call this function
     /// @param _authority Authority to remove
-    function removeAuthority(
-        address _authority
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function removeAuthority(address _authority) external {
+        if (
+            !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
+            !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
+        ) revert UserMustHaveProtocolOrProjectAdminRole();
         if (_authority == address(0)) revert ZeroAddress();
         if (!authorities[_authority]) revert AuthorityNotExists(_authority);
 
@@ -99,65 +84,19 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
 
     /* ========== VIEWS ===================================================== */
 
-    /// @notice Returns the price for minting
-    /// @dev Returns current pricing for minting
-    /// @param paymentMethod Address of token that user want to pay
-    /// @return Current price for minting in the given payment method
-    function getMintPrice(address paymentMethod) public view returns (uint256) {
-        if (mintPrice == 0 && mintPriceMASA == 0) {
-            return 0;
-        } else if (
-            paymentMethod == masaToken &&
-            enabledPaymentMethod[paymentMethod] &&
-            mintPriceMASA > 0
-        ) {
-            // price in MASA without conversion rate
-            return mintPriceMASA;
-        } else if (
-            paymentMethod == stableCoin && enabledPaymentMethod[paymentMethod]
-        ) {
-            // stable coin
-            return mintPrice;
-        } else if (enabledPaymentMethod[paymentMethod]) {
-            // ETH and ERC 20 token
-            return _convertFromStableCoin(paymentMethod, mintPrice);
-        } else {
-            revert InvalidPaymentMethod(paymentMethod);
-        }
-    }
-
-    /// @notice Query if a contract implements an interface
-    /// @dev Interface identification is specified in ERC-165.
-    /// @param interfaceId The interface identifier, as specified in ERC-165
-    /// @return `true` if the contract implements `interfaceId` and
-    ///  `interfaceId` is not 0xffffffff, `false` otherwise
-    function supportsInterface(
-        bytes4 interfaceId
-    ) public view virtual override(AccessControl, MasaSBT) returns (bool) {
-        return super.supportsInterface(interfaceId);
-    }
-
     /* ========== PRIVATE FUNCTIONS ========================================= */
 
     function _verify(
         bytes32 digest,
         bytes memory signature,
         address signer
-    ) internal view {
+    ) private view {
         address _signer = ECDSA.recover(digest, signature);
         if (_signer != signer) revert InvalidSignature();
         if (!authorities[_signer]) revert NotAuthorized(_signer);
     }
 
-    function _mintWithCounter(address to) internal virtual returns (uint256) {
-        uint256 tokenId = _tokenIdCounter.current();
-        _tokenIdCounter.increment();
-        _mint(to, tokenId);
-
-        return tokenId;
-    }
-
-    function _verifyAndMint(
+    function _mintWithCounter(
         address paymentMethod,
         address to,
         bytes32 digest,
@@ -166,9 +105,14 @@ abstract contract MasaSBTSelfSovereign is PaymentGateway, MasaSBT, EIP712 {
     ) internal virtual returns (uint256) {
         _verify(digest, signature, authorityAddress);
 
-        _pay(paymentMethod, getMintPrice(paymentMethod));
+        (uint256 price, uint256 protocolFee) = getMintPrice(paymentMethod);
+        _pay(paymentMethod, price, protocolFee);
 
-        return _mintWithCounter(to);
+        uint256 tokenId = _tokenIdCounter.current();
+        _tokenIdCounter.increment();
+        _mint(to, tokenId);
+
+        return tokenId;
     }
 
     /* ========== MODIFIERS ================================================= */

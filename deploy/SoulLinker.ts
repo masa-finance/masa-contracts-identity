@@ -33,7 +33,10 @@ const func: DeployFunction = async ({
       env.WETH_TOKEN,
       env.USDC_TOKEN,
       env.MASA_TOKEN,
-      env.RESERVE_WALLET || admin.address
+      env.PROJECTFEE_RECEIVER || admin.address,
+      env.PROTOCOLFEE_RECEIVER || ethers.constants.AddressZero,
+      env.PROTOCOLFEE_AMOUNT || 0,
+      env.PROTOCOLFEE_PERCENT || 0
     ]
   ];
 
