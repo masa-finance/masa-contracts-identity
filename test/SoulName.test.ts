@@ -322,6 +322,67 @@ describe("Soul Name", () => {
     });
   });
 
+  describe("set a default SoulName", () => {
+    let nameId2;
+
+    beforeEach(async () => {
+      await soulName
+        .connect(owner)
+        .mint(address1.address, SOUL_NAME1, YEAR, ARWEAVE_LINK1);
+
+      const mintTx = await soulName
+        .connect(owner)
+        .mint(address1.address, SOUL_NAME2, YEAR, ARWEAVE_LINK2);
+      const mintReceipt = await mintTx.wait();
+
+      nameId2 = mintReceipt.events![0].args![2].toNumber();
+    });
+
+    it("getSoulNames(uint256) returns array of SBT names with the default name as first", async () => {
+      expect(
+        await soulName["getSoulNames(uint256)"](identityId1)
+      ).to.deep.equal([SOUL_NAME1.toLowerCase(), SOUL_NAME2.toLowerCase()]);
+
+      expect((await soulName.defaultSoulName(address1.address)).exists).to.be
+        .false;
+
+      // we set the second name as default
+      await soulName.connect(address1).setDefaultSoulName(nameId2);
+
+      expect(
+        await soulName["getSoulNames(uint256)"](identityId1)
+      ).to.deep.equal([SOUL_NAME2.toLowerCase(), SOUL_NAME1.toLowerCase()]);
+
+      expect((await soulName.defaultSoulName(address1.address)).exists).to.be
+        .true;
+      expect(
+        (await soulName.defaultSoulName(address1.address)).tokenId
+      ).to.be.equal(nameId2);
+    });
+
+    it("getSoulNames(address) returns array of SBT names with the default name as first", async () => {
+      expect(
+        await soulName["getSoulNames(address)"](address1.address)
+      ).to.deep.equal([SOUL_NAME1.toLowerCase(), SOUL_NAME2.toLowerCase()]);
+
+      expect((await soulName.defaultSoulName(address1.address)).exists).to.be
+        .false;
+
+      // we set the second name as default
+      await soulName.connect(address1).setDefaultSoulName(nameId2);
+
+      expect(
+        await soulName["getSoulNames(uint256)"](identityId1)
+      ).to.deep.equal([SOUL_NAME2.toLowerCase(), SOUL_NAME1.toLowerCase()]);
+
+      expect((await soulName.defaultSoulName(address1.address)).exists).to.be
+        .true;
+      expect(
+        (await soulName.defaultSoulName(address1.address)).tokenId
+      ).to.be.equal(nameId2);
+    });
+  });
+
   describe("transfer", () => {
     let nameId: number;
 
