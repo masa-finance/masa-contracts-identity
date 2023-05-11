@@ -853,5 +853,60 @@ describe("Soul Linker", () => {
 
       nameId2 = mintReceipt.events![0].args![2].toNumber();
     });
+
+    it("only owner of the name can set a default SoulName", async () => {
+      await expect(soulLinker.connect(owner).setDefaultSoulName(nameId2)).to.be
+        .rejected;
+    });
+
+    it("getSoulNames(uint256) returns array of SBT names with the default name", async () => {
+      expect(
+        (await soulLinker["getSoulNames(uint256)"](ownerIdentityId)).names
+      ).to.deep.equal([SOUL_NAME1.toLowerCase(), SOUL_NAME2.toLowerCase()]);
+
+      expect((await soulLinker.defaultSoulName(dataOwner.address)).exists).to.be
+        .false;
+
+      // we set the second name as default
+      await soulLinker.connect(dataOwner).setDefaultSoulName(nameId2);
+
+      expect(
+        (await soulLinker["getSoulNames(uint256)"](ownerIdentityId)).names
+      ).to.deep.equal([SOUL_NAME1.toLowerCase(), SOUL_NAME2.toLowerCase()]);
+      expect(
+        (await soulLinker["getSoulNames(uint256)"](ownerIdentityId)).defaultName
+      ).to.deep.equal(SOUL_NAME2);
+
+      expect((await soulLinker.defaultSoulName(dataOwner.address)).exists).to.be
+        .true;
+      expect(
+        (await soulLinker.defaultSoulName(dataOwner.address)).tokenId
+      ).to.be.equal(nameId2);
+    });
+
+    it("getSoulNames(address) returns array of SBT names with the default name", async () => {
+      expect(
+        (await soulLinker["getSoulNames(address)"](dataOwner.address)).names
+      ).to.deep.equal([SOUL_NAME1.toLowerCase(), SOUL_NAME2.toLowerCase()]);
+
+      expect((await soulLinker.defaultSoulName(dataOwner.address)).exists).to.be
+        .false;
+
+      // we set the second name as default
+      await soulLinker.connect(dataOwner).setDefaultSoulName(nameId2);
+
+      expect(
+        (await soulLinker["getSoulNames(uint256)"](ownerIdentityId)).names
+      ).to.deep.equal([SOUL_NAME1.toLowerCase(), SOUL_NAME2.toLowerCase()]);
+      expect(
+        (await soulLinker["getSoulNames(uint256)"](ownerIdentityId)).defaultName
+      ).to.deep.equal(SOUL_NAME2);
+
+      expect((await soulLinker.defaultSoulName(dataOwner.address)).exists).to.be
+        .true;
+      expect(
+        (await soulLinker.defaultSoulName(dataOwner.address)).tokenId
+      ).to.be.equal(nameId2);
+    });
   });
 });
