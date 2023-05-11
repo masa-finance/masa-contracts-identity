@@ -12,6 +12,8 @@ import {
   SoulboundCreditScore__factory,
   SoulboundIdentity,
   SoulboundIdentity__factory,
+  SoulName,
+  SoulName__factory,
   SoulLinker,
   SoulLinker__factory
 } from "../typechain";
@@ -23,10 +25,17 @@ const expect = chai.expect;
 
 const env = getEnvParams("hardhat");
 
+const SOUL_NAME1 = "soulNameTest1";
+const SOUL_NAME2 = "soulNameTest2";
+const YEAR = 1; // 1 year
+const ARWEAVE_LINK1 = "ar://jK9sR4OrYvODj7PD3czIAyNJalub0-vdV_JAg1NqQ-o";
+const ARWEAVE_LINK2 = "ar://2Ohog_ya_61nTJlKox43L4ZQzZ9DGRao8NU6WZRxs8";
+
 // contract instances
 let soulboundIdentity: SoulboundIdentity;
 let soulboundCreditScore: SoulboundCreditScore;
 let soulLinker: SoulLinker;
+let soulName: SoulName;
 
 let owner: SignerWithAddress;
 let someone: SignerWithAddress;
@@ -123,6 +132,7 @@ describe("Soul Linker", () => {
 
   beforeEach(async () => {
     await deployments.fixture("SoulboundIdentity", { fallbackToGlobal: false });
+    await deployments.fixture("SoulName", { fallbackToGlobal: false });
     await deployments.fixture("SoulboundCreditScore", {
       fallbackToGlobal: false
     });
@@ -131,6 +141,7 @@ describe("Soul Linker", () => {
     const { address: soulboundIdentityAddress } = await deployments.get(
       "SoulboundIdentity"
     );
+    const { address: soulNameAddress } = await deployments.get("SoulName");
     const { address: soulboundCreditScoreAddress } = await deployments.get(
       "SoulboundCreditScore"
     );
@@ -140,6 +151,7 @@ describe("Soul Linker", () => {
       soulboundIdentityAddress,
       owner
     );
+    soulName = SoulName__factory.connect(soulNameAddress, owner);
     soulboundCreditScore = SoulboundCreditScore__factory.connect(
       soulboundCreditScoreAddress,
       owner
@@ -823,6 +835,23 @@ describe("Soul Linker", () => {
             signatureDate
           )
       ).to.be.rejected;
+    });
+  });
+
+  describe("set a default SoulName", () => {
+    let nameId2;
+
+    beforeEach(async () => {
+      await soulName
+        .connect(owner)
+        .mint(dataOwner.address, SOUL_NAME1, YEAR, ARWEAVE_LINK1);
+
+      const mintTx = await soulName
+        .connect(owner)
+        .mint(dataOwner.address, SOUL_NAME2, YEAR, ARWEAVE_LINK2);
+      const mintReceipt = await mintTx.wait();
+
+      nameId2 = mintReceipt.events![0].args![2].toNumber();
     });
   });
 });
