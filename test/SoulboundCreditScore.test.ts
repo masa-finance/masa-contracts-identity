@@ -106,7 +106,8 @@ const signMintCreditScoreToAddress = async (
 
 describe("Soulbound Credit Score", () => {
   before(async () => {
-    [, owner, protocolWallet, address1, authority, projectWallet] = await ethers.getSigners();
+    [, owner, protocolWallet, address1, authority, projectWallet] =
+      await ethers.getSigners();
   });
 
   beforeEach(async () => {
@@ -182,9 +183,12 @@ describe("Soulbound Credit Score", () => {
 
   describe("owner and project admin functions", () => {
     beforeEach(async () => {
-      const PROJECT_ADMIN_ROLE = await soulboundCreditScore.PROJECT_ADMIN_ROLE();
+      const PROJECT_ADMIN_ROLE =
+        await soulboundCreditScore.PROJECT_ADMIN_ROLE();
 
-      await soulboundCreditScore.connect(owner).grantRole(PROJECT_ADMIN_ROLE, projectWallet.address);
+      await soulboundCreditScore
+        .connect(owner)
+        .grantRole(PROJECT_ADMIN_ROLE, projectWallet.address);
     });
 
     it("should set SoulboundIdentity from owner", async () => {
@@ -213,7 +217,9 @@ describe("Soulbound Credit Score", () => {
     });
 
     it("should add authority from project admin", async () => {
-      await soulboundCreditScore.connect(projectWallet).addAuthority(address1.address);
+      await soulboundCreditScore
+        .connect(projectWallet)
+        .addAuthority(address1.address);
 
       expect(await soulboundCreditScore.authorities(address1.address)).to.be
         .true;
