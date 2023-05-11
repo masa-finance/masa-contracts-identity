@@ -133,7 +133,7 @@ describe("Soulbound Identity", () => {
         .setSwapRouter(ethers.constants.AddressZero);
 
       await expect(
-        soulboundIdentity.getMintPrice(ethers.constants.AddressZero)
+        soulboundIdentity.getMintPriceWithProtocolFee(ethers.constants.AddressZero)
       ).to.be.rejectedWith("PaymentParamsNotSet");
 
       await expect(
@@ -144,9 +144,10 @@ describe("Soulbound Identity", () => {
     });
 
     it("should mint from owner if he pays a fee", async () => {
-      const { price, protocolFee } = await soulboundIdentity.getMintPrice(
-        ethers.constants.AddressZero
-      );
+      const { price, protocolFee } =
+        await soulboundIdentity.getMintPriceWithProtocolFee(
+          ethers.constants.AddressZero
+        );
 
       await soulboundIdentity
         .connect(owner)
