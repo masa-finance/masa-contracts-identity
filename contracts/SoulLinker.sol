@@ -474,14 +474,10 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
     /// @dev This function queries all the identity names of the specified account
     /// @param owner Address of the owner of the identities
     /// @return defaultName Default soul name of the account
-    /// @return sbtNames Array of soul names associated to the account
+    /// @return names Array of soul names associated to the account
     function getSoulNames(
         address owner
-    )
-        external
-        view
-        returns (string memory defaultName, string[] memory sbtNames)
-    {
+    ) external view returns (string memory defaultName, string[] memory names) {
         return (
             getDefaultSoulName(owner),
             ISoulName(soulboundIdentity.getSoulName()).getSoulNames(owner)
@@ -492,14 +488,10 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
     /// @dev This function queries all the identity names of the specified identity Id
     /// @param tokenId TokenId of the identity
     /// @return defaultName Default soul name of the account
-    /// @return sbtNames Array of soul names associated to the account
+    /// @return names Array of soul names associated to the account
     function getSoulNames(
         uint256 tokenId
-    )
-        external
-        view
-        returns (string memory defaultName, string[] memory sbtNames)
-    {
+    ) external view returns (string memory defaultName, string[] memory names) {
         address owner = soulboundIdentity.ownerOf(tokenId);
         return (
             getDefaultSoulName(owner),
