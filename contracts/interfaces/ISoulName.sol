@@ -26,7 +26,8 @@ interface ISoulName {
             uint256 identityId,
             uint256 tokenId,
             uint256 expirationDate,
-            bool active
+            bool active,
+            address owner
         );
 
     function getTokenId(string memory name) external view returns (uint256);

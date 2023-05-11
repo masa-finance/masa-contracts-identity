@@ -243,6 +243,7 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     /// @return tokenId SoulName id of the soul name
     /// @return expirationDate Expiration date of the soul name
     /// @return active `true` if the soul name is active, `false` otherwise
+    /// @return owner Owner of the soul name
     function getTokenData(
         string memory name
     )
@@ -255,7 +256,8 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
             uint256 identityId,
             uint256 tokenId,
             uint256 expirationDate,
-            bool active
+            bool active,
+            address owner
         )
     {
         tokenId = _getTokenId(name);
@@ -275,7 +277,8 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
             _identityId,
             tokenId,
             _tokenData.expirationDate,
-            _tokenData.expirationDate >= block.timestamp
+            _tokenData.expirationDate >= block.timestamp,
+            _owner
         );
     }
 

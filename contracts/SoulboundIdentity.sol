@@ -161,7 +161,7 @@ contract SoulboundIdentity is
     function ownerOf(
         string memory name
     ) external view soulNameAlreadySet returns (address) {
-        (, , uint256 identityId, , , ) = soulName.getTokenData(name);
+        (, , uint256 identityId, , , , ) = soulName.getTokenData(name);
         return super.ownerOf(identityId);
     }
 
@@ -172,7 +172,7 @@ contract SoulboundIdentity is
     function tokenURI(
         string memory name
     ) external view soulNameAlreadySet returns (string memory) {
-        (, , uint256 identityId, , , ) = soulName.getTokenData(name);
+        (, , uint256 identityId, , , , ) = soulName.getTokenData(name);
         return super.tokenURI(identityId);
     }
 
@@ -214,6 +214,7 @@ contract SoulboundIdentity is
     /// @return tokenId SoulName id of the soul name
     /// @return expirationDate Expiration date of the soul name
     /// @return active `true` if the soul name is active, `false` otherwise
+    /// @return owner Address of the owner of the soul name
     function getTokenData(
         string memory name
     )
@@ -226,7 +227,8 @@ contract SoulboundIdentity is
             uint256 identityId,
             uint256 tokenId,
             uint256 expirationDate,
-            bool active
+            bool active,
+            address owner
         )
     {
         return soulName.getTokenData(name);
