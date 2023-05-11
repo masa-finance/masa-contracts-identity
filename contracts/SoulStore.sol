@@ -146,11 +146,14 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         address authorityAddress,
         bytes calldata signature
     ) external payable whenNotPaused nonReentrant returns (uint256) {
-        (uint256 price, uint256 protocolFee) = getPriceForMintingName(
-            paymentMethod,
-            nameLength,
-            yearsPeriod
-        );
+        (
+            uint256 price,
+            uint256 protocolFee
+        ) = getPriceForMintingNameWithProtocolFee(
+                paymentMethod,
+                nameLength,
+                yearsPeriod
+            );
         _pay(paymentMethod, price, protocolFee);
 
         // finalize purchase
@@ -207,11 +210,14 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         address authorityAddress,
         bytes calldata signature
     ) external payable whenNotPaused nonReentrant returns (uint256) {
-        (uint256 price, uint256 protocolFee) = getPriceForMintingName(
-            paymentMethod,
-            nameLength,
-            yearsPeriod
-        );
+        (
+            uint256 price,
+            uint256 protocolFee
+        ) = getPriceForMintingNameWithProtocolFee(
+                paymentMethod,
+                nameLength,
+                yearsPeriod
+            );
         _pay(paymentMethod, price, protocolFee);
 
         // finalize purchase
@@ -250,12 +256,11 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @param nameLength Length of the name
     /// @param yearsPeriod Years of validity of the name
     /// @return price Current price of the name minting in the given payment method
-    /// @return protocolFee Current protocol fee of the name minting in the given payment method
     function getPriceForMintingName(
         address paymentMethod,
         uint256 nameLength,
         uint256 yearsPeriod
-    ) public view returns (uint256 price, uint256 protocolFee) {
+    ) public view returns (uint256 price) {
         uint256 mintPrice = getNameRegistrationPricePerYear(nameLength).mul(
             yearsPeriod
         );
@@ -273,6 +278,22 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         } else {
             revert InvalidPaymentMethod(paymentMethod);
         }
+        return price;
+    }
+
+    /// @notice Returns the price of the name minting with protocol fee
+    /// @dev Returns current pricing for name minting for a given name length and years period with protocol fee
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param nameLength Length of the name
+    /// @param yearsPeriod Years of validity of the name
+    /// @return price Current price of the name minting in the given payment method
+    /// @return protocolFee Current protocol fee of the name minting in the given payment method
+    function getPriceForMintingNameWithProtocolFee(
+        address paymentMethod,
+        uint256 nameLength,
+        uint256 yearsPeriod
+    ) public view returns (uint256 price, uint256 protocolFee) {
+        price = getPriceForMintingName(paymentMethod, nameLength, yearsPeriod);
         return (price, _getProtocolFee(paymentMethod, price));
     }
 
