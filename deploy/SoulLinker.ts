@@ -103,6 +103,7 @@ func.skip = async ({ network }) => {
 func.tags = ["SoulLinker"];
 func.dependencies = [
   "SoulboundIdentity",
+  "SoulName",
   "SoulboundCreditScore",
   "SoulboundGreen"
 ];
