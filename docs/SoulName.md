@@ -1140,6 +1140,17 @@ error SameValue()
 
 
 
+### SoulboundIdentityNotSet
+
+```solidity
+error SoulboundIdentityNotSet()
+```
+
+
+
+
+
+
 ### TokenNotFound
 
 ```solidity
@@ -1171,17 +1182,6 @@ error URIAlreadyExists(string tokenURI)
 | Name | Type | Description |
 |---|---|---|
 | tokenURI | string | undefined |
-
-### ZeroAddress
-
-```solidity
-error ZeroAddress()
-```
-
-
-
-
-
 
 ### ZeroLengthName
 
