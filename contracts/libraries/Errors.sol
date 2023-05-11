@@ -35,6 +35,7 @@ error ProtocolFeeReceiverNotSet();
 error RefundFailed();
 error SameValue();
 error SBTAlreadyLinked(address token);
+error SoulboundIdentityNotSet();
 error SoulNameContractNotSet();
 error TokenNotFound(uint256 tokenId);
 error TransferFailed();
