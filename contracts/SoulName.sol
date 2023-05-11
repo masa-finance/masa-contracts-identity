@@ -63,8 +63,6 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         string memory _extension,
         string memory _contractURI
     ) MasaNFT(admin, name, symbol, "") {
-        if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
-
         soulboundIdentity = _soulboundIdentity;
         extension = _extension;
         contractURI = _contractURI;
@@ -78,7 +76,6 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     function setSoulboundIdentity(
         ISoulboundIdentity _soulboundIdentity
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
         if (soulboundIdentity == _soulboundIdentity) revert SameValue();
         soulboundIdentity = _soulboundIdentity;
     }
@@ -126,8 +123,10 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         if (!isAvailable(name)) revert NameAlreadyExists(name);
         if (bytes(name).length == 0) revert ZeroLengthName(name);
         if (yearsPeriod == 0) revert ZeroYearsPeriod(yearsPeriod);
-        if (soulboundIdentity.balanceOf(to) == 0)
-            revert AddressDoesNotHaveIdentity(to);
+        if (
+            (address(soulboundIdentity) != address(0)) &&
+            (soulboundIdentity.balanceOf(to) == 0)
+        ) revert AddressDoesNotHaveIdentity(to);
         if (
             !Utils.startsWith(_tokenURI, "ar://") &&
             !Utils.startsWith(_tokenURI, "https://arweave.net/") &&
@@ -261,7 +260,8 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     {
         tokenId = _getTokenId(name);
         address _owner = ownerOf(tokenId);
-        bool _linked = soulboundIdentity.balanceOf(_owner) > 0;
+        bool _linked = (address(soulboundIdentity) != address(0)) &&
+            (soulboundIdentity.balanceOf(_owner) > 0);
         uint256 _identityId = 0;
         if (_linked) {
             _identityId = soulboundIdentity.tokenOfOwner(_owner);
@@ -296,6 +296,8 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     function getSoulNames(
         uint256 identityId
     ) external view override returns (string[] memory sbtNames) {
+        if (address(soulboundIdentity) == address(0))
+            revert SoulboundIdentityNotSet();
         // return owner if exists
         address _owner = soulboundIdentity.ownerOf(identityId);
 
