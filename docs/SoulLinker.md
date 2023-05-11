@@ -417,7 +417,7 @@ Returns the list of connected SBTs by a given SBT token
 ### getSoulNames
 
 ```solidity
-function getSoulNames(uint256 tokenId) external view returns (string defaultName, string[] sbtNames)
+function getSoulNames(uint256 tokenId) external view returns (string defaultName, string[] names)
 ```
 
 Returns all the active soul names of an account
@@ -435,12 +435,12 @@ Returns all the active soul names of an account
 | Name | Type | Description |
 |---|---|---|
 | defaultName | string | Default soul name of the account |
-| sbtNames | string[] | Array of soul names associated to the account |
+| names | string[] | Array of soul names associated to the account |
 
 ### getSoulNames
 
 ```solidity
-function getSoulNames(address owner) external view returns (string defaultName, string[] sbtNames)
+function getSoulNames(address owner) external view returns (string defaultName, string[] names)
 ```
 
 Returns all the active soul names of an account
@@ -458,7 +458,7 @@ Returns all the active soul names of an account
 | Name | Type | Description |
 |---|---|---|
 | defaultName | string | Default soul name of the account |
-| sbtNames | string[] | Array of soul names associated to the account |
+| names | string[] | Array of soul names associated to the account |
 
 ### grantRole
 
