@@ -53,7 +53,9 @@ abstract contract MasaSBTAuthority is MasaSBT {
         address paymentMethod,
         address to
     ) internal virtual onlyRole(MINTER_ROLE) returns (uint256) {
-        (uint256 price, uint256 protocolFee) = getMintPrice(paymentMethod);
+        (uint256 price, uint256 protocolFee) = getMintPriceWithProtocolFee(
+            paymentMethod
+        );
         _pay(paymentMethod, price, protocolFee);
 
         uint256 tokenId = _tokenIdCounter.current();

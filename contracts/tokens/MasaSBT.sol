@@ -211,10 +211,9 @@ abstract contract MasaSBT is
     /// @dev Returns current pricing for minting
     /// @param paymentMethod Address of token that user want to pay
     /// @return price Current price for minting in the given payment method
-    /// @return protocolFee Current protocol fee for minting in the given payment method
     function getMintPrice(
         address paymentMethod
-    ) public view returns (uint256 price, uint256 protocolFee) {
+    ) public view returns (uint256 price) {
         if (mintPrice == 0 && mintPriceMASA == 0) {
             price = 0;
         } else if (
@@ -235,6 +234,18 @@ abstract contract MasaSBT is
         } else {
             revert InvalidPaymentMethod(paymentMethod);
         }
+        return price;
+    }
+
+    /// @notice Returns the price for minting with protocol fee
+    /// @dev Returns current pricing for minting with protocol fee
+    /// @param paymentMethod Address of token that user want to pay
+    /// @return price Current price for minting in the given payment method
+    /// @return protocolFee Current protocol fee for minting in the given payment method
+    function getMintPriceWithProtocolFee(
+        address paymentMethod
+    ) public view returns (uint256 price, uint256 protocolFee) {
+        price = getMintPrice(paymentMethod);
         return (price, _getProtocolFee(paymentMethod, price));
     }
 

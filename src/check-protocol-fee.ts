@@ -16,11 +16,12 @@ let protocolWallet: SignerWithAddress;
 const YEAR = 1; // 1 year
 
 async function showPrice(length, paymentMethod) {
-  const { price, protocolFee } = await soulStore.getPriceForMintingName(
-    paymentMethod,
-    length,
-    YEAR
-  );
+  const { price, protocolFee } =
+    await soulStore.getPriceForMintingNameWithProtocolFee(
+      paymentMethod,
+      length,
+      YEAR
+    );
   const paymentMethodStr =
     paymentMethod === ethers.constants.AddressZero ? "ETH " : "USDC";
   console.log(

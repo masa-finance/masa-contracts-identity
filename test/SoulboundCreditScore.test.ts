@@ -424,7 +424,7 @@ describe("Soulbound Credit Score", () => {
     it("should mint from final user address paying with ETH", async () => {
       const projectFeeReceiver =
         await soulboundCreditScore.projectFeeReceiver();
-      const { price } = await soulboundCreditScore.getMintPrice(
+      const { price } = await soulboundCreditScore.getMintPriceWithProtocolFee(
         ethers.constants.AddressZero
       );
       const projectFeeWalletBalanceBefore = await ethers.provider.getBalance(
@@ -462,7 +462,7 @@ describe("Soulbound Credit Score", () => {
     it("should mint from final user identity paying with ETH", async () => {
       const projectFeeReceiver =
         await soulboundCreditScore.projectFeeReceiver();
-      const { price } = await soulboundCreditScore.getMintPrice(
+      const { price } = await soulboundCreditScore.getMintPriceWithProtocolFee(
         ethers.constants.AddressZero
       );
       const projectFeeWalletBalanceBefore = await ethers.provider.getBalance(
@@ -498,7 +498,9 @@ describe("Soulbound Credit Score", () => {
     });
 
     it("should mint from final user identity paying with stable coin", async () => {
-      const { price } = await soulboundCreditScore.getMintPrice(env.USDC_TOKEN);
+      const { price } = await soulboundCreditScore.getMintPriceWithProtocolFee(
+        env.USDC_TOKEN
+      );
 
       // set allowance for soul store
       const usdc: IERC20 = IERC20__factory.connect(env.USDC_TOKEN, owner);
@@ -523,7 +525,9 @@ describe("Soulbound Credit Score", () => {
     });
 
     it("should mint from final user identity paying with MASA coin", async () => {
-      const { price } = await soulboundCreditScore.getMintPrice(env.MASA_TOKEN);
+      const { price } = await soulboundCreditScore.getMintPriceWithProtocolFee(
+        env.MASA_TOKEN
+      );
 
       // set allowance for soul store
       const usdc: IERC20 = IERC20__factory.connect(env.MASA_TOKEN, owner);
@@ -549,7 +553,7 @@ describe("Soulbound Credit Score", () => {
 
     it("should fail to get minting info for invalid payment method", async () => {
       await expect(
-        soulboundCreditScore.getMintPrice(owner.address)
+        soulboundCreditScore.getMintPriceWithProtocolFee(owner.address)
       ).to.be.rejectedWith("InvalidPaymentMethod");
     });
 
@@ -583,9 +587,10 @@ describe("Soulbound Credit Score", () => {
         await soulboundCreditScore.projectFeeReceiver();
       const protocolFeeReceiver =
         await soulboundCreditScore.protocolFeeReceiver();
-      const { price, protocolFee } = await soulboundCreditScore.getMintPrice(
-        ethers.constants.AddressZero
-      );
+      const { price, protocolFee } =
+        await soulboundCreditScore.getMintPriceWithProtocolFee(
+          ethers.constants.AddressZero
+        );
       const projectFeeWalletBalanceBefore = await ethers.provider.getBalance(
         projectFeeReceiver
       );
@@ -650,9 +655,10 @@ describe("Soulbound Credit Score", () => {
         await soulboundCreditScore.projectFeeReceiver();
       const protocolFeeReceiver =
         await soulboundCreditScore.protocolFeeReceiver();
-      const { price, protocolFee } = await soulboundCreditScore.getMintPrice(
-        ethers.constants.AddressZero
-      );
+      const { price, protocolFee } =
+        await soulboundCreditScore.getMintPriceWithProtocolFee(
+          ethers.constants.AddressZero
+        );
       const projectFeeWalletBalanceBefore = await ethers.provider.getBalance(
         projectFeeReceiver
       );
@@ -717,9 +723,8 @@ describe("Soulbound Credit Score", () => {
         await soulboundCreditScore.projectFeeReceiver();
       const protocolFeeReceiver =
         await soulboundCreditScore.protocolFeeReceiver();
-      const { price, protocolFee } = await soulboundCreditScore.getMintPrice(
-        env.USDC_TOKEN
-      );
+      const { price, protocolFee } =
+        await soulboundCreditScore.getMintPriceWithProtocolFee(env.USDC_TOKEN);
 
       const usdc: IERC20 = IERC20__factory.connect(env.USDC_TOKEN, owner);
       const projectFeeWalletBalanceBefore = await usdc.balanceOf(
@@ -777,9 +782,8 @@ describe("Soulbound Credit Score", () => {
         await soulboundCreditScore.projectFeeReceiver();
       const protocolFeeReceiver =
         await soulboundCreditScore.protocolFeeReceiver();
-      const { price, protocolFee } = await soulboundCreditScore.getMintPrice(
-        env.USDC_TOKEN
-      );
+      const { price, protocolFee } =
+        await soulboundCreditScore.getMintPriceWithProtocolFee(env.USDC_TOKEN);
 
       const usdc: IERC20 = IERC20__factory.connect(env.USDC_TOKEN, owner);
       const projectFeeWalletBalanceBefore = await usdc.balanceOf(
