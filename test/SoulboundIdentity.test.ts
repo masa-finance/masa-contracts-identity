@@ -133,7 +133,9 @@ describe("Soulbound Identity", () => {
         .setSwapRouter(ethers.constants.AddressZero);
 
       await expect(
-        soulboundIdentity.getMintPriceWithProtocolFee(ethers.constants.AddressZero)
+        soulboundIdentity.getMintPriceWithProtocolFee(
+          ethers.constants.AddressZero
+        )
       ).to.be.rejectedWith("PaymentParamsNotSet");
 
       await expect(
