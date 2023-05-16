@@ -150,6 +150,18 @@ describe("Soul Store", () => {
       ).to.be.rejected;
     });
 
+    it("should set SoulName from owner", async () => {
+      await soulStore.connect(owner).setSoulName(address1.address);
+
+      expect(await soulStore.soulName()).to.be.equal(address1.address);
+    });
+
+    it("should fail to set SoulName from non owner", async () => {
+      await expect(
+        soulStore.connect(address1).setSoulName(address1.address)
+      ).to.be.rejected;
+    });
+
     it("should set NameRegistrationPricePerYear from owner", async () => {
       const newPrice = 100;
       await soulStore
