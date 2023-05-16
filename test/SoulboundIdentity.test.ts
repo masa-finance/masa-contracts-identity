@@ -61,6 +61,7 @@ describe("Soulbound Identity", () => {
       await soulboundIdentity.connect(owner).setSoulName(address2.address);
 
       expect(await soulboundIdentity.soulName()).to.be.equal(address2.address);
+      expect(await soulboundIdentity.getSoulName()).to.be.equal(address2.address);
     });
   });
 
