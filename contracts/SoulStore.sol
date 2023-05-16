@@ -22,6 +22,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /* ========== STATE VARIABLES ========== */
 
     ISoulboundIdentity public soulboundIdentity;
+    ISoulName public soulName;
 
     mapping(uint256 => uint256) public nameRegistrationPricePerYear; // (length --> price in stable coin per year)
 
@@ -34,17 +35,21 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// and Soul Name NFTs, paying a fee
     /// @param admin Administrator of the smart contract
     /// @param _soulBoundIdentity Address of the Soulbound identity contract
+    /// @param _soulName Address of the SoulName contract
     /// @param _nameRegistrationPricePerYear Price of the default name registering in stable coin per year
     /// @param paymentParams Payment gateway params
     constructor(
         address admin,
         ISoulboundIdentity _soulBoundIdentity,
+        ISoulName _soulName,
         uint256 _nameRegistrationPricePerYear,
         PaymentParams memory paymentParams
     ) PaymentGateway(admin, paymentParams) EIP712("SoulStore", "1.0.0") {
         if (address(_soulBoundIdentity) == address(0)) revert ZeroAddress();
+        if (address(_soulName) == address(0)) revert ZeroAddress();
 
         soulboundIdentity = _soulBoundIdentity;
+        soulName = _soulName;
 
         nameRegistrationPricePerYear[0] = _nameRegistrationPricePerYear; // name price for default length per year
     }
@@ -60,6 +65,17 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
         if (soulboundIdentity == _soulboundIdentity) revert SameValue();
         soulboundIdentity = _soulboundIdentity;
+    }
+
+    /// @notice Sets the SoulName contract address linked to this store
+    /// @dev The caller must have the admin role to call this function
+    /// @param _soulName New SoulName contract address
+    function setSoulName(
+        ISoulName _soulName
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        if (address(_soulName) == address(0)) revert ZeroAddress();
+        if (soulName == _soulName) revert SameValue();
+        soulName = _soulName;
     }
 
     /// @notice Sets the price of the name registering per one year in stable coin
