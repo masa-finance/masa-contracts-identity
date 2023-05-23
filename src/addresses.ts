@@ -12,9 +12,12 @@ async function main() {
     const networkFolder = `${deploymentsFolder}${network}/`;
     fs.readdirSync(networkFolder)
       .filter((fn) => fn.endsWith(".json"))
-      .forEach((contract) => {
+      .forEach((file) => {
         // for each contract
-        console.log(`Contract: ${contract}`);
+        const contract = file.slice(0, -5);
+        const jsonString = fs.readFileSync(`${networkFolder}${file}`, "utf-8");
+        const json = JSON.parse(jsonString);
+        console.log(`  Address: ${json.address} Contract: ${contract}`);
       });
   });
 }
