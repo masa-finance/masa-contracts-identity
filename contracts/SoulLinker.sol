@@ -21,6 +21,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
 
     ISoulboundIdentity public soulboundIdentity;
     ISoulName[] public soulNames;
+    mapping (address => bool) public isSoulName;
 
     // token => tokenId => readerIdentityId => signatureDate => LinkData
     mapping(address => mapping(uint256 => mapping(uint256 => mapping(uint256 => LinkData))))
@@ -77,6 +78,9 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
 
         soulboundIdentity = _soulboundIdentity;
         soulNames = _soulNames;
+        for(uint256 i = 0; i < _soulNames.length; i++) {
+            isSoulName[address(_soulNames[i])] = true;
+        }
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
@@ -103,6 +107,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
             if (soulNames[i] == soulName) revert SameValue();
         }
         soulNames.push(soulName);
+        isSoulName[address(soulName)] = true;
     }
 
     /// @notice Remove a SoulName contract address linked to this soul store
@@ -116,6 +121,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
             if (soulNames[i] == soulName) {
                 soulNames[i] = soulNames[soulNames.length - 1];
                 soulNames.pop();
+                isSoulName[address(soulName)] = false;
                 return;
             }
         }
