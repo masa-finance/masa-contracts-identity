@@ -9,8 +9,7 @@
     "contracts/**/*",
     "deployments/**/*",
     "dist/**/*",
-    "hardhat.config.ts",
-    "!**/solcInputs/**"
+    "hardhat.config.ts"
   ],
   "repository": "git@github.com:masa-finance/masa-contracts-identity.git",
   "author": "Sebastian Gerske <13647606+H34D@users.noreply.github.com>",
