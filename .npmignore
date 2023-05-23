@@ -17,3 +17,4 @@ typechain/
 .prettierrc
 .solhint.json
 CHANGELOG.md
+**/solcInputs/
