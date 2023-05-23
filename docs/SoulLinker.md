@@ -67,10 +67,26 @@ Stores the link, validating the signature of the given read link request
 | expirationDate | uint256 | Expiration date of the signature |
 | signature | bytes | Signature of the read link request made by the owner |
 
+### addSoulName
+
+```solidity
+function addSoulName(contract ISoulName soulName) external nonpayable
+```
+
+Add a SoulName contract address linked to this soul store
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| soulName | contract ISoulName | Address of the SoulName contract |
+
 ### defaultSoulName
 
 ```solidity
-function defaultSoulName(address) external view returns (bool exists, uint256 tokenId)
+function defaultSoulName(address) external view returns (bool exists, address token, uint256 tokenId)
 ```
 
 
@@ -88,6 +104,7 @@ function defaultSoulName(address) external view returns (bool exists, uint256 to
 | Name | Type | Description |
 |---|---|---|
 | exists | bool | undefined |
+| token | address | undefined |
 | tokenId | uint256 | undefined |
 
 ### disablePaymentMethod
@@ -659,6 +676,22 @@ function protocolFeeReceiver() external view returns (address)
 |---|---|---|
 | _0 | address | undefined |
 
+### removeSoulName
+
+```solidity
+function removeSoulName(contract ISoulName soulName) external nonpayable
+```
+
+Remove a SoulName contract address linked to this soul store
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| soulName | contract ISoulName | Address of the SoulName contract |
+
 ### renounceRole
 
 ```solidity
@@ -716,7 +749,7 @@ function revokeRole(bytes32 role, address account) external nonpayable
 ### setDefaultSoulName
 
 ```solidity
-function setDefaultSoulName(uint256 tokenId) external nonpayable
+function setDefaultSoulName(address token, uint256 tokenId) external nonpayable
 ```
 
 Sets the default soul name for the owner
@@ -727,6 +760,7 @@ Sets the default soul name for the owner
 
 | Name | Type | Description |
 |---|---|---|
+| token | address | Address of the SoulName contract |
 | tokenId | uint256 | TokenId of the soul name |
 
 ### setMasaToken
@@ -815,7 +849,7 @@ Set the protocol fee wallet
 function setSoulboundIdentity(contract ISoulboundIdentity _soulboundIdentity) external nonpayable
 ```
 
-Sets the SoulboundIdentity contract address linked to this soul name
+Sets the SoulboundIdentity contract address linked to this soul store
 
 *The caller must have the admin role to call this function*
 
@@ -872,6 +906,28 @@ Sets the wrapped native token address
 | Name | Type | Description |
 |---|---|---|
 | _wrappedNativeToken | address | New wrapped native token address |
+
+### soulNames
+
+```solidity
+function soulNames(uint256) external view returns (contract ISoulName)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | contract ISoulName | undefined |
 
 ### soulboundIdentity
 
@@ -1380,6 +1436,17 @@ error RefundFailed()
 
 ```solidity
 error SameValue()
+```
+
+
+
+
+
+
+### SoulNameNotExist
+
+```solidity
+error SoulNameNotExist()
 ```
 
 
