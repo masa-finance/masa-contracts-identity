@@ -1,0 +1,56 @@
+{
+  "alfajores": {
+    "SoulName": "0xf163686d50C800C49ED58836d3a4D1fBA057CeE6",
+    "SoulStore": "0x1B830e25CcBf8C0D512653800a294876fA658c67",
+    "SoulboundGreen": "0x1fCE0Ae50a8900f09E4A437F33E95313225Bb4b7",
+    "SoulboundIdentity": "0xcb85D14082B67e470fD9C2979F3A75341124a338"
+  },
+  "basegoerli": {
+    "SoulName": "0xC6CA7be41Ba10a3645988B77a523231666540b82",
+    "SoulStore": "0x22b8BCBdEbbbe223435d899B0100A171a106Bb58",
+    "SoulboundGreen": "0x5a50935a8918220b1941a6Ec91a505C380A64cBd",
+    "SoulboundIdentity": "0x332aB163a034F912509Cae2F15f91f3263FF6479"
+  },
+  "bsc": {
+    "SoulboundGreen": "0x4d236e55e54Ed960887659d046C60f377cCa58F8"
+  },
+  "bsctest": {
+    "SoulboundGreen": "0x471e69B65c5b00FdBeB0f343CD46F98E4ea6F5ae"
+  },
+  "celo": {
+    "SoulName": "0x376f5039Df4e9E9c864185d8FaBad4f04A7E394A",
+    "SoulStore": "0x6Aa37dF2392007209C54A2162beF21623705dC22",
+    "SoulboundGreen": "0x4d236e55e54Ed960887659d046C60f377cCa58F8",
+    "SoulboundIdentity": "0x836198F984431EcdC97A7549C1Bd6B3Cd9E7a89B"
+  },
+  "goerli": {
+    "SoulLinker": "0xA461C8206BBDd4885D14eDA4C09C6F98cEd1b221",
+    "SoulName": "0x471e69B65c5b00FdBeB0f343CD46F98E4ea6F5ae",
+    "SoulStore": "0xFd36990172dFB44ef0cEa51a9B1159687CfBb4E2",
+    "Soulbound2FA": "0x0b005aa070af2661af9cd16c15d2144dbef76002",
+    "SoulboundCreditScore": "0x0b32ec4753eade0050f9ddfe79a869d6083d7eb9",
+    "SoulboundGreen": "0x1fCE0Ae50a8900f09E4A437F33E95313225Bb4b7",
+    "SoulboundIdentity": "0x56266C75773e82B886B02dC0D137eC005fc2C8e4"
+  },
+  "mainnet": {
+    "SoulLinker": "0xc1E0795Dd6d214bbAf94A805D3b25A69408aCBDb",
+    "SoulName": "0x7ab73C2F083B2725E5b6e245E6EA945d5f3CaaeA",
+    "SoulStore": "0x1C7652919598b32C576D362E74F44C6E34EF7Aba",
+    "SoulboundCreditScore": "0x4d236e55e54Ed960887659d046C60f377cCa58F8",
+    "SoulboundGreen": "0xeB05dca1A7e0E37E364B938d989fc0273Ff3bFCa",
+    "SoulboundIdentity": "0x8903D8D4F4c06814D7ecb42b1258E2209d53A7d4"
+  },
+  "mumbai": {
+    "SoulLinker": "0xb1262BdA5dce7D57bEbea4ff9c49C2476A43245c",
+    "SoulStore": "0x65627C04433d72283662B58B423bA8A1dfBd3fe3",
+    "SoulboundCreditScore": "0xbC4123B1ccf5A972D00e9C5a438b96471a16183C",
+    "SoulboundGreen": "0xf03cc5996C6d83c7A63Bc7bcAA46F55e691e811c",
+    "SoulboundIdentity": "0xC6CA7be41Ba10a3645988B77a523231666540b82"
+  },
+  "polygon": {
+    "SoulStore": "0x576E82208df807B07b9e4B4bDBd7F7862F1152a9",
+    "SoulboundCreditScore": "0x1C7652919598b32C576D362E74F44C6E34EF7Aba",
+    "SoulboundGreen": "0x4d236e55e54Ed960887659d046C60f377cCa58F8",
+    "SoulboundIdentity": "0x7ab73C2F083B2725E5b6e245E6EA945d5f3CaaeA"
+  }
+}

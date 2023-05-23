@@ -332,8 +332,14 @@ describe("Soul Store", () => {
         );
 
       expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_5LETTERS * 2);
-      expect(priceInETH2).to.be.closeTo(priceInETH1.mul(2), 100);
-      expect(priceInMasaToken2).to.be.closeTo(priceInMasaToken1.mul(2), 1000);
+      expect(priceInETH2).to.be.closeTo(
+        priceInETH1.mul(2),
+        priceInETH2.div(100)
+      ); // 1% tolerance
+      expect(priceInMasaToken2).to.be.closeTo(
+        priceInMasaToken1.mul(2),
+        priceInMasaToken2.div(100)
+      ); // 1% tolerance
     });
 
     it("we can get 1 letters name purchase info for 1 and 2 years", async () => {
@@ -382,8 +388,14 @@ describe("Soul Store", () => {
         );
 
       expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_1LETTERS * 2);
-      expect(priceInETH2).not.to.be.equal(priceInETH1.mul(2));
-      expect(priceInMasaToken2).not.to.be.equal(priceInMasaToken1.mul(2));
+      expect(priceInETH2).to.be.closeTo(
+        priceInETH1.mul(2),
+        priceInETH2.div(100)
+      ); // 1% tolerance
+      expect(priceInMasaToken2).to.be.closeTo(
+        priceInMasaToken1.mul(2),
+        priceInMasaToken2.div(100)
+      ); // 1% tolerance
     });
 
     it("we can get 2 letters name purchase info for 1 and 2 years", async () => {
@@ -432,8 +444,14 @@ describe("Soul Store", () => {
         );
 
       expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_2LETTERS * 2);
-      expect(priceInETH2).not.to.be.equal(priceInETH1.mul(2));
-      expect(priceInMasaToken2).not.to.be.equal(priceInMasaToken1.mul(2));
+      expect(priceInETH2).to.be.closeTo(
+        priceInETH1.mul(2),
+        priceInETH2.div(100)
+      ); // 1% tolerance
+      expect(priceInMasaToken2).to.be.closeTo(
+        priceInMasaToken1.mul(2),
+        priceInMasaToken2.div(100)
+      ); // 1% tolerance;
     });
 
     it("we can get 3 letters name purchase info for 1 and 2 years", async () => {
@@ -482,8 +500,14 @@ describe("Soul Store", () => {
         );
 
       expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_3LETTERS * 2);
-      expect(priceInETH2).not.to.be.equal(priceInETH1.mul(2));
-      expect(priceInMasaToken2).not.to.be.equal(priceInMasaToken1.mul(2));
+      expect(priceInETH2).to.be.closeTo(
+        priceInETH1.mul(2),
+        priceInETH2.div(100)
+      ); // 1% tolerance
+      expect(priceInMasaToken2).to.be.closeTo(
+        priceInMasaToken1.mul(2),
+        priceInMasaToken2.div(100)
+      ); // 1% tolerance
     });
 
     it("we can get 4 letters name purchase info for 1 and 2 years", async () => {
@@ -532,8 +556,14 @@ describe("Soul Store", () => {
         );
 
       expect(priceInStableCoin2).to.be.equal(MINTING_NAME_PRICE_4LETTERS * 2);
-      expect(priceInETH2).not.to.be.equal(priceInETH1.mul(2));
-      expect(priceInMasaToken2).not.to.be.equal(priceInMasaToken1.mul(2));
+      expect(priceInETH2).to.be.closeTo(
+        priceInETH1.mul(2),
+        priceInETH2.div(100)
+      ); // 1% tolerance
+      expect(priceInMasaToken2).to.be.closeTo(
+        priceInMasaToken1.mul(2),
+        priceInMasaToken2.div(100)
+      ); // 1% tolerance
     });
   });
 

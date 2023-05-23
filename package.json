@@ -1,17 +1,8 @@
 {
   "name": "@masa-finance/masa-contracts-identity",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "main": "dist/typechain/index.js",
   "types": "dist/typechain/index.d.ts",
-  "files": [
-    "artifacts/contracts/reference/ReferenceSBTAuthority.sol/ReferenceSBTAuthority.json",
-    "artifacts/contracts/reference/ReferenceSBTSelfSovereign.sol/ReferenceSBTSelfSovereign.json",
-    "contracts/**/*",
-    "deployments/**/*",
-    "dist/**/*",
-    "hardhat.config.ts",
-    "!**/solcInputs/**"
-  ],
   "repository": "git@github.com:masa-finance/masa-contracts-identity.git",
   "author": "Sebastian Gerske <13647606+H34D@users.noreply.github.com>",
   "license": "MIT",
@@ -28,6 +19,7 @@
     "prettier": "prettier --write 'contracts/**/*.sol' '**/*.ts'",
     "solhint": "solhint contracts/**/*.sol",
     "release": "GITHUB_TOKEN=$(grep GITHUB_TOKEN .env | cut -d '=' -f2) release-it",
+    "addresses": "hardhat run src/addresses.ts",
     "check-protocol-fee": "hardhat run src/check-protocol-fee.ts"
   },
   "dependencies": {
