@@ -27,6 +27,7 @@
     "prettier": "prettier --write 'contracts/**/*.sol' '**/*.ts'",
     "solhint": "solhint contracts/**/*.sol",
     "release": "GITHUB_TOKEN=$(grep GITHUB_TOKEN .env | cut -d '=' -f2) release-it",
+    "addresses": "hardhat run src/addresses.ts",
     "check-protocol-fee": "hardhat run src/check-protocol-fee.ts"
   },
   "dependencies": {
