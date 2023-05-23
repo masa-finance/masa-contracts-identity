@@ -53,6 +53,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
 
     struct DefaultSoulName {
         bool exists;
+        address token;
         uint256 tokenId;
     }
 
@@ -252,13 +253,13 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
 
     /// @notice Sets the default soul name for the owner
     /// @dev The caller must be the owner of the soul name.
+    /// @param token Address of the SoulName contract
     /// @param tokenId TokenId of the soul name
-    function setDefaultSoulName(uint256 tokenId) external {
-        address soulNameOwner = IERC721Enumerable(
-            address(soulboundIdentity.getSoulName())
-        ).ownerOf(tokenId);
+    function setDefaultSoulName(address token, uint256 tokenId) external {
+        address soulNameOwner = IERC721Enumerable(token).ownerOf(tokenId);
         if (_msgSender() != soulNameOwner) revert CallerNotOwner(_msgSender());
 
+        defaultSoulName[_msgSender()].token = token;
         defaultSoulName[_msgSender()].tokenId = tokenId;
         defaultSoulName[_msgSender()].exists = true;
     }
@@ -521,16 +522,14 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
     ) public view returns (string memory) {
         // we have set a default soul name
         if (defaultSoulName[owner].exists) {
+            address token = defaultSoulName[owner].token;
             uint256 tokenId = defaultSoulName[owner].tokenId;
-            address soulNameOwner = IERC721Enumerable(
-                address(soulboundIdentity.getSoulName())
-            ).ownerOf(tokenId);
+            address soulNameOwner = IERC721Enumerable(token).ownerOf(tokenId);
             // the soul name has not changed owner
             if (soulNameOwner == owner) {
                 // the soul name is not expired
-                (string memory name, uint256 expirationDate) = ISoulName(
-                    soulboundIdentity.getSoulName()
-                ).tokenData(tokenId);
+                (string memory name, uint256 expirationDate) = ISoulName(token)
+                    .tokenData(tokenId);
                 if (expirationDate >= block.timestamp) {
                     return name;
                 }
