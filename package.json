@@ -7,9 +7,9 @@
     "artifacts/contracts/reference/ReferenceSBTAuthority.sol/ReferenceSBTAuthority.json",
     "artifacts/contracts/reference/ReferenceSBTSelfSovereign.sol/ReferenceSBTSelfSovereign.json",
     "contracts/**/*",
-    "deployments/**/*",
     "dist/**/*",
-    "hardhat.config.ts"
+    "hardhat.config.ts",
+    "addresses.json"
   ],
   "repository": "git@github.com:masa-finance/masa-contracts-identity.git",
   "author": "Sebastian Gerske <13647606+H34D@users.noreply.github.com>",

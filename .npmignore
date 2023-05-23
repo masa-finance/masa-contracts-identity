@@ -4,6 +4,7 @@ artifacts/
 !artifacts/contracts/reference/ReferenceSBTSelfSovereign.sol/ReferenceSBTSelfSovereign.json
 cache/
 deploy/
+deployments/
 docs/
 metadata/
 node_modules/
