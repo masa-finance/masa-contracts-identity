@@ -154,10 +154,10 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
             )
         ) revert InvalidSignature();
 
-        (uint256 price, uint256 protocolFee) = getPriceForAddLink(
-            paymentMethod,
-            token
-        );
+        (
+            uint256 price,
+            uint256 protocolFee
+        ) = getPriceForAddLinkWithProtocolFee(paymentMethod, token);
         _pay(paymentMethod, price, protocolFee);
 
         // token => tokenId => readerIdentityId => signatureDate => LinkData
@@ -440,11 +440,10 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
     /// @param paymentMethod Address of token that user want to pay
     /// @param token Token that user want to store link
     /// @return price Current price for storing a link
-    /// @return protocolFee Current protocol fee for storing a link
     function getPriceForAddLink(
         address paymentMethod,
         address token
-    ) public view returns (uint256 price, uint256 protocolFee) {
+    ) public view returns (uint256 price) {
         uint256 addLinkPrice = ILinkableSBT(token).addLinkPrice();
         uint256 addLinkPriceMASA = ILinkableSBT(token).addLinkPriceMASA();
         if (addLinkPrice == 0 && addLinkPriceMASA == 0) {
@@ -467,6 +466,20 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
         } else {
             revert InvalidPaymentMethod(paymentMethod);
         }
+        return price;
+    }
+
+    /// @notice Returns the price for storing a link with protocol fee
+    /// @dev Returns the current pricing for storing a link with protocol fee
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param token Token that user want to store link
+    /// @return price Current price for storing a link
+    /// @return protocolFee Current protocol fee for storing a link
+    function getPriceForAddLinkWithProtocolFee(
+        address paymentMethod,
+        address token
+    ) public view returns (uint256 price, uint256 protocolFee) {
+        price = getPriceForAddLink(paymentMethod, token);
         return (price, _getProtocolFee(paymentMethod, price));
     }
 

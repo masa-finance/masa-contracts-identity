@@ -61,6 +61,7 @@ describe("Soulbound Identity", () => {
       await soulboundIdentity.connect(owner).setSoulName(address2.address);
 
       expect(await soulboundIdentity.soulName()).to.be.equal(address2.address);
+      expect(await soulboundIdentity.getSoulName()).to.be.equal(address2.address);
     });
   });
 
@@ -133,7 +134,9 @@ describe("Soulbound Identity", () => {
         .setSwapRouter(ethers.constants.AddressZero);
 
       await expect(
-        soulboundIdentity.getMintPrice(ethers.constants.AddressZero)
+        soulboundIdentity.getMintPriceWithProtocolFee(
+          ethers.constants.AddressZero
+        )
       ).to.be.rejectedWith("PaymentParamsNotSet");
 
       await expect(
@@ -144,9 +147,10 @@ describe("Soulbound Identity", () => {
     });
 
     it("should mint from owner if he pays a fee", async () => {
-      const { price, protocolFee } = await soulboundIdentity.getMintPrice(
-        ethers.constants.AddressZero
-      );
+      const { price, protocolFee } =
+        await soulboundIdentity.getMintPriceWithProtocolFee(
+          ethers.constants.AddressZero
+        );
 
       await soulboundIdentity
         .connect(owner)

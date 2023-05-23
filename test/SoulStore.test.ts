@@ -150,6 +150,18 @@ describe("Soul Store", () => {
       ).to.be.rejected;
     });
 
+    it("should set SoulName from owner", async () => {
+      await soulStore.connect(owner).setSoulName(address1.address);
+
+      expect(await soulStore.soulName()).to.be.equal(address1.address);
+    });
+
+    it("should fail to set SoulName from non owner", async () => {
+      await expect(
+        soulStore.connect(address1).setSoulName(address1.address)
+      ).to.be.rejected;
+    });
+
     it("should set NameRegistrationPricePerYear from owner", async () => {
       const newPrice = 100;
       await soulStore
@@ -279,18 +291,19 @@ describe("Soul Store", () => {
   describe("purchase info", () => {
     it("we can get name purchase info for 1 and 2 years", async () => {
       const { price: priceInStableCoin1 } =
-        await soulStore.getPriceForMintingName(
+        await soulStore.getPriceForMintingNameWithProtocolFee(
           await soulStore.stableCoin(),
           SOUL_NAME.length,
           YEAR
         );
-      const { price: priceInETH1 } = await soulStore.getPriceForMintingName(
-        ethers.constants.AddressZero,
-        SOUL_NAME.length,
-        YEAR
-      );
+      const { price: priceInETH1 } =
+        await soulStore.getPriceForMintingNameWithProtocolFee(
+          ethers.constants.AddressZero,
+          SOUL_NAME.length,
+          YEAR
+        );
       const { price: priceInMasaToken1 } =
-        await soulStore.getPriceForMintingName(
+        await soulStore.getPriceForMintingNameWithProtocolFee(
           await soulStore.masaToken(),
           SOUL_NAME.length,
           YEAR
@@ -301,18 +314,19 @@ describe("Soul Store", () => {
       expect(priceInMasaToken1).not.to.be.equal("0");
 
       const { price: priceInStableCoin2 } =
-        await soulStore.getPriceForMintingName(
+        await soulStore.getPriceForMintingNameWithProtocolFee(
           await soulStore.stableCoin(),
           SOUL_NAME.length,
           YEAR * 2
         );
-      const { price: priceInETH2 } = await soulStore.getPriceForMintingName(
-        ethers.constants.AddressZero,
-        SOUL_NAME.length,
-        YEAR * 2
-      );
+      const { price: priceInETH2 } =
+        await soulStore.getPriceForMintingNameWithProtocolFee(
+          ethers.constants.AddressZero,
+          SOUL_NAME.length,
+          YEAR * 2
+        );
       const { price: priceInMasaToken2 } =
-        await soulStore.getPriceForMintingName(
+        await soulStore.getPriceForMintingNameWithProtocolFee(
           await soulStore.masaToken(),
           SOUL_NAME.length,
           YEAR * 2
@@ -327,18 +341,19 @@ describe("Soul Store", () => {
       const SOUL_NAME_1LETTERS = "a";
 
       const { price: priceInStableCoin1 } =
-        await soulStore.getPriceForMintingName(
+        await soulStore.getPriceForMintingNameWithProtocolFee(
           await soulStore.stableCoin(),
           SOUL_NAME_1LETTERS.length,
           YEAR
         );
-      const { price: priceInETH1 } = await soulStore.getPriceForMintingName(
-        ethers.constants.AddressZero,
-        SOUL_NAME_1LETTERS.length,
-        YEAR
-      );
+      const { price: priceInETH1 } =
+        await soulStore.getPriceForMintingNameWithProtocolFee(
+          ethers.constants.AddressZero,
+          SOUL_NAME_1LETTERS.length,
+          YEAR
+        );
       const { price: priceInMasaToken1 } =
-        await soulStore.getPriceForMintingName(
+        await soulStore.getPriceForMintingNameWithProtocolFee(
           await soulStore.masaToken(),
           SOUL_NAME_1LETTERS.length,
           YEAR
@@ -349,18 +364,19 @@ describe("Soul Store", () => {
       expect(priceInMasaToken1).not.to.be.equal("0");
 
       const { price: priceInStableCoin2 } =
-        await soulStore.getPriceForMintingName(
+        await soulStore.getPriceForMintingNameWithProtocolFee(
           await soulStore.stableCoin(),
           SOUL_NAME_1LETTERS.length,
           YEAR * 2
         );
-      const { price: priceInETH2 } = await soulStore.getPriceForMintingName(
-        ethers.constants.AddressZero,
-        SOUL_NAME_1LETTERS.length,
-        YEAR * 2
-      );
+      const { price: priceInETH2 } =
+        await soulStore.getPriceForMintingNameWithProtocolFee(
+          ethers.constants.AddressZero,
+          SOUL_NAME_1LETTERS.length,
+          YEAR * 2
+        );
       const { price: priceInMasaToken2 } =
-        await soulStore.getPriceForMintingName(
+        await soulStore.getPriceForMintingNameWithProtocolFee(
           await soulStore.masaToken(),
           SOUL_NAME_1LETTERS.length,
           YEAR * 2
@@ -375,18 +391,19 @@ describe("Soul Store", () => {
       const SOUL_NAME_2LETTERS = "aa";
 
       const { price: priceInStableCoin1 } =
-        await soulStore.getPriceForMintingName(
+        await soulStore.getPriceForMintingNameWithProtocolFee(
           await soulStore.stableCoin(),
           SOUL_NAME_2LETTERS.length,
           YEAR
         );
-      const { price: priceInETH1 } = await soulStore.getPriceForMintingName(
-        ethers.constants.AddressZero,
-        SOUL_NAME_2LETTERS.length,
-        YEAR
-      );
+      const { price: priceInETH1 } =
+        await soulStore.getPriceForMintingNameWithProtocolFee(
+          ethers.constants.AddressZero,
+          SOUL_NAME_2LETTERS.length,
+          YEAR
+        );
       const { price: priceInMasaToken1 } =
-        await soulStore.getPriceForMintingName(
+        await soulStore.getPriceForMintingNameWithProtocolFee(
           await soulStore.masaToken(),
           SOUL_NAME_2LETTERS.length,
           YEAR
@@ -397,18 +414,19 @@ describe("Soul Store", () => {
       expect(priceInMasaToken1).not.to.be.equal("0");
 
       const { price: priceInStableCoin2 } =
-        await soulStore.getPriceForMintingName(
+        await soulStore.getPriceForMintingNameWithProtocolFee(
           await soulStore.stableCoin(),
           SOUL_NAME_2LETTERS.length,
           YEAR * 2
         );
-      const { price: priceInETH2 } = await soulStore.getPriceForMintingName(
-        ethers.constants.AddressZero,
-        SOUL_NAME_2LETTERS.length,
-        YEAR * 2
-      );
+      const { price: priceInETH2 } =
+        await soulStore.getPriceForMintingNameWithProtocolFee(
+          ethers.constants.AddressZero,
+          SOUL_NAME_2LETTERS.length,
+          YEAR * 2
+        );
       const { price: priceInMasaToken2 } =
-        await soulStore.getPriceForMintingName(
+        await soulStore.getPriceForMintingNameWithProtocolFee(
           await soulStore.masaToken(),
           SOUL_NAME_2LETTERS.length,
           YEAR * 2
@@ -423,18 +441,19 @@ describe("Soul Store", () => {
       const SOUL_NAME_3LETTERS = "aaa";
 
       const { price: priceInStableCoin1 } =
-        await soulStore.getPriceForMintingName(
+        await soulStore.getPriceForMintingNameWithProtocolFee(
           await soulStore.stableCoin(),
           SOUL_NAME_3LETTERS.length,
           YEAR
         );
-      const { price: priceInETH1 } = await soulStore.getPriceForMintingName(
-        ethers.constants.AddressZero,
-        SOUL_NAME_3LETTERS.length,
-        YEAR
-      );
+      const { price: priceInETH1 } =
+        await soulStore.getPriceForMintingNameWithProtocolFee(
+          ethers.constants.AddressZero,
+          SOUL_NAME_3LETTERS.length,
+          YEAR
+        );
       const { price: priceInMasaToken1 } =
-        await soulStore.getPriceForMintingName(
+        await soulStore.getPriceForMintingNameWithProtocolFee(
           await soulStore.masaToken(),
           SOUL_NAME_3LETTERS.length,
           YEAR
@@ -445,18 +464,19 @@ describe("Soul Store", () => {
       expect(priceInMasaToken1).not.to.be.equal("0");
 
       const { price: priceInStableCoin2 } =
-        await soulStore.getPriceForMintingName(
+        await soulStore.getPriceForMintingNameWithProtocolFee(
           await soulStore.stableCoin(),
           SOUL_NAME_3LETTERS.length,
           YEAR * 2
         );
-      const { price: priceInETH2 } = await soulStore.getPriceForMintingName(
-        ethers.constants.AddressZero,
-        SOUL_NAME_3LETTERS.length,
-        YEAR * 2
-      );
+      const { price: priceInETH2 } =
+        await soulStore.getPriceForMintingNameWithProtocolFee(
+          ethers.constants.AddressZero,
+          SOUL_NAME_3LETTERS.length,
+          YEAR * 2
+        );
       const { price: priceInMasaToken2 } =
-        await soulStore.getPriceForMintingName(
+        await soulStore.getPriceForMintingNameWithProtocolFee(
           await soulStore.masaToken(),
           SOUL_NAME_3LETTERS.length,
           YEAR * 2
@@ -471,18 +491,19 @@ describe("Soul Store", () => {
       const SOUL_NAME_4LETTERS = "aaaa";
 
       const { price: priceInStableCoin1 } =
-        await soulStore.getPriceForMintingName(
+        await soulStore.getPriceForMintingNameWithProtocolFee(
           await soulStore.stableCoin(),
           SOUL_NAME_4LETTERS.length,
           YEAR
         );
-      const { price: priceInETH1 } = await soulStore.getPriceForMintingName(
-        ethers.constants.AddressZero,
-        SOUL_NAME_4LETTERS.length,
-        YEAR
-      );
+      const { price: priceInETH1 } =
+        await soulStore.getPriceForMintingNameWithProtocolFee(
+          ethers.constants.AddressZero,
+          SOUL_NAME_4LETTERS.length,
+          YEAR
+        );
       const { price: priceInMasaToken1 } =
-        await soulStore.getPriceForMintingName(
+        await soulStore.getPriceForMintingNameWithProtocolFee(
           await soulStore.masaToken(),
           SOUL_NAME_4LETTERS.length,
           YEAR
@@ -493,18 +514,19 @@ describe("Soul Store", () => {
       expect(priceInMasaToken1).not.to.be.equal("0");
 
       const { price: priceInStableCoin2 } =
-        await soulStore.getPriceForMintingName(
+        await soulStore.getPriceForMintingNameWithProtocolFee(
           await soulStore.stableCoin(),
           SOUL_NAME_4LETTERS.length,
           YEAR * 2
         );
-      const { price: priceInETH2 } = await soulStore.getPriceForMintingName(
-        ethers.constants.AddressZero,
-        SOUL_NAME_4LETTERS.length,
-        YEAR * 2
-      );
+      const { price: priceInETH2 } =
+        await soulStore.getPriceForMintingNameWithProtocolFee(
+          ethers.constants.AddressZero,
+          SOUL_NAME_4LETTERS.length,
+          YEAR * 2
+        );
       const { price: priceInMasaToken2 } =
-        await soulStore.getPriceForMintingName(
+        await soulStore.getPriceForMintingNameWithProtocolFee(
           await soulStore.masaToken(),
           SOUL_NAME_4LETTERS.length,
           YEAR * 2
@@ -519,7 +541,7 @@ describe("Soul Store", () => {
   describe("purchase identity and name", () => {
     it("we can purchase an identity and name with ETH", async () => {
       const projectFeeReceiver = await soulStore.projectFeeReceiver();
-      const { price } = await soulStore.getPriceForMintingName(
+      const { price } = await soulStore.getPriceForMintingNameWithProtocolFee(
         ethers.constants.AddressZero,
         SOUL_NAME.length,
         YEAR
@@ -560,7 +582,7 @@ describe("Soul Store", () => {
 
     it("we can purchase an identity and name with stable coin", async () => {
       const projectFeeReceiver = await soulStore.projectFeeReceiver();
-      const { price } = await soulStore.getPriceForMintingName(
+      const { price } = await soulStore.getPriceForMintingNameWithProtocolFee(
         await soulStore.stableCoin(),
         SOUL_NAME.length,
         YEAR
@@ -604,7 +626,7 @@ describe("Soul Store", () => {
 
     it("we can purchase an identity and name with MASA coin", async () => {
       const projectFeeReceiver = await soulStore.projectFeeReceiver();
-      const { price } = await soulStore.getPriceForMintingName(
+      const { price } = await soulStore.getPriceForMintingNameWithProtocolFee(
         await soulStore.masaToken(),
         SOUL_NAME.length,
         YEAR
@@ -647,7 +669,7 @@ describe("Soul Store", () => {
     });
 
     it("we can't purchase an identity and name with ETH if we pay less", async () => {
-      const { price } = await soulStore.getPriceForMintingName(
+      const { price } = await soulStore.getPriceForMintingNameWithProtocolFee(
         ethers.constants.AddressZero,
         SOUL_NAME.length,
         YEAR
@@ -677,7 +699,7 @@ describe("Soul Store", () => {
     });
 
     it("we can't purchase an identity and name with stable coin if we don't have funds", async () => {
-      const { price } = await soulStore.getPriceForMintingName(
+      const { price } = await soulStore.getPriceForMintingNameWithProtocolFee(
         await soulStore.stableCoin(),
         SOUL_NAME.length,
         YEAR
@@ -710,7 +732,7 @@ describe("Soul Store", () => {
     });
 
     it("we can't purchase an identity and name with MASA coin if we don't have funds", async () => {
-      const { price } = await soulStore.getPriceForMintingName(
+      const { price } = await soulStore.getPriceForMintingNameWithProtocolFee(
         await soulStore.masaToken(),
         SOUL_NAME.length,
         YEAR
@@ -743,7 +765,7 @@ describe("Soul Store", () => {
     });
 
     it("we can purchase an identity and name with more ETH receiving the refund", async () => {
-      const { price } = await soulStore.getPriceForMintingName(
+      const { price } = await soulStore.getPriceForMintingNameWithProtocolFee(
         ethers.constants.AddressZero,
         SOUL_NAME.length,
         YEAR
@@ -794,7 +816,7 @@ describe("Soul Store", () => {
     });
 
     it("we can purchase a name with ETH", async () => {
-      const { price } = await soulStore.getPriceForMintingName(
+      const { price } = await soulStore.getPriceForMintingNameWithProtocolFee(
         ethers.constants.AddressZero,
         SOUL_NAME.length,
         YEAR
@@ -823,7 +845,7 @@ describe("Soul Store", () => {
     });
 
     it("we can purchase a name with stable coin", async () => {
-      const { price } = await soulStore.getPriceForMintingName(
+      const { price } = await soulStore.getPriceForMintingNameWithProtocolFee(
         await soulStore.stableCoin(),
         SOUL_NAME.length,
         YEAR
@@ -855,7 +877,7 @@ describe("Soul Store", () => {
     });
 
     it("we can purchase a name with MASA coin", async () => {
-      const { price } = await soulStore.getPriceForMintingName(
+      const { price } = await soulStore.getPriceForMintingNameWithProtocolFee(
         await soulStore.masaToken(),
         SOUL_NAME.length,
         YEAR
@@ -887,7 +909,7 @@ describe("Soul Store", () => {
     });
 
     it("we can't purchase a name with ETH if we pay less", async () => {
-      const { price } = await soulStore.getPriceForMintingName(
+      const { price } = await soulStore.getPriceForMintingNameWithProtocolFee(
         ethers.constants.AddressZero,
         SOUL_NAME.length,
         YEAR
@@ -918,7 +940,7 @@ describe("Soul Store", () => {
     });
 
     it("we can't purchase a name with stable coin if we don't have funds", async () => {
-      const { price } = await soulStore.getPriceForMintingName(
+      const { price } = await soulStore.getPriceForMintingNameWithProtocolFee(
         await soulStore.stableCoin(),
         SOUL_NAME.length,
         YEAR
@@ -952,7 +974,7 @@ describe("Soul Store", () => {
     });
 
     it("we can't purchase a name with MASA coin if we don't have funds", async () => {
-      const { price } = await soulStore.getPriceForMintingName(
+      const { price } = await soulStore.getPriceForMintingNameWithProtocolFee(
         await soulStore.masaToken(),
         SOUL_NAME.length,
         YEAR
@@ -997,11 +1019,12 @@ describe("Soul Store", () => {
         .connect(owner)
         .setProtocolFeeReceiver(protocolWallet.address);
       await soulStore.connect(owner).setProtocolFeePercent(10); // 10%
-      const { price, protocolFee } = await soulStore.getPriceForMintingName(
-        ethers.constants.AddressZero,
-        SOUL_NAME.length,
-        YEAR
-      );
+      const { price, protocolFee } =
+        await soulStore.getPriceForMintingNameWithProtocolFee(
+          ethers.constants.AddressZero,
+          SOUL_NAME.length,
+          YEAR
+        );
 
       const signature = await signMintSoulName(
         address1.address,
@@ -1044,11 +1067,12 @@ describe("Soul Store", () => {
         .connect(owner)
         .setProtocolFeeReceiver(protocolWallet.address);
       await soulStore.connect(owner).setProtocolFeeAmount(1_000_000); // 1 USD
-      const { price, protocolFee } = await soulStore.getPriceForMintingName(
-        ethers.constants.AddressZero,
-        SOUL_NAME.length,
-        YEAR
-      );
+      const { price, protocolFee } =
+        await soulStore.getPriceForMintingNameWithProtocolFee(
+          ethers.constants.AddressZero,
+          SOUL_NAME.length,
+          YEAR
+        );
 
       const signature = await signMintSoulName(
         address1.address,
@@ -1091,11 +1115,12 @@ describe("Soul Store", () => {
         .connect(owner)
         .setProtocolFeeReceiver(protocolWallet.address);
       await soulStore.connect(owner).setProtocolFeePercent(10); // 10%
-      const { price, protocolFee } = await soulStore.getPriceForMintingName(
-        await soulStore.stableCoin(),
-        SOUL_NAME.length,
-        YEAR
-      );
+      const { price, protocolFee } =
+        await soulStore.getPriceForMintingNameWithProtocolFee(
+          await soulStore.stableCoin(),
+          SOUL_NAME.length,
+          YEAR
+        );
 
       // set allowance for soul store
       const usdc: IERC20 = IERC20__factory.connect(env.USDC_TOKEN, owner);
@@ -1129,11 +1154,12 @@ describe("Soul Store", () => {
         .connect(owner)
         .setProtocolFeeReceiver(protocolWallet.address);
       await soulStore.connect(owner).setProtocolFeeAmount(1_000_000); // 1 USD
-      const { price, protocolFee } = await soulStore.getPriceForMintingName(
-        await soulStore.stableCoin(),
-        SOUL_NAME.length,
-        YEAR
-      );
+      const { price, protocolFee } =
+        await soulStore.getPriceForMintingNameWithProtocolFee(
+          await soulStore.stableCoin(),
+          SOUL_NAME.length,
+          YEAR
+        );
 
       // set allowance for soul store
       const usdc: IERC20 = IERC20__factory.connect(env.USDC_TOKEN, owner);
@@ -1215,7 +1241,7 @@ describe("Soul Store", () => {
     it("we can purchase a name with other ERC-20 token", async () => {
       await soulStore.connect(owner).enablePaymentMethod(DAI_GOERLI);
 
-      const { price } = await soulStore.getPriceForMintingName(
+      const { price } = await soulStore.getPriceForMintingNameWithProtocolFee(
         DAI_GOERLI,
         SOUL_NAME.length,
         YEAR
@@ -1250,7 +1276,11 @@ describe("Soul Store", () => {
   describe("use invalid payment method", () => {
     it("should fail to get purchase info for invalid payment method", async () => {
       await expect(
-        soulStore.getPriceForMintingName(owner.address, SOUL_NAME.length, YEAR)
+        soulStore.getPriceForMintingNameWithProtocolFee(
+          owner.address,
+          SOUL_NAME.length,
+          YEAR
+        )
       ).to.be.rejectedWith("InvalidPaymentMethod");
     });
 
@@ -1280,7 +1310,7 @@ describe("Soul Store", () => {
 
   describe("use invalid signature", () => {
     it("we can't use an invalid signature", async () => {
-      const { price } = await soulStore.getPriceForMintingName(
+      const { price } = await soulStore.getPriceForMintingNameWithProtocolFee(
         ethers.constants.AddressZero,
         SOUL_NAME.length,
         YEAR
@@ -1312,7 +1342,7 @@ describe("Soul Store", () => {
     });
 
     it("we can't use a non authority signature", async () => {
-      const { price } = await soulStore.getPriceForMintingName(
+      const { price } = await soulStore.getPriceForMintingNameWithProtocolFee(
         ethers.constants.AddressZero,
         SOUL_NAME.length,
         YEAR

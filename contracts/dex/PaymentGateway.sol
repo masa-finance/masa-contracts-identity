@@ -203,6 +203,17 @@ abstract contract PaymentGateway is AccessControl {
         return enabledPaymentMethods;
     }
 
+    /// @notice Calculates the protocol fee
+    /// @dev This method will calculate the protocol fee based on the payment method
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param amount Price to be paid in the specified payment method
+    function getProtocolFee(
+        address paymentMethod,
+        uint256 amount
+    ) external view returns (uint256) {
+        return _getProtocolFee(paymentMethod, amount);
+    }
+
     /* ========== PRIVATE FUNCTIONS ========================================= */
 
     /// @notice Converts an amount from a stable coin to a payment method amount

@@ -506,7 +506,7 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const { price } = await soulLinker.getPriceForAddLink(
+      const { price } = await soulLinker.getPriceForAddLinkWithProtocolFee(
         env.MASA_TOKEN,
         soulboundCreditScore.address
       );
@@ -586,7 +586,7 @@ describe("Soul Linker", () => {
         creditScore1
       );
 
-      const { price } = await soulLinker.getPriceForAddLink(
+      const { price } = await soulLinker.getPriceForAddLinkWithProtocolFee(
         ethers.constants.AddressZero,
         soulboundCreditScore.address
       );
