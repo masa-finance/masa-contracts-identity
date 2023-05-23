@@ -855,8 +855,9 @@ describe("Soul Linker", () => {
     });
 
     it("only owner of the name can set a default SoulName", async () => {
-      await expect(soulLinker.connect(owner).setDefaultSoulName(nameId2)).to.be
-        .rejected;
+      await expect(
+        soulLinker.connect(owner).setDefaultSoulName(soulName.address, nameId2)
+      ).to.be.rejected;
     });
 
     it("getSoulNames(uint256) returns array of SBT names with the default name", async () => {
@@ -868,7 +869,9 @@ describe("Soul Linker", () => {
         .false;
 
       // we set the second name as default
-      await soulLinker.connect(dataOwner).setDefaultSoulName(nameId2);
+      await soulLinker
+        .connect(dataOwner)
+        .setDefaultSoulName(soulName.address, nameId2);
 
       expect(
         (await soulLinker["getSoulNames(uint256)"](ownerIdentityId)).names
@@ -893,7 +896,9 @@ describe("Soul Linker", () => {
         .false;
 
       // we set the second name as default
-      await soulLinker.connect(dataOwner).setDefaultSoulName(nameId2);
+      await soulLinker
+        .connect(dataOwner)
+        .setDefaultSoulName(soulName.address, nameId2);
 
       expect(
         (await soulLinker["getSoulNames(uint256)"](ownerIdentityId)).names
