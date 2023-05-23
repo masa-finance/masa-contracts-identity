@@ -12,7 +12,6 @@ async function main() {
 
   fs.readdirSync(deploymentsFolder).forEach((network) => {
     // for each network
-    console.log(`Network: ${network}`);
     addresses[network] = {};
     const networkFolder = `${deploymentsFolder}${network}/`;
 
@@ -24,7 +23,6 @@ async function main() {
         const jsonString = fs.readFileSync(`${networkFolder}${file}`, "utf-8");
         const json = JSON.parse(jsonString);
 
-        console.log(`  Address: ${json.address} Contract: ${contract}`);
         addresses[network][contract] = json.address;
       });
   });
