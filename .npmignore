@@ -11,10 +11,10 @@ src/
 test/
 typechain/
 .env.*
-**/solcInputs/**
+solcInputs/
 .gitattributes
 .npmignore
 .prettierignore
 .prettierrc
-.solhin.json
+.solhint.json
 CHANGELOG.md
