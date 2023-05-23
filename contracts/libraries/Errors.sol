@@ -36,6 +36,7 @@ error RefundFailed();
 error SameValue();
 error SBTAlreadyLinked(address token);
 error SoulNameContractNotSet();
+error SoulNameNotExist();
 error TokenNotFound(uint256 tokenId);
 error TransferFailed();
 error URIAlreadyExists(string tokenURI);

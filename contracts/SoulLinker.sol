@@ -20,6 +20,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
     /* ========== STATE VARIABLES =========================================== */
 
     ISoulboundIdentity public soulboundIdentity;
+    ISoulName[] public soulNames;
 
     // token => tokenId => readerIdentityId => signatureDate => LinkData
     mapping(address => mapping(uint256 => mapping(uint256 => mapping(uint256 => LinkData))))
@@ -64,20 +65,23 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
     /// @notice Creates a new soul linker
     /// @param admin Administrator of the smart contract
     /// @param _soulboundIdentity Soulbound identity smart contract
+    /// @param _soulNames Soul name smart contracts
     /// @param paymentParams Payment gateway params
     constructor(
         address admin,
         ISoulboundIdentity _soulboundIdentity,
+        ISoulName[] memory _soulNames,
         PaymentParams memory paymentParams
     ) EIP712("SoulLinker", "1.0.0") PaymentGateway(admin, paymentParams) {
         if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
 
         soulboundIdentity = _soulboundIdentity;
+        soulNames = _soulNames;
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
-    /// @notice Sets the SoulboundIdentity contract address linked to this soul name
+    /// @notice Sets the SoulboundIdentity contract address linked to this soul store
     /// @dev The caller must have the admin role to call this function
     /// @param _soulboundIdentity Address of the SoulboundIdentity contract
     function setSoulboundIdentity(
@@ -86,6 +90,36 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
         if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
         if (soulboundIdentity == _soulboundIdentity) revert SameValue();
         soulboundIdentity = _soulboundIdentity;
+    }
+
+    /// @notice Add a SoulName contract address linked to this soul store
+    /// @dev The caller must have the admin role to call this function
+    /// @param soulName Address of the SoulName contract
+    function addSoulName(
+        ISoulName soulName
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        if (address(soulName) == address(0)) revert ZeroAddress();
+        for (uint256 i = 0; i < soulNames.length; i++) {
+            if (soulNames[i] == soulName) revert SameValue();
+        }
+        soulNames.push(soulName);
+    }
+
+    /// @notice Remove a SoulName contract address linked to this soul store
+    /// @dev The caller must have the admin role to call this function
+    /// @param soulName Address of the SoulName contract
+    function removeSoulName(
+        ISoulName soulName
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        if (address(soulName) == address(0)) revert ZeroAddress();
+        for (uint256 i = 0; i < soulNames.length; i++) {
+            if (soulNames[i] == soulName) {
+                soulNames[i] = soulNames[soulNames.length - 1];
+                soulNames.pop();
+                return;
+            }
+        }
+        revert SoulNameNotExist();
     }
 
     /// @notice Pauses the smart contract
