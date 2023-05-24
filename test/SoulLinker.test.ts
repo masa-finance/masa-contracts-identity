@@ -971,5 +971,31 @@ describe("Soul Linker", () => {
         (await soulLinker.defaultSoulName(dataOwner.address)).tokenId
       ).to.be.equal(nameId2);
     });
+
+    it("getSoulNames() using a second registered SoulName", async () => {
+      await soulLinker.connect(owner).addSoulName(soulName2.address);
+
+      // we set the third name as default
+      await soulLinker
+        .connect(dataOwner)
+        .setDefaultSoulName(soulName2.address, nameId3);
+
+      expect(
+        (await soulLinker["getSoulNames(uint256)"](ownerIdentityId)).names
+      ).to.deep.equal([
+        SOUL_NAME1.toLowerCase(),
+        SOUL_NAME2.toLowerCase(),
+        SOUL_NAME3.toLowerCase()
+      ]);
+      expect(
+        (await soulLinker["getSoulNames(uint256)"](ownerIdentityId)).defaultName
+      ).to.deep.equal(SOUL_NAME3);
+
+      expect((await soulLinker.defaultSoulName(dataOwner.address)).exists).to.be
+        .true;
+      expect(
+        (await soulLinker.defaultSoulName(dataOwner.address)).tokenId
+      ).to.be.equal(nameId3);
+    });
   });
 });
