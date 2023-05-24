@@ -61,13 +61,16 @@ const func: DeployFunction = async ({
     env.SOULBOUNDGREEN_SYMBOL,
     baseUri,
     soulboundIdentityDeployedAddress,
-    {
-      swapRouter: env.SWAP_ROUTER,
-      wrappedNativeToken: env.WETH_TOKEN,
-      stableCoin: env.USDC_TOKEN,
-      masaToken: env.MASA_TOKEN,
-      reserveWallet: env.RESERVE_WALLET || admin.address
-    }
+    [
+      env.SWAP_ROUTER,
+      env.WETH_TOKEN,
+      env.USDC_TOKEN,
+      env.MASA_TOKEN,
+      env.PROJECTFEE_RECEIVER || admin.address,
+      env.PROTOCOLFEE_RECEIVER || ethers.constants.AddressZero,
+      env.PROTOCOLFEE_AMOUNT || 0,
+      env.PROTOCOLFEE_PERCENT || 0
+    ]
   );
 
   // verify contract with etherscan, if its not a local network

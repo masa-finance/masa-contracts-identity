@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
+pragma solidity ^0.8.8;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
@@ -12,19 +12,26 @@ import "../interfaces/dex/IUniswapRouter.sol";
 
 /// @title Pay using a Decentralized automated market maker (AMM) when needed
 /// @author Masa Finance
-/// @notice Smart contract to call a Dex AMM smart contract to pay to a reserve wallet recipient
+/// @notice Smart contract to call a Dex AMM smart contract to pay to a project fee receiver
+/// wallet recipient
 /// @dev This smart contract will call the Uniswap Router interface, based on
 /// https://github.com/Uniswap/v2-periphery/blob/master/contracts/interfaces/IUniswapV2Router01.sol
 abstract contract PaymentGateway is Initializable, AccessControlUpgradeable {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
+    bytes32 public constant PROJECT_ADMIN_ROLE =
+        keccak256("PROJECT_ADMIN_ROLE");
+
     struct PaymentParams {
         address swapRouter; // Swap router address
         address wrappedNativeToken; // Wrapped native token address
         address stableCoin; // Stable coin to pay the fee in (USDC)
         address masaToken; // Utility token to pay the fee in (MASA)
-        address reserveWallet; // Wallet that will receive the fee
+        address projectFeeReceiver; // Wallet that will receive the project fee
+        address protocolFeeReceiver; // Wallet that will receive the protocol fee
+        uint256 protocolFeeAmount; // Protocol fee amount in USD
+        uint256 protocolFeePercent; // Protocol fee amount
     }
 
     /* ========== STATE VARIABLES =========================================== */
@@ -39,7 +46,10 @@ abstract contract PaymentGateway is Initializable, AccessControlUpgradeable {
     mapping(address => bool) public enabledPaymentMethod;
     address[] public enabledPaymentMethods;
 
-    address public reserveWallet;
+    address public projectFeeReceiver;
+    address public protocolFeeReceiver;
+    uint256 public protocolFeeAmount;
+    uint256 public protocolFeePercent;
 
     /* ========== INITIALIZE ================================================ */
 
@@ -65,7 +75,10 @@ abstract contract PaymentGateway is Initializable, AccessControlUpgradeable {
         wrappedNativeToken = paymentParams.wrappedNativeToken;
         stableCoin = paymentParams.stableCoin;
         masaToken = paymentParams.masaToken;
-        reserveWallet = paymentParams.reserveWallet;
+        projectFeeReceiver = paymentParams.projectFeeReceiver;
+        protocolFeeReceiver = paymentParams.protocolFeeReceiver;
+        protocolFeeAmount = paymentParams.protocolFeeAmount;
+        protocolFeePercent = paymentParams.protocolFeePercent;
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
@@ -76,7 +89,6 @@ abstract contract PaymentGateway is Initializable, AccessControlUpgradeable {
     function setSwapRouter(
         address _swapRouter
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        if (_swapRouter == address(0)) revert ZeroAddress();
         if (swapRouter == _swapRouter) revert SameValue();
         swapRouter = _swapRouter;
     }
@@ -87,7 +99,6 @@ abstract contract PaymentGateway is Initializable, AccessControlUpgradeable {
     function setWrappedNativeToken(
         address _wrappedNativeToken
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        if (_wrappedNativeToken == address(0)) revert ZeroAddress();
         if (wrappedNativeToken == _wrappedNativeToken) revert SameValue();
         wrappedNativeToken = _wrappedNativeToken;
     }
@@ -98,7 +109,6 @@ abstract contract PaymentGateway is Initializable, AccessControlUpgradeable {
     function setStableCoin(
         address _stableCoin
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        if (_stableCoin == address(0)) revert ZeroAddress();
         if (stableCoin == _stableCoin) revert SameValue();
         stableCoin = _stableCoin;
     }
@@ -147,15 +157,46 @@ abstract contract PaymentGateway is Initializable, AccessControlUpgradeable {
         }
     }
 
-    /// @notice Set the reserve wallet
+    /// @notice Set the project fee receiver wallet
+    /// @dev The caller must have the admin or project admin role to call this function
+    /// @param _projectFeeReceiver New project fee receiver wallet
+    function setProjectFeeReceiver(address _projectFeeReceiver) external {
+        if (
+            !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
+            !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
+        ) revert UserMustHaveProtocolOrProjectAdminRole();
+        if (_projectFeeReceiver == projectFeeReceiver) revert SameValue();
+        projectFeeReceiver = _projectFeeReceiver;
+    }
+
+    /// @notice Set the protocol fee wallet
     /// @dev The caller must have the admin role to call this function
-    /// @param _reserveWallet New reserve wallet
-    function setReserveWallet(
-        address _reserveWallet
+    /// @param _protocolFeeReceiver New protocol fee wallet
+    function setProtocolFeeReceiver(
+        address _protocolFeeReceiver
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        if (_reserveWallet == address(0)) revert ZeroAddress();
-        if (_reserveWallet == reserveWallet) revert SameValue();
-        reserveWallet = _reserveWallet;
+        if (_protocolFeeReceiver == protocolFeeReceiver) revert SameValue();
+        protocolFeeReceiver = _protocolFeeReceiver;
+    }
+
+    /// @notice Set the protocol fee amount
+    /// @dev The caller must have the admin role to call this function
+    /// @param _protocolFeeAmount New protocol fee amount
+    function setProtocolFeeAmount(
+        uint256 _protocolFeeAmount
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        if (_protocolFeeAmount == protocolFeeAmount) revert SameValue();
+        protocolFeeAmount = _protocolFeeAmount;
+    }
+
+    /// @notice Set the protocol fee percent
+    /// @dev The caller must have the admin role to call this function
+    /// @param _protocolFeePercent New protocol fee percent
+    function setProtocolFeePercent(
+        uint256 _protocolFeePercent
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        if (_protocolFeePercent == protocolFeePercent) revert SameValue();
+        protocolFeePercent = _protocolFeePercent;
     }
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
@@ -173,6 +214,17 @@ abstract contract PaymentGateway is Initializable, AccessControlUpgradeable {
         return enabledPaymentMethods;
     }
 
+    /// @notice Calculates the protocol fee
+    /// @dev This method will calculate the protocol fee based on the payment method
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param amount Price to be paid in the specified payment method
+    function getProtocolFee(
+        address paymentMethod,
+        uint256 amount
+    ) external view returns (uint256) {
+        return _getProtocolFee(paymentMethod, amount);
+    }
+
     /* ========== PRIVATE FUNCTIONS ========================================= */
 
     /// @notice Converts an amount from a stable coin to a payment method amount
@@ -184,9 +236,11 @@ abstract contract PaymentGateway is Initializable, AccessControlUpgradeable {
     function _convertFromStableCoin(
         address paymentMethod,
         uint256 amount
-    ) internal view returns (uint256) {
+    ) internal view paymentParamsAlreadySet(amount) returns (uint256) {
         if (!enabledPaymentMethod[paymentMethod] || paymentMethod == stableCoin)
             revert InvalidToken(paymentMethod);
+
+        if (amount == 0) return 0;
 
         if (paymentMethod == address(0)) {
             return _estimateSwapAmount(wrappedNativeToken, stableCoin, amount);
@@ -195,33 +249,88 @@ abstract contract PaymentGateway is Initializable, AccessControlUpgradeable {
         }
     }
 
-    /// @notice Performs the payment in any payment method
-    /// @dev This method will transfer the funds to the reserve wallet, performing
-    /// the swap if necessary
+    /// @notice Calculates the protocol fee
+    /// @dev This method will calculate the protocol fee based on the payment method
     /// @param paymentMethod Address of token that user want to pay
     /// @param amount Price to be paid in the specified payment method
-    function _pay(address paymentMethod, uint256 amount) internal {
-        if (amount == 0) return;
+    function _getProtocolFee(
+        address paymentMethod,
+        uint256 amount
+    ) internal view returns (uint256) {
+        uint256 protocolFee = 0;
+        if (protocolFeeAmount > 0) {
+            if (paymentMethod == stableCoin) {
+                protocolFee = protocolFeeAmount;
+            } else {
+                protocolFee = _convertFromStableCoin(
+                    paymentMethod,
+                    protocolFeeAmount
+                );
+            }
+        }
+        if (protocolFeePercent > 0) {
+            protocolFee = protocolFee.add(
+                amount.mul(protocolFeePercent).div(100)
+            );
+        }
+        return protocolFee;
+    }
+
+    /// @notice Performs the payment in any payment method
+    /// @dev This method will transfer the funds to the project fee receiver wallet, performing
+    /// the swap if necessary, and transfer the protocol fee to the protocol fee wallet
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param amount Price to be paid in the specified payment method
+    /// @param protocolFee Protocol fee to be paid in the specified payment method
+    function _pay(
+        address paymentMethod,
+        uint256 amount,
+        uint256 protocolFee
+    ) internal paymentParamsAlreadySet(amount.add(protocolFee)) {
+        if (amount == 0 && protocolFee == 0) return;
+        if (protocolFee > 0 && protocolFeeReceiver == address(0))
+            revert ProtocolFeeReceiverNotSet();
+
         if (!enabledPaymentMethod[paymentMethod])
             revert InvalidPaymentMethod(paymentMethod);
         if (paymentMethod == address(0)) {
             // ETH
-            if (msg.value < amount) revert InsufficientEthAmount(amount);
-            (bool success, ) = payable(reserveWallet).call{value: amount}("");
-            if (!success) revert TransferFailed();
-            if (msg.value > amount) {
+            if (msg.value < amount.add(protocolFee))
+                revert InsufficientEthAmount(amount.add(protocolFee));
+            if (amount > 0) {
+                (bool success, ) = payable(projectFeeReceiver).call{
+                    value: amount
+                }("");
+                if (!success) revert TransferFailed();
+            }
+            if (protocolFee > 0) {
+                (bool success, ) = payable(protocolFeeReceiver).call{
+                    value: protocolFee
+                }("");
+                if (!success) revert TransferFailed();
+            }
+            if (msg.value > amount.add(protocolFee)) {
                 // return diff
-                uint256 refund = msg.value.sub(amount);
-                (success, ) = payable(msg.sender).call{value: refund}("");
+                uint256 refund = msg.value.sub(amount.add(protocolFee));
+                (bool success, ) = payable(msg.sender).call{value: refund}("");
                 if (!success) revert RefundFailed();
             }
         } else {
             // ERC20 token, including MASA and USDC
-            IERC20(paymentMethod).safeTransferFrom(
-                msg.sender,
-                reserveWallet,
-                amount
-            );
+            if (amount > 0) {
+                IERC20(paymentMethod).safeTransferFrom(
+                    msg.sender,
+                    projectFeeReceiver,
+                    amount
+                );
+            }
+            if (protocolFee > 0) {
+                IERC20(paymentMethod).safeTransferFrom(
+                    msg.sender,
+                    protocolFeeReceiver,
+                    protocolFee
+                );
+            }
         }
     }
 
@@ -260,6 +369,18 @@ abstract contract PaymentGateway is Initializable, AccessControlUpgradeable {
     }
 
     /* ========== MODIFIERS ================================================= */
+
+    modifier paymentParamsAlreadySet(uint256 amount) {
+        if (amount > 0 && swapRouter == address(0))
+            revert PaymentParamsNotSet();
+        if (amount > 0 && wrappedNativeToken == address(0))
+            revert PaymentParamsNotSet();
+        if (amount > 0 && stableCoin == address(0))
+            revert PaymentParamsNotSet();
+        if (amount > 0 && projectFeeReceiver == address(0))
+            revert PaymentParamsNotSet();
+        _;
+    }
 
     /* ========== EVENTS ==================================================== */
 }

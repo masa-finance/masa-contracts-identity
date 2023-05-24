@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
+pragma solidity ^0.8.8;
 
 import "@openzeppelin/contracts/utils/Counters.sol";
 
@@ -37,7 +37,8 @@ abstract contract MasaSBTAuthority is MasaSBT {
             name,
             symbol,
             baseTokenURI,
-            soulboundIdentity
+            soulboundIdentity,
+            paymentParams
         );
         _grantRole(MINTER_ROLE, admin);
     }
@@ -45,8 +46,14 @@ abstract contract MasaSBTAuthority is MasaSBT {
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
     function _mintWithCounter(
+        address paymentMethod,
         address to
     ) internal virtual onlyRole(MINTER_ROLE) returns (uint256) {
+        (uint256 price, uint256 protocolFee) = getMintPriceWithProtocolFee(
+            paymentMethod
+        );
+        _pay(paymentMethod, price, protocolFee);
+
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _mint(to, tokenId);

@@ -27,6 +27,23 @@ function DEFAULT_ADMIN_ROLE() external view returns (bytes32)
 |---|---|---|
 | _0 | bytes32 | undefined |
 
+### PROJECT_ADMIN_ROLE
+
+```solidity
+function PROJECT_ADMIN_ROLE() external view returns (bytes32)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bytes32 | undefined |
+
 ### addLink
 
 ```solidity
@@ -49,6 +66,46 @@ Stores the link, validating the signature of the given read link request
 | signatureDate | uint256 | Signature date of the signature |
 | expirationDate | uint256 | Expiration date of the signature |
 | signature | bytes | Signature of the read link request made by the owner |
+
+### addSoulName
+
+```solidity
+function addSoulName(contract ISoulName soulName) external nonpayable
+```
+
+Add a SoulName contract address linked to this soul store
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| soulName | contract ISoulName | Address of the SoulName contract |
+
+### defaultSoulName
+
+```solidity
+function defaultSoulName(address) external view returns (bool exists, address token, uint256 tokenId)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| exists | bool | undefined |
+| token | address | undefined |
+| tokenId | uint256 | undefined |
 
 ### disablePaymentMethod
 
@@ -125,6 +182,28 @@ function enabledPaymentMethods(uint256) external view returns (address)
 | Name | Type | Description |
 |---|---|---|
 | _0 | address | undefined |
+
+### getDefaultSoulName
+
+```solidity
+function getDefaultSoulName(address owner) external view returns (string)
+```
+
+Returns the default soul name of an account
+
+*This function queries the default soul name of the specified account*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| owner | address | Address of the owner of the identities |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string | Default soul name associated to the account |
 
 ### getEnabledPaymentMethods
 
@@ -241,7 +320,7 @@ Returns the list of link signature dates for a given SBT token and reader
 ### getPriceForAddLink
 
 ```solidity
-function getPriceForAddLink(address paymentMethod, address token) external view returns (uint256)
+function getPriceForAddLink(address paymentMethod, address token) external view returns (uint256 price)
 ```
 
 Returns the price for storing a link
@@ -259,7 +338,54 @@ Returns the price for storing a link
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256 | Current price for storing a link |
+| price | uint256 | Current price for storing a link |
+
+### getPriceForAddLinkWithProtocolFee
+
+```solidity
+function getPriceForAddLinkWithProtocolFee(address paymentMethod, address token) external view returns (uint256 price, uint256 protocolFee)
+```
+
+Returns the price for storing a link with protocol fee
+
+*Returns the current pricing for storing a link with protocol fee*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| paymentMethod | address | Address of token that user want to pay |
+| token | address | Token that user want to store link |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| price | uint256 | Current price for storing a link |
+| protocolFee | uint256 | Current protocol fee for storing a link |
+
+### getProtocolFee
+
+```solidity
+function getProtocolFee(address paymentMethod, uint256 amount) external view returns (uint256)
+```
+
+Calculates the protocol fee
+
+*This method will calculate the protocol fee based on the payment method*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| paymentMethod | address | Address of token that user want to pay |
+| amount | uint256 | Price to be paid in the specified payment method |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
 
 ### getReaderLinks
 
@@ -351,6 +477,52 @@ Returns the list of connected SBTs by a given SBT token
 |---|---|---|
 | _0 | uint256[] | List of connectec SBTs |
 
+### getSoulNames
+
+```solidity
+function getSoulNames(uint256 tokenId) external view returns (string defaultName, string[] names)
+```
+
+Returns all the active soul names of an account
+
+*This function queries all the identity names of the specified identity Id*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId | uint256 | TokenId of the identity |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| defaultName | string | Default soul name of the account |
+| names | string[] | Array of soul names associated to the account |
+
+### getSoulNames
+
+```solidity
+function getSoulNames(address owner) external view returns (string defaultName, string[] names)
+```
+
+Returns all the active soul names of an account
+
+*This function queries all the identity names of the specified account*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| owner | address | Address of the owner of the identities |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| defaultName | string | Default soul name of the account |
+| names | string[] | Array of soul names associated to the account |
+
 ### grantRole
 
 ```solidity
@@ -395,6 +567,10 @@ function hasRole(bytes32 role, address account) external view returns (bool)
 
 ```solidity
 function initialize(address admin, contract ISoulboundIdentity _soulboundIdentity, PaymentGateway.PaymentParams paymentParams) external nonpayable
+### isSoulName
+
+```solidity
+function isSoulName(address) external view returns (bool)
 ```
 
 
@@ -408,6 +584,13 @@ function initialize(address admin, contract ISoulboundIdentity _soulboundIdentit
 | admin | address | undefined |
 | _soulboundIdentity | contract ISoulboundIdentity | undefined |
 | paymentParams | PaymentGateway.PaymentParams | undefined |
+| _0 | address | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bool | undefined |
 
 ### masaToken
 
@@ -454,6 +637,90 @@ function paused() external view returns (bool)
 |---|---|---|
 | _0 | bool | undefined |
 
+### projectFeeReceiver
+
+```solidity
+function projectFeeReceiver() external view returns (address)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
+### protocolFeeAmount
+
+```solidity
+function protocolFeeAmount() external view returns (uint256)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+### protocolFeePercent
+
+```solidity
+function protocolFeePercent() external view returns (uint256)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+### protocolFeeReceiver
+
+```solidity
+function protocolFeeReceiver() external view returns (address)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
+### removeSoulName
+
+```solidity
+function removeSoulName(contract ISoulName soulName) external nonpayable
+```
+
+Remove a SoulName contract address linked to this soul store
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| soulName | contract ISoulName | Address of the SoulName contract |
+
 ### renounceRole
 
 ```solidity
@@ -470,23 +737,6 @@ function renounceRole(bytes32 role, address account) external nonpayable
 |---|---|---|
 | role | bytes32 | undefined |
 | account | address | undefined |
-
-### reserveWallet
-
-```solidity
-function reserveWallet() external view returns (address)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | address | undefined |
 
 ### revokeLink
 
@@ -525,6 +775,23 @@ function revokeRole(bytes32 role, address account) external nonpayable
 | role | bytes32 | undefined |
 | account | address | undefined |
 
+### setDefaultSoulName
+
+```solidity
+function setDefaultSoulName(address token, uint256 tokenId) external nonpayable
+```
+
+Sets the default soul name for the owner
+
+*The caller must be the owner of the soul name.*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| token | address | Address of the SoulName contract |
+| tokenId | uint256 | TokenId of the soul name |
+
 ### setMasaToken
 
 ```solidity
@@ -541,13 +808,29 @@ Sets the utility token to pay the fee in (MASA)
 |---|---|---|
 | _masaToken | address | New utility token to pay the fee in |
 
-### setReserveWallet
+### setProjectFeeReceiver
 
 ```solidity
-function setReserveWallet(address _reserveWallet) external nonpayable
+function setProjectFeeReceiver(address _projectFeeReceiver) external nonpayable
 ```
 
-Set the reserve wallet
+Set the project fee receiver wallet
+
+*The caller must have the admin or project admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _projectFeeReceiver | address | New project fee receiver wallet |
+
+### setProtocolFeeAmount
+
+```solidity
+function setProtocolFeeAmount(uint256 _protocolFeeAmount) external nonpayable
+```
+
+Set the protocol fee amount
 
 *The caller must have the admin role to call this function*
 
@@ -555,7 +838,39 @@ Set the reserve wallet
 
 | Name | Type | Description |
 |---|---|---|
-| _reserveWallet | address | New reserve wallet |
+| _protocolFeeAmount | uint256 | New protocol fee amount |
+
+### setProtocolFeePercent
+
+```solidity
+function setProtocolFeePercent(uint256 _protocolFeePercent) external nonpayable
+```
+
+Set the protocol fee percent
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _protocolFeePercent | uint256 | New protocol fee percent |
+
+### setProtocolFeeReceiver
+
+```solidity
+function setProtocolFeeReceiver(address _protocolFeeReceiver) external nonpayable
+```
+
+Set the protocol fee wallet
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _protocolFeeReceiver | address | New protocol fee wallet |
 
 ### setSoulboundIdentity
 
@@ -563,7 +878,7 @@ Set the reserve wallet
 function setSoulboundIdentity(contract ISoulboundIdentity _soulboundIdentity) external nonpayable
 ```
 
-Sets the SoulboundIdentity contract address linked to this soul name
+Sets the SoulboundIdentity contract address linked to this soul store
 
 *The caller must have the admin role to call this function*
 
@@ -620,6 +935,28 @@ Sets the wrapped native token address
 | Name | Type | Description |
 |---|---|---|
 | _wrappedNativeToken | address | New wrapped native token address |
+
+### soulNames
+
+```solidity
+function soulNames(uint256) external view returns (contract ISoulName)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | contract ISoulName | undefined |
 
 ### soulboundIdentity
 
@@ -1107,6 +1444,28 @@ error NonExistingErc20Token(address erc20token)
 |---|---|---|
 | erc20token | address | undefined |
 
+### PaymentParamsNotSet
+
+```solidity
+error PaymentParamsNotSet()
+```
+
+
+
+
+
+
+### ProtocolFeeReceiverNotSet
+
+```solidity
+error ProtocolFeeReceiverNotSet()
+```
+
+
+
+
+
+
 ### RefundFailed
 
 ```solidity
@@ -1129,10 +1488,48 @@ error SameValue()
 
 
 
+### SoulNameNotExist
+
+```solidity
+error SoulNameNotExist()
+```
+
+
+
+
+
+
+### SoulNameNotRegistered
+
+```solidity
+error SoulNameNotRegistered(address token)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| token | address | undefined |
+
 ### TransferFailed
 
 ```solidity
 error TransferFailed()
+```
+
+
+
+
+
+
+### UserMustHaveProtocolOrProjectAdminRole
+
+```solidity
+error UserMustHaveProtocolOrProjectAdminRole()
 ```
 
 

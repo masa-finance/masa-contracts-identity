@@ -27,6 +27,23 @@ function DEFAULT_ADMIN_ROLE() external view returns (bytes32)
 |---|---|---|
 | _0 | bytes32 | undefined |
 
+### PROJECT_ADMIN_ROLE
+
+```solidity
+function PROJECT_ADMIN_ROLE() external view returns (bytes32)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bytes32 | undefined |
+
 ### addAuthority
 
 ```solidity
@@ -35,7 +52,7 @@ function addAuthority(address _authority) external nonpayable
 
 Adds a new authority to the list of authorities
 
-*The caller must have the admin role to call this function*
+*The caller must have the admin or project admin role to call this function*
 
 #### Parameters
 
@@ -183,7 +200,7 @@ Returns the price of register a name per year in stable coin for an specific len
 ### getPriceForMintingName
 
 ```solidity
-function getPriceForMintingName(address paymentMethod, uint256 nameLength, uint256 yearsPeriod) external view returns (uint256)
+function getPriceForMintingName(address paymentMethod, uint256 nameLength, uint256 yearsPeriod) external view returns (uint256 price)
 ```
 
 Returns the price of the name minting
@@ -202,7 +219,55 @@ Returns the price of the name minting
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256 | Current price of the name minting in the given payment method |
+| price | uint256 | Current price of the name minting in the given payment method |
+
+### getPriceForMintingNameWithProtocolFee
+
+```solidity
+function getPriceForMintingNameWithProtocolFee(address paymentMethod, uint256 nameLength, uint256 yearsPeriod) external view returns (uint256 price, uint256 protocolFee)
+```
+
+Returns the price of the name minting with protocol fee
+
+*Returns current pricing for name minting for a given name length and years period with protocol fee*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| paymentMethod | address | Address of token that user want to pay |
+| nameLength | uint256 | Length of the name |
+| yearsPeriod | uint256 | Years of validity of the name |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| price | uint256 | Current price of the name minting in the given payment method |
+| protocolFee | uint256 | Current protocol fee of the name minting in the given payment method |
+
+### getProtocolFee
+
+```solidity
+function getProtocolFee(address paymentMethod, uint256 amount) external view returns (uint256)
+```
+
+Calculates the protocol fee
+
+*This method will calculate the protocol fee based on the payment method*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| paymentMethod | address | Address of token that user want to pay |
+| amount | uint256 | Price to be paid in the specified payment method |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
 
 ### getRoleAdmin
 
@@ -352,6 +417,74 @@ function paused() external view returns (bool)
 |---|---|---|
 | _0 | bool | undefined |
 
+### projectFeeReceiver
+
+```solidity
+function projectFeeReceiver() external view returns (address)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
+### protocolFeeAmount
+
+```solidity
+function protocolFeeAmount() external view returns (uint256)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+### protocolFeePercent
+
+```solidity
+function protocolFeePercent() external view returns (uint256)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+### protocolFeeReceiver
+
+```solidity
+function protocolFeeReceiver() external view returns (address)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
 ### purchaseIdentity
 
 ```solidity
@@ -434,7 +567,7 @@ function removeAuthority(address _authority) external nonpayable
 
 Removes an authority from the list of authorities
 
-*The caller must have the admin role to call this function*
+*The caller must have the admin or project admin role to call this function*
 
 #### Parameters
 
@@ -458,23 +591,6 @@ function renounceRole(bytes32 role, address account) external nonpayable
 |---|---|---|
 | role | bytes32 | undefined |
 | account | address | undefined |
-
-### reserveWallet
-
-```solidity
-function reserveWallet() external view returns (address)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | address | undefined |
 
 ### revokeRole
 
@@ -517,7 +633,7 @@ function setNameRegistrationPricePerYear(uint256 _nameLength, uint256 _nameRegis
 
 Sets the price of the name registering per one year in stable coin
 
-*The caller must have the admin role to call this function*
+*The caller must have the admin or project admin role to call this function*
 
 #### Parameters
 
@@ -526,13 +642,29 @@ Sets the price of the name registering per one year in stable coin
 | _nameLength | uint256 | Length of the name |
 | _nameRegistrationPricePerYear | uint256 | New price of the name registering per one year in stable coin for that name length per year |
 
-### setReserveWallet
+### setProjectFeeReceiver
 
 ```solidity
-function setReserveWallet(address _reserveWallet) external nonpayable
+function setProjectFeeReceiver(address _projectFeeReceiver) external nonpayable
 ```
 
-Set the reserve wallet
+Set the project fee receiver wallet
+
+*The caller must have the admin or project admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _projectFeeReceiver | address | New project fee receiver wallet |
+
+### setProtocolFeeAmount
+
+```solidity
+function setProtocolFeeAmount(uint256 _protocolFeeAmount) external nonpayable
+```
+
+Set the protocol fee amount
 
 *The caller must have the admin role to call this function*
 
@@ -540,7 +672,55 @@ Set the reserve wallet
 
 | Name | Type | Description |
 |---|---|---|
-| _reserveWallet | address | New reserve wallet |
+| _protocolFeeAmount | uint256 | New protocol fee amount |
+
+### setProtocolFeePercent
+
+```solidity
+function setProtocolFeePercent(uint256 _protocolFeePercent) external nonpayable
+```
+
+Set the protocol fee percent
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _protocolFeePercent | uint256 | New protocol fee percent |
+
+### setProtocolFeeReceiver
+
+```solidity
+function setProtocolFeeReceiver(address _protocolFeeReceiver) external nonpayable
+```
+
+Set the protocol fee wallet
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _protocolFeeReceiver | address | New protocol fee wallet |
+
+### setSoulName
+
+```solidity
+function setSoulName(contract ISoulName _soulName) external nonpayable
+```
+
+Sets the SoulName contract address linked to this store
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _soulName | contract ISoulName | New SoulName contract address |
 
 ### setSoulboundIdentity
 
@@ -605,6 +785,23 @@ Sets the wrapped native token address
 | Name | Type | Description |
 |---|---|---|
 | _wrappedNativeToken | address | New wrapped native token address |
+
+### soulName
+
+```solidity
+function soulName() external view returns (contract ISoulName)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | contract ISoulName | undefined |
 
 ### soulboundIdentity
 
@@ -990,6 +1187,28 @@ error NotAuthorized(address signer)
 |---|---|---|
 | signer | address | undefined |
 
+### PaymentParamsNotSet
+
+```solidity
+error PaymentParamsNotSet()
+```
+
+
+
+
+
+
+### ProtocolFeeReceiverNotSet
+
+```solidity
+error ProtocolFeeReceiverNotSet()
+```
+
+
+
+
+
+
 ### RefundFailed
 
 ```solidity
@@ -1016,6 +1235,17 @@ error SameValue()
 
 ```solidity
 error TransferFailed()
+```
+
+
+
+
+
+
+### UserMustHaveProtocolOrProjectAdminRole
+
+```solidity
+error UserMustHaveProtocolOrProjectAdminRole()
 ```
 
 

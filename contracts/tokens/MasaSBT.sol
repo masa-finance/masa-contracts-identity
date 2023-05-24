@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
+pragma solidity ^0.8.8;
 
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 
+import "../dex/PaymentGateway.sol";
 import "../libraries/Errors.sol";
 import "../interfaces/ISoulboundIdentity.sol";
 import "../interfaces/ILinkableSBT.sol";
@@ -17,7 +18,9 @@ import "./SBT/extensions/SBTBurnable.sol";
 /// @notice Soulbound token. Non-fungible token that is not transferable.
 /// @dev Implementation of https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763 Soulbound token.
 /// Adds a link to a SoulboundIdentity SC to let minting using the identityId
+/// Adds a payment gateway to let minting paying a fee
 abstract contract MasaSBT is
+    PaymentGateway,
     SBT,
     SBTEnumerable,
     AccessControlUpgradeable,
@@ -32,6 +35,9 @@ abstract contract MasaSBT is
     string private _baseTokenURI;
 
     ISoulboundIdentity public soulboundIdentity;
+
+    uint256 public mintPrice; // price in stable coin
+    uint256 public mintPriceMASA; // price in MASA
 
     uint256 public override addLinkPrice; // price in stable coin
     uint256 public override addLinkPriceMASA; // price in MASA
@@ -54,6 +60,7 @@ abstract contract MasaSBT is
         address _soulboundIdentity
     ) internal virtual onlyInitializing {
         SBT._initialize(name, symbol);
+        PaymentGateway._initialize(admin, paymentParams);
         __ReentrancyGuard_init();
         __AccessControl_init();
 
@@ -64,6 +71,30 @@ abstract contract MasaSBT is
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
+
+    /// @notice Sets the price of minting in stable coin
+    /// @dev The caller must have the admin or project admin role to call this function
+    /// @param _mintPrice New price of minting in stable coin
+    function setMintPrice(uint256 _mintPrice) external {
+        if (
+            !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
+            !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
+        ) revert UserMustHaveProtocolOrProjectAdminRole();
+        if (mintPrice == _mintPrice) revert SameValue();
+        mintPrice = _mintPrice;
+    }
+
+    /// @notice Sets the price of minting in MASA
+    /// @dev The caller must have the admin or project admin role to call this function
+    /// @param _mintPriceMASA New price of minting in MASA
+    function setMintPriceMASA(uint256 _mintPriceMASA) external {
+        if (
+            !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
+            !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
+        ) revert UserMustHaveProtocolOrProjectAdminRole();
+        if (mintPriceMASA == _mintPriceMASA) revert SameValue();
+        mintPriceMASA = _mintPriceMASA;
+    }
 
     /// @notice Sets the SoulboundIdentity contract address linked to this SBT
     /// @dev The caller must be the admin to call this function
@@ -77,41 +108,49 @@ abstract contract MasaSBT is
     }
 
     /// @notice Sets the price for adding the link in SoulLinker in stable coin
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the admin or project admin role to call this function
     /// @param _addLinkPrice New price for adding the link in SoulLinker in stable coin
-    function setAddLinkPrice(
-        uint256 _addLinkPrice
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setAddLinkPrice(uint256 _addLinkPrice) external {
+        if (
+            !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
+            !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
+        ) revert UserMustHaveProtocolOrProjectAdminRole();
         if (addLinkPrice == _addLinkPrice) revert SameValue();
         addLinkPrice = _addLinkPrice;
     }
 
     /// @notice Sets the price for adding the link in SoulLinker in MASA
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the admin or project admin role to call this function
     /// @param _addLinkPriceMASA New price for adding the link in SoulLinker in MASA
-    function setAddLinkPriceMASA(
-        uint256 _addLinkPriceMASA
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setAddLinkPriceMASA(uint256 _addLinkPriceMASA) external {
+        if (
+            !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
+            !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
+        ) revert UserMustHaveProtocolOrProjectAdminRole();
         if (addLinkPriceMASA == _addLinkPriceMASA) revert SameValue();
         addLinkPriceMASA = _addLinkPriceMASA;
     }
 
     /// @notice Sets the price for reading data in SoulLinker in stable coin
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the admin or project admin role to call this function
     /// @param _queryLinkPrice New price for reading data in SoulLinker in stable coin
-    function setQueryLinkPrice(
-        uint256 _queryLinkPrice
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setQueryLinkPrice(uint256 _queryLinkPrice) external {
+        if (
+            !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
+            !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
+        ) revert UserMustHaveProtocolOrProjectAdminRole();
         if (queryLinkPrice == _queryLinkPrice) revert SameValue();
         queryLinkPrice = _queryLinkPrice;
     }
 
     /// @notice Sets the price for reading data in SoulLinker in MASA
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the admin or project admin role to call this function
     /// @param _queryLinkPriceMASA New price for reading data in SoulLinker in MASA
-    function setQueryLinkPriceMASA(
-        uint256 _queryLinkPriceMASA
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setQueryLinkPriceMASA(uint256 _queryLinkPriceMASA) external {
+        if (
+            !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
+            !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
+        ) revert UserMustHaveProtocolOrProjectAdminRole();
         if (queryLinkPriceMASA == _queryLinkPriceMASA) revert SameValue();
         queryLinkPriceMASA = _queryLinkPriceMASA;
     }
@@ -172,6 +211,48 @@ abstract contract MasaSBT is
         returns (bool)
     {
         return super.supportsInterface(interfaceId);
+    }
+
+    /// @notice Returns the price for minting
+    /// @dev Returns current pricing for minting
+    /// @param paymentMethod Address of token that user want to pay
+    /// @return price Current price for minting in the given payment method
+    function getMintPrice(
+        address paymentMethod
+    ) public view returns (uint256 price) {
+        if (mintPrice == 0 && mintPriceMASA == 0) {
+            price = 0;
+        } else if (
+            paymentMethod == masaToken &&
+            enabledPaymentMethod[paymentMethod] &&
+            mintPriceMASA > 0
+        ) {
+            // price in MASA without conversion rate
+            price = mintPriceMASA;
+        } else if (
+            paymentMethod == stableCoin && enabledPaymentMethod[paymentMethod]
+        ) {
+            // stable coin
+            price = mintPrice;
+        } else if (enabledPaymentMethod[paymentMethod]) {
+            // ETH and ERC 20 token
+            price = _convertFromStableCoin(paymentMethod, mintPrice);
+        } else {
+            revert InvalidPaymentMethod(paymentMethod);
+        }
+        return price;
+    }
+
+    /// @notice Returns the price for minting with protocol fee
+    /// @dev Returns current pricing for minting with protocol fee
+    /// @param paymentMethod Address of token that user want to pay
+    /// @return price Current price for minting in the given payment method
+    /// @return protocolFee Current protocol fee for minting in the given payment method
+    function getMintPriceWithProtocolFee(
+        address paymentMethod
+    ) public view returns (uint256 price, uint256 protocolFee) {
+        price = getMintPrice(paymentMethod);
+        return (price, _getProtocolFee(paymentMethod, price));
     }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */

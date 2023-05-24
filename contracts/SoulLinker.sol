@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
+pragma solidity ^0.8.8;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
@@ -10,6 +10,7 @@ import "./libraries/Errors.sol";
 import "./dex/PaymentGateway.sol";
 import "./interfaces/ILinkableSBT.sol";
 import "./interfaces/ISoulboundIdentity.sol";
+import "./interfaces/ISoulName.sol";
 
 /// @title Soul linker
 /// @author Masa Finance
@@ -23,6 +24,8 @@ contract SoulLinker is
     /* ========== STATE VARIABLES =========================================== */
 
     ISoulboundIdentity public soulboundIdentity;
+    ISoulName[] public soulNames;
+    mapping(address => bool) public isSoulName;
 
     // token => tokenId => readerIdentityId => signatureDate => LinkData
     mapping(address => mapping(uint256 => mapping(uint256 => mapping(uint256 => LinkData))))
@@ -54,15 +57,25 @@ contract SoulLinker is
         uint256 signatureDate;
     }
 
+    struct DefaultSoulName {
+        bool exists;
+        address token;
+        uint256 tokenId;
+    }
+
+    mapping(address => DefaultSoulName) public defaultSoulName; // stores the token id of the default soul name
+
     /* ========== INITIALIZE ================================================ */
 
     /// @notice Creates a new soul linker
     /// @param admin Administrator of the smart contract
     /// @param _soulboundIdentity Soulbound identity smart contract
+    /// @param _soulNames Soul name smart contracts
     /// @param paymentParams Payment gateway params
     function initialize(
         address admin,
         ISoulboundIdentity _soulboundIdentity,
+        ISoulName[] memory _soulNames,
         PaymentParams memory paymentParams
     ) public initializer {
         if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
@@ -73,11 +86,15 @@ contract SoulLinker is
         __EIP712_init("SoulLinker", "1.0.0");
 
         soulboundIdentity = _soulboundIdentity;
+        soulNames = _soulNames;
+        for (uint256 i = 0; i < _soulNames.length; i++) {
+            isSoulName[address(_soulNames[i])] = true;
+        }
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
-    /// @notice Sets the SoulboundIdentity contract address linked to this soul name
+    /// @notice Sets the SoulboundIdentity contract address linked to this soul store
     /// @dev The caller must have the admin role to call this function
     /// @param _soulboundIdentity Address of the SoulboundIdentity contract
     function setSoulboundIdentity(
@@ -86,6 +103,38 @@ contract SoulLinker is
         if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
         if (soulboundIdentity == _soulboundIdentity) revert SameValue();
         soulboundIdentity = _soulboundIdentity;
+    }
+
+    /// @notice Add a SoulName contract address linked to this soul store
+    /// @dev The caller must have the admin role to call this function
+    /// @param soulName Address of the SoulName contract
+    function addSoulName(
+        ISoulName soulName
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        if (address(soulName) == address(0)) revert ZeroAddress();
+        for (uint256 i = 0; i < soulNames.length; i++) {
+            if (soulNames[i] == soulName) revert SameValue();
+        }
+        soulNames.push(soulName);
+        isSoulName[address(soulName)] = true;
+    }
+
+    /// @notice Remove a SoulName contract address linked to this soul store
+    /// @dev The caller must have the admin role to call this function
+    /// @param soulName Address of the SoulName contract
+    function removeSoulName(
+        ISoulName soulName
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        if (address(soulName) == address(0)) revert ZeroAddress();
+        for (uint256 i = 0; i < soulNames.length; i++) {
+            if (soulNames[i] == soulName) {
+                soulNames[i] = soulNames[soulNames.length - 1];
+                soulNames.pop();
+                isSoulName[address(soulName)] = false;
+                return;
+            }
+        }
+        revert SoulNameNotExist();
     }
 
     /// @notice Pauses the smart contract
@@ -155,7 +204,11 @@ contract SoulLinker is
             )
         ) revert InvalidSignature();
 
-        _pay(paymentMethod, getPriceForAddLink(paymentMethod, token));
+        (
+            uint256 price,
+            uint256 protocolFee
+        ) = getPriceForAddLinkWithProtocolFee(paymentMethod, token);
+        _pay(paymentMethod, price, protocolFee);
 
         // token => tokenId => readerIdentityId => signatureDate => LinkData
         _links[token][tokenId][readerIdentityId][signatureDate] = LinkData(
@@ -247,6 +300,20 @@ contract SoulLinker is
         );
     }
 
+    /// @notice Sets the default soul name for the owner
+    /// @dev The caller must be the owner of the soul name.
+    /// @param token Address of the SoulName contract
+    /// @param tokenId TokenId of the soul name
+    function setDefaultSoulName(address token, uint256 tokenId) external {
+        if (isSoulName[token] == false) revert SoulNameNotRegistered(token);
+        address soulNameOwner = IERC721Enumerable(token).ownerOf(tokenId);
+        if (_msgSender() != soulNameOwner) revert CallerNotOwner(_msgSender());
+
+        defaultSoulName[_msgSender()].token = token;
+        defaultSoulName[_msgSender()].tokenId = tokenId;
+        defaultSoulName[_msgSender()].exists = true;
+    }
+
     /* ========== VIEWS ===================================================== */
 
     /// @notice Returns the identityId owned by the given token
@@ -302,7 +369,7 @@ contract SoulLinker is
     function getLinks(
         address token,
         uint256 tokenId
-    ) public view returns (LinkKey[] memory) {
+    ) external view returns (LinkKey[] memory) {
         uint256 nLinkKeys = 0;
         for (
             uint256 i = 0;
@@ -382,7 +449,7 @@ contract SoulLinker is
     /// @return List of links for the reader
     function getReaderLinks(
         uint256 readerIdentityId
-    ) public view returns (ReaderLink[] memory) {
+    ) external view returns (ReaderLink[] memory) {
         return _readerLinks[readerIdentityId];
     }
 
@@ -423,33 +490,118 @@ contract SoulLinker is
     /// @dev Returns the current pricing for storing a link
     /// @param paymentMethod Address of token that user want to pay
     /// @param token Token that user want to store link
-    /// @return Current price for storing a link
+    /// @return price Current price for storing a link
     function getPriceForAddLink(
         address paymentMethod,
         address token
-    ) public view returns (uint256) {
+    ) public view returns (uint256 price) {
         uint256 addLinkPrice = ILinkableSBT(token).addLinkPrice();
         uint256 addLinkPriceMASA = ILinkableSBT(token).addLinkPriceMASA();
         if (addLinkPrice == 0 && addLinkPriceMASA == 0) {
-            return 0;
+            price = 0;
         } else if (
             paymentMethod == masaToken &&
             enabledPaymentMethod[paymentMethod] &&
             addLinkPriceMASA > 0
         ) {
             // price in MASA without conversion rate
-            return addLinkPriceMASA;
+            price = addLinkPriceMASA;
         } else if (
             paymentMethod == stableCoin && enabledPaymentMethod[paymentMethod]
         ) {
             // stable coin
-            return addLinkPrice;
+            price = addLinkPrice;
         } else if (enabledPaymentMethod[paymentMethod]) {
             // ETH and ERC 20 token
-            return _convertFromStableCoin(paymentMethod, addLinkPrice);
+            price = _convertFromStableCoin(paymentMethod, addLinkPrice);
         } else {
             revert InvalidPaymentMethod(paymentMethod);
         }
+        return price;
+    }
+
+    /// @notice Returns the price for storing a link with protocol fee
+    /// @dev Returns the current pricing for storing a link with protocol fee
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param token Token that user want to store link
+    /// @return price Current price for storing a link
+    /// @return protocolFee Current protocol fee for storing a link
+    function getPriceForAddLinkWithProtocolFee(
+        address paymentMethod,
+        address token
+    ) public view returns (uint256 price, uint256 protocolFee) {
+        price = getPriceForAddLink(paymentMethod, token);
+        return (price, _getProtocolFee(paymentMethod, price));
+    }
+
+    /// @notice Returns all the active soul names of an account
+    /// @dev This function queries all the identity names of the specified account
+    /// @param owner Address of the owner of the identities
+    /// @return defaultName Default soul name of the account
+    /// @return names Array of soul names associated to the account
+    function getSoulNames(
+        address owner
+    ) public view returns (string memory defaultName, string[] memory names) {
+        uint256 nameCount = 0;
+        for (uint256 i = 0; i < soulNames.length; i++) {
+            string[] memory _soulNamesFromIdentity = soulNames[i].getSoulNames(
+                owner
+            );
+            for (uint256 j = 0; j < _soulNamesFromIdentity.length; j++) {
+                nameCount++;
+            }
+        }
+
+        string[] memory _soulNames = new string[](nameCount);
+        uint256 n = 0;
+        for (uint256 i = 0; i < soulNames.length; i++) {
+            string[] memory _soulNamesFromIdentity = soulNames[i].getSoulNames(
+                owner
+            );
+            for (uint256 j = 0; j < _soulNamesFromIdentity.length; j++) {
+                _soulNames[n] = _soulNamesFromIdentity[j];
+                n++;
+            }
+        }
+
+        return (getDefaultSoulName(owner), _soulNames);
+    }
+
+    /// @notice Returns all the active soul names of an account
+    /// @dev This function queries all the identity names of the specified identity Id
+    /// @param tokenId TokenId of the identity
+    /// @return defaultName Default soul name of the account
+    /// @return names Array of soul names associated to the account
+    function getSoulNames(
+        uint256 tokenId
+    ) external view returns (string memory defaultName, string[] memory names) {
+        address owner = soulboundIdentity.ownerOf(tokenId);
+        return getSoulNames(owner);
+    }
+
+    /// @notice Returns the default soul name of an account
+    /// @dev This function queries the default soul name of the specified account
+    /// @param owner Address of the owner of the identities
+    /// @return Default soul name associated to the account
+    function getDefaultSoulName(
+        address owner
+    ) public view returns (string memory) {
+        // we have set a default soul name
+        if (defaultSoulName[owner].exists) {
+            address token = defaultSoulName[owner].token;
+            uint256 tokenId = defaultSoulName[owner].tokenId;
+            address soulNameOwner = IERC721Enumerable(token).ownerOf(tokenId);
+            // the soul name has not changed owner
+            if (soulNameOwner == owner) {
+                // the soul name is not expired
+                (string memory name, uint256 expirationDate) = ISoulName(token)
+                    .tokenData(tokenId);
+                if (expirationDate >= block.timestamp) {
+                    return name;
+                }
+            }
+        }
+        return "";
     }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */

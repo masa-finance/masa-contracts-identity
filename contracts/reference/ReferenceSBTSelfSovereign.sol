@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
+pragma solidity ^0.8.8;
 
 import "../tokens/MasaSBTSelfSovereign.sol";
 
@@ -7,8 +7,10 @@ import "../tokens/MasaSBTSelfSovereign.sol";
 /// @author Masa Finance
 /// @notice Soulbound token that represents a Self-Sovereign SBT
 /// @dev Inherits from the SBT contract.
-contract ReferenceSBTSelfSovereign is MasaSBTSelfSovereign {
-    error SBTAlreadyCreated(address to);
+contract ReferenceSBTSelfSovereign is MasaSBTSelfSovereign, ReentrancyGuard {
+    error MaxSBTMinted(address to, uint256 maximum);
+
+    uint256 public maxSBTToMint = 1;
 
     /* ========== STATE VARIABLES =========================================== */
 
@@ -28,7 +30,8 @@ contract ReferenceSBTSelfSovereign is MasaSBTSelfSovereign {
         string memory symbol,
         string memory baseTokenURI,
         address soulboundIdentity,
-        PaymentParams memory paymentParams
+        PaymentParams memory paymentParams,
+        uint256 _maxSBTToMint
     ) public initializer {
         MasaSBTSelfSovereign._initialize(
             admin,
@@ -39,6 +42,7 @@ contract ReferenceSBTSelfSovereign is MasaSBTSelfSovereign {
             paymentParams
         );
         __EIP712_init("ReferenceSBTSelfSovereign", "1.0.0");
+        maxSBTToMint = _maxSBTToMint;
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
@@ -61,10 +65,11 @@ contract ReferenceSBTSelfSovereign is MasaSBTSelfSovereign {
         bytes calldata signature
     ) external payable virtual nonReentrant returns (uint256) {
         address to = soulboundIdentity.ownerOf(identityId);
-        if (balanceOf(to) > 0) revert SBTAlreadyCreated(to);
+        if (maxSBTToMint > 0 && balanceOf(to) >= maxSBTToMint)
+            revert MaxSBTMinted(to, maxSBTToMint);
         if (to != _msgSender()) revert CallerNotOwner(_msgSender());
 
-        uint256 tokenId = _verifyAndMint(
+        uint256 tokenId = _mintWithCounter(
             paymentMethod,
             to,
             _hash(identityId, authorityAddress, signatureDate),
@@ -99,10 +104,11 @@ contract ReferenceSBTSelfSovereign is MasaSBTSelfSovereign {
         uint256 signatureDate,
         bytes calldata signature
     ) external payable virtual returns (uint256) {
-        if (balanceOf(to) > 0) revert SBTAlreadyCreated(to);
+        if (maxSBTToMint > 0 && balanceOf(to) >= maxSBTToMint)
+            revert MaxSBTMinted(to, maxSBTToMint);
         if (to != _msgSender()) revert CallerNotOwner(_msgSender());
 
-        uint256 tokenId = _verifyAndMint(
+        uint256 tokenId = _mintWithCounter(
             paymentMethod,
             to,
             _hash(to, authorityAddress, signatureDate),

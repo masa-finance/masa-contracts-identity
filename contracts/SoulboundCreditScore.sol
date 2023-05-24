@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
+pragma solidity ^0.8.8;
 
 import "./libraries/Errors.sol";
 import "./tokens/MasaSBTSelfSovereign.sol";
@@ -58,12 +58,12 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
         address authorityAddress,
         uint256 signatureDate,
         bytes calldata signature
-    ) public payable virtual nonReentrant returns (uint256) {
+    ) external payable nonReentrant returns (uint256) {
         address to = soulboundIdentity.ownerOf(identityId);
         if (to != _msgSender()) revert CallerNotOwner(_msgSender());
         if (balanceOf(to) > 0) revert CreditScoreAlreadyCreated(to);
 
-        uint256 tokenId = _verifyAndMint(
+        uint256 tokenId = _mintWithCounter(
             paymentMethod,
             to,
             _hash(identityId, authorityAddress, signatureDate),
@@ -97,11 +97,11 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
         address authorityAddress,
         uint256 signatureDate,
         bytes calldata signature
-    ) external payable virtual returns (uint256) {
+    ) external payable nonReentrant returns (uint256) {
         if (to != _msgSender()) revert CallerNotOwner(_msgSender());
         if (balanceOf(to) > 0) revert CreditScoreAlreadyCreated(to);
 
-        uint256 tokenId = _verifyAndMint(
+        uint256 tokenId = _mintWithCounter(
             paymentMethod,
             to,
             _hash(to, authorityAddress, signatureDate),

@@ -1,18 +1,16 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
+pragma solidity ^0.8.8;
 
 import "@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 import "../libraries/Errors.sol";
-import "../dex/PaymentGateway.sol";
 import "./MasaSBT.sol";
 
 /// @title MasaSBTSelfSovereign
 /// @author Masa Finance
 /// @notice Soulbound token. Non-fungible token that is not transferable.
-/// Adds a payment gateway to let minting paying a fee
 /// Adds a self-sovereign protocol to let minting using an authority signature
 /// @dev Implementation of https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763 Soulbound token.
 abstract contract MasaSBTSelfSovereign is
@@ -25,9 +23,6 @@ abstract contract MasaSBTSelfSovereign is
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIdCounter;
-
-    uint256 public mintPrice; // price in stable coin
-    uint256 public mintPriceMASA; // price in MASA
 
     mapping(address => bool) public authorities;
 
@@ -55,38 +50,21 @@ abstract contract MasaSBTSelfSovereign is
             name,
             symbol,
             baseTokenURI,
-            soulboundIdentity
+            soulboundIdentity,
+            paymentParams
         );
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
-    /// @notice Sets the price of minting in stable coin
-    /// @dev The caller must have the admin role to call this function
-    /// @param _mintPrice New price of minting in stable coin
-    function setMintPrice(
-        uint256 _mintPrice
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        if (mintPrice == _mintPrice) revert SameValue();
-        mintPrice = _mintPrice;
-    }
-
-    /// @notice Sets the price of minting in MASA
-    /// @dev The caller must have the admin role to call this function
-    /// @param _mintPriceMASA New price of minting in MASA
-    function setMintPriceMASA(
-        uint256 _mintPriceMASA
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        if (mintPriceMASA == _mintPriceMASA) revert SameValue();
-        mintPriceMASA = _mintPriceMASA;
-    }
-
     /// @notice Adds a new authority to the list of authorities
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the admin or project admin role to call this function
     /// @param _authority New authority to add
-    function addAuthority(
-        address _authority
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function addAuthority(address _authority) external {
+        if (
+            !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
+            !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
+        ) revert UserMustHaveProtocolOrProjectAdminRole();
         if (_authority == address(0)) revert ZeroAddress();
         if (authorities[_authority]) revert AlreadyAdded();
 
@@ -94,11 +72,13 @@ abstract contract MasaSBTSelfSovereign is
     }
 
     /// @notice Removes an authority from the list of authorities
-    /// @dev The caller must have the admin role to call this function
+    /// @dev The caller must have the admin or project admin role to call this function
     /// @param _authority Authority to remove
-    function removeAuthority(
-        address _authority
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function removeAuthority(address _authority) external {
+        if (
+            !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
+            !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
+        ) revert UserMustHaveProtocolOrProjectAdminRole();
         if (_authority == address(0)) revert ZeroAddress();
         if (!authorities[_authority]) revert AuthorityNotExists(_authority);
 
@@ -159,21 +139,13 @@ abstract contract MasaSBTSelfSovereign is
         bytes32 digest,
         bytes memory signature,
         address signer
-    ) internal view {
+    ) private view {
         address _signer = ECDSA.recover(digest, signature);
         if (_signer != signer) revert InvalidSignature();
         if (!authorities[_signer]) revert NotAuthorized(_signer);
     }
 
-    function _mintWithCounter(address to) internal virtual returns (uint256) {
-        uint256 tokenId = _tokenIdCounter.current();
-        _tokenIdCounter.increment();
-        _mint(to, tokenId);
-
-        return tokenId;
-    }
-
-    function _verifyAndMint(
+    function _mintWithCounter(
         address paymentMethod,
         address to,
         bytes32 digest,
@@ -182,9 +154,16 @@ abstract contract MasaSBTSelfSovereign is
     ) internal virtual returns (uint256) {
         _verify(digest, signature, authorityAddress);
 
-        _pay(paymentMethod, getMintPrice(paymentMethod));
+        (uint256 price, uint256 protocolFee) = getMintPriceWithProtocolFee(
+            paymentMethod
+        );
+        _pay(paymentMethod, price, protocolFee);
 
-        return _mintWithCounter(to);
+        uint256 tokenId = _tokenIdCounter.current();
+        _tokenIdCounter.increment();
+        _mint(to, tokenId);
+
+        return tokenId;
     }
 
     /* ========== MODIFIERS ================================================= */

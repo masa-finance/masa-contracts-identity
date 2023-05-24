@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
+pragma solidity ^0.8.8;
 
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
@@ -32,7 +32,7 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     mapping(uint256 => string) private _tokenURIs;
     mapping(string => bool) private _URIs; // used to check if a uri is already used
 
-    mapping(uint256 => TokenData) public tokenData; // used to store the data of the token id
+    mapping(uint256 => TokenData) public override tokenData; // used to store the data of the token id
     mapping(string => NameData) public nameData; // stores the token id of the current active soul name
 
     struct TokenData {
@@ -122,7 +122,7 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         string memory name,
         uint256 yearsPeriod,
         string memory _tokenURI
-    ) public override nonReentrant returns (uint256) {
+    ) external override nonReentrant returns (uint256) {
         if (!isAvailable(name)) revert NameAlreadyExists(name);
         if (bytes(name).length == 0) revert ZeroLengthName(name);
         if (yearsPeriod == 0) revert ZeroYearsPeriod(yearsPeriod);

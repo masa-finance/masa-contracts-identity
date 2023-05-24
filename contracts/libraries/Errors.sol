@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
+pragma solidity ^0.8.8;
 
 error AddressDoesNotHaveIdentity(address to);
 error AlreadyAdded();
@@ -30,13 +30,18 @@ error NameRegisteredByOtherAccount(string name, uint256 tokenId);
 error NotAuthorized(address signer);
 error NonExistingErc20Token(address erc20token);
 error NotLinkedToAnIdentitySBT();
+error PaymentParamsNotSet();
+error ProtocolFeeReceiverNotSet();
 error RefundFailed();
 error SameValue();
 error SBTAlreadyLinked(address token);
 error SoulNameContractNotSet();
+error SoulNameNotExist();
+error SoulNameNotRegistered(address token);
 error TokenNotFound(uint256 tokenId);
 error TransferFailed();
 error URIAlreadyExists(string tokenURI);
+error UserMustHaveProtocolOrProjectAdminRole();
 error ValidPeriodExpired(uint256 expirationDate);
 error ZeroAddress();
 error ZeroLengthName(string name);

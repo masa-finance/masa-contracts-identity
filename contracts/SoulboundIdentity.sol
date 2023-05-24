@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
+pragma solidity ^0.8.8;
 
 import "./libraries/Errors.sol";
 import "./interfaces/ISoulboundIdentity.sol";
@@ -27,14 +27,16 @@ contract SoulboundIdentity is MasaSBTAuthority, ISoulboundIdentity {
         address admin,
         string memory name,
         string memory symbol,
-        string memory baseTokenURI
+        string memory baseTokenURI,
+        PaymentParams memory paymentParams
     ) public initializer {
         MasaSBTAuthority._initialize(
             admin,
             name,
             symbol,
             baseTokenURI,
-            address(0)
+            address(0),
+            paymentParams
         );
     }
 
@@ -56,11 +58,24 @@ contract SoulboundIdentity is MasaSBTAuthority, ISoulboundIdentity {
     /// @notice Mints a new soulbound identity
     /// @dev The caller can only mint one identity per address
     /// @param to Address of the owner of the new identity
-    function mint(address to) public override returns (uint256) {
+    /// @return The identity ID of the newly minted identity
+    function mint(address to) external payable override returns (uint256) {
+        return mint(address(0), to);
+    }
+
+    /// @notice Mints a new soulbound identity
+    /// @dev The caller can only mint one identity per address
+    /// @param paymentMethod Address of the payment method to use
+    /// @param to Address of the owner of the new identity
+    /// @return The identity ID of the newly minted identity
+    function mint(
+        address paymentMethod,
+        address to
+    ) public payable override returns (uint256) {
         // Soulbound identity already created!
         if (balanceOf(to) > 0) revert IdentityAlreadyCreated(to);
 
-        return _mintWithCounter(to);
+        return _mintWithCounter(paymentMethod, to);
     }
 
     /// @notice Mints a new soulbound identity with a SoulName associated to it
@@ -74,8 +89,33 @@ contract SoulboundIdentity is MasaSBTAuthority, ISoulboundIdentity {
         string memory name,
         uint256 yearsPeriod,
         string memory _tokenURI
-    ) external override soulNameAlreadySet nonReentrant returns (uint256) {
-        uint256 identityId = mint(to);
+    ) external payable override soulNameAlreadySet returns (uint256) {
+        return
+            mintIdentityWithName(address(0), to, name, yearsPeriod, _tokenURI);
+    }
+
+    /// @notice Mints a new soulbound identity with a SoulName associated to it
+    /// @dev The caller can only mint one identity per address, and the name must be unique
+    /// @param paymentMethod Address of the payment method to use
+    /// @param to Address of the owner of the new identity
+    /// @param name Name of the new identity
+    /// @param yearsPeriod Years of validity of the name
+    /// @param _tokenURI URI of the NFT
+    function mintIdentityWithName(
+        address paymentMethod,
+        address to,
+        string memory name,
+        uint256 yearsPeriod,
+        string memory _tokenURI
+    )
+        public
+        payable
+        override
+        soulNameAlreadySet
+        nonReentrant
+        returns (uint256)
+    {
+        uint256 identityId = mint(paymentMethod, to);
         soulName.mint(to, name, yearsPeriod, _tokenURI);
 
         return identityId;

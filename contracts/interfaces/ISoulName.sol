@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
+pragma solidity ^0.8.8;
 
 interface ISoulName {
     function mint(
@@ -14,6 +14,10 @@ interface ISoulName {
     function isAvailable(
         string memory name
     ) external view returns (bool available);
+
+    function tokenData(
+        uint256 tokenId
+    ) external view returns (string memory name, uint256 expirationDate);
 
     function getTokenData(
         string memory name
