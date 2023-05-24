@@ -24,10 +24,12 @@ const func: DeployFunction = async ({
   const env = getEnvParams(network.name);
 
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
+  const soulNameDeployed = await deployments.get("SoulName");
 
   const constructorArguments = [
     env.ADMIN || admin.address,
     soulboundIdentityDeployed.address,
+    [soulNameDeployed.address],
     [
       env.SWAP_ROUTER,
       env.WETH_TOKEN,
@@ -103,6 +105,7 @@ func.skip = async ({ network }) => {
 func.tags = ["SoulLinker"];
 func.dependencies = [
   "SoulboundIdentity",
+  "SoulName",
   "SoulboundCreditScore",
   "SoulboundGreen"
 ];

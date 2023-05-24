@@ -12,6 +12,8 @@ import {
   SoulboundCreditScore__factory,
   SoulboundIdentity,
   SoulboundIdentity__factory,
+  SoulName,
+  SoulName__factory,
   SoulLinker,
   SoulLinker__factory
 } from "../typechain";
@@ -23,10 +25,19 @@ const expect = chai.expect;
 
 const env = getEnvParams("hardhat");
 
+const SOUL_NAME1 = "soulNameTest1";
+const SOUL_NAME2 = "soulNameTest2";
+const SOUL_NAME3 = "soulNameTest3";
+const YEAR = 1; // 1 year
+const ARWEAVE_LINK1 = "ar://jK9sR4OrYvODj7PD3czIAyNJalub0-vdV_JAg1NqQ-o";
+const ARWEAVE_LINK2 = "ar://2Ohog_ya_61nTJlKox43L4ZQzZ9DGRao8NU6WZRxs8";
+
 // contract instances
 let soulboundIdentity: SoulboundIdentity;
 let soulboundCreditScore: SoulboundCreditScore;
 let soulLinker: SoulLinker;
+let soulName: SoulName;
+let soulName2: SoulName;
 
 let owner: SignerWithAddress;
 let someone: SignerWithAddress;
@@ -40,6 +51,8 @@ let creditScore1: number;
 
 const signatureDate = Math.floor(Date.now() / 1000);
 const expirationDate = Math.floor(Date.now() / 1000) + 60 * 15;
+
+const { deploy } = deployments;
 
 const signLink = async (
   readerIdentityId: number,
@@ -123,6 +136,7 @@ describe("Soul Linker", () => {
 
   beforeEach(async () => {
     await deployments.fixture("SoulboundIdentity", { fallbackToGlobal: false });
+    await deployments.fixture("SoulName", { fallbackToGlobal: false });
     await deployments.fixture("SoulboundCreditScore", {
       fallbackToGlobal: false
     });
@@ -131,6 +145,7 @@ describe("Soul Linker", () => {
     const { address: soulboundIdentityAddress } = await deployments.get(
       "SoulboundIdentity"
     );
+    const { address: soulNameAddress } = await deployments.get("SoulName");
     const { address: soulboundCreditScoreAddress } = await deployments.get(
       "SoulboundCreditScore"
     );
@@ -140,11 +155,26 @@ describe("Soul Linker", () => {
       soulboundIdentityAddress,
       owner
     );
+    soulName = SoulName__factory.connect(soulNameAddress, owner);
     soulboundCreditScore = SoulboundCreditScore__factory.connect(
       soulboundCreditScoreAddress,
       owner
     );
     soulLinker = SoulLinker__factory.connect(soulLinkerAddress, owner);
+
+    // we deploy a second SoulName contract
+    const soulNameDepl = await deploy("SoulName", {
+      from: owner.address,
+      args: [
+        owner.address,
+        "Name",
+        "SYM",
+        soulboundIdentityAddress,
+        ".test",
+        "https://test.com"
+      ]
+    });
+    soulName2 = SoulName__factory.connect(soulNameDepl.address, owner);
 
     // we mint identity SBT for dataOwner
     let mintTx = await soulboundIdentity
@@ -823,6 +853,149 @@ describe("Soul Linker", () => {
             signatureDate
           )
       ).to.be.rejected;
+    });
+  });
+
+  describe("set a default SoulName", () => {
+    let nameId2;
+    let nameId3;
+
+    beforeEach(async () => {
+      // mint a second name with the first soul name
+      await soulName
+        .connect(owner)
+        .mint(dataOwner.address, SOUL_NAME1, YEAR, ARWEAVE_LINK1);
+
+      const mintTx = await soulName
+        .connect(owner)
+        .mint(dataOwner.address, SOUL_NAME2, YEAR, ARWEAVE_LINK2);
+      const mintReceipt = await mintTx.wait();
+
+      nameId2 = mintReceipt.events![0].args![2].toNumber();
+
+      // mint a third name with the second soul name
+      const mintTx2 = await soulName2
+        .connect(owner)
+        .mint(dataOwner.address, SOUL_NAME3, YEAR, ARWEAVE_LINK2);
+      const mintReceipt2 = await mintTx2.wait();
+
+      nameId3 = mintReceipt2.events![0].args![2].toNumber();
+    });
+
+    it("should add SoulName from owner", async () => {
+      await soulLinker.connect(owner).addSoulName(soulName2.address);
+
+      expect(await soulLinker.isSoulName(soulName2.address)).to.be.true;
+    });
+
+    it("should fail to add SoulName from non owner", async () => {
+      await expect(soulLinker.connect(someone).addSoulName(soulName2.address))
+        .to.be.rejected;
+    });
+
+    it("should remove SoulName from owner", async () => {
+      await soulLinker.connect(owner).removeSoulName(soulName.address);
+
+      expect(await soulLinker.isSoulName(soulName.address)).to.be.false;
+    });
+
+    it("should fail to remove SoulName from non owner", async () => {
+      await expect(soulLinker.connect(someone).removeSoulName(soulName.address))
+        .to.be.rejected;
+    });
+
+    it("only owner of the name can set a default SoulName", async () => {
+      await expect(
+        soulLinker.connect(owner).setDefaultSoulName(soulName.address, nameId2)
+      ).to.be.rejected;
+    });
+
+    it("we can't set a default soul name of a non registered SoulName token", async () => {
+      await expect(
+        soulLinker
+          .connect(dataOwner)
+          .setDefaultSoulName(soulName2.address, nameId3)
+      ).to.be.rejectedWith("SoulNameNotRegistered");
+    });
+
+    it("getSoulNames(uint256) returns array of SBT names with the default name", async () => {
+      expect(
+        (await soulLinker["getSoulNames(uint256)"](ownerIdentityId)).names
+      ).to.deep.equal([SOUL_NAME1.toLowerCase(), SOUL_NAME2.toLowerCase()]);
+
+      expect((await soulLinker.defaultSoulName(dataOwner.address)).exists).to.be
+        .false;
+
+      // we set the second name as default
+      await soulLinker
+        .connect(dataOwner)
+        .setDefaultSoulName(soulName.address, nameId2);
+
+      expect(
+        (await soulLinker["getSoulNames(uint256)"](ownerIdentityId)).names
+      ).to.deep.equal([SOUL_NAME1.toLowerCase(), SOUL_NAME2.toLowerCase()]);
+      expect(
+        (await soulLinker["getSoulNames(uint256)"](ownerIdentityId)).defaultName
+      ).to.deep.equal(SOUL_NAME2);
+
+      expect((await soulLinker.defaultSoulName(dataOwner.address)).exists).to.be
+        .true;
+      expect(
+        (await soulLinker.defaultSoulName(dataOwner.address)).tokenId
+      ).to.be.equal(nameId2);
+    });
+
+    it("getSoulNames(address) returns array of SBT names with the default name", async () => {
+      expect(
+        (await soulLinker["getSoulNames(address)"](dataOwner.address)).names
+      ).to.deep.equal([SOUL_NAME1.toLowerCase(), SOUL_NAME2.toLowerCase()]);
+
+      expect((await soulLinker.defaultSoulName(dataOwner.address)).exists).to.be
+        .false;
+
+      // we set the second name as default
+      await soulLinker
+        .connect(dataOwner)
+        .setDefaultSoulName(soulName.address, nameId2);
+
+      expect(
+        (await soulLinker["getSoulNames(uint256)"](ownerIdentityId)).names
+      ).to.deep.equal([SOUL_NAME1.toLowerCase(), SOUL_NAME2.toLowerCase()]);
+      expect(
+        (await soulLinker["getSoulNames(uint256)"](ownerIdentityId)).defaultName
+      ).to.deep.equal(SOUL_NAME2);
+
+      expect((await soulLinker.defaultSoulName(dataOwner.address)).exists).to.be
+        .true;
+      expect(
+        (await soulLinker.defaultSoulName(dataOwner.address)).tokenId
+      ).to.be.equal(nameId2);
+    });
+
+    it("getSoulNames() using a second registered SoulName", async () => {
+      await soulLinker.connect(owner).addSoulName(soulName2.address);
+
+      // we set the third name as default
+      await soulLinker
+        .connect(dataOwner)
+        .setDefaultSoulName(soulName2.address, nameId3);
+
+      expect(
+        (await soulLinker["getSoulNames(uint256)"](ownerIdentityId)).names
+      ).to.deep.equal([
+        SOUL_NAME1.toLowerCase(),
+        SOUL_NAME2.toLowerCase(),
+        SOUL_NAME3.toLowerCase()
+      ]);
+      expect(
+        (await soulLinker["getSoulNames(uint256)"](ownerIdentityId)).defaultName
+      ).to.deep.equal(SOUL_NAME3);
+
+      expect((await soulLinker.defaultSoulName(dataOwner.address)).exists).to.be
+        .true;
+      expect(
+        (await soulLinker.defaultSoulName(dataOwner.address)).tokenId
+      ).to.be.equal(nameId3);
     });
   });
 });
