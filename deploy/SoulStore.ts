@@ -36,23 +36,6 @@ const func: DeployFunction = async ({
     soulNameDeployedAddress = ethers.constants.AddressZero;
   }
 
-  const constructorArguments = [
-    env.ADMIN || admin.address,
-    soulboundIdentityDeployed.address,
-    soulNameDeployedAddress,
-    env.SOULNAME_PRICE_5LEN, // 5+ length price
-    [
-      env.SWAP_ROUTER,
-      env.WETH_TOKEN,
-      env.USDC_TOKEN,
-      env.MASA_TOKEN,
-      env.PROJECTFEE_RECEIVER || admin.address,
-      env.PROTOCOLFEE_RECEIVER || ethers.constants.AddressZero,
-      env.PROTOCOLFEE_AMOUNT || 0,
-      env.PROTOCOLFEE_PERCENT || 0
-    ]
-  ];
-
   if (
     network.name === "mainnet" ||
     network.name === "goerli" ||
@@ -63,18 +46,38 @@ const func: DeployFunction = async ({
     network.name === "mumbai" ||
     network.name === "polygon"
   ) {
+    // deploy contract
     const soulStoreDeploymentResult = await deploy("SoulStore", {
       from: deployer,
-      args: constructorArguments,
+      args: [],
       log: true
     });
 
-    // verify contract with etherscan, if its not a local network or celo
+    const soulStore = await ethers.getContractAt(
+      "SoulStore",
+      soulStoreDeploymentResult.address
+    );
+
+    // initialize contract
+    await soulStore.initialize(
+      env.ADMIN || admin.address,
+      soulboundIdentityDeployed.address,
+      env.SOULNAME_PRICE_5LEN, // 5+ length price
+      {
+        swapRouter: env.SWAP_ROUTER,
+        wrappedNativeToken: env.WETH_TOKEN,
+        stableCoin: env.USDC_TOKEN,
+        masaToken: env.MASA_TOKEN,
+        reserveWallet: env.RESERVE_WALLET || admin.address
+      }
+    );
+
+    // verify contract with etherscan, if its not a local network
     if (network.name !== "hardhat") {
       try {
         await hre.run("verify:verify", {
           address: soulStoreDeploymentResult.address,
-          constructorArguments
+          constructorArguments: []
         });
       } catch (error) {
         if (
@@ -102,10 +105,6 @@ const func: DeployFunction = async ({
         : admin;
 
       // we set the registration prices per year and length of name
-      const soulStore = await ethers.getContractAt(
-        "SoulStore",
-        soulStoreDeploymentResult.address
-      );
       await soulStore
         .connect(signer)
         .setNameRegistrationPricePerYear(1, env.SOULNAME_PRICE_1LEN); // 1 length

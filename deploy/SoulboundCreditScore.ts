@@ -40,24 +40,6 @@ const func: DeployFunction = async ({
     soulboundIdentityDeployedAddress = ethers.constants.AddressZero;
   }
 
-  const constructorArguments = [
-    env.ADMIN || admin.address,
-    env.SOULBOUNDCREDITSCORE_NAME,
-    env.SOULBOUNDCREDITSCORE_SYMBOL,
-    baseUri,
-    soulboundIdentityDeployedAddress,
-    [
-      env.SWAP_ROUTER,
-      env.WETH_TOKEN,
-      env.USDC_TOKEN,
-      env.MASA_TOKEN,
-      env.PROJECTFEE_RECEIVER || admin.address,
-      env.PROTOCOLFEE_RECEIVER || ethers.constants.AddressZero,
-      env.PROTOCOLFEE_AMOUNT || 0,
-      env.PROTOCOLFEE_PERCENT || 0
-    ]
-  ];
-
   if (
     network.name === "mainnet" ||
     network.name === "goerli" ||
@@ -65,22 +47,44 @@ const func: DeployFunction = async ({
     network.name === "mumbai" ||
     network.name === "polygon"
   ) {
+    // deploy contract
     const soulboundCreditScoreDeploymentResult = await deploy(
       "SoulboundCreditScore",
       {
         from: deployer,
-        args: constructorArguments,
+        args: [],
         log: true
         // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
       }
     );
 
-    // verify contract with etherscan, if its not a local network or celo
+    const soulboundCreditScore = await ethers.getContractAt(
+      "SoulboundCreditScore",
+      soulboundCreditScoreDeploymentResult.address
+    );
+
+    // initialize contract
+    await soulboundCreditScore.initialize(
+      env.ADMIN || admin.address,
+      env.SOULBOUNDCREDITSCORE_NAME,
+      env.SOULBOUNDCREDITSCORE_SYMBOL,
+      baseUri,
+      soulboundIdentityDeployedAddress,
+      {
+        swapRouter: env.SWAP_ROUTER,
+        wrappedNativeToken: env.WETH_TOKEN,
+        stableCoin: env.USDC_TOKEN,
+        masaToken: env.MASA_TOKEN,
+        reserveWallet: env.RESERVE_WALLET || admin.address
+      }
+    );
+
+    // verify contract with etherscan, if its not a local network
     if (network.name !== "hardhat") {
       try {
         await hre.run("verify:verify", {
           address: soulboundCreditScoreDeploymentResult.address,
-          constructorArguments
+          constructorArguments: []
         });
       } catch (error) {
         if (

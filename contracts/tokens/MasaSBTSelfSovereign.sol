@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
+pragma solidity ^0.8.8;
 
-import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
+import "@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
@@ -13,7 +13,11 @@ import "./MasaSBT.sol";
 /// @notice Soulbound token. Non-fungible token that is not transferable.
 /// Adds a self-sovereign protocol to let minting using an authority signature
 /// @dev Implementation of https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763 Soulbound token.
-abstract contract MasaSBTSelfSovereign is MasaSBT, EIP712 {
+abstract contract MasaSBTSelfSovereign is
+    PaymentGateway,
+    MasaSBT,
+    EIP712Upgradeable
+{
     /* ========== STATE VARIABLES =========================================== */
 
     using Counters for Counters.Counter;
@@ -32,23 +36,24 @@ abstract contract MasaSBTSelfSovereign is MasaSBT, EIP712 {
     /// @param baseTokenURI Base URI of the token
     /// @param soulboundIdentity Address of the SoulboundIdentity contract
     /// @param paymentParams Payment gateway params
-    constructor(
+    function _initialize(
         address admin,
         string memory name,
         string memory symbol,
         string memory baseTokenURI,
         address soulboundIdentity,
         PaymentParams memory paymentParams
-    )
-        MasaSBT(
+    ) internal onlyInitializing {
+        PaymentGateway._initialize(admin, paymentParams);
+        MasaSBT._initialize(
             admin,
             name,
             symbol,
             baseTokenURI,
             soulboundIdentity,
             paymentParams
-        )
-    {}
+        );
+    }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
@@ -83,6 +88,50 @@ abstract contract MasaSBTSelfSovereign is MasaSBT, EIP712 {
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
     /* ========== VIEWS ===================================================== */
+
+    /// @notice Returns the price for minting
+    /// @dev Returns current pricing for minting
+    /// @param paymentMethod Address of token that user want to pay
+    /// @return Current price for minting in the given payment method
+    function getMintPrice(address paymentMethod) public view returns (uint256) {
+        if (mintPrice == 0 && mintPriceMASA == 0) {
+            return 0;
+        } else if (
+            paymentMethod == masaToken &&
+            enabledPaymentMethod[paymentMethod] &&
+            mintPriceMASA > 0
+        ) {
+            // price in MASA without conversion rate
+            return mintPriceMASA;
+        } else if (
+            paymentMethod == stableCoin && enabledPaymentMethod[paymentMethod]
+        ) {
+            // stable coin
+            return mintPrice;
+        } else if (enabledPaymentMethod[paymentMethod]) {
+            // ETH and ERC 20 token
+            return _convertFromStableCoin(paymentMethod, mintPrice);
+        } else {
+            revert InvalidPaymentMethod(paymentMethod);
+        }
+    }
+
+    /// @notice Query if a contract implements an interface
+    /// @dev Interface identification is specified in ERC-165.
+    /// @param interfaceId The interface identifier, as specified in ERC-165
+    /// @return `true` if the contract implements `interfaceId` and
+    ///  `interfaceId` is not 0xffffffff, `false` otherwise
+    function supportsInterface(
+        bytes4 interfaceId
+    )
+        public
+        view
+        virtual
+        override(AccessControlUpgradeable, MasaSBT)
+        returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
+    }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
 

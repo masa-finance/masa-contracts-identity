@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
-
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+pragma solidity ^0.8.8;
 
 import "./libraries/Errors.sol";
 import "./tokens/MasaSBTSelfSovereign.sol";
@@ -10,7 +8,7 @@ import "./tokens/MasaSBTSelfSovereign.sol";
 /// @author Masa Finance
 /// @notice Soulbound token that represents a Two-factor authentication (2FA)
 /// @dev Soulbound Green, that inherits from the SBT contract.
-contract SoulboundGreen is MasaSBTSelfSovereign, ReentrancyGuard {
+contract SoulboundGreen is MasaSBTSelfSovereign {
     /* ========== STATE VARIABLES =========================================== */
 
     /* ========== INITIALIZE ================================================ */
@@ -23,24 +21,24 @@ contract SoulboundGreen is MasaSBTSelfSovereign, ReentrancyGuard {
     /// @param baseTokenURI Base URI of the token
     /// @param soulboundIdentity Address of the SoulboundIdentity contract
     /// @param paymentParams Payment gateway params
-    constructor(
+    function initialize(
         address admin,
         string memory name,
         string memory symbol,
         string memory baseTokenURI,
         address soulboundIdentity,
         PaymentParams memory paymentParams
-    )
-        MasaSBTSelfSovereign(
+    ) public initializer {
+        MasaSBTSelfSovereign._initialize(
             admin,
             name,
             symbol,
             baseTokenURI,
             soulboundIdentity,
             paymentParams
-        )
-        EIP712("SoulboundGreen", "1.0.0")
-    {}
+        );
+        __EIP712_init("SoulboundGreen", "1.0.0");
+    }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 

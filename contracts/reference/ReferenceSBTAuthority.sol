@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
+pragma solidity ^0.8.8;
 
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
@@ -25,9 +25,7 @@ contract ReferenceSBTAuthority is MasaSBTAuthority, ReentrancyGuard {
     /// @param symbol Symbol of the token
     /// @param baseTokenURI Base URI of the token
     /// @param soulboundIdentity Address of the SoulboundIdentity contract
-    /// @param paymentParams Payment gateway params
-    /// @param _maxSBTToMint Maximum number of SBT that can be minted
-    constructor(
+    function initialize(
         address admin,
         string memory name,
         string memory symbol,
@@ -35,16 +33,15 @@ contract ReferenceSBTAuthority is MasaSBTAuthority, ReentrancyGuard {
         address soulboundIdentity,
         PaymentParams memory paymentParams,
         uint256 _maxSBTToMint
-    )
-        MasaSBTAuthority(
+    ) public initializer {
+        MasaSBTAuthority._initialize(
             admin,
             name,
             symbol,
             baseTokenURI,
             soulboundIdentity,
             paymentParams
-        )
-    {
+        );
         maxSBTToMint = _maxSBTToMint;
     }
 

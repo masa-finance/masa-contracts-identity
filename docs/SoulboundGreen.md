@@ -421,6 +421,27 @@ function hasRole(bytes32 role, address account) external view returns (bool)
 |---|---|---|
 | _0 | bool | undefined |
 
+### initialize
+
+```solidity
+function initialize(address admin, string name, string symbol, string baseTokenURI, address soulboundIdentity, PaymentGateway.PaymentParams paymentParams) external nonpayable
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| admin | address | undefined |
+| name | string | undefined |
+| symbol | string | undefined |
+| baseTokenURI | string | undefined |
+| soulboundIdentity | address | undefined |
+| paymentParams | PaymentGateway.PaymentParams | undefined |
+
 ### masaToken
 
 ```solidity
@@ -1166,6 +1187,22 @@ event Burn(address indexed _owner, uint256 indexed _tokenId)
 |---|---|---|
 | _owner `indexed` | address | undefined |
 | _tokenId `indexed` | uint256 | undefined |
+
+### Initialized
+
+```solidity
+event Initialized(uint8 version)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| version  | uint8 | undefined |
 
 ### Mint
 

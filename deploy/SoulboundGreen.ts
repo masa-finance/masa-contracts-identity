@@ -41,7 +41,21 @@ const func: DeployFunction = async ({
     soulboundIdentityDeployedAddress = ethers.constants.AddressZero;
   }
 
-  const constructorArguments = [
+  // deploy contract
+  const soulboundGreenDeploymentResult = await deploy("SoulboundGreen", {
+    from: deployer,
+    args: [],
+    log: true
+    // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
+  });
+
+  const soulboundGreen = await ethers.getContractAt(
+    "SoulboundGreen",
+    soulboundGreenDeploymentResult.address
+  );
+
+  // initialize contract
+  await soulboundGreen.initialize(
     env.ADMIN || admin.address,
     env.SOULBOUNDGREEN_NAME,
     env.SOULBOUNDGREEN_SYMBOL,
@@ -57,21 +71,14 @@ const func: DeployFunction = async ({
       env.PROTOCOLFEE_AMOUNT || 0,
       env.PROTOCOLFEE_PERCENT || 0
     ]
-  ];
+  );
 
-  const soulboundGreenDeploymentResult = await deploy("SoulboundGreen", {
-    from: deployer,
-    args: constructorArguments,
-    log: true
-    // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
-  });
-
-  // verify contract with etherscan, if its not a local network or celo
+  // verify contract with etherscan, if its not a local network
   if (network.name !== "hardhat") {
     try {
       await hre.run("verify:verify", {
         address: soulboundGreenDeploymentResult.address,
-        constructorArguments
+        constructorArguments: []
       });
     } catch (error) {
       if (

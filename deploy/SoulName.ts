@@ -22,7 +22,7 @@ const func: DeployFunction = async ({
 
   const soulboundIdentityDeployed = await deployments.get("SoulboundIdentity");
 
-  const constructorArguments = [
+  const initArguments = [
     env.ADMIN || admin.address,
     env.SOULNAME_NAME,
     env.SOULNAME_SYMBOL,
@@ -41,16 +41,16 @@ const func: DeployFunction = async ({
   ) {
     const soulNameDeploymentResult = await deploy("SoulName", {
       from: deployer,
-      args: constructorArguments,
+      args: initArguments,
       log: true
     });
 
-    // verify contract with etherscan, if its not a local network or celo
-    if (network.name !== "hardhat") {
+    // verify contract with etherscan, if its not a local network
+    if (network.name !== "hardhat" && network.name !== "basegoerli") {
       try {
         await hre.run("verify:verify", {
           address: soulNameDeploymentResult.address,
-          constructorArguments
+          initArguments
         });
       } catch (error) {
         if (

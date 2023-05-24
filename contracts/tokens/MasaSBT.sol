@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
+pragma solidity ^0.8.8;
 
 import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 
 import "../dex/PaymentGateway.sol";
 import "../libraries/Errors.sol";
@@ -21,8 +23,10 @@ abstract contract MasaSBT is
     PaymentGateway,
     SBT,
     SBTEnumerable,
+    AccessControlUpgradeable,
     SBTBurnable,
-    ILinkableSBT
+    ILinkableSBT,
+    ReentrancyGuardUpgradeable
 {
     /* ========== STATE VARIABLES =========================================== */
 
@@ -48,16 +52,18 @@ abstract contract MasaSBT is
     /// @param name Name of the token
     /// @param symbol Symbol of the token
     /// @param baseTokenURI Base URI of the token
-    /// @param _soulboundIdentity Address of the SoulboundIdentity contract
-    /// @param paymentParams Payment gateway params
-    constructor(
+    function _initialize(
         address admin,
         string memory name,
         string memory symbol,
         string memory baseTokenURI,
-        address _soulboundIdentity,
-        PaymentParams memory paymentParams
-    ) SBT(name, symbol) PaymentGateway(admin, paymentParams) {
+        address _soulboundIdentity
+    ) internal virtual onlyInitializing {
+        SBT._initialize(name, symbol);
+        PaymentGateway._initialize(admin, paymentParams);
+        __ReentrancyGuard_init();
+        __AccessControl_init();
+
         _grantRole(DEFAULT_ADMIN_ROLE, admin);
 
         _baseTokenURI = baseTokenURI;
@@ -201,7 +207,7 @@ abstract contract MasaSBT is
         public
         view
         virtual
-        override(SBT, SBTEnumerable, AccessControl, IERC165)
+        override(SBT, SBTEnumerable, AccessControlUpgradeable, IERC165)
         returns (bool)
     {
         return super.supportsInterface(interfaceId);

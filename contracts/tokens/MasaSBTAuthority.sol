@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
+pragma solidity ^0.8.8;
 
 import "@openzeppelin/contracts/utils/Counters.sol";
 
@@ -25,25 +25,21 @@ abstract contract MasaSBTAuthority is MasaSBT {
     /// @param name Name of the token
     /// @param symbol Symbol of the token
     /// @param baseTokenURI Base URI of the token
-    /// @param soulboundIdentity Address of the SoulboundIdentity contract
-    /// @param paymentParams Payment gateway params
-    constructor(
+    function _initialize(
         address admin,
         string memory name,
         string memory symbol,
         string memory baseTokenURI,
-        address soulboundIdentity,
-        PaymentParams memory paymentParams
-    )
-        MasaSBT(
+        address soulboundIdentity
+    ) internal override onlyInitializing {
+        MasaSBT._initialize(
             admin,
             name,
             symbol,
             baseTokenURI,
             soulboundIdentity,
             paymentParams
-        )
-    {
+        );
         _grantRole(MINTER_ROLE, admin);
     }
 

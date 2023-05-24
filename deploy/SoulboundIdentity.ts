@@ -24,23 +24,6 @@ const func: DeployFunction = async ({
   const env = getEnvParams(network.name);
   const baseUri = `${env.BASE_URI}/identity/${network.name}/`;
 
-  const constructorArguments = [
-    env.ADMIN || admin.address,
-    env.SOULBOUNDIDENTITY_NAME,
-    env.SOULBOUNDIDENTITY_SYMBOL,
-    baseUri,
-    [
-      env.SWAP_ROUTER,
-      env.WETH_TOKEN,
-      env.USDC_TOKEN,
-      env.MASA_TOKEN,
-      env.PROJECTFEE_RECEIVER || admin.address,
-      env.PROTOCOLFEE_RECEIVER || ethers.constants.AddressZero,
-      env.PROTOCOLFEE_AMOUNT || 0,
-      env.PROTOCOLFEE_PERCENT || 0
-    ]
-  ];
-
   if (
     network.name === "mainnet" ||
     network.name === "goerli" ||
@@ -51,22 +34,36 @@ const func: DeployFunction = async ({
     network.name === "mumbai" ||
     network.name === "polygon"
   ) {
+    // deploy contract
     const soulboundIdentityDeploymentResult = await deploy(
       "SoulboundIdentity",
       {
         from: deployer,
-        args: constructorArguments,
+        args: [],
         log: true
         // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
       }
     );
 
-    // verify contract with etherscan, if its not a local network or celo
+    const soulboundIdentity = await ethers.getContractAt(
+      "SoulboundIdentity",
+      soulboundIdentityDeploymentResult.address
+    );
+
+    // initialize contract
+    await soulboundIdentity.initialize(
+      env.ADMIN || admin.address,
+      env.SOULBOUNDIDENTITY_NAME,
+      env.SOULBOUNDIDENTITY_SYMBOL,
+      baseUri
+    );
+
+    // verify contract with etherscan, if its not a local network
     if (network.name !== "hardhat") {
       try {
         await hre.run("verify:verify", {
           address: soulboundIdentityDeploymentResult.address,
-          constructorArguments
+          constructorArguments: []
         });
       } catch (error) {
         if (

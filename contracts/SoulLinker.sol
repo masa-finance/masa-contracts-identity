@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
+pragma solidity ^0.8.8;
 
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
-import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
-import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-import "@openzeppelin/contracts/security/Pausable.sol";
+import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 
 import "./libraries/Errors.sol";
 import "./dex/PaymentGateway.sol";
@@ -16,7 +15,12 @@ import "./interfaces/ISoulName.sol";
 /// @title Soul linker
 /// @author Masa Finance
 /// @notice Soul linker smart contract that let add links to a Soulbound token.
-contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
+contract SoulLinker is
+    PaymentGateway,
+    EIP712Upgradeable,
+    PausableUpgradeable,
+    ReentrancyGuardUpgradeable
+{
     /* ========== STATE VARIABLES =========================================== */
 
     ISoulboundIdentity public soulboundIdentity;
@@ -68,13 +72,18 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
     /// @param _soulboundIdentity Soulbound identity smart contract
     /// @param _soulNames Soul name smart contracts
     /// @param paymentParams Payment gateway params
-    constructor(
+    function initialize(
         address admin,
         ISoulboundIdentity _soulboundIdentity,
         ISoulName[] memory _soulNames,
         PaymentParams memory paymentParams
-    ) EIP712("SoulLinker", "1.0.0") PaymentGateway(admin, paymentParams) {
+    ) public initializer {
         if (address(_soulboundIdentity) == address(0)) revert ZeroAddress();
+
+        PaymentGateway._initialize(admin, paymentParams);
+        __ReentrancyGuard_init();
+        __Pausable_init();
+        __EIP712_init("SoulLinker", "1.0.0");
 
         soulboundIdentity = _soulboundIdentity;
         soulNames = _soulNames;
@@ -628,7 +637,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
         bytes memory signature,
         address owner
     ) internal pure returns (bool) {
-        return ECDSA.recover(digest, signature) == owner;
+        return ECDSAUpgradeable.recover(digest, signature) == owner;
     }
 
     /* ========== MODIFIERS ================================================= */

@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
-
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+pragma solidity ^0.8.8;
 
 import "./libraries/Errors.sol";
 import "./interfaces/ISoulboundIdentity.sol";
@@ -12,11 +10,7 @@ import "./tokens/MasaSBTAuthority.sol";
 /// @author Masa Finance
 /// @notice Soulbound token that represents an identity.
 /// @dev Soulbound identity, that inherits from the SBT contract.
-contract SoulboundIdentity is
-    MasaSBTAuthority,
-    ISoulboundIdentity,
-    ReentrancyGuard
-{
+contract SoulboundIdentity is MasaSBTAuthority, ISoulboundIdentity {
     /* ========== STATE VARIABLES =========================================== */
 
     ISoulName public soulName;
@@ -29,23 +23,22 @@ contract SoulboundIdentity is
     /// @param name Name of the token
     /// @param symbol Symbol of the token
     /// @param baseTokenURI Base URI of the token
-    /// @param paymentParams Payment gateway params
-    constructor(
+    function initialize(
         address admin,
         string memory name,
         string memory symbol,
         string memory baseTokenURI,
         PaymentParams memory paymentParams
-    )
-        MasaSBTAuthority(
+    ) public initializer {
+        MasaSBTAuthority._initialize(
             admin,
             name,
             symbol,
             baseTokenURI,
             address(0),
             paymentParams
-        )
-    {}
+        );
+    }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
@@ -253,6 +246,17 @@ contract SoulboundIdentity is
         uint256 tokenId
     ) external view soulNameAlreadySet returns (string[] memory sbtNames) {
         return soulName.getSoulNames(tokenId);
+    }
+
+    /// @notice Query if a contract implements an interface
+    /// @dev Interface identification is specified in ERC-165.
+    /// @param interfaceId The interface identifier, as specified in ERC-165
+    /// @return `true` if the contract implements `interfaceId` and
+    ///  `interfaceId` is not 0xffffffff, `false` otherwise
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view virtual override(IERC165, MasaSBT) returns (bool) {
+        return super.supportsInterface(interfaceId);
     }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
