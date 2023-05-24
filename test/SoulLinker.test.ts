@@ -882,6 +882,30 @@ describe("Soul Linker", () => {
       nameId3 = mintReceipt2.events![0].args![2].toNumber();
     });
 
+    it("should add SoulName from owner", async () => {
+      await soulLinker.connect(owner).addSoulName(soulName2.address);
+
+      expect(await soulLinker.isSoulName(soulName2.address)).to.be.true;
+    });
+
+    it("should fail to add SoulName from non owner", async () => {
+      await expect(
+        soulLinker.connect(someone).addSoulName(soulName2.address)
+      ).to.be.rejected;
+    });
+
+    it("should remove SoulName from owner", async () => {
+      await soulLinker.connect(owner).removeSoulName(soulName.address);
+
+      expect(await soulLinker.isSoulName(soulName.address)).to.be.false;
+    });
+
+    it("should fail to remove SoulName from non owner", async () => {
+      await expect(
+        soulLinker.connect(someone).removeSoulName(soulName.address)
+      ).to.be.rejected;
+    });
+
     it("only owner of the name can set a default SoulName", async () => {
       await expect(
         soulLinker.connect(owner).setDefaultSoulName(soulName.address, nameId2)
