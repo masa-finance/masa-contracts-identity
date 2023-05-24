@@ -296,6 +296,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
     /// @param token Address of the SoulName contract
     /// @param tokenId TokenId of the soul name
     function setDefaultSoulName(address token, uint256 tokenId) external {
+        if (isSoulName[token] == false) revert SoulNameNotRegistered(token);
         address soulNameOwner = IERC721Enumerable(token).ownerOf(tokenId);
         if (_msgSender() != soulNameOwner) revert CallerNotOwner(_msgSender());
 
