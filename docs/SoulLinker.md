@@ -1476,6 +1476,22 @@ error SoulNameNotExist()
 
 
 
+### SoulNameNotRegistered
+
+```solidity
+error SoulNameNotRegistered(address token)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| token | address | undefined |
+
 ### TransferFailed
 
 ```solidity
