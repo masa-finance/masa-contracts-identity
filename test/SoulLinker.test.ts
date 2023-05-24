@@ -889,9 +889,8 @@ describe("Soul Linker", () => {
     });
 
     it("should fail to add SoulName from non owner", async () => {
-      await expect(
-        soulLinker.connect(someone).addSoulName(soulName2.address)
-      ).to.be.rejected;
+      await expect(soulLinker.connect(someone).addSoulName(soulName2.address))
+        .to.be.rejected;
     });
 
     it("should remove SoulName from owner", async () => {
@@ -901,15 +900,22 @@ describe("Soul Linker", () => {
     });
 
     it("should fail to remove SoulName from non owner", async () => {
-      await expect(
-        soulLinker.connect(someone).removeSoulName(soulName.address)
-      ).to.be.rejected;
+      await expect(soulLinker.connect(someone).removeSoulName(soulName.address))
+        .to.be.rejected;
     });
 
     it("only owner of the name can set a default SoulName", async () => {
       await expect(
         soulLinker.connect(owner).setDefaultSoulName(soulName.address, nameId2)
       ).to.be.rejected;
+    });
+
+    it("we can't set a default soul name of a non registered SoulName token", async () => {
+      await expect(
+        soulLinker
+          .connect(dataOwner)
+          .setDefaultSoulName(soulName2.address, nameId3)
+      ).to.be.rejectedWith("SoulNameNotRegistered");
     });
 
     it("getSoulNames(uint256) returns array of SBT names with the default name", async () => {
