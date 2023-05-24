@@ -21,7 +21,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
 
     ISoulboundIdentity public soulboundIdentity;
     ISoulName[] public soulNames;
-    mapping (address => bool) public isSoulName;
+    mapping(address => bool) public isSoulName;
 
     // token => tokenId => readerIdentityId => signatureDate => LinkData
     mapping(address => mapping(uint256 => mapping(uint256 => mapping(uint256 => LinkData))))
@@ -78,7 +78,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
 
         soulboundIdentity = _soulboundIdentity;
         soulNames = _soulNames;
-        for(uint256 i = 0; i < _soulNames.length; i++) {
+        for (uint256 i = 0; i < _soulNames.length; i++) {
             isSoulName[address(_soulNames[i])] = true;
         }
     }
@@ -531,11 +531,30 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
     /// @return names Array of soul names associated to the account
     function getSoulNames(
         address owner
-    ) external view returns (string memory defaultName, string[] memory names) {
-        return (
-            getDefaultSoulName(owner),
-            ISoulName(soulboundIdentity.getSoulName()).getSoulNames(owner)
-        );
+    ) public view returns (string memory defaultName, string[] memory names) {
+        uint256 nameCount = 0;
+        for (uint256 i = 0; i < soulNames.length; i++) {
+            string[] memory _soulNamesFromIdentity = soulNames[i].getSoulNames(
+                owner
+            );
+            for (uint256 j = 0; j < _soulNamesFromIdentity.length; j++) {
+                nameCount++;
+            }
+        }
+
+        string[] memory _soulNames = new string[](nameCount);
+        uint256 n = 0;
+        for (uint256 i = 0; i < soulNames.length; i++) {
+            string[] memory _soulNamesFromIdentity = soulNames[i].getSoulNames(
+                owner
+            );
+            for (uint256 j = 0; j < _soulNamesFromIdentity.length; j++) {
+                _soulNames[n] = _soulNamesFromIdentity[j];
+                n++;
+            }
+        }
+
+        return (getDefaultSoulName(owner), _soulNames);
     }
 
     /// @notice Returns all the active soul names of an account
@@ -547,10 +566,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
         uint256 tokenId
     ) external view returns (string memory defaultName, string[] memory names) {
         address owner = soulboundIdentity.ownerOf(tokenId);
-        return (
-            getDefaultSoulName(owner),
-            ISoulName(soulboundIdentity.getSoulName()).getSoulNames(tokenId)
-        );
+        return getSoulNames(owner);
     }
 
     /// @notice Returns the default soul name of an account
