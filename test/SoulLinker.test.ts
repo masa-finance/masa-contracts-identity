@@ -27,6 +27,7 @@ const env = getEnvParams("hardhat");
 
 const SOUL_NAME1 = "soulNameTest1";
 const SOUL_NAME2 = "soulNameTest2";
+const SOUL_NAME3 = "soulNameTest3";
 const YEAR = 1; // 1 year
 const ARWEAVE_LINK1 = "ar://jK9sR4OrYvODj7PD3czIAyNJalub0-vdV_JAg1NqQ-o";
 const ARWEAVE_LINK2 = "ar://2Ohog_ya_61nTJlKox43L4ZQzZ9DGRao8NU6WZRxs8";
@@ -36,6 +37,7 @@ let soulboundIdentity: SoulboundIdentity;
 let soulboundCreditScore: SoulboundCreditScore;
 let soulLinker: SoulLinker;
 let soulName: SoulName;
+let soulName2: SoulName;
 
 let owner: SignerWithAddress;
 let someone: SignerWithAddress;
@@ -49,6 +51,8 @@ let creditScore1: number;
 
 const signatureDate = Math.floor(Date.now() / 1000);
 const expirationDate = Math.floor(Date.now() / 1000) + 60 * 15;
+
+const { deploy } = deployments;
 
 const signLink = async (
   readerIdentityId: number,
@@ -157,6 +161,20 @@ describe("Soul Linker", () => {
       owner
     );
     soulLinker = SoulLinker__factory.connect(soulLinkerAddress, owner);
+
+    // we deploy a second SoulName contract
+    const soulNameDepl = await deploy("SoulName", {
+      from: owner.address,
+      args: [
+        owner.address,
+        "Name",
+        "SYM",
+        soulboundIdentityAddress,
+        ".test",
+        "https://test.com"
+      ]
+    });
+    soulName2 = SoulName__factory.connect(soulNameDepl.address, owner);
 
     // we mint identity SBT for dataOwner
     let mintTx = await soulboundIdentity
