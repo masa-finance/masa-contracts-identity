@@ -858,8 +858,10 @@ describe("Soul Linker", () => {
 
   describe("set a default SoulName", () => {
     let nameId2;
+    let nameId3;
 
     beforeEach(async () => {
+      // mint a second name with the first soul name
       await soulName
         .connect(owner)
         .mint(dataOwner.address, SOUL_NAME1, YEAR, ARWEAVE_LINK1);
@@ -870,6 +872,14 @@ describe("Soul Linker", () => {
       const mintReceipt = await mintTx.wait();
 
       nameId2 = mintReceipt.events![0].args![2].toNumber();
+
+      // mint a third name with the second soul name
+      const mintTx2 = await soulName2
+        .connect(owner)
+        .mint(dataOwner.address, SOUL_NAME3, YEAR, ARWEAVE_LINK2);
+      const mintReceipt2 = await mintTx2.wait();
+
+      nameId3 = mintReceipt2.events![0].args![2].toNumber();
     });
 
     it("only owner of the name can set a default SoulName", async () => {
