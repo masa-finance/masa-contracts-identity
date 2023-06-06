@@ -49,7 +49,8 @@ const func: DeployFunction = async ({
     network.name === "alfajores" ||
     network.name === "basegoerli" ||
     network.name === "mumbai" ||
-    network.name === "polygon"
+    network.name === "polygon" ||
+    network.name === "bsctest"
   ) {
     const soulboundIdentityDeploymentResult = await deploy(
       "SoulboundIdentity",
@@ -89,7 +90,8 @@ func.skip = async ({ network }) => {
     network.name !== "alfajores" &&
     network.name !== "basegoerli" &&
     network.name !== "mumbai" &&
-    network.name !== "polygon"
+    network.name !== "polygon" &&
+    network.name !== "bsctest"
   );
 };
 func.tags = ["SoulboundIdentity"];
