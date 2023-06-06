@@ -15,7 +15,8 @@
     "SoulboundGreen": "0x4d236e55e54Ed960887659d046C60f377cCa58F8"
   },
   "bsctest": {
-    "SoulboundGreen": "0x471e69B65c5b00FdBeB0f343CD46F98E4ea6F5ae"
+    "SoulboundGreen": "0x471e69B65c5b00FdBeB0f343CD46F98E4ea6F5ae",
+    "SoulboundIdentity": "0x1fCE0Ae50a8900f09E4A437F33E95313225Bb4b7"
   },
   "celo": {
     "SoulName": "0x376f5039Df4e9E9c864185d8FaBad4f04A7E394A",
