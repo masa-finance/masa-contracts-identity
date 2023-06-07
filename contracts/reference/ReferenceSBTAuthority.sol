@@ -95,11 +95,11 @@ contract ReferenceSBTAuthority is MasaSBTAuthority, ReentrancyGuard {
     /// @dev The caller must have the MINTER role
     /// @param paymentMethod Address of token that user want to pay
     /// @param identityId TokenIds array of the identity to mint the NFT to
-    /// @return The SBT IDs of the newly minted SBTs
+    /// @return tokenIds The SBT IDs of the newly minted SBTs
     function mint(
         address paymentMethod,
-        uint256[] identityId
-    ) external nonReentrant returns (uint256[]) {
+        uint256[] memory identityId
+    ) external nonReentrant returns (uint256[] memory tokenIds) {
         tokenIds = new uint256[](identityId.length);
         uint256 t = 0;
 
@@ -122,15 +122,15 @@ contract ReferenceSBTAuthority is MasaSBTAuthority, ReentrancyGuard {
     /// @dev The caller must have the MINTER role
     /// @param paymentMethod Address of token that user want to pay
     /// @param to Addresses array to mint the SBT to
-    /// @return The SBT IDs of the newly minted SBTs
+    /// @return tokenIds The SBT IDs of the newly minted SBTs
     function mint(
         address paymentMethod,
-        address[] to
-    ) external nonReentrant returns (uint256) {
-        tokenIds = new uint256[](identityId.length);
+        address[] memory to
+    ) external nonReentrant returns (uint256[] memory tokenIds) {
+        tokenIds = new uint256[](to.length);
         uint256 t = 0;
 
-        for (uint256 i = 0; i < identityId.length; i++) {
+        for (uint256 i = 0; i < to.length; i++) {
             if (maxSBTToMint > 0 && balanceOf(to[i]) >= maxSBTToMint)
                 revert MaxSBTMinted(to[i], maxSBTToMint);
 
