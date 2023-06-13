@@ -91,6 +91,59 @@ contract ReferenceSBTAuthority is MasaSBTAuthority, ReentrancyGuard {
         return tokenId;
     }
 
+    /// @notice Bulk mint of new SBTs
+    /// @dev The caller must have the MINTER role
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param identityId TokenIds array of the identity to mint the NFT to
+    /// @return tokenIds The SBT IDs of the newly minted SBTs
+    function mint(
+        address paymentMethod,
+        uint256[] memory identityId
+    ) external nonReentrant returns (uint256[] memory tokenIds) {
+        tokenIds = new uint256[](identityId.length);
+        uint256 t = 0;
+
+        for (uint256 i = 0; i < identityId.length; i++) {
+            address to = soulboundIdentity.ownerOf(identityId[i]);
+            if (maxSBTToMint > 0 && balanceOf(to) >= maxSBTToMint)
+                revert MaxSBTMinted(to, maxSBTToMint);
+
+            uint256 tokenId = _mintWithCounter(paymentMethod, to);
+
+            emit MintedToIdentity(tokenId, identityId[i]);
+            tokenIds[t] = tokenId;
+            t++;
+        }
+
+        return tokenIds;
+    }
+
+    /// @notice Bulk mint of new SBTs
+    /// @dev The caller must have the MINTER role
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param to Addresses array to mint the SBT to
+    /// @return tokenIds The SBT IDs of the newly minted SBTs
+    function mint(
+        address paymentMethod,
+        address[] memory to
+    ) external nonReentrant returns (uint256[] memory tokenIds) {
+        tokenIds = new uint256[](to.length);
+        uint256 t = 0;
+
+        for (uint256 i = 0; i < to.length; i++) {
+            if (maxSBTToMint > 0 && balanceOf(to[i]) >= maxSBTToMint)
+                revert MaxSBTMinted(to[i], maxSBTToMint);
+
+            uint256 tokenId = _mintWithCounter(paymentMethod, to[i]);
+
+            emit MintedToAddress(tokenId, to[i]);
+            tokenIds[t] = tokenId;
+            t++;
+        }
+
+        return tokenIds;
+    }
+
     /* ========== VIEWS ===================================================== */
 
     function tokenURI(
