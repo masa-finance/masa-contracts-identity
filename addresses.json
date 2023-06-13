@@ -12,7 +12,8 @@
     "SoulboundIdentity": "0x332aB163a034F912509Cae2F15f91f3263FF6479"
   },
   "bsc": {
-    "SoulboundGreen": "0x4d236e55e54Ed960887659d046C60f377cCa58F8"
+    "SoulboundGreen": "0x4d236e55e54Ed960887659d046C60f377cCa58F8",
+    "SoulboundIdentity": "0x7ab73C2F083B2725E5b6e245E6EA945d5f3CaaeA"
   },
   "bsctest": {
     "SoulboundGreen": "0x471e69B65c5b00FdBeB0f343CD46F98E4ea6F5ae",
