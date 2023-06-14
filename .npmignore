@@ -10,7 +10,6 @@ metadata/
 node_modules/
 src/
 test/
-typechain/
 .env.*
 .gitattributes
 .npmignore
