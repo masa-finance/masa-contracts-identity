@@ -11,6 +11,7 @@ async function main() {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
   const env = getEnvParams(network.name);
+  const envSSSBT = getEnvParams("sssbt");
 
   console.log(
     `Deploying to ${network.name} (chainId: ${network.config.chainId})`
@@ -21,9 +22,9 @@ async function main() {
 
   const constructorArguments = [
     env.ADMIN,
-    "Cloud Bound Token",
-    "CBT",
-    "https://arweave.net/lykHq8B2CfIH9R0ox69IaK1kFZVCndxuIKXRyLaK59k",
+    envSSSBT.SBT_NAME,
+    envSSSBT.SBT_SYMBOL,
+    envSSSBT.SBT_BASE_URI,
     soulboundIdentityDeployed.address,
     [
       env.SWAP_ROUTER,
@@ -35,10 +36,8 @@ async function main() {
       env.PROTOCOLFEE_AMOUNT || 0,
       env.PROTOCOLFEE_PERCENT || 0
     ],
-    1 // maxMints
+    envSSSBT.SBT_MAXMINTS
   ];
-
-  console.log(constructorArguments);
 
   const sssbt = await deploy("ReferenceSBTSelfSovereign", {
     from: deployer,
@@ -77,30 +76,30 @@ async function main() {
       ethers.provider
     );
 
-    const SssBT = await ethers.getContractAt(
+    const ReferenceSSSBT = await ethers.getContractAt(
       "ReferenceSBTSelfSovereign",
       sssbt.address
     );
 
-    // add authorities to soulboundCreditScore
+    // add authorities
     const authorities = env.AUTHORITY_WALLET.split(" ");
     for (let i = 0; i < authorities.length; i++) {
       console.log(`Adding authority ${authorities[i]}`);
-      await SssBT.connect(signer).addAuthority(authorities[i]);
+      await ReferenceSSSBT.connect(signer).addAuthority(authorities[i]);
     }
 
-    // add mint price to soulboundCreditScore
-    if (+env.SOULBOUNDCREDITSCORE_MINTING_PRICE != 0) {
-      await SssBT.connect(signer).setMintPrice(
-        env.SOULBOUNDCREDITSCORE_MINTING_PRICE
-      );
+    // add mint price
+    if (+envSSSBT.MINTING_PRICE != 0) {
+      await ReferenceSSSBT.connect(signer).setMintPrice(envSSSBT.MINTING_PRICE);
     }
 
     // we add payment methods
-    const paymentMethods = env.PAYMENT_METHODS_SOULBOUNDCREDITSCORE.split(" ");
+    const paymentMethods = envSSSBT.PAYMENT_METHODS.split(" ");
     for (let i = 0; i < paymentMethods.length; i++) {
       console.log(`Adding payment method ${paymentMethods[i]}`);
-      await SssBT.connect(signer).enablePaymentMethod(paymentMethods[i]);
+      await ReferenceSSSBT.connect(signer).enablePaymentMethod(
+        paymentMethods[i]
+      );
     }
   }
 }
