@@ -2,10 +2,7 @@
 import "@nomiclabs/hardhat-ethers";
 import hre from "hardhat";
 import { deployments, ethers, getNamedAccounts, network } from "hardhat";
-import { getEnvParams } from "./EnvParams";
-import ReferenceSBTSelfSovereignArtifact from "../artifacts/contracts/reference/ReferenceSBTSelfSovereign.sol/ReferenceSBTSelfSovereign.json";
-import { ReferenceSBTSelfSovereign } from "../typechain";
-import { deployContract } from "@nomiclabs/hardhat-ethers/types";
+import { getEnvParams, getPrivateKey } from "./EnvParams";
 
 /**
  * main function
@@ -52,21 +49,60 @@ async function main() {
   console.log(`ReferenceSBTSelfSovereign deployed to: ${sssbt.address}`);
 
   // Verify contract
-  try {
-    await hre.run("verify:verify", {
-      address: sssbt.address,
-      constructorArguments
-    });
-  } catch (error) {
-    if (
-      !error.message.includes("Contract source code already verified") &&
-      !error.message.includes("Reason: Already Verified")
-    ) {
-      throw error;
+  if (network.name !== "hardhat") {
+    try {
+      await hre.run("verify:verify", {
+        address: sssbt.address,
+        constructorArguments
+      });
+    } catch (error) {
+      if (
+        !error.message.includes("Contract source code already verified") &&
+        !error.message.includes("Reason: Already Verified")
+      ) {
+        throw error;
+      }
     }
   }
 
-  
+  // if it's not a production network, we set the variables
+  if (
+    network.name !== "bsc" &&
+    network.name !== "celo" &&
+    network.name !== "mainnet" &&
+    network.name !== "polygon"
+  ) {
+    const signer = new ethers.Wallet(
+      getPrivateKey(network.name),
+      ethers.provider
+    );
+
+    const SssBT = await ethers.getContractAt(
+      "ReferenceSBTSelfSovereign",
+      sssbt.address
+    );
+
+    // add authorities to soulboundCreditScore
+    const authorities = env.AUTHORITY_WALLET.split(" ");
+    for (let i = 0; i < authorities.length; i++) {
+      console.log(`Adding authority ${authorities[i]}`);
+      await SssBT.connect(signer).addAuthority(authorities[i]);
+    }
+
+    // add mint price to soulboundCreditScore
+    if (+env.SOULBOUNDCREDITSCORE_MINTING_PRICE != 0) {
+      await SssBT.connect(signer).setMintPrice(
+        env.SOULBOUNDCREDITSCORE_MINTING_PRICE
+      );
+    }
+
+    // we add payment methods
+    const paymentMethods = env.PAYMENT_METHODS_SOULBOUNDCREDITSCORE.split(" ");
+    for (let i = 0; i < paymentMethods.length; i++) {
+      console.log(`Adding payment method ${paymentMethods[i]}`);
+      await SssBT.connect(signer).enablePaymentMethod(paymentMethods[i]);
+    }
+  }
 }
 
 main()
