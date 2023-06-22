@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import "@nomiclabs/hardhat-ethers";
+import hre from "hardhat";
 import { deployments, ethers, getNamedAccounts, network } from "hardhat";
 import { getEnvParams } from "./EnvParams";
 import ReferenceSBTSelfSovereignArtifact from "../artifacts/contracts/reference/ReferenceSBTSelfSovereign.sol/ReferenceSBTSelfSovereign.json";
@@ -49,6 +50,23 @@ async function main() {
   });
 
   console.log(`ReferenceSBTSelfSovereign deployed to: ${sssbt.address}`);
+
+  // Verify contract
+  try {
+    await hre.run("verify:verify", {
+      address: sssbt.address,
+      constructorArguments
+    });
+  } catch (error) {
+    if (
+      !error.message.includes("Contract source code already verified") &&
+      !error.message.includes("Reason: Already Verified")
+    ) {
+      throw error;
+    }
+  }
+
+  
 }
 
 main()
