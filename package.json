@@ -22,6 +22,7 @@
     "deploy:mainnet": "hardhat deploy --network mainnet && yarn addresses",
     "deploy:mumbai": "hardhat deploy --network mumbai && yarn addresses",
     "deploy:polygon": "hardhat deploy --network polygon && yarn addresses",
+    "deploySSSBT": "hardhat run src/deploySSSBT.ts",
     "run:node": "hardhat node",
     "test": "hardhat test",
     "prettier": "prettier --write 'contracts/**/*.sol' '**/*.ts'",
