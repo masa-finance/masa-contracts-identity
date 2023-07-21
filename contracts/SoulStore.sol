@@ -161,7 +161,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         string memory tokenURI,
         address authorityAddress,
         bytes calldata signature
-    ) external payable whenNotPaused nonReentrant returns (uint256) {
+    ) external payable virtual whenNotPaused nonReentrant returns (uint256) {
         (
             uint256 price,
             uint256 protocolFee
@@ -188,7 +188,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @notice Mints a new Soulbound Identity purchasing it
     /// @dev This function allows the purchase of a soulbound identity for free
     /// @return TokenId of the new soulbound identity
-    function purchaseIdentity() external returns (uint256) {
+    function purchaseIdentity() external virtual returns (uint256) {
         return _mintSoulboundIdentity(_msgSender());
     }
 
@@ -213,7 +213,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         string memory tokenURI,
         address authorityAddress,
         bytes calldata signature
-    ) external payable whenNotPaused nonReentrant returns (uint256) {
+    ) external payable virtual whenNotPaused nonReentrant returns (uint256) {
         (
             uint256 price,
             uint256 protocolFee
@@ -264,7 +264,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         address paymentMethod,
         uint256 nameLength,
         uint256 yearsPeriod
-    ) public view returns (uint256 price) {
+    ) public view virtual returns (uint256 price) {
         uint256 mintPrice = getNameRegistrationPricePerYear(nameLength).mul(
             yearsPeriod
         );
@@ -296,7 +296,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         address paymentMethod,
         uint256 nameLength,
         uint256 yearsPeriod
-    ) public view returns (uint256 price, uint256 protocolFee) {
+    ) public view virtual returns (uint256 price, uint256 protocolFee) {
         price = getPriceForMintingName(paymentMethod, nameLength, yearsPeriod);
         return (price, _getProtocolFee(paymentMethod, price));
     }
@@ -322,7 +322,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         string memory tokenURI,
         address authorityAddress,
         bytes calldata signature
-    ) internal returns (uint256) {
+    ) internal virtual returns (uint256) {
         _verify(
             _hash(to, name, nameLength, yearsPeriod, tokenURI),
             signature,
@@ -345,7 +345,9 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// new Soulbound Identity and emit the purchase event
     /// @param to Address of the owner of the new identity
     /// @return TokenId of the new soulbound identity
-    function _mintSoulboundIdentity(address to) internal returns (uint256) {
+    function _mintSoulboundIdentity(
+        address to
+    ) internal virtual returns (uint256) {
         // mint Soulbound identity token
         uint256 tokenId = soulboundIdentity.mint(to);
 
@@ -373,7 +375,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         string memory tokenURI,
         address authorityAddress,
         bytes calldata signature
-    ) internal returns (uint256) {
+    ) internal virtual returns (uint256) {
         _verify(
             _hash(to, name, nameLength, yearsPeriod, tokenURI),
             signature,
