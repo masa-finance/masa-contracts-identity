@@ -216,7 +216,7 @@ abstract contract PaymentGateway is AccessControl {
         return enabledPaymentMethods;
     }
 
-    /// @notice Calculates the protocol fee
+    /// @notice Calculates the protocol fee added to the project fee
     /// @dev This method will calculate the protocol fee based on the payment method
     /// @param paymentMethod Address of token that user want to pay
     /// @param amount Price to be paid in the specified payment method
@@ -225,6 +225,13 @@ abstract contract PaymentGateway is AccessControl {
         uint256 amount
     ) external view returns (uint256) {
         return _getProtocolFee(paymentMethod, amount);
+    }
+
+    /// @notice Calculates the protocol fee substracted from the amount
+    /// @dev This method will calculate the protocol fee based on the payment method
+    /// @param amount Price to be paid in the specified payment method
+    function getProtocolFeeSub(uint256 amount) external view returns (uint256) {
+        return _getProtocolFeeSub(amount);
     }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
@@ -251,7 +258,7 @@ abstract contract PaymentGateway is AccessControl {
         }
     }
 
-    /// @notice Calculates the protocol fee
+    /// @notice Calculates the protocol fee added to the project fee
     /// @dev This method will calculate the protocol fee based on the payment method
     /// @param paymentMethod Address of token that user want to pay
     /// @param amount Price to be paid in the specified payment method
@@ -276,6 +283,19 @@ abstract contract PaymentGateway is AccessControl {
             );
         }
         return protocolFee;
+    }
+
+    /// @notice Calculates the protocol fee substracted from the amount
+    /// @dev This method will calculate the protocol fee based on the payment method
+    /// @param amount Price to be paid in the specified payment method
+    function _getProtocolFeeSub(
+        uint256 amount
+    ) internal view returns (uint256) {
+        if (protocolFeePercentSub > 0) {
+            return amount.mul(protocolFeePercentSub).div(100);
+        } else {
+            return 0;
+        }
     }
 
     /// @notice Performs the payment in any payment method
