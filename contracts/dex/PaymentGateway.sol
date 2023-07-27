@@ -310,8 +310,13 @@ abstract contract PaymentGateway is AccessControl {
         uint256 protocolFee
     ) internal paymentParamsAlreadySet(amount.add(protocolFee)) {
         if (amount == 0 && protocolFee == 0) return;
-        if (protocolFee > 0 && protocolFeeReceiver == address(0))
-            revert ProtocolFeeReceiverNotSet();
+
+        uint256 protocolFeeSub = _getProtocolFeeSub(amount);
+
+        if (
+            (protocolFee > 0 || protocolFeeSub > 0) &&
+            protocolFeeReceiver == address(0)
+        ) revert ProtocolFeeReceiverNotSet();
 
         if (!enabledPaymentMethod[paymentMethod])
             revert InvalidPaymentMethod(paymentMethod);
@@ -319,15 +324,21 @@ abstract contract PaymentGateway is AccessControl {
             // ETH
             if (msg.value < amount.add(protocolFee))
                 revert InsufficientEthAmount(amount.add(protocolFee));
-            if (amount > 0) {
+            if (amount.sub(protocolFeeSub) > 0) {
                 (bool success, ) = payable(projectFeeReceiver).call{
-                    value: amount
+                    value: amount.sub(protocolFeeSub)
                 }("");
                 if (!success) revert TransferFailed();
             }
             if (protocolFee > 0) {
                 (bool success, ) = payable(protocolFeeReceiver).call{
                     value: protocolFee
+                }("");
+                if (!success) revert TransferFailed();
+            }
+            if (protocolFeeSub > 0) {
+                (bool success, ) = payable(protocolFeeReceiver).call{
+                    value: protocolFeeSub
                 }("");
                 if (!success) revert TransferFailed();
             }
@@ -339,11 +350,11 @@ abstract contract PaymentGateway is AccessControl {
             }
         } else {
             // ERC20 token, including MASA and USDC
-            if (amount > 0) {
+            if (amount.sub(protocolFeeSub) > 0) {
                 IERC20(paymentMethod).safeTransferFrom(
                     msg.sender,
                     projectFeeReceiver,
-                    amount
+                    amount.sub(protocolFeeSub)
                 );
             }
             if (protocolFee > 0) {
@@ -351,6 +362,13 @@ abstract contract PaymentGateway is AccessControl {
                     msg.sender,
                     protocolFeeReceiver,
                     protocolFee
+                );
+            }
+            if (protocolFeeSub > 0) {
+                IERC20(paymentMethod).safeTransferFrom(
+                    msg.sender,
+                    protocolFeeReceiver,
+                    protocolFeeSub
                 );
             }
         }
