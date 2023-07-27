@@ -30,8 +30,8 @@ abstract contract PaymentGateway is AccessControl {
         address projectFeeReceiver; // Wallet that will receive the project fee
         address protocolFeeReceiver; // Wallet that will receive the protocol fee
         uint256 protocolFeeAmount; // Protocol fee amount in USD
-        uint256 protocolFeePercent; // Protocol fee amount
-        bool substractProtocolFeeFromAmount; // If true, the protocol fee will be substracted from the amount
+        uint256 protocolFeePercent; // Protocol fee amount added to the project fee
+        uint256 protocolFeePercentSub; // Protocol fee amount substracted from the project fee
     }
 
     /* ========== STATE VARIABLES =========================================== */
@@ -49,9 +49,8 @@ abstract contract PaymentGateway is AccessControl {
     address public projectFeeReceiver;
     address public protocolFeeReceiver;
     uint256 public protocolFeeAmount;
-    uint256 public protocolFeePercent;
-
-    bool public substractProtocolFeeFromAmount;
+    uint256 public protocolFeePercent; // Protocol fee amount added to the project fee
+    uint256 public protocolFeePercentSub; // Protocol fee amount substracted from the project fee
 
     /* ========== INITIALIZE ================================================ */
 
@@ -71,8 +70,7 @@ abstract contract PaymentGateway is AccessControl {
         protocolFeeReceiver = paymentParams.protocolFeeReceiver;
         protocolFeeAmount = paymentParams.protocolFeeAmount;
         protocolFeePercent = paymentParams.protocolFeePercent;
-        substractProtocolFeeFromAmount = paymentParams
-            .substractProtocolFeeFromAmount;
+        protocolFeePercentSub = paymentParams.protocolFeePercentSub;
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
@@ -183,9 +181,9 @@ abstract contract PaymentGateway is AccessControl {
         protocolFeeAmount = _protocolFeeAmount;
     }
 
-    /// @notice Set the protocol fee percent
+    /// @notice Set the protocol fee percent added to the project fee
     /// @dev The caller must have the admin role to call this function
-    /// @param _protocolFeePercent New protocol fee percent
+    /// @param _protocolFeePercent New protocol fee percent added to the project fee
     function setProtocolFeePercent(
         uint256 _protocolFeePercent
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
@@ -193,15 +191,14 @@ abstract contract PaymentGateway is AccessControl {
         protocolFeePercent = _protocolFeePercent;
     }
 
-    /// @notice Set if the protocol fee should be substracted from the amount
+    /// @notice Set the protocol fee percent substracted from the amount
     /// @dev The caller must have the admin role to call this function
-    /// @param _substractProtocolFeeFromAmount New value for substractProtocolFeeFromAmount
-    function setSubstractProtocolFeeFromAmount(
-        bool _substractProtocolFeeFromAmount
+    /// @param _protocolFeePercentSub New protocol fee percent substracted from the amount
+    function setProtocolFeePercentSub(
+        uint256 _protocolFeePercentSub
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        if (_substractProtocolFeeFromAmount == substractProtocolFeeFromAmount)
-            revert SameValue();
-        substractProtocolFeeFromAmount = _substractProtocolFeeFromAmount;
+        if (_protocolFeePercentSub == protocolFeePercentSub) revert SameValue();
+        protocolFeePercentSub = _protocolFeePercentSub;
     }
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
