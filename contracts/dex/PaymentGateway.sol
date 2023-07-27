@@ -50,6 +50,8 @@ abstract contract PaymentGateway is AccessControl {
     uint256 public protocolFeeAmount;
     uint256 public protocolFeePercent;
 
+    bool public substractProtocolFeeFromAmount;
+
     /* ========== INITIALIZE ================================================ */
 
     /// @notice Creates a new Dex AMM
@@ -186,6 +188,17 @@ abstract contract PaymentGateway is AccessControl {
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (_protocolFeePercent == protocolFeePercent) revert SameValue();
         protocolFeePercent = _protocolFeePercent;
+    }
+
+    /// @notice Set if the protocol fee should be substracted from the amount
+    /// @dev The caller must have the admin role to call this function
+    /// @param _substractProtocolFeeFromAmount New value for substractProtocolFeeFromAmount
+    function setSubstractProtocolFeeFromAmount(
+        bool _substractProtocolFeeFromAmount
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        if (_substractProtocolFeeFromAmount == substractProtocolFeeFromAmount)
+            revert SameValue();
+        substractProtocolFeeFromAmount = _substractProtocolFeeFromAmount;
     }
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
