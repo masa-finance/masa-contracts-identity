@@ -31,6 +31,7 @@ abstract contract PaymentGateway is AccessControl {
         address protocolFeeReceiver; // Wallet that will receive the protocol fee
         uint256 protocolFeeAmount; // Protocol fee amount in USD
         uint256 protocolFeePercent; // Protocol fee amount
+        bool substractProtocolFeeFromAmount; // If true, the protocol fee will be substracted from the amount
     }
 
     /* ========== STATE VARIABLES =========================================== */
@@ -70,6 +71,8 @@ abstract contract PaymentGateway is AccessControl {
         protocolFeeReceiver = paymentParams.protocolFeeReceiver;
         protocolFeeAmount = paymentParams.protocolFeeAmount;
         protocolFeePercent = paymentParams.protocolFeePercent;
+        substractProtocolFeeFromAmount = paymentParams
+            .substractProtocolFeeFromAmount;
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
