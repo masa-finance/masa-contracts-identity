@@ -655,10 +655,9 @@ describe("Soulbound Credit Score", () => {
         await soulboundCreditScore.projectFeeReceiver();
       const protocolFeeReceiver =
         await soulboundCreditScore.protocolFeeReceiver();
-      const { price } =
-        await soulboundCreditScore.getMintPriceWithProtocolFee(
-          ethers.constants.AddressZero
-        );
+      const { price } = await soulboundCreditScore.getMintPriceWithProtocolFee(
+        ethers.constants.AddressZero
+      );
       const protocolFeeSub = price.mul(10).div(100);
 
       const projectFeeWalletBalanceBefore = await ethers.provider.getBalance(
@@ -853,8 +852,9 @@ describe("Soulbound Credit Score", () => {
         await soulboundCreditScore.projectFeeReceiver();
       const protocolFeeReceiver =
         await soulboundCreditScore.protocolFeeReceiver();
-      const { price } =
-        await soulboundCreditScore.getMintPriceWithProtocolFee(env.USDC_TOKEN);
+      const { price } = await soulboundCreditScore.getMintPriceWithProtocolFee(
+        env.USDC_TOKEN
+      );
       const protocolFeeSub = price.mul(10).div(100);
 
       const usdc: IERC20 = IERC20__factory.connect(env.USDC_TOKEN, owner);
@@ -866,9 +866,7 @@ describe("Soulbound Credit Score", () => {
       );
 
       // set allowance for soul store
-      await usdc
-        .connect(address1)
-        .approve(soulboundCreditScore.address, price);
+      await usdc.connect(address1).approve(soulboundCreditScore.address, price);
 
       const mintTx = await soulboundCreditScore
         .connect(address1)
