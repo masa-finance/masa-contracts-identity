@@ -47,6 +47,7 @@ const func: DeployFunction = async ({
     network.name === "hardhat" ||
     network.name === "celo" ||
     network.name === "alfajores" ||
+    network.name === "base" ||
     network.name === "basegoerli" ||
     network.name === "bsctest" ||
     network.name === "bsc" ||
@@ -89,6 +90,7 @@ func.skip = async ({ network }) => {
     network.name !== "hardhat" &&
     network.name !== "celo" &&
     network.name !== "alfajores" &&
+    network.name !== "base" &&
     network.name !== "basegoerli" &&
     network.name !== "bsctest" &&
     network.name !== "bsc" &&
