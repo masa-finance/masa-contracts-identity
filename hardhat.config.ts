@@ -138,6 +138,14 @@ export default {
         }
       },
       {
+        network: "base",
+        chainId: 8453,
+        urls: {
+          apiURL: "https://api.basescan.org/api",
+          browserURL: "https://basescan.org"
+        }
+      },
+      {
         network: "basegoerli",
         chainId: 84531,
         urls: {
