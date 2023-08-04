@@ -67,6 +67,11 @@ const networks: NetworksUserConfig = {
     chainId: 84531,
     accounts: [getPrivateKey("basegoerli")]
   },
+  base: {
+    url: "developer-access-mainnet.base.org",
+    chainId: 8453,
+    accounts: [getPrivateKey("base")]
+  },
   goerli: {
     url: getInfuraURL("goerli"),
     chainId: 5,
