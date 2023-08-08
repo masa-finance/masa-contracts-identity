@@ -5,6 +5,11 @@
     "SoulboundGreen": "0x1fCE0Ae50a8900f09E4A437F33E95313225Bb4b7",
     "SoulboundIdentity": "0xcb85D14082B67e470fD9C2979F3A75341124a338"
   },
+  "base": {
+    "SoulName": "0x836198F984431EcdC97A7549C1Bd6B3Cd9E7a89B",
+    "SoulStore": "0x6Aa37dF2392007209C54A2162beF21623705dC22",
+    "SoulboundIdentity": "0x576E82208df807B07b9e4B4bDBd7F7862F1152a9"
+  },
   "basegoerli": {
     "SoulName": "0xC6CA7be41Ba10a3645988B77a523231666540b82",
     "SoulStore": "0x22b8BCBdEbbbe223435d899B0100A171a106Bb58",

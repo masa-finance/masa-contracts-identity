@@ -1,6 +1,6 @@
 {
   "name": "@masa-finance/masa-contracts-identity",
-  "version": "1.8.3",
+  "version": "1.8.4",
   "main": "dist/typechain/index.js",
   "types": "dist/typechain/index.d.ts",
   "repository": "git@github.com:masa-finance/masa-contracts-identity.git",
@@ -14,6 +14,7 @@
     "docgen": "hardhat dodoc",
     "coverage": "hardhat coverage",
     "deploy:alfajores": "hardhat deploy --network alfajores && yarn addresses",
+    "deploy:base": "hardhat deploy --network base && yarn addresses",
     "deploy:basegoerli": "hardhat deploy --network basegoerli && yarn addresses",
     "deploy:bsc": "hardhat deploy --network bsc && yarn addresses",
     "deploy:bsctest": "hardhat deploy --network bsctest && yarn addresses",

@@ -5,7 +5,8 @@ import {
   getEtherscanApiKey,
   getBscscanApiKey,
   getPolygonscanApiKey,
-  getCeloscanApiKey
+  getCeloscanApiKey,
+  getBasescanApiKey
 } from "./src/EnvParams";
 import "hardhat-deploy";
 import "@nomiclabs/hardhat-ethers";
@@ -67,6 +68,11 @@ const networks: NetworksUserConfig = {
     chainId: 84531,
     accounts: [getPrivateKey("basegoerli")]
   },
+  base: {
+    url: "https://mainnet.base.org",
+    chainId: 8453,
+    accounts: [getPrivateKey("base")]
+  },
   goerli: {
     url: getInfuraURL("goerli"),
     chainId: 5,
@@ -113,6 +119,7 @@ export default {
       mainnet: getEtherscanApiKey(),
       celo: getCeloscanApiKey(),
       alfajores: getCeloscanApiKey(),
+      base: getBasescanApiKey(),
       basegoerli: "PLACEHOLDER_STRING"
     },
     customChains: [
@@ -130,6 +137,14 @@ export default {
         urls: {
           apiURL: "https://api-alfajores.celoscan.io/api",
           browserURL: "https://alfajores.celoscan.io/"
+        }
+      },
+      {
+        network: "base",
+        chainId: 8453,
+        urls: {
+          apiURL: "https://api.basescan.org/api",
+          browserURL: "https://basescan.org"
         }
       },
       {
