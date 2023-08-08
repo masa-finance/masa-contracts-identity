@@ -31,7 +31,6 @@ const func: DeployFunction = async ({
     network.name === "hardhat" ||
     network.name === "celo" ||
     network.name === "alfajores" ||
-    network.name === "base" ||
     network.name === "basegoerli"
   ) {
     const soulboundIdentityDeployed = await deployments.get(
