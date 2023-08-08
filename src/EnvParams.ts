@@ -59,6 +59,10 @@ export function getCeloscanApiKey() {
   return process.env.CELOSCAN_API_KEY || getSecretParam("CELOSCAN_API_KEY");
 }
 
+export function getBasescanApiKey() {
+  return process.env.BASESCAN_API_KEY || getSecretParam("BASESCAN_API_KEY");
+}
+
 export function getCoinMarketCapApiKey() {
   return (
     process.env.COINMARKETCAP_API_KEY || getSecretParam("COINMARKETCAP_API_KEY")

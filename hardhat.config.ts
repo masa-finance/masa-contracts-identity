@@ -5,7 +5,8 @@ import {
   getEtherscanApiKey,
   getBscscanApiKey,
   getPolygonscanApiKey,
-  getCeloscanApiKey
+  getCeloscanApiKey,
+  getBasescanApiKey
 } from "./src/EnvParams";
 import "hardhat-deploy";
 import "@nomiclabs/hardhat-ethers";
@@ -118,6 +119,7 @@ export default {
       mainnet: getEtherscanApiKey(),
       celo: getCeloscanApiKey(),
       alfajores: getCeloscanApiKey(),
+      base: getBasescanApiKey(),
       basegoerli: "PLACEHOLDER_STRING"
     },
     customChains: [
