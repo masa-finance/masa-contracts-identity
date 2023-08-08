@@ -68,7 +68,7 @@ const networks: NetworksUserConfig = {
     accounts: [getPrivateKey("basegoerli")]
   },
   base: {
-    url: "developer-access-mainnet.base.org",
+    url: "https://mainnet.base.org",
     chainId: 8453,
     accounts: [getPrivateKey("base")]
   },
