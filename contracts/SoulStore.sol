@@ -236,7 +236,10 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
                 yearsPeriod,
                 tokenURI,
                 authorityAddress,
-                signature
+                signature,
+                paymentMethod,
+                price,
+                protocolFee
             );
     }
 
@@ -383,6 +386,9 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @param tokenURI URI of the NFT
     /// @param authorityAddress Address of the authority
     /// @param signature Signature of the authority
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param price Price of the name minting
+    /// @param protocolFee Protocol fee of the name minting
     /// @return TokenId of the new soul name
     function _mintSoulName(
         address to,
@@ -391,7 +397,10 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         uint256 yearsPeriod,
         string memory tokenURI,
         address authorityAddress,
-        bytes calldata signature
+        bytes calldata signature,
+        address paymentMethod,
+        uint256 price,
+        uint256 protocolFee
     ) internal virtual returns (uint256) {
         _verify(
             _hash(to, name, nameLength, yearsPeriod, tokenURI),
@@ -402,7 +411,15 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         // mint Soul Name token
         uint256 tokenId = soulName.mint(to, name, yearsPeriod, tokenURI);
 
-        emit SoulNamePurchased(to, tokenId, name, yearsPeriod);
+        emit SoulNamePurchased(
+            to,
+            tokenId,
+            name,
+            yearsPeriod,
+            paymentMethod,
+            price,
+            protocolFee
+        );
 
         return tokenId;
     }
@@ -461,6 +478,9 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         address indexed account,
         uint256 tokenId,
         string indexed name,
-        uint256 yearsPeriod
+        uint256 yearsPeriod,
+        address indexed paymentMethod,
+        uint256 price,
+        uint256 protocolFee
     );
 }
