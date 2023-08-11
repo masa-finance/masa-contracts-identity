@@ -40,7 +40,8 @@ async function main() {
       env.PROJECTFEE_RECEIVER,
       env.PROTOCOLFEE_RECEIVER || ethers.constants.AddressZero,
       env.PROTOCOLFEE_AMOUNT || 0,
-      env.PROTOCOLFEE_PERCENT || 0
+      env.PROTOCOLFEE_PERCENT || 0,
+      env.PROTOCOLFEE_PERCENT_SUB || 0
     ],
     SBT_MAXMINTS
   ];

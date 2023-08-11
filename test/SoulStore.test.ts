@@ -1091,6 +1091,53 @@ describe("Soul Store", () => {
       );
     });
 
+    it("we can purchase a name with ETH (with protocol fee percent substracted)", async () => {
+      await soulStore
+        .connect(owner)
+        .setProtocolFeeReceiver(protocolWallet.address);
+      await soulStore.connect(owner).setProtocolFeePercentSub(10); // 10%
+      const { price } = await soulStore.getPriceForMintingNameWithProtocolFee(
+        ethers.constants.AddressZero,
+        SOUL_NAME.length,
+        YEAR
+      );
+
+      const signature = await signMintSoulName(
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length,
+        YEAR,
+        ARWEAVE_LINK,
+        authority
+      );
+
+      await expect(
+        soulStore.connect(address1).purchaseName(
+          ethers.constants.AddressZero, // ETH
+          address1.address,
+          SOUL_NAME,
+          SOUL_NAME.length,
+          YEAR,
+          ARWEAVE_LINK,
+          authority.address,
+          signature,
+          { value: price.sub(1) }
+        )
+      ).to.be.revertedWith("InsufficientEthAmount");
+
+      await soulStore.connect(address1).purchaseName(
+        ethers.constants.AddressZero, // ETH
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length,
+        YEAR,
+        ARWEAVE_LINK,
+        authority.address,
+        signature,
+        { value: price }
+      );
+    });
+
     it("we can purchase a name with ETH (with protocol fee amount)", async () => {
       await soulStore
         .connect(owner)
@@ -1156,6 +1203,42 @@ describe("Soul Store", () => {
       await usdc
         .connect(address1)
         .approve(soulStore.address, price.add(protocolFee));
+
+      const signature = await signMintSoulName(
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length,
+        YEAR,
+        ARWEAVE_LINK,
+        authority
+      );
+
+      await soulStore.connect(address1).purchaseName(
+        env.USDC_TOKEN, // USDC
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length,
+        YEAR,
+        ARWEAVE_LINK,
+        authority.address,
+        signature
+      );
+    });
+
+    it("we can purchase a name with stable coin (with protocol fee percent substracted)", async () => {
+      await soulStore
+        .connect(owner)
+        .setProtocolFeeReceiver(protocolWallet.address);
+      await soulStore.connect(owner).setProtocolFeePercentSub(10); // 10%
+      const { price } = await soulStore.getPriceForMintingNameWithProtocolFee(
+        await soulStore.stableCoin(),
+        SOUL_NAME.length,
+        YEAR
+      );
+
+      // set allowance for soul store
+      const usdc: IERC20 = IERC20__factory.connect(env.USDC_TOKEN, owner);
+      await usdc.connect(address1).approve(soulStore.address, price);
 
       const signature = await signMintSoulName(
         address1.address,

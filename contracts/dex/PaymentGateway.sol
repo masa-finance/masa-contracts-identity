@@ -30,7 +30,8 @@ abstract contract PaymentGateway is AccessControl {
         address projectFeeReceiver; // Wallet that will receive the project fee
         address protocolFeeReceiver; // Wallet that will receive the protocol fee
         uint256 protocolFeeAmount; // Protocol fee amount in USD
-        uint256 protocolFeePercent; // Protocol fee amount
+        uint256 protocolFeePercent; // Protocol fee amount added to the project fee
+        uint256 protocolFeePercentSub; // Protocol fee amount substracted from the project fee
     }
 
     /* ========== STATE VARIABLES =========================================== */
@@ -48,7 +49,8 @@ abstract contract PaymentGateway is AccessControl {
     address public projectFeeReceiver;
     address public protocolFeeReceiver;
     uint256 public protocolFeeAmount;
-    uint256 public protocolFeePercent;
+    uint256 public protocolFeePercent; // Protocol fee amount added to the project fee
+    uint256 public protocolFeePercentSub; // Protocol fee amount substracted from the project fee
 
     /* ========== INITIALIZE ================================================ */
 
@@ -68,6 +70,7 @@ abstract contract PaymentGateway is AccessControl {
         protocolFeeReceiver = paymentParams.protocolFeeReceiver;
         protocolFeeAmount = paymentParams.protocolFeeAmount;
         protocolFeePercent = paymentParams.protocolFeePercent;
+        protocolFeePercentSub = paymentParams.protocolFeePercentSub;
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
@@ -178,14 +181,24 @@ abstract contract PaymentGateway is AccessControl {
         protocolFeeAmount = _protocolFeeAmount;
     }
 
-    /// @notice Set the protocol fee percent
+    /// @notice Set the protocol fee percent added to the project fee
     /// @dev The caller must have the admin role to call this function
-    /// @param _protocolFeePercent New protocol fee percent
+    /// @param _protocolFeePercent New protocol fee percent added to the project fee
     function setProtocolFeePercent(
         uint256 _protocolFeePercent
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (_protocolFeePercent == protocolFeePercent) revert SameValue();
         protocolFeePercent = _protocolFeePercent;
+    }
+
+    /// @notice Set the protocol fee percent substracted from the amount
+    /// @dev The caller must have the admin role to call this function
+    /// @param _protocolFeePercentSub New protocol fee percent substracted from the amount
+    function setProtocolFeePercentSub(
+        uint256 _protocolFeePercentSub
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        if (_protocolFeePercentSub == protocolFeePercentSub) revert SameValue();
+        protocolFeePercentSub = _protocolFeePercentSub;
     }
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
@@ -203,7 +216,7 @@ abstract contract PaymentGateway is AccessControl {
         return enabledPaymentMethods;
     }
 
-    /// @notice Calculates the protocol fee
+    /// @notice Calculates the protocol fee added to the project fee
     /// @dev This method will calculate the protocol fee based on the payment method
     /// @param paymentMethod Address of token that user want to pay
     /// @param amount Price to be paid in the specified payment method
@@ -212,6 +225,13 @@ abstract contract PaymentGateway is AccessControl {
         uint256 amount
     ) external view returns (uint256) {
         return _getProtocolFee(paymentMethod, amount);
+    }
+
+    /// @notice Calculates the protocol fee substracted from the amount
+    /// @dev This method will calculate the protocol fee based on the payment method
+    /// @param amount Price to be paid in the specified payment method
+    function getProtocolFeeSub(uint256 amount) external view returns (uint256) {
+        return _getProtocolFeeSub(amount);
     }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
@@ -238,7 +258,7 @@ abstract contract PaymentGateway is AccessControl {
         }
     }
 
-    /// @notice Calculates the protocol fee
+    /// @notice Calculates the protocol fee added to the project fee
     /// @dev This method will calculate the protocol fee based on the payment method
     /// @param paymentMethod Address of token that user want to pay
     /// @param amount Price to be paid in the specified payment method
@@ -265,6 +285,19 @@ abstract contract PaymentGateway is AccessControl {
         return protocolFee;
     }
 
+    /// @notice Calculates the protocol fee substracted from the amount
+    /// @dev This method will calculate the protocol fee based on the payment method
+    /// @param amount Price to be paid in the specified payment method
+    function _getProtocolFeeSub(
+        uint256 amount
+    ) internal view returns (uint256) {
+        if (protocolFeePercentSub > 0) {
+            return amount.mul(protocolFeePercentSub).div(100);
+        } else {
+            return 0;
+        }
+    }
+
     /// @notice Performs the payment in any payment method
     /// @dev This method will transfer the funds to the project fee receiver wallet, performing
     /// the swap if necessary, and transfer the protocol fee to the protocol fee wallet
@@ -277,8 +310,13 @@ abstract contract PaymentGateway is AccessControl {
         uint256 protocolFee
     ) internal paymentParamsAlreadySet(amount.add(protocolFee)) {
         if (amount == 0 && protocolFee == 0) return;
-        if (protocolFee > 0 && protocolFeeReceiver == address(0))
-            revert ProtocolFeeReceiverNotSet();
+
+        uint256 protocolFeeSub = _getProtocolFeeSub(amount);
+
+        if (
+            (protocolFee > 0 || protocolFeeSub > 0) &&
+            protocolFeeReceiver == address(0)
+        ) revert ProtocolFeeReceiverNotSet();
 
         if (!enabledPaymentMethod[paymentMethod])
             revert InvalidPaymentMethod(paymentMethod);
@@ -286,15 +324,21 @@ abstract contract PaymentGateway is AccessControl {
             // ETH
             if (msg.value < amount.add(protocolFee))
                 revert InsufficientEthAmount(amount.add(protocolFee));
-            if (amount > 0) {
+            if (amount.sub(protocolFeeSub) > 0) {
                 (bool success, ) = payable(projectFeeReceiver).call{
-                    value: amount
+                    value: amount.sub(protocolFeeSub)
                 }("");
                 if (!success) revert TransferFailed();
             }
             if (protocolFee > 0) {
                 (bool success, ) = payable(protocolFeeReceiver).call{
                     value: protocolFee
+                }("");
+                if (!success) revert TransferFailed();
+            }
+            if (protocolFeeSub > 0) {
+                (bool success, ) = payable(protocolFeeReceiver).call{
+                    value: protocolFeeSub
                 }("");
                 if (!success) revert TransferFailed();
             }
@@ -306,11 +350,11 @@ abstract contract PaymentGateway is AccessControl {
             }
         } else {
             // ERC20 token, including MASA and USDC
-            if (amount > 0) {
+            if (amount.sub(protocolFeeSub) > 0) {
                 IERC20(paymentMethod).safeTransferFrom(
                     msg.sender,
                     projectFeeReceiver,
-                    amount
+                    amount.sub(protocolFeeSub)
                 );
             }
             if (protocolFee > 0) {
@@ -318,6 +362,13 @@ abstract contract PaymentGateway is AccessControl {
                     msg.sender,
                     protocolFeeReceiver,
                     protocolFee
+                );
+            }
+            if (protocolFeeSub > 0) {
+                IERC20(paymentMethod).safeTransferFrom(
+                    msg.sender,
+                    protocolFeeReceiver,
+                    protocolFeeSub
                 );
             }
         }

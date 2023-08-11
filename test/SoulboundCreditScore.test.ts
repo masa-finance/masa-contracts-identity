@@ -645,6 +645,76 @@ describe("Soulbound Credit Score", () => {
       ).to.be.equal(protocolFee);
     });
 
+    it("should mint from final user address paying with ETH (with protocol fee percent substracted)", async () => {
+      await soulboundCreditScore
+        .connect(owner)
+        .setProtocolFeeReceiver(protocolWallet.address);
+      await soulboundCreditScore.connect(owner).setProtocolFeePercentSub(10); // 10%
+
+      const projectFeeReceiver =
+        await soulboundCreditScore.projectFeeReceiver();
+      const protocolFeeReceiver =
+        await soulboundCreditScore.protocolFeeReceiver();
+      const { price } = await soulboundCreditScore.getMintPriceWithProtocolFee(
+        ethers.constants.AddressZero
+      );
+      const protocolFeeSub = price.mul(10).div(100);
+
+      const projectFeeWalletBalanceBefore = await ethers.provider.getBalance(
+        projectFeeReceiver
+      );
+      const protocolWalletBalanceBefore = await ethers.provider.getBalance(
+        protocolFeeReceiver
+      );
+
+      await expect(
+        soulboundCreditScore
+          .connect(address1)
+          ["mint(address,address,address,uint256,bytes)"](
+            ethers.constants.AddressZero,
+            address1.address,
+            authority.address,
+            signatureDate,
+            signatureToAddress,
+            { value: price.sub(1) }
+          )
+      ).to.be.revertedWith("InsufficientEthAmount");
+
+      const mintTx = await soulboundCreditScore
+        .connect(address1)
+        ["mint(address,address,address,uint256,bytes)"](
+          ethers.constants.AddressZero,
+          address1.address,
+          authority.address,
+          signatureDate,
+          signatureToAddress,
+          { value: price }
+        );
+      const mintReceipt = await mintTx.wait();
+
+      const tokenId = mintReceipt.events![0].args![1].toNumber();
+
+      expect(await soulboundCreditScore.getIdentityId(tokenId)).to.equal(
+        identityId1
+      );
+
+      const projectFeeWalletBalanceAfter = await ethers.provider.getBalance(
+        projectFeeReceiver
+      );
+      const protocolWalletBalanceAfter = await ethers.provider.getBalance(
+        protocolFeeReceiver
+      );
+
+      // we check that the project fee wallet received the ETH
+
+      expect(
+        projectFeeWalletBalanceAfter.sub(projectFeeWalletBalanceBefore)
+      ).to.be.equal(price.sub(protocolFeeSub));
+      expect(
+        protocolWalletBalanceAfter.sub(protocolWalletBalanceBefore)
+      ).to.be.equal(protocolFeeSub);
+    });
+
     it("should mint from final user address paying with ETH (with protocol fee amount)", async () => {
       await soulboundCreditScore
         .connect(owner)
@@ -770,6 +840,65 @@ describe("Soulbound Credit Score", () => {
       expect(
         protocolWalletBalanceAfter.sub(protocolWalletBalanceBefore)
       ).to.be.equal(protocolFee);
+    });
+
+    it("should mint from final user address paying with stable coin (with protocol fee percent substracted)", async () => {
+      await soulboundCreditScore
+        .connect(owner)
+        .setProtocolFeeReceiver(protocolWallet.address);
+      await soulboundCreditScore.connect(owner).setProtocolFeePercentSub(10); // 10%
+
+      const projectFeeReceiver =
+        await soulboundCreditScore.projectFeeReceiver();
+      const protocolFeeReceiver =
+        await soulboundCreditScore.protocolFeeReceiver();
+      const { price } = await soulboundCreditScore.getMintPriceWithProtocolFee(
+        env.USDC_TOKEN
+      );
+      const protocolFeeSub = price.mul(10).div(100);
+
+      const usdc: IERC20 = IERC20__factory.connect(env.USDC_TOKEN, owner);
+      const projectFeeWalletBalanceBefore = await usdc.balanceOf(
+        projectFeeReceiver
+      );
+      const protocolWalletBalanceBefore = await usdc.balanceOf(
+        protocolFeeReceiver
+      );
+
+      // set allowance for soul store
+      await usdc.connect(address1).approve(soulboundCreditScore.address, price);
+
+      const mintTx = await soulboundCreditScore
+        .connect(address1)
+        ["mint(address,address,address,uint256,bytes)"](
+          env.USDC_TOKEN,
+          address1.address,
+          authority.address,
+          signatureDate,
+          signatureToAddress
+        );
+      const mintReceipt = await mintTx.wait();
+
+      const tokenId = mintReceipt.events![2].args![1].toNumber();
+
+      expect(await soulboundCreditScore.getIdentityId(tokenId)).to.equal(
+        identityId1
+      );
+
+      const projectFeeWalletBalanceAfter = await usdc.balanceOf(
+        projectFeeReceiver
+      );
+      const protocolWalletBalanceAfter = await usdc.balanceOf(
+        protocolFeeReceiver
+      );
+
+      // we check that the project fee wallet received the ETH
+      expect(
+        projectFeeWalletBalanceAfter.sub(projectFeeWalletBalanceBefore)
+      ).to.be.equal(price.sub(protocolFeeSub));
+      expect(
+        protocolWalletBalanceAfter.sub(protocolWalletBalanceBefore)
+      ).to.be.equal(protocolFeeSub);
     });
 
     it("should mint from final user address paying with stable coin (with protocol fee amount)", async () => {

@@ -54,7 +54,8 @@ const func: DeployFunction = async ({
       env.PROJECTFEE_RECEIVER || admin.address,
       env.PROTOCOLFEE_RECEIVER || ethers.constants.AddressZero,
       env.PROTOCOLFEE_AMOUNT || 0,
-      env.PROTOCOLFEE_PERCENT || 0
+      env.PROTOCOLFEE_PERCENT || 0,
+      env.PROTOCOLFEE_PERCENT_SUB || 0
     ]
   ];
 
