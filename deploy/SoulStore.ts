@@ -28,6 +28,7 @@ const func: DeployFunction = async ({
     network.name === "hardhat" ||
     network.name === "celo" ||
     network.name === "alfajores" ||
+    network.name === "base" ||
     network.name === "basegoerli"
   ) {
     const soulNameDeployed = await deployments.get("SoulName");
@@ -60,6 +61,7 @@ const func: DeployFunction = async ({
     network.name === "hardhat" ||
     network.name === "celo" ||
     network.name === "alfajores" ||
+    network.name === "base" ||
     network.name === "basegoerli" ||
     network.name === "mumbai" ||
     network.name === "polygon"
@@ -160,6 +162,7 @@ func.skip = async ({ network }) => {
     network.name !== "hardhat" &&
     network.name !== "celo" &&
     network.name !== "alfajores" &&
+    network.name !== "base" &&
     network.name !== "basegoerli" &&
     network.name !== "mumbai" &&
     network.name !== "polygon"
