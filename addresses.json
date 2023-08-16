@@ -8,6 +8,7 @@
   "base": {
     "SoulName": "0x836198F984431EcdC97A7549C1Bd6B3Cd9E7a89B",
     "SoulStore": "0x6Aa37dF2392007209C54A2162beF21623705dC22",
+    "SoulboundGreen": "0x132237dA1CCf1a0433bf5ed259baa3E444F631D7",
     "SoulboundIdentity": "0x576E82208df807B07b9e4B4bDBd7F7862F1152a9"
   },
   "basegoerli": {
