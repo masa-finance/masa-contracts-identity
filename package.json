@@ -1,6 +1,6 @@
 {
   "name": "@masa-finance/masa-contracts-identity",
-  "version": "1.8.4",
+  "version": "1.8.5",
   "main": "dist/typechain/index.js",
   "types": "dist/typechain/index.d.ts",
   "repository": "git@github.com:masa-finance/masa-contracts-identity.git",
