@@ -121,6 +121,11 @@ const func: DeployFunction = async ({
   }
 };
 
+func.skip = async ({ network }) => {
+  return (
+    network.name === "masa"
+  );
+};
 func.tags = ["SoulboundGreen"];
 func.dependencies = ["SoulboundIdentity"];
 export default func;
