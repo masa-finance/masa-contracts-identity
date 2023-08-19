@@ -84,20 +84,5 @@ const func: DeployFunction = async ({
   }
 };
 
-func.skip = async ({ network }) => {
-  return (
-    network.name !== "mainnet" &&
-    network.name !== "goerli" &&
-    network.name !== "hardhat" &&
-    network.name !== "celo" &&
-    network.name !== "alfajores" &&
-    network.name !== "base" &&
-    network.name !== "basegoerli" &&
-    network.name !== "bsctest" &&
-    network.name !== "bsc" &&
-    network.name !== "mumbai" &&
-    network.name !== "polygon"
-  );
-};
 func.tags = ["SoulboundIdentity"];
 export default func;
