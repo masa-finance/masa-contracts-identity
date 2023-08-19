@@ -64,8 +64,8 @@ const networks: NetworksUserConfig = {
     accounts: [getPrivateKey("polygon")]
   },
   masa: {
-    url: "http://34.31.196.154:8547", // RPC
-    chainId: 42029,
+    url: "http://34.31.196.154:8545", // RPC
+    chainId: 42069,
     accounts: [getPrivateKey("masa")]
   },
   basegoerli: {
