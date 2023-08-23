@@ -1,8 +1,10 @@
-// Sources flattened with hardhat v2.14.0 https://hardhat.org
-
-// File @openzeppelin/contracts/access/IAccessControl.sol@v4.9.0
+// Sources flattened with hardhat v2.17.1 https://hardhat.org
 
 // SPDX-License-Identifier: MIT
+
+// File @openzeppelin/contracts/access/IAccessControl.sol@v4.9.3
+
+// Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts v4.4.1 (access/IAccessControl.sol)
 
 pragma solidity ^0.8.0;
@@ -19,11 +21,7 @@ interface IAccessControl {
      *
      * _Available since v3.1._
      */
-    event RoleAdminChanged(
-        bytes32 indexed role,
-        bytes32 indexed previousAdminRole,
-        bytes32 indexed newAdminRole
-    );
+    event RoleAdminChanged(bytes32 indexed role, bytes32 indexed previousAdminRole, bytes32 indexed newAdminRole);
 
     /**
      * @dev Emitted when `account` is granted `role`.
@@ -31,11 +29,7 @@ interface IAccessControl {
      * `sender` is the account that originated the contract call, an admin role
      * bearer except when using {AccessControl-_setupRole}.
      */
-    event RoleGranted(
-        bytes32 indexed role,
-        address indexed account,
-        address indexed sender
-    );
+    event RoleGranted(bytes32 indexed role, address indexed account, address indexed sender);
 
     /**
      * @dev Emitted when `account` is revoked `role`.
@@ -44,19 +38,12 @@ interface IAccessControl {
      *   - if using `revokeRole`, it is the admin role bearer
      *   - if using `renounceRole`, it is the role bearer (i.e. `account`)
      */
-    event RoleRevoked(
-        bytes32 indexed role,
-        address indexed account,
-        address indexed sender
-    );
+    event RoleRevoked(bytes32 indexed role, address indexed account, address indexed sender);
 
     /**
      * @dev Returns `true` if `account` has been granted `role`.
      */
-    function hasRole(
-        bytes32 role,
-        address account
-    ) external view returns (bool);
+    function hasRole(bytes32 role, address account) external view returns (bool);
 
     /**
      * @dev Returns the admin role that controls `role`. See {grantRole} and
@@ -106,8 +93,10 @@ interface IAccessControl {
     function renounceRole(bytes32 role, address account) external;
 }
 
-// File @openzeppelin/contracts/utils/Context.sol@v4.9.0
 
+// File @openzeppelin/contracts/utils/Context.sol@v4.9.3
+
+// Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts v4.4.1 (utils/Context.sol)
 
 pragma solidity ^0.8.0;
@@ -132,8 +121,10 @@ abstract contract Context {
     }
 }
 
-// File @openzeppelin/contracts/utils/introspection/IERC165.sol@v4.9.0
 
+// File @openzeppelin/contracts/utils/introspection/IERC165.sol@v4.9.3
+
+// Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts v4.4.1 (utils/introspection/IERC165.sol)
 
 pragma solidity ^0.8.0;
@@ -159,8 +150,10 @@ interface IERC165 {
     function supportsInterface(bytes4 interfaceId) external view returns (bool);
 }
 
-// File @openzeppelin/contracts/utils/introspection/ERC165.sol@v4.9.0
 
+// File @openzeppelin/contracts/utils/introspection/ERC165.sol@v4.9.3
+
+// Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts v4.4.1 (utils/introspection/ERC165.sol)
 
 pragma solidity ^0.8.0;
@@ -183,15 +176,15 @@ abstract contract ERC165 is IERC165 {
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(
-        bytes4 interfaceId
-    ) public view virtual override returns (bool) {
+    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
         return interfaceId == type(IERC165).interfaceId;
     }
 }
 
-// File @openzeppelin/contracts/utils/math/Math.sol@v4.9.0
 
+// File @openzeppelin/contracts/utils/math/Math.sol@v4.9.3
+
+// Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.9.0) (utils/math/Math.sol)
 
 pragma solidity ^0.8.0;
@@ -245,11 +238,7 @@ library Math {
      * @dev Original credit to Remco Bloemen under MIT license (https://xn--2-umb.com/21/muldiv)
      * with further edits by Uniswap Labs also under MIT license.
      */
-    function mulDiv(
-        uint256 x,
-        uint256 y,
-        uint256 denominator
-    ) internal pure returns (uint256 result) {
+    function mulDiv(uint256 x, uint256 y, uint256 denominator) internal pure returns (uint256 result) {
         unchecked {
             // 512-bit multiply [prod1 prod0] = x * y. Compute the product mod 2^256 and mod 2^256 - 1, then use
             // use the Chinese Remainder Theorem to reconstruct the 512 bit result. The result is stored in two 256
@@ -333,12 +322,7 @@ library Math {
     /**
      * @notice Calculates x * y / denominator with full precision, following the selected rounding direction.
      */
-    function mulDiv(
-        uint256 x,
-        uint256 y,
-        uint256 denominator,
-        Rounding rounding
-    ) internal pure returns (uint256) {
+    function mulDiv(uint256 x, uint256 y, uint256 denominator, Rounding rounding) internal pure returns (uint256) {
         uint256 result = mulDiv(x, y, denominator);
         if (rounding == Rounding.Up && mulmod(x, y, denominator) > 0) {
             result += 1;
@@ -387,15 +371,10 @@ library Math {
     /**
      * @notice Calculates sqrt(a), following the selected rounding direction.
      */
-    function sqrt(
-        uint256 a,
-        Rounding rounding
-    ) internal pure returns (uint256) {
+    function sqrt(uint256 a, Rounding rounding) internal pure returns (uint256) {
         unchecked {
             uint256 result = sqrt(a);
-            return
-                result +
-                (rounding == Rounding.Up && result * result < a ? 1 : 0);
+            return result + (rounding == Rounding.Up && result * result < a ? 1 : 0);
         }
     }
 
@@ -445,15 +424,10 @@ library Math {
      * @dev Return the log in base 2, following the selected rounding direction, of a positive value.
      * Returns 0 if given 0.
      */
-    function log2(
-        uint256 value,
-        Rounding rounding
-    ) internal pure returns (uint256) {
+    function log2(uint256 value, Rounding rounding) internal pure returns (uint256) {
         unchecked {
             uint256 result = log2(value);
-            return
-                result +
-                (rounding == Rounding.Up && 1 << result < value ? 1 : 0);
+            return result + (rounding == Rounding.Up && 1 << result < value ? 1 : 0);
         }
     }
 
@@ -499,15 +473,10 @@ library Math {
      * @dev Return the log in base 10, following the selected rounding direction, of a positive value.
      * Returns 0 if given 0.
      */
-    function log10(
-        uint256 value,
-        Rounding rounding
-    ) internal pure returns (uint256) {
+    function log10(uint256 value, Rounding rounding) internal pure returns (uint256) {
         unchecked {
             uint256 result = log10(value);
-            return
-                result +
-                (rounding == Rounding.Up && 10 ** result < value ? 1 : 0);
+            return result + (rounding == Rounding.Up && 10 ** result < value ? 1 : 0);
         }
     }
 
@@ -547,21 +516,18 @@ library Math {
      * @dev Return the log in base 256, following the selected rounding direction, of a positive value.
      * Returns 0 if given 0.
      */
-    function log256(
-        uint256 value,
-        Rounding rounding
-    ) internal pure returns (uint256) {
+    function log256(uint256 value, Rounding rounding) internal pure returns (uint256) {
         unchecked {
             uint256 result = log256(value);
-            return
-                result +
-                (rounding == Rounding.Up && 1 << (result << 3) < value ? 1 : 0);
+            return result + (rounding == Rounding.Up && 1 << (result << 3) < value ? 1 : 0);
         }
     }
 }
 
-// File @openzeppelin/contracts/utils/math/SignedMath.sol@v4.9.0
 
+// File @openzeppelin/contracts/utils/math/SignedMath.sol@v4.9.3
+
+// Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.8.0) (utils/math/SignedMath.sol)
 
 pragma solidity ^0.8.0;
@@ -605,11 +571,14 @@ library SignedMath {
     }
 }
 
-// File @openzeppelin/contracts/utils/Strings.sol@v4.9.0
 
+// File @openzeppelin/contracts/utils/Strings.sol@v4.9.3
+
+// Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.9.0) (utils/Strings.sol)
 
 pragma solidity ^0.8.0;
+
 
 /**
  * @dev String operations.
@@ -647,13 +616,7 @@ library Strings {
      * @dev Converts a `int256` to its ASCII `string` decimal representation.
      */
     function toString(int256 value) internal pure returns (string memory) {
-        return
-            string(
-                abi.encodePacked(
-                    value < 0 ? "-" : "",
-                    toString(SignedMath.abs(value))
-                )
-            );
+        return string(abi.encodePacked(value < 0 ? "-" : "", toString(SignedMath.abs(value))));
     }
 
     /**
@@ -668,10 +631,7 @@ library Strings {
     /**
      * @dev Converts a `uint256` to its ASCII `string` hexadecimal representation with fixed length.
      */
-    function toHexString(
-        uint256 value,
-        uint256 length
-    ) internal pure returns (string memory) {
+    function toHexString(uint256 value, uint256 length) internal pure returns (string memory) {
         bytes memory buffer = new bytes(2 * length + 2);
         buffer[0] = "0";
         buffer[1] = "x";
@@ -693,19 +653,21 @@ library Strings {
     /**
      * @dev Returns true if the two strings are equal.
      */
-    function equal(
-        string memory a,
-        string memory b
-    ) internal pure returns (bool) {
+    function equal(string memory a, string memory b) internal pure returns (bool) {
         return keccak256(bytes(a)) == keccak256(bytes(b));
     }
 }
 
-// File @openzeppelin/contracts/access/AccessControl.sol@v4.9.0
 
+// File @openzeppelin/contracts/access/AccessControl.sol@v4.9.3
+
+// Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.9.0) (access/AccessControl.sol)
 
 pragma solidity ^0.8.0;
+
+
+
 
 /**
  * @dev Contract module that allows children to implement role-based access
@@ -774,21 +736,14 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(
-        bytes4 interfaceId
-    ) public view virtual override returns (bool) {
-        return
-            interfaceId == type(IAccessControl).interfaceId ||
-            super.supportsInterface(interfaceId);
+    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
+        return interfaceId == type(IAccessControl).interfaceId || super.supportsInterface(interfaceId);
     }
 
     /**
      * @dev Returns `true` if `account` has been granted `role`.
      */
-    function hasRole(
-        bytes32 role,
-        address account
-    ) public view virtual override returns (bool) {
+    function hasRole(bytes32 role, address account) public view virtual override returns (bool) {
         return _roles[role].members[account];
     }
 
@@ -832,9 +787,7 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *
      * To change a role's admin, use {_setRoleAdmin}.
      */
-    function getRoleAdmin(
-        bytes32 role
-    ) public view virtual override returns (bytes32) {
+    function getRoleAdmin(bytes32 role) public view virtual override returns (bytes32) {
         return _roles[role].adminRole;
     }
 
@@ -850,10 +803,7 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *
      * May emit a {RoleGranted} event.
      */
-    function grantRole(
-        bytes32 role,
-        address account
-    ) public virtual override onlyRole(getRoleAdmin(role)) {
+    function grantRole(bytes32 role, address account) public virtual override onlyRole(getRoleAdmin(role)) {
         _grantRole(role, account);
     }
 
@@ -868,10 +818,7 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *
      * May emit a {RoleRevoked} event.
      */
-    function revokeRole(
-        bytes32 role,
-        address account
-    ) public virtual override onlyRole(getRoleAdmin(role)) {
+    function revokeRole(bytes32 role, address account) public virtual override onlyRole(getRoleAdmin(role)) {
         _revokeRole(role, account);
     }
 
@@ -891,14 +838,8 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *
      * May emit a {RoleRevoked} event.
      */
-    function renounceRole(
-        bytes32 role,
-        address account
-    ) public virtual override {
-        require(
-            account == _msgSender(),
-            "AccessControl: can only renounce roles for self"
-        );
+    function renounceRole(bytes32 role, address account) public virtual override {
+        require(account == _msgSender(), "AccessControl: can only renounce roles for self");
 
         _revokeRole(role, account);
     }
@@ -967,8 +908,10 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
     }
 }
 
-// File @openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol@v4.9.0
 
+// File @openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol@v4.9.3
+
+// Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.9.0) (token/ERC20/extensions/IERC20Permit.sol)
 
 pragma solidity ^0.8.0;
@@ -1029,8 +972,10 @@ interface IERC20Permit {
     function DOMAIN_SEPARATOR() external view returns (bytes32);
 }
 
-// File @openzeppelin/contracts/token/ERC20/IERC20.sol@v4.9.0
 
+// File @openzeppelin/contracts/token/ERC20/IERC20.sol@v4.9.3
+
+// Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.9.0) (token/ERC20/IERC20.sol)
 
 pragma solidity ^0.8.0;
@@ -1051,11 +996,7 @@ interface IERC20 {
      * @dev Emitted when the allowance of a `spender` for an `owner` is set by
      * a call to {approve}. `value` is the new allowance.
      */
-    event Approval(
-        address indexed owner,
-        address indexed spender,
-        uint256 value
-    );
+    event Approval(address indexed owner, address indexed spender, uint256 value);
 
     /**
      * @dev Returns the amount of tokens in existence.
@@ -1083,10 +1024,7 @@ interface IERC20 {
      *
      * This value changes when {approve} or {transferFrom} are called.
      */
-    function allowance(
-        address owner,
-        address spender
-    ) external view returns (uint256);
+    function allowance(address owner, address spender) external view returns (uint256);
 
     /**
      * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
@@ -1113,15 +1051,13 @@ interface IERC20 {
      *
      * Emits a {Transfer} event.
      */
-    function transferFrom(
-        address from,
-        address to,
-        uint256 amount
-    ) external returns (bool);
+    function transferFrom(address from, address to, uint256 amount) external returns (bool);
 }
 
-// File @openzeppelin/contracts/utils/Address.sol@v4.9.0
 
+// File @openzeppelin/contracts/utils/Address.sol@v4.9.3
+
+// Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.9.0) (utils/Address.sol)
 
 pragma solidity ^0.8.1;
@@ -1185,16 +1121,10 @@ library Address {
      * https://solidity.readthedocs.io/en/v0.8.0/security-considerations.html#use-the-checks-effects-interactions-pattern[checks-effects-interactions pattern].
      */
     function sendValue(address payable recipient, uint256 amount) internal {
-        require(
-            address(this).balance >= amount,
-            "Address: insufficient balance"
-        );
+        require(address(this).balance >= amount, "Address: insufficient balance");
 
         (bool success, ) = recipient.call{value: amount}("");
-        require(
-            success,
-            "Address: unable to send value, recipient may have reverted"
-        );
+        require(success, "Address: unable to send value, recipient may have reverted");
     }
 
     /**
@@ -1215,17 +1145,8 @@ library Address {
      *
      * _Available since v3.1._
      */
-    function functionCall(
-        address target,
-        bytes memory data
-    ) internal returns (bytes memory) {
-        return
-            functionCallWithValue(
-                target,
-                data,
-                0,
-                "Address: low-level call failed"
-            );
+    function functionCall(address target, bytes memory data) internal returns (bytes memory) {
+        return functionCallWithValue(target, data, 0, "Address: low-level call failed");
     }
 
     /**
@@ -1253,18 +1174,8 @@ library Address {
      *
      * _Available since v3.1._
      */
-    function functionCallWithValue(
-        address target,
-        bytes memory data,
-        uint256 value
-    ) internal returns (bytes memory) {
-        return
-            functionCallWithValue(
-                target,
-                data,
-                value,
-                "Address: low-level call with value failed"
-            );
+    function functionCallWithValue(address target, bytes memory data, uint256 value) internal returns (bytes memory) {
+        return functionCallWithValue(target, data, value, "Address: low-level call with value failed");
     }
 
     /**
@@ -1279,20 +1190,9 @@ library Address {
         uint256 value,
         string memory errorMessage
     ) internal returns (bytes memory) {
-        require(
-            address(this).balance >= value,
-            "Address: insufficient balance for call"
-        );
-        (bool success, bytes memory returndata) = target.call{value: value}(
-            data
-        );
-        return
-            verifyCallResultFromTarget(
-                target,
-                success,
-                returndata,
-                errorMessage
-            );
+        require(address(this).balance >= value, "Address: insufficient balance for call");
+        (bool success, bytes memory returndata) = target.call{value: value}(data);
+        return verifyCallResultFromTarget(target, success, returndata, errorMessage);
     }
 
     /**
@@ -1301,16 +1201,8 @@ library Address {
      *
      * _Available since v3.3._
      */
-    function functionStaticCall(
-        address target,
-        bytes memory data
-    ) internal view returns (bytes memory) {
-        return
-            functionStaticCall(
-                target,
-                data,
-                "Address: low-level static call failed"
-            );
+    function functionStaticCall(address target, bytes memory data) internal view returns (bytes memory) {
+        return functionStaticCall(target, data, "Address: low-level static call failed");
     }
 
     /**
@@ -1325,13 +1217,7 @@ library Address {
         string memory errorMessage
     ) internal view returns (bytes memory) {
         (bool success, bytes memory returndata) = target.staticcall(data);
-        return
-            verifyCallResultFromTarget(
-                target,
-                success,
-                returndata,
-                errorMessage
-            );
+        return verifyCallResultFromTarget(target, success, returndata, errorMessage);
     }
 
     /**
@@ -1340,16 +1226,8 @@ library Address {
      *
      * _Available since v3.4._
      */
-    function functionDelegateCall(
-        address target,
-        bytes memory data
-    ) internal returns (bytes memory) {
-        return
-            functionDelegateCall(
-                target,
-                data,
-                "Address: low-level delegate call failed"
-            );
+    function functionDelegateCall(address target, bytes memory data) internal returns (bytes memory) {
+        return functionDelegateCall(target, data, "Address: low-level delegate call failed");
     }
 
     /**
@@ -1364,13 +1242,7 @@ library Address {
         string memory errorMessage
     ) internal returns (bytes memory) {
         (bool success, bytes memory returndata) = target.delegatecall(data);
-        return
-            verifyCallResultFromTarget(
-                target,
-                success,
-                returndata,
-                errorMessage
-            );
+        return verifyCallResultFromTarget(target, success, returndata, errorMessage);
     }
 
     /**
@@ -1415,10 +1287,7 @@ library Address {
         }
     }
 
-    function _revert(
-        bytes memory returndata,
-        string memory errorMessage
-    ) private pure {
+    function _revert(bytes memory returndata, string memory errorMessage) private pure {
         // Look for revert reason and bubble it up if present
         if (returndata.length > 0) {
             // The easiest way to bubble the revert reason is using memory via assembly
@@ -1433,11 +1302,15 @@ library Address {
     }
 }
 
-// File @openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol@v4.9.0
 
-// OpenZeppelin Contracts (last updated v4.9.0) (token/ERC20/utils/SafeERC20.sol)
+// File @openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol@v4.9.3
+
+// Original license: SPDX_License_Identifier: MIT
+// OpenZeppelin Contracts (last updated v4.9.3) (token/ERC20/utils/SafeERC20.sol)
 
 pragma solidity ^0.8.0;
+
+
 
 /**
  * @title SafeERC20
@@ -1456,26 +1329,15 @@ library SafeERC20 {
      * non-reverting calls are assumed to be successful.
      */
     function safeTransfer(IERC20 token, address to, uint256 value) internal {
-        _callOptionalReturn(
-            token,
-            abi.encodeWithSelector(token.transfer.selector, to, value)
-        );
+        _callOptionalReturn(token, abi.encodeWithSelector(token.transfer.selector, to, value));
     }
 
     /**
      * @dev Transfer `value` amount of `token` from `from` to `to`, spending the approval given by `from` to the
      * calling contract. If `token` returns no value, non-reverting calls are assumed to be successful.
      */
-    function safeTransferFrom(
-        IERC20 token,
-        address from,
-        address to,
-        uint256 value
-    ) internal {
-        _callOptionalReturn(
-            token,
-            abi.encodeWithSelector(token.transferFrom.selector, from, to, value)
-        );
+    function safeTransferFrom(IERC20 token, address from, address to, uint256 value) internal {
+        _callOptionalReturn(token, abi.encodeWithSelector(token.transferFrom.selector, from, to, value));
     }
 
     /**
@@ -1485,11 +1347,7 @@ library SafeERC20 {
      * Whenever possible, use {safeIncreaseAllowance} and
      * {safeDecreaseAllowance} instead.
      */
-    function safeApprove(
-        IERC20 token,
-        address spender,
-        uint256 value
-    ) internal {
+    function safeApprove(IERC20 token, address spender, uint256 value) internal {
         // safeApprove should only be called when setting an initial allowance,
         // or when resetting it to zero. To increase and decrease it, use
         // 'safeIncreaseAllowance' and 'safeDecreaseAllowance'
@@ -1497,79 +1355,40 @@ library SafeERC20 {
             (value == 0) || (token.allowance(address(this), spender) == 0),
             "SafeERC20: approve from non-zero to non-zero allowance"
         );
-        _callOptionalReturn(
-            token,
-            abi.encodeWithSelector(token.approve.selector, spender, value)
-        );
+        _callOptionalReturn(token, abi.encodeWithSelector(token.approve.selector, spender, value));
     }
 
     /**
      * @dev Increase the calling contract's allowance toward `spender` by `value`. If `token` returns no value,
      * non-reverting calls are assumed to be successful.
      */
-    function safeIncreaseAllowance(
-        IERC20 token,
-        address spender,
-        uint256 value
-    ) internal {
+    function safeIncreaseAllowance(IERC20 token, address spender, uint256 value) internal {
         uint256 oldAllowance = token.allowance(address(this), spender);
-        _callOptionalReturn(
-            token,
-            abi.encodeWithSelector(
-                token.approve.selector,
-                spender,
-                oldAllowance + value
-            )
-        );
+        _callOptionalReturn(token, abi.encodeWithSelector(token.approve.selector, spender, oldAllowance + value));
     }
 
     /**
      * @dev Decrease the calling contract's allowance toward `spender` by `value`. If `token` returns no value,
      * non-reverting calls are assumed to be successful.
      */
-    function safeDecreaseAllowance(
-        IERC20 token,
-        address spender,
-        uint256 value
-    ) internal {
+    function safeDecreaseAllowance(IERC20 token, address spender, uint256 value) internal {
         unchecked {
             uint256 oldAllowance = token.allowance(address(this), spender);
-            require(
-                oldAllowance >= value,
-                "SafeERC20: decreased allowance below zero"
-            );
-            _callOptionalReturn(
-                token,
-                abi.encodeWithSelector(
-                    token.approve.selector,
-                    spender,
-                    oldAllowance - value
-                )
-            );
+            require(oldAllowance >= value, "SafeERC20: decreased allowance below zero");
+            _callOptionalReturn(token, abi.encodeWithSelector(token.approve.selector, spender, oldAllowance - value));
         }
     }
 
     /**
      * @dev Set the calling contract's allowance toward `spender` to `value`. If `token` returns no value,
-     * non-reverting calls are assumed to be successful. Compatible with tokens that require the approval to be set to
-     * 0 before setting it to a non-zero value.
+     * non-reverting calls are assumed to be successful. Meant to be used with tokens that require the approval
+     * to be set to zero before setting it to a non-zero value, such as USDT.
      */
-    function forceApprove(
-        IERC20 token,
-        address spender,
-        uint256 value
-    ) internal {
-        bytes memory approvalCall = abi.encodeWithSelector(
-            token.approve.selector,
-            spender,
-            value
-        );
+    function forceApprove(IERC20 token, address spender, uint256 value) internal {
+        bytes memory approvalCall = abi.encodeWithSelector(token.approve.selector, spender, value);
 
         if (!_callOptionalReturnBool(token, approvalCall)) {
-            _callOptionalReturn(
-                token,
-                abi.encodeWithSelector(token.approve.selector, spender, 0)
-            );
+            _callOptionalReturn(token, abi.encodeWithSelector(token.approve.selector, spender, 0));
             _callOptionalReturn(token, approvalCall);
         }
     }
@@ -1591,10 +1410,7 @@ library SafeERC20 {
         uint256 nonceBefore = token.nonces(owner);
         token.permit(owner, spender, value, deadline, v, r, s);
         uint256 nonceAfter = token.nonces(owner);
-        require(
-            nonceAfter == nonceBefore + 1,
-            "SafeERC20: permit did not succeed"
-        );
+        require(nonceAfter == nonceBefore + 1, "SafeERC20: permit did not succeed");
     }
 
     /**
@@ -1608,14 +1424,8 @@ library SafeERC20 {
         // we're implementing it ourselves. We use {Address-functionCall} to perform this call, which verifies that
         // the target address contains contract code and also asserts for success in the low-level call.
 
-        bytes memory returndata = address(token).functionCall(
-            data,
-            "SafeERC20: low-level call failed"
-        );
-        require(
-            returndata.length == 0 || abi.decode(returndata, (bool)),
-            "SafeERC20: ERC20 operation did not succeed"
-        );
+        bytes memory returndata = address(token).functionCall(data, "SafeERC20: low-level call failed");
+        require(returndata.length == 0 || abi.decode(returndata, (bool)), "SafeERC20: ERC20 operation did not succeed");
     }
 
     /**
@@ -1626,24 +1436,21 @@ library SafeERC20 {
      *
      * This is a variant of {_callOptionalReturn} that silents catches all reverts and returns a bool instead.
      */
-    function _callOptionalReturnBool(
-        IERC20 token,
-        bytes memory data
-    ) private returns (bool) {
+    function _callOptionalReturnBool(IERC20 token, bytes memory data) private returns (bool) {
         // We need to perform a low level call here, to bypass Solidity's return data size checking mechanism, since
         // we're implementing it ourselves. We cannot use {Address-functionCall} here since this should return false
         // and not revert is the subcall reverts.
 
         (bool success, bytes memory returndata) = address(token).call(data);
         return
-            success &&
-            (returndata.length == 0 || abi.decode(returndata, (bool))) &&
-            Address.isContract(address(token));
+            success && (returndata.length == 0 || abi.decode(returndata, (bool))) && Address.isContract(address(token));
     }
 }
 
-// File @openzeppelin/contracts/interfaces/IERC5267.sol@v4.9.0
 
+// File @openzeppelin/contracts/interfaces/IERC5267.sol@v4.9.3
+
+// Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.9.0) (interfaces/IERC5267.sol)
 
 pragma solidity ^0.8.0;
@@ -1672,8 +1479,10 @@ interface IERC5267 {
         );
 }
 
-// File @openzeppelin/contracts/utils/cryptography/ECDSA.sol@v4.9.0
 
+// File @openzeppelin/contracts/utils/cryptography/ECDSA.sol@v4.9.3
+
+// Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.9.0) (utils/cryptography/ECDSA.sol)
 
 pragma solidity ^0.8.0;
@@ -1725,10 +1534,7 @@ library ECDSA {
      *
      * _Available since v4.3._
      */
-    function tryRecover(
-        bytes32 hash,
-        bytes memory signature
-    ) internal pure returns (address, RecoverError) {
+    function tryRecover(bytes32 hash, bytes memory signature) internal pure returns (address, RecoverError) {
         if (signature.length == 65) {
             bytes32 r;
             bytes32 s;
@@ -1761,10 +1567,7 @@ library ECDSA {
      * this is by receiving a hash of the original message (which may otherwise
      * be too long), and then calling {toEthSignedMessageHash} on it.
      */
-    function recover(
-        bytes32 hash,
-        bytes memory signature
-    ) internal pure returns (address) {
+    function recover(bytes32 hash, bytes memory signature) internal pure returns (address) {
         (address recovered, RecoverError error) = tryRecover(hash, signature);
         _throwError(error);
         return recovered;
@@ -1777,15 +1580,8 @@ library ECDSA {
      *
      * _Available since v4.3._
      */
-    function tryRecover(
-        bytes32 hash,
-        bytes32 r,
-        bytes32 vs
-    ) internal pure returns (address, RecoverError) {
-        bytes32 s = vs &
-            bytes32(
-                0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            );
+    function tryRecover(bytes32 hash, bytes32 r, bytes32 vs) internal pure returns (address, RecoverError) {
+        bytes32 s = vs & bytes32(0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff);
         uint8 v = uint8((uint256(vs) >> 255) + 27);
         return tryRecover(hash, v, r, s);
     }
@@ -1795,11 +1591,7 @@ library ECDSA {
      *
      * _Available since v4.2._
      */
-    function recover(
-        bytes32 hash,
-        bytes32 r,
-        bytes32 vs
-    ) internal pure returns (address) {
+    function recover(bytes32 hash, bytes32 r, bytes32 vs) internal pure returns (address) {
         (address recovered, RecoverError error) = tryRecover(hash, r, vs);
         _throwError(error);
         return recovered;
@@ -1811,12 +1603,7 @@ library ECDSA {
      *
      * _Available since v4.3._
      */
-    function tryRecover(
-        bytes32 hash,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
-    ) internal pure returns (address, RecoverError) {
+    function tryRecover(bytes32 hash, uint8 v, bytes32 r, bytes32 s) internal pure returns (address, RecoverError) {
         // EIP-2 still allows signature malleability for ecrecover(). Remove this possibility and make the signature
         // unique. Appendix F in the Ethereum Yellow paper (https://ethereum.github.io/yellowpaper/paper.pdf), defines
         // the valid range for s in (301): 0 < s < secp256k1n ÷ 2 + 1, and for v in (302): v ∈ {27, 28}. Most
@@ -1826,10 +1613,7 @@ library ECDSA {
         // with 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141 - s1 and flip v from 27 to 28 or
         // vice versa. If your library also generates signatures with 0/1 for v instead 27/28, add 27 to v to accept
         // these malleable signatures as well.
-        if (
-            uint256(s) >
-            0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D576E7357A4501DDFE92F46681B20A0
-        ) {
+        if (uint256(s) > 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D576E7357A4501DDFE92F46681B20A0) {
             return (address(0), RecoverError.InvalidSignatureS);
         }
 
@@ -1846,12 +1630,7 @@ library ECDSA {
      * @dev Overload of {ECDSA-recover} that receives the `v`,
      * `r` and `s` signature fields separately.
      */
-    function recover(
-        bytes32 hash,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
-    ) internal pure returns (address) {
+    function recover(bytes32 hash, uint8 v, bytes32 r, bytes32 s) internal pure returns (address) {
         (address recovered, RecoverError error) = tryRecover(hash, v, r, s);
         _throwError(error);
         return recovered;
@@ -1865,9 +1644,7 @@ library ECDSA {
      *
      * See {recover}.
      */
-    function toEthSignedMessageHash(
-        bytes32 hash
-    ) internal pure returns (bytes32 message) {
+    function toEthSignedMessageHash(bytes32 hash) internal pure returns (bytes32 message) {
         // 32 is the length in bytes of hash,
         // enforced by the type signature above
         /// @solidity memory-safe-assembly
@@ -1886,17 +1663,8 @@ library ECDSA {
      *
      * See {recover}.
      */
-    function toEthSignedMessageHash(
-        bytes memory s
-    ) internal pure returns (bytes32) {
-        return
-            keccak256(
-                abi.encodePacked(
-                    "\x19Ethereum Signed Message:\n",
-                    Strings.toString(s.length),
-                    s
-                )
-            );
+    function toEthSignedMessageHash(bytes memory s) internal pure returns (bytes32) {
+        return keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n", Strings.toString(s.length), s));
     }
 
     /**
@@ -1908,10 +1676,7 @@ library ECDSA {
      *
      * See {recover}.
      */
-    function toTypedDataHash(
-        bytes32 domainSeparator,
-        bytes32 structHash
-    ) internal pure returns (bytes32 data) {
+    function toTypedDataHash(bytes32 domainSeparator, bytes32 structHash) internal pure returns (bytes32 data) {
         /// @solidity memory-safe-assembly
         assembly {
             let ptr := mload(0x40)
@@ -1928,16 +1693,15 @@ library ECDSA {
      *
      * See {recover}.
      */
-    function toDataWithIntendedValidatorHash(
-        address validator,
-        bytes memory data
-    ) internal pure returns (bytes32) {
+    function toDataWithIntendedValidatorHash(address validator, bytes memory data) internal pure returns (bytes32) {
         return keccak256(abi.encodePacked("\x19\x00", validator, data));
     }
 }
 
-// File @openzeppelin/contracts/utils/StorageSlot.sol@v4.9.0
 
+// File @openzeppelin/contracts/utils/StorageSlot.sol@v4.9.3
+
+// Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.9.0) (utils/StorageSlot.sol)
 // This file was procedurally generated from scripts/generate/templates/StorageSlot.js.
 
@@ -1998,9 +1762,7 @@ library StorageSlot {
     /**
      * @dev Returns an `AddressSlot` with member `value` located at `slot`.
      */
-    function getAddressSlot(
-        bytes32 slot
-    ) internal pure returns (AddressSlot storage r) {
+    function getAddressSlot(bytes32 slot) internal pure returns (AddressSlot storage r) {
         /// @solidity memory-safe-assembly
         assembly {
             r.slot := slot
@@ -2010,9 +1772,7 @@ library StorageSlot {
     /**
      * @dev Returns an `BooleanSlot` with member `value` located at `slot`.
      */
-    function getBooleanSlot(
-        bytes32 slot
-    ) internal pure returns (BooleanSlot storage r) {
+    function getBooleanSlot(bytes32 slot) internal pure returns (BooleanSlot storage r) {
         /// @solidity memory-safe-assembly
         assembly {
             r.slot := slot
@@ -2022,9 +1782,7 @@ library StorageSlot {
     /**
      * @dev Returns an `Bytes32Slot` with member `value` located at `slot`.
      */
-    function getBytes32Slot(
-        bytes32 slot
-    ) internal pure returns (Bytes32Slot storage r) {
+    function getBytes32Slot(bytes32 slot) internal pure returns (Bytes32Slot storage r) {
         /// @solidity memory-safe-assembly
         assembly {
             r.slot := slot
@@ -2034,9 +1792,7 @@ library StorageSlot {
     /**
      * @dev Returns an `Uint256Slot` with member `value` located at `slot`.
      */
-    function getUint256Slot(
-        bytes32 slot
-    ) internal pure returns (Uint256Slot storage r) {
+    function getUint256Slot(bytes32 slot) internal pure returns (Uint256Slot storage r) {
         /// @solidity memory-safe-assembly
         assembly {
             r.slot := slot
@@ -2046,9 +1802,7 @@ library StorageSlot {
     /**
      * @dev Returns an `StringSlot` with member `value` located at `slot`.
      */
-    function getStringSlot(
-        bytes32 slot
-    ) internal pure returns (StringSlot storage r) {
+    function getStringSlot(bytes32 slot) internal pure returns (StringSlot storage r) {
         /// @solidity memory-safe-assembly
         assembly {
             r.slot := slot
@@ -2058,9 +1812,7 @@ library StorageSlot {
     /**
      * @dev Returns an `StringSlot` representation of the string storage pointer `store`.
      */
-    function getStringSlot(
-        string storage store
-    ) internal pure returns (StringSlot storage r) {
+    function getStringSlot(string storage store) internal pure returns (StringSlot storage r) {
         /// @solidity memory-safe-assembly
         assembly {
             r.slot := store.slot
@@ -2070,9 +1822,7 @@ library StorageSlot {
     /**
      * @dev Returns an `BytesSlot` with member `value` located at `slot`.
      */
-    function getBytesSlot(
-        bytes32 slot
-    ) internal pure returns (BytesSlot storage r) {
+    function getBytesSlot(bytes32 slot) internal pure returns (BytesSlot storage r) {
         /// @solidity memory-safe-assembly
         assembly {
             r.slot := slot
@@ -2082,9 +1832,7 @@ library StorageSlot {
     /**
      * @dev Returns an `BytesSlot` representation of the bytes storage pointer `store`.
      */
-    function getBytesSlot(
-        bytes storage store
-    ) internal pure returns (BytesSlot storage r) {
+    function getBytesSlot(bytes storage store) internal pure returns (BytesSlot storage r) {
         /// @solidity memory-safe-assembly
         assembly {
             r.slot := store.slot
@@ -2092,8 +1840,10 @@ library StorageSlot {
     }
 }
 
-// File @openzeppelin/contracts/utils/ShortStrings.sol@v4.9.0
 
+// File @openzeppelin/contracts/utils/ShortStrings.sol@v4.9.3
+
+// Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.9.0) (utils/ShortStrings.sol)
 
 pragma solidity ^0.8.8;
@@ -2132,8 +1882,7 @@ type ShortString is bytes32;
  */
 library ShortStrings {
     // Used as an identifier for strings longer than 31 bytes.
-    bytes32 private constant _FALLBACK_SENTINEL =
-        0x00000000000000000000000000000000000000000000000000000000000000FF;
+    bytes32 private constant _FALLBACK_SENTINEL = 0x00000000000000000000000000000000000000000000000000000000000000FF;
 
     error StringTooLong(string str);
     error InvalidShortString();
@@ -2143,9 +1892,7 @@ library ShortStrings {
      *
      * This will trigger a `StringTooLong` error is the input string is too long.
      */
-    function toShortString(
-        string memory str
-    ) internal pure returns (ShortString) {
+    function toShortString(string memory str) internal pure returns (ShortString) {
         bytes memory bstr = bytes(str);
         if (bstr.length > 31) {
             revert StringTooLong(str);
@@ -2182,10 +1929,7 @@ library ShortStrings {
     /**
      * @dev Encode a string into a `ShortString`, or write it to storage if it is too long.
      */
-    function toShortStringWithFallback(
-        string memory value,
-        string storage store
-    ) internal returns (ShortString) {
+    function toShortStringWithFallback(string memory value, string storage store) internal returns (ShortString) {
         if (bytes(value).length < 32) {
             return toShortString(value);
         } else {
@@ -2197,10 +1941,7 @@ library ShortStrings {
     /**
      * @dev Decode a string that was encoded to `ShortString` or written to storage using {setWithFallback}.
      */
-    function toStringWithFallback(
-        ShortString value,
-        string storage store
-    ) internal pure returns (string memory) {
+    function toStringWithFallback(ShortString value, string storage store) internal pure returns (string memory) {
         if (ShortString.unwrap(value) != _FALLBACK_SENTINEL) {
             return toString(value);
         } else {
@@ -2214,10 +1955,7 @@ library ShortStrings {
      * WARNING: This will return the "byte length" of the string. This may not reflect the actual length in terms of
      * actual characters as the UTF-8 encoding of a single character can span over multiple bytes.
      */
-    function byteLengthWithFallback(
-        ShortString value,
-        string storage store
-    ) internal view returns (uint256) {
+    function byteLengthWithFallback(ShortString value, string storage store) internal view returns (uint256) {
         if (ShortString.unwrap(value) != _FALLBACK_SENTINEL) {
             return byteLength(value);
         } else {
@@ -2226,11 +1964,15 @@ library ShortStrings {
     }
 }
 
-// File @openzeppelin/contracts/utils/cryptography/EIP712.sol@v4.9.0
 
+// File @openzeppelin/contracts/utils/cryptography/EIP712.sol@v4.9.3
+
+// Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.9.0) (utils/cryptography/EIP712.sol)
 
 pragma solidity ^0.8.8;
+
+
 
 /**
  * @dev https://eips.ethereum.org/EIPS/eip-712[EIP 712] is a standard for hashing and signing of typed structured data.
@@ -2261,9 +2003,7 @@ abstract contract EIP712 is IERC5267 {
     using ShortStrings for *;
 
     bytes32 private constant _TYPE_HASH =
-        keccak256(
-            "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"
-        );
+        keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)");
 
     // Cache the domain separator as an immutable value, but also store the chain id that it corresponds to, in order to
     // invalidate the cached domain separator if the chain id changes.
@@ -2314,16 +2054,7 @@ abstract contract EIP712 is IERC5267 {
     }
 
     function _buildDomainSeparator() private view returns (bytes32) {
-        return
-            keccak256(
-                abi.encode(
-                    _TYPE_HASH,
-                    _hashedName,
-                    _hashedVersion,
-                    block.chainid,
-                    address(this)
-                )
-            );
+        return keccak256(abi.encode(_TYPE_HASH, _hashedName, _hashedVersion, block.chainid, address(this)));
     }
 
     /**
@@ -2341,9 +2072,7 @@ abstract contract EIP712 is IERC5267 {
      * address signer = ECDSA.recover(digest, signature);
      * ```
      */
-    function _hashTypedDataV4(
-        bytes32 structHash
-    ) internal view virtual returns (bytes32) {
+    function _hashTypedDataV4(bytes32 structHash) internal view virtual returns (bytes32) {
         return ECDSA.toTypedDataHash(_domainSeparatorV4(), structHash);
     }
 
@@ -2379,16 +2108,20 @@ abstract contract EIP712 is IERC5267 {
     }
 }
 
-// File @openzeppelin/contracts/utils/cryptography/draft-EIP712.sol@v4.9.0
 
+// File @openzeppelin/contracts/utils/cryptography/draft-EIP712.sol@v4.9.3
+
+// Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.8.0) (utils/cryptography/draft-EIP712.sol)
 
 pragma solidity ^0.8.0;
 
 // EIP-712 is Final as of 2022-08-11. This file is deprecated.
 
-// File @openzeppelin/contracts/utils/math/SafeMath.sol@v4.9.0
 
+// File @openzeppelin/contracts/utils/math/SafeMath.sol@v4.9.3
+
+// Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.9.0) (utils/math/SafeMath.sol)
 
 pragma solidity ^0.8.0;
@@ -2409,10 +2142,7 @@ library SafeMath {
      *
      * _Available since v3.4._
      */
-    function tryAdd(
-        uint256 a,
-        uint256 b
-    ) internal pure returns (bool, uint256) {
+    function tryAdd(uint256 a, uint256 b) internal pure returns (bool, uint256) {
         unchecked {
             uint256 c = a + b;
             if (c < a) return (false, 0);
@@ -2425,10 +2155,7 @@ library SafeMath {
      *
      * _Available since v3.4._
      */
-    function trySub(
-        uint256 a,
-        uint256 b
-    ) internal pure returns (bool, uint256) {
+    function trySub(uint256 a, uint256 b) internal pure returns (bool, uint256) {
         unchecked {
             if (b > a) return (false, 0);
             return (true, a - b);
@@ -2440,10 +2167,7 @@ library SafeMath {
      *
      * _Available since v3.4._
      */
-    function tryMul(
-        uint256 a,
-        uint256 b
-    ) internal pure returns (bool, uint256) {
+    function tryMul(uint256 a, uint256 b) internal pure returns (bool, uint256) {
         unchecked {
             // Gas optimization: this is cheaper than requiring 'a' not being zero, but the
             // benefit is lost if 'b' is also tested.
@@ -2460,10 +2184,7 @@ library SafeMath {
      *
      * _Available since v3.4._
      */
-    function tryDiv(
-        uint256 a,
-        uint256 b
-    ) internal pure returns (bool, uint256) {
+    function tryDiv(uint256 a, uint256 b) internal pure returns (bool, uint256) {
         unchecked {
             if (b == 0) return (false, 0);
             return (true, a / b);
@@ -2475,10 +2196,7 @@ library SafeMath {
      *
      * _Available since v3.4._
      */
-    function tryMod(
-        uint256 a,
-        uint256 b
-    ) internal pure returns (bool, uint256) {
+    function tryMod(uint256 a, uint256 b) internal pure returns (bool, uint256) {
         unchecked {
             if (b == 0) return (false, 0);
             return (true, a % b);
@@ -2570,11 +2288,7 @@ library SafeMath {
      *
      * - Subtraction cannot overflow.
      */
-    function sub(
-        uint256 a,
-        uint256 b,
-        string memory errorMessage
-    ) internal pure returns (uint256) {
+    function sub(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
         unchecked {
             require(b <= a, errorMessage);
             return a - b;
@@ -2593,11 +2307,7 @@ library SafeMath {
      *
      * - The divisor cannot be zero.
      */
-    function div(
-        uint256 a,
-        uint256 b,
-        string memory errorMessage
-    ) internal pure returns (uint256) {
+    function div(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
         unchecked {
             require(b > 0, errorMessage);
             return a / b;
@@ -2619,11 +2329,7 @@ library SafeMath {
      *
      * - The divisor cannot be zero.
      */
-    function mod(
-        uint256 a,
-        uint256 b,
-        string memory errorMessage
-    ) internal pure returns (uint256) {
+    function mod(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
         unchecked {
             require(b > 0, errorMessage);
             return a % b;
@@ -2631,8 +2337,10 @@ library SafeMath {
     }
 }
 
+
 // File contracts/interfaces/dex/IUniswapRouter.sol
 
+// Original license: SPDX_License_Identifier: MIT
 pragma solidity ^0.8.8;
 
 /// @title Uniswap Router interface
@@ -2676,8 +2384,10 @@ interface IUniswapRouter {
     ) external view returns (uint256[] memory amounts);
 }
 
+
 // File contracts/libraries/Errors.sol
 
+// Original license: SPDX_License_Identifier: MIT
 pragma solidity ^0.8.8;
 
 error AddressDoesNotHaveIdentity(address to);
@@ -2726,9 +2436,15 @@ error ZeroAddress();
 error ZeroLengthName(string name);
 error ZeroYearsPeriod(uint256 yearsPeriod);
 
+
 // File contracts/dex/PaymentGateway.sol
 
+// Original license: SPDX_License_Identifier: MIT
 pragma solidity ^0.8.8;
+
+
+
+
 
 /// @title Pay using a Decentralized automated market maker (AMM) when needed
 /// @author Masa Finance
@@ -2751,7 +2467,8 @@ abstract contract PaymentGateway is AccessControl {
         address projectFeeReceiver; // Wallet that will receive the project fee
         address protocolFeeReceiver; // Wallet that will receive the protocol fee
         uint256 protocolFeeAmount; // Protocol fee amount in USD
-        uint256 protocolFeePercent; // Protocol fee amount
+        uint256 protocolFeePercent; // Protocol fee amount added to the project fee
+        uint256 protocolFeePercentSub; // Protocol fee amount substracted from the project fee
     }
 
     /* ========== STATE VARIABLES =========================================== */
@@ -2769,7 +2486,8 @@ abstract contract PaymentGateway is AccessControl {
     address public projectFeeReceiver;
     address public protocolFeeReceiver;
     uint256 public protocolFeeAmount;
-    uint256 public protocolFeePercent;
+    uint256 public protocolFeePercent; // Protocol fee amount added to the project fee
+    uint256 public protocolFeePercentSub; // Protocol fee amount substracted from the project fee
 
     /* ========== INITIALIZE ================================================ */
 
@@ -2789,6 +2507,7 @@ abstract contract PaymentGateway is AccessControl {
         protocolFeeReceiver = paymentParams.protocolFeeReceiver;
         protocolFeeAmount = paymentParams.protocolFeeAmount;
         protocolFeePercent = paymentParams.protocolFeePercent;
+        protocolFeePercentSub = paymentParams.protocolFeePercentSub;
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
@@ -2899,14 +2618,24 @@ abstract contract PaymentGateway is AccessControl {
         protocolFeeAmount = _protocolFeeAmount;
     }
 
-    /// @notice Set the protocol fee percent
+    /// @notice Set the protocol fee percent added to the project fee
     /// @dev The caller must have the admin role to call this function
-    /// @param _protocolFeePercent New protocol fee percent
+    /// @param _protocolFeePercent New protocol fee percent added to the project fee
     function setProtocolFeePercent(
         uint256 _protocolFeePercent
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (_protocolFeePercent == protocolFeePercent) revert SameValue();
         protocolFeePercent = _protocolFeePercent;
+    }
+
+    /// @notice Set the protocol fee percent substracted from the amount
+    /// @dev The caller must have the admin role to call this function
+    /// @param _protocolFeePercentSub New protocol fee percent substracted from the amount
+    function setProtocolFeePercentSub(
+        uint256 _protocolFeePercentSub
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        if (_protocolFeePercentSub == protocolFeePercentSub) revert SameValue();
+        protocolFeePercentSub = _protocolFeePercentSub;
     }
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
@@ -2924,7 +2653,7 @@ abstract contract PaymentGateway is AccessControl {
         return enabledPaymentMethods;
     }
 
-    /// @notice Calculates the protocol fee
+    /// @notice Calculates the protocol fee added to the project fee
     /// @dev This method will calculate the protocol fee based on the payment method
     /// @param paymentMethod Address of token that user want to pay
     /// @param amount Price to be paid in the specified payment method
@@ -2933,6 +2662,13 @@ abstract contract PaymentGateway is AccessControl {
         uint256 amount
     ) external view returns (uint256) {
         return _getProtocolFee(paymentMethod, amount);
+    }
+
+    /// @notice Calculates the protocol fee substracted from the amount
+    /// @dev This method will calculate the protocol fee based on the payment method
+    /// @param amount Price to be paid in the specified payment method
+    function getProtocolFeeSub(uint256 amount) external view returns (uint256) {
+        return _getProtocolFeeSub(amount);
     }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
@@ -2959,7 +2695,7 @@ abstract contract PaymentGateway is AccessControl {
         }
     }
 
-    /// @notice Calculates the protocol fee
+    /// @notice Calculates the protocol fee added to the project fee
     /// @dev This method will calculate the protocol fee based on the payment method
     /// @param paymentMethod Address of token that user want to pay
     /// @param amount Price to be paid in the specified payment method
@@ -2986,6 +2722,19 @@ abstract contract PaymentGateway is AccessControl {
         return protocolFee;
     }
 
+    /// @notice Calculates the protocol fee substracted from the amount
+    /// @dev This method will calculate the protocol fee based on the payment method
+    /// @param amount Price to be paid in the specified payment method
+    function _getProtocolFeeSub(
+        uint256 amount
+    ) internal view returns (uint256) {
+        if (protocolFeePercentSub > 0) {
+            return amount.mul(protocolFeePercentSub).div(100);
+        } else {
+            return 0;
+        }
+    }
+
     /// @notice Performs the payment in any payment method
     /// @dev This method will transfer the funds to the project fee receiver wallet, performing
     /// the swap if necessary, and transfer the protocol fee to the protocol fee wallet
@@ -2998,8 +2747,13 @@ abstract contract PaymentGateway is AccessControl {
         uint256 protocolFee
     ) internal paymentParamsAlreadySet(amount.add(protocolFee)) {
         if (amount == 0 && protocolFee == 0) return;
-        if (protocolFee > 0 && protocolFeeReceiver == address(0))
-            revert ProtocolFeeReceiverNotSet();
+
+        uint256 protocolFeeSub = _getProtocolFeeSub(amount);
+
+        if (
+            (protocolFee > 0 || protocolFeeSub > 0) &&
+            protocolFeeReceiver == address(0)
+        ) revert ProtocolFeeReceiverNotSet();
 
         if (!enabledPaymentMethod[paymentMethod])
             revert InvalidPaymentMethod(paymentMethod);
@@ -3007,15 +2761,21 @@ abstract contract PaymentGateway is AccessControl {
             // ETH
             if (msg.value < amount.add(protocolFee))
                 revert InsufficientEthAmount(amount.add(protocolFee));
-            if (amount > 0) {
+            if (amount.sub(protocolFeeSub) > 0) {
                 (bool success, ) = payable(projectFeeReceiver).call{
-                    value: amount
+                    value: amount.sub(protocolFeeSub)
                 }("");
                 if (!success) revert TransferFailed();
             }
             if (protocolFee > 0) {
                 (bool success, ) = payable(protocolFeeReceiver).call{
                     value: protocolFee
+                }("");
+                if (!success) revert TransferFailed();
+            }
+            if (protocolFeeSub > 0) {
+                (bool success, ) = payable(protocolFeeReceiver).call{
+                    value: protocolFeeSub
                 }("");
                 if (!success) revert TransferFailed();
             }
@@ -3027,11 +2787,11 @@ abstract contract PaymentGateway is AccessControl {
             }
         } else {
             // ERC20 token, including MASA and USDC
-            if (amount > 0) {
+            if (amount.sub(protocolFeeSub) > 0) {
                 IERC20(paymentMethod).safeTransferFrom(
                     msg.sender,
                     projectFeeReceiver,
-                    amount
+                    amount.sub(protocolFeeSub)
                 );
             }
             if (protocolFee > 0) {
@@ -3039,6 +2799,13 @@ abstract contract PaymentGateway is AccessControl {
                     msg.sender,
                     protocolFeeReceiver,
                     protocolFee
+                );
+            }
+            if (protocolFeeSub > 0) {
+                IERC20(paymentMethod).safeTransferFrom(
+                    msg.sender,
+                    protocolFeeReceiver,
+                    protocolFeeSub
                 );
             }
         }
@@ -3095,8 +2862,10 @@ abstract contract PaymentGateway is AccessControl {
     /* ========== EVENTS ==================================================== */
 }
 
+
 // File contracts/tokens/SBT/ISBT.sol
 
+// Original license: SPDX_License_Identifier: MIT
 pragma solidity ^0.8.8;
 
 interface ISBT is IERC165 {
@@ -3123,8 +2892,10 @@ interface ISBT is IERC165 {
     function ownerOf(uint256 _tokenId) external view returns (address);
 }
 
+
 // File contracts/interfaces/ILinkableSBT.sol
 
+// Original license: SPDX_License_Identifier: MIT
 pragma solidity ^0.8.8;
 
 interface ILinkableSBT is ISBT {
@@ -3137,8 +2908,10 @@ interface ILinkableSBT is ISBT {
     function queryLinkPriceMASA() external view returns (uint256);
 }
 
+
 // File contracts/interfaces/ISoulName.sol
 
+// Original license: SPDX_License_Identifier: MIT
 pragma solidity ^0.8.8;
 
 interface ISoulName {
@@ -3184,8 +2957,10 @@ interface ISoulName {
     ) external view returns (string[] memory sbtNames);
 }
 
+
 // File contracts/interfaces/ISoulboundIdentity.sol
 
+// Original license: SPDX_License_Identifier: MIT
 pragma solidity ^0.8.8;
 
 interface ISoulboundIdentity is ISBT {
@@ -3216,8 +2991,10 @@ interface ISoulboundIdentity is ISBT {
     function tokenOfOwner(address owner) external view returns (uint256);
 }
 
-// File @openzeppelin/contracts/security/ReentrancyGuard.sol@v4.9.0
 
+// File @openzeppelin/contracts/security/ReentrancyGuard.sol@v4.9.3
+
+// Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.9.0) (security/ReentrancyGuard.sol)
 
 pragma solidity ^0.8.0;
@@ -3295,8 +3072,10 @@ abstract contract ReentrancyGuard {
     }
 }
 
-// File @openzeppelin/contracts/utils/Counters.sol@v4.9.0
 
+// File @openzeppelin/contracts/utils/Counters.sol@v4.9.3
+
+// Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts v4.4.1 (utils/Counters.sol)
 
 pragma solidity ^0.8.0;
@@ -3340,8 +3119,10 @@ library Counters {
     }
 }
 
+
 // File contracts/tokens/SBT/extensions/ISBTMetadata.sol
 
+// Original license: SPDX_License_Identifier: MIT
 pragma solidity ^0.8.8;
 
 /**
@@ -3364,9 +3145,14 @@ interface ISBTMetadata is ISBT {
     function tokenURI(uint256 tokenId) external view returns (string memory);
 }
 
+
 // File contracts/tokens/SBT/SBT.sol
 
+// Original license: SPDX_License_Identifier: MIT
 pragma solidity ^0.8.8;
+
+
+
 
 /// @title SBT
 /// @author Masa Finance
@@ -3573,8 +3359,10 @@ contract SBT is Context, ERC165, ISBT, ISBTMetadata {
     function _afterTokenTransfer(address, address, uint256) internal virtual {}
 }
 
+
 // File contracts/tokens/SBT/extensions/SBTBurnable.sol
 
+// Original license: SPDX_License_Identifier: MIT
 pragma solidity ^0.8.8;
 
 /**
@@ -3599,8 +3387,10 @@ abstract contract SBTBurnable is Context, SBT {
     }
 }
 
+
 // File contracts/tokens/SBT/extensions/ISBTEnumerable.sol
 
+// Original license: SPDX_License_Identifier: MIT
 pragma solidity ^0.8.8;
 
 /**
@@ -3628,9 +3418,12 @@ interface ISBTEnumerable is ISBT {
     function tokenByIndex(uint256 index) external view returns (uint256);
 }
 
+
 // File contracts/tokens/SBT/extensions/SBTEnumerable.sol
 
+// Original license: SPDX_License_Identifier: MIT
 pragma solidity ^0.8.8;
+
 
 /**
  * @dev This implements an optional extension of {SBT} defined in the EIP that adds
@@ -3806,9 +3599,17 @@ abstract contract SBTEnumerable is SBT, ISBTEnumerable {
     }
 }
 
+
 // File contracts/tokens/MasaSBT.sol
 
+// Original license: SPDX_License_Identifier: MIT
 pragma solidity ^0.8.8;
+
+
+
+
+
+
 
 /// @title MasaSBT
 /// @author Masa Finance
@@ -4067,9 +3868,14 @@ abstract contract MasaSBT is
     /* ========== EVENTS ==================================================== */
 }
 
+
 // File contracts/tokens/MasaSBTSelfSovereign.sol
 
+// Original license: SPDX_License_Identifier: MIT
 pragma solidity ^0.8.8;
+
+
+
 
 /// @title MasaSBTSelfSovereign
 /// @author Masa Finance
@@ -4185,18 +3991,17 @@ abstract contract MasaSBTSelfSovereign is MasaSBT, EIP712 {
     /* ========== EVENTS ==================================================== */
 }
 
+
 // File contracts/reference/ReferenceSBTSelfSovereign.sol
 
+// Original license: SPDX_License_Identifier: MIT
 pragma solidity ^0.8.8;
 
 /// @title Soulbound reference Self-Sovereign SBT
 /// @author Masa Finance
 /// @notice Soulbound token that represents a Self-Sovereign SBT
 /// @dev Inherits from the SBT contract.
-contract ReferenceSBTSelfSovereignFlattened is
-    MasaSBTSelfSovereign,
-    ReentrancyGuard
-{
+contract ReferenceSBTSelfSovereign is MasaSBTSelfSovereign, ReentrancyGuard {
     error MaxSBTMinted(address to, uint256 maximum);
 
     uint256 public maxSBTToMint = 1;
