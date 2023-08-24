@@ -60,7 +60,7 @@ contract ReferenceSBTAuthority is MasaSBTAuthority, ReentrancyGuard {
     function mint(
         address paymentMethod,
         uint256 identityId
-    ) external nonReentrant returns (uint256) {
+    ) external payable nonReentrant returns (uint256) {
         address to = soulboundIdentity.ownerOf(identityId);
         if (maxSBTToMint > 0 && balanceOf(to) >= maxSBTToMint)
             revert MaxSBTMinted(to, maxSBTToMint);
@@ -80,7 +80,7 @@ contract ReferenceSBTAuthority is MasaSBTAuthority, ReentrancyGuard {
     function mint(
         address paymentMethod,
         address to
-    ) external nonReentrant returns (uint256) {
+    ) external payable nonReentrant returns (uint256) {
         if (maxSBTToMint > 0 && balanceOf(to) >= maxSBTToMint)
             revert MaxSBTMinted(to, maxSBTToMint);
 
@@ -99,7 +99,7 @@ contract ReferenceSBTAuthority is MasaSBTAuthority, ReentrancyGuard {
     function mint(
         address paymentMethod,
         uint256[] memory identityId
-    ) external nonReentrant returns (uint256[] memory tokenIds) {
+    ) external payable nonReentrant returns (uint256[] memory tokenIds) {
         tokenIds = new uint256[](identityId.length);
         uint256 t = 0;
 
@@ -126,7 +126,7 @@ contract ReferenceSBTAuthority is MasaSBTAuthority, ReentrancyGuard {
     function mint(
         address paymentMethod,
         address[] memory to
-    ) external nonReentrant returns (uint256[] memory tokenIds) {
+    ) external payable nonReentrant returns (uint256[] memory tokenIds) {
         tokenIds = new uint256[](to.length);
         uint256 t = 0;
 
