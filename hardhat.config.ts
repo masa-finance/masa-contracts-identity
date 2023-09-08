@@ -63,6 +63,11 @@ const networks: NetworksUserConfig = {
     chainId: 137,
     accounts: [getPrivateKey("polygon")]
   },
+  masa: {
+    url: "http://34.31.196.154:8545", // RPC
+    chainId: 42069,
+    accounts: [getPrivateKey("masa")]
+  },
   basegoerli: {
     url: "https://goerli.base.org",
     chainId: 84531,

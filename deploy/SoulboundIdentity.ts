@@ -42,62 +42,33 @@ const func: DeployFunction = async ({
     ]
   ];
 
-  if (
-    network.name === "mainnet" ||
-    network.name === "goerli" ||
-    network.name === "hardhat" ||
-    network.name === "celo" ||
-    network.name === "alfajores" ||
-    network.name === "base" ||
-    network.name === "basegoerli" ||
-    network.name === "bsctest" ||
-    network.name === "bsc" ||
-    network.name === "mumbai" ||
-    network.name === "polygon"
-  ) {
-    const soulboundIdentityDeploymentResult = await deploy(
-      "SoulboundIdentity",
-      {
-        from: deployer,
-        args: constructorArguments,
-        log: true
-        // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
-      }
-    );
+  const soulboundIdentityDeploymentResult = await deploy(
+    "SoulboundIdentity",
+    {
+      from: deployer,
+      args: constructorArguments,
+      log: true
+      // nonce: currentNonce + 1 // to solve REPLACEMENT_UNDERPRICED, when needed
+    }
+  );
 
-    // verify contract with etherscan, if its not a local network or celo
-    if (network.name !== "hardhat") {
-      try {
-        await hre.run("verify:verify", {
-          address: soulboundIdentityDeploymentResult.address,
-          constructorArguments
-        });
-      } catch (error) {
-        if (
-          !error.message.includes("Contract source code already verified") &&
-          !error.message.includes("Reason: Already Verified")
-        ) {
-          throw error;
-        }
+  // verify contract with etherscan, if its not a local network or celo
+  if (network.name !== "hardhat") {
+    try {
+      await hre.run("verify:verify", {
+        address: soulboundIdentityDeploymentResult.address,
+        constructorArguments
+      });
+    } catch (error) {
+      if (
+        !error.message.includes("Contract source code already verified") &&
+        !error.message.includes("Reason: Already Verified")
+      ) {
+        throw error;
       }
     }
   }
 };
 
-func.skip = async ({ network }) => {
-  return (
-    network.name !== "mainnet" &&
-    network.name !== "goerli" &&
-    network.name !== "hardhat" &&
-    network.name !== "celo" &&
-    network.name !== "alfajores" &&
-    network.name !== "base" &&
-    network.name !== "basegoerli" &&
-    network.name !== "bsctest" &&
-    network.name !== "bsc" &&
-    network.name !== "mumbai" &&
-    network.name !== "polygon"
-  );
-};
 func.tags = ["SoulboundIdentity"];
 export default func;
