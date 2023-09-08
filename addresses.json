@@ -54,6 +54,12 @@
     "SoulboundGreen": "0xf03cc5996C6d83c7A63Bc7bcAA46F55e691e811c",
     "SoulboundIdentity": "0xC6CA7be41Ba10a3645988B77a523231666540b82"
   },
+  "opbnb": {
+    "SoulboundIdentity": "0x1C7652919598b32C576D362E74F44C6E34EF7Aba"
+  },
+  "opbnbtest": {
+    "SoulboundIdentity": "0xb6f59e114f2bF57B1891f08fC23B3C696b7D3b16"
+  },
   "polygon": {
     "SoulStore": "0x576E82208df807B07b9e4B4bDBd7F7862F1152a9",
     "SoulboundCreditScore": "0x1C7652919598b32C576D362E74F44C6E34EF7Aba",
