@@ -55,10 +55,10 @@
     "SoulboundIdentity": "0xC6CA7be41Ba10a3645988B77a523231666540b82"
   },
   "opbnb": {
-    "MasaIdentity": "0x4d236e55e54ed960887659d046c60f377cca58f8"
+    "SoulboundIdentity": "0x1C7652919598b32C576D362E74F44C6E34EF7Aba"
   },
   "opbnbtest": {
-    "MasaIdentity": "0x784F4d8fB4bf51431e47b014DdA159e31ACC714e"
+    "SoulboundIdentity": "0xb6f59e114f2bF57B1891f08fC23B3C696b7D3b16"
   },
   "polygon": {
     "SoulStore": "0x576E82208df807B07b9e4B4bDBd7F7862F1152a9",
