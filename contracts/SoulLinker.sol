@@ -2,7 +2,6 @@
 pragma solidity ^0.8.8;
 
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
@@ -12,6 +11,7 @@ import "./dex/PaymentGateway.sol";
 import "./interfaces/ILinkableSBT.sol";
 import "./interfaces/ISoulboundIdentity.sol";
 import "./interfaces/ISoulName.sol";
+import "./tokens/SBT/extensions/ISBTEnumerable.sol";
 
 /// @title Soul linker
 /// @author Masa Finance
@@ -163,7 +163,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
     ) external payable whenNotPaused nonReentrant {
         address ownerAddress = soulboundIdentity.ownerOf(ownerIdentityId);
         address readerAddress = soulboundIdentity.ownerOf(readerIdentityId);
-        address tokenOwner = IERC721Enumerable(token).ownerOf(tokenId);
+        address tokenOwner = ISBTEnumerable(token).ownerOf(tokenId);
 
         if (ownerAddress != tokenOwner)
             revert IdentityOwnerNotTokenOwner(tokenId, ownerIdentityId);
@@ -245,7 +245,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
         uint256 signatureDate
     ) external whenNotPaused {
         address ownerAddress = soulboundIdentity.ownerOf(ownerIdentityId);
-        address tokenOwner = IERC721Enumerable(token).ownerOf(tokenId);
+        address tokenOwner = ISBTEnumerable(token).ownerOf(tokenId);
 
         if (ownerAddress != tokenOwner)
             revert IdentityOwnerNotTokenOwner(tokenId, ownerIdentityId);
@@ -297,7 +297,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
     /// @param tokenId TokenId of the soul name
     function setDefaultSoulName(address token, uint256 tokenId) external {
         if (isSoulName[token] == false) revert SoulNameNotRegistered(token);
-        address soulNameOwner = IERC721Enumerable(token).ownerOf(tokenId);
+        address soulNameOwner = ISBTEnumerable(token).ownerOf(tokenId);
         if (_msgSender() != soulNameOwner) revert CallerNotOwner(_msgSender());
 
         defaultSoulName[_msgSender()].token = token;
@@ -316,7 +316,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
         address token,
         uint256 tokenId
     ) external view returns (uint256) {
-        address owner = IERC721Enumerable(token).ownerOf(tokenId);
+        address owner = ISBTEnumerable(token).ownerOf(tokenId);
         return soulboundIdentity.tokenOfOwner(owner);
     }
 
@@ -341,10 +341,10 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
         address owner,
         address token
     ) public view returns (uint256[] memory) {
-        uint256 connections = IERC721Enumerable(token).balanceOf(owner);
+        uint256 connections = ISBTEnumerable(token).balanceOf(owner);
         uint256[] memory sbtConnections = new uint256[](connections);
         for (uint256 i = 0; i < connections; i++) {
-            sbtConnections[i] = IERC721Enumerable(token).tokenOfOwnerByIndex(
+            sbtConnections[i] = ISBTEnumerable(token).tokenOfOwnerByIndex(
                 owner,
                 i
             );
@@ -461,7 +461,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
         uint256 signatureDate
     ) external view returns (bool) {
         address ownerAddress = soulboundIdentity.ownerOf(ownerIdentityId);
-        address tokenOwner = IERC721Enumerable(token).ownerOf(tokenId);
+        address tokenOwner = ISBTEnumerable(token).ownerOf(tokenId);
 
         LinkData memory link = _links[token][tokenId][readerIdentityId][
             signatureDate
@@ -581,7 +581,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
         if (defaultSoulName[owner].exists) {
             address token = defaultSoulName[owner].token;
             uint256 tokenId = defaultSoulName[owner].tokenId;
-            address soulNameOwner = IERC721Enumerable(token).ownerOf(tokenId);
+            address soulNameOwner = ISBTEnumerable(token).ownerOf(tokenId);
             // the soul name has not changed owner
             if (soulNameOwner == owner) {
                 // the soul name is not expired
