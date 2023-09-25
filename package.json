@@ -23,6 +23,7 @@
     "deploy:mainnet": "hardhat deploy --network mainnet && yarn addresses",
     "deploy:mumbai": "hardhat deploy --network mumbai && yarn addresses",
     "deploy:polygon": "hardhat deploy --network polygon && yarn addresses",
+    "deployASBT": "hardhat run src/deployASBT.ts",
     "deploySSSBT": "hardhat run src/deploySSSBT.ts",
     "run:node": "hardhat node",
     "test": "hardhat test",
