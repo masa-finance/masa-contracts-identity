@@ -88,6 +88,15 @@ async function main() {
       asbt.address
     );
 
+    // add minters
+    const MINTER_ROLE = await ReferenceASBT.MINTER_ROLE();
+
+    const minters = env.AUTHORITY_WALLET.split(" ");
+    for (let i = 0; i < minters.length; i++) {
+      console.log(`Adding authority ${minters[i]}`);
+      await ReferenceASBT.connect(signer).grantRole(MINTER_ROLE, minters[i]);
+    }
+
     // add mint price
     if (+MINTING_PRICE != 0) {
       await ReferenceASBT.connect(signer).setMintPrice(MINTING_PRICE);
