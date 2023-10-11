@@ -130,8 +130,8 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
             revert AddressDoesNotHaveIdentity(to);
         if (
             !Utils.startsWith(_tokenURI, "ar://") &&
-        !Utils.startsWith(_tokenURI, "https://arweave.net/") &&
-        !Utils.startsWith(_tokenURI, "ipfs://")
+            !Utils.startsWith(_tokenURI, "https://arweave.net/") &&
+            !Utils.startsWith(_tokenURI, "ipfs://")
         ) revert InvalidTokenURI(_tokenURI);
 
         uint256 tokenId = _mintWithCounter(to);
@@ -247,17 +247,17 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     function getTokenData(
         string memory name
     )
-    external
-    view
-    override
-    returns (
-        string memory sbtName,
-        bool linked,
-        uint256 identityId,
-        uint256 tokenId,
-        uint256 expirationDate,
-        bool active
-    )
+        external
+        view
+        override
+        returns (
+            string memory sbtName,
+            bool linked,
+            uint256 identityId,
+            uint256 tokenId,
+            uint256 expirationDate,
+            bool active
+        )
     {
         tokenId = _getTokenId(name);
         address _owner = ownerOf(tokenId);
