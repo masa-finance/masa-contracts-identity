@@ -6,7 +6,8 @@ import {
   getBscscanApiKey,
   getPolygonscanApiKey,
   getCeloscanApiKey,
-  getBasescanApiKey
+  getBasescanApiKey,
+  getOpBnbApiKey
 } from "./src/EnvParams";
 import "hardhat-deploy";
 import "@nomiclabs/hardhat-ethers";
@@ -153,6 +154,22 @@ export default {
         urls: {
           apiURL: "https://api-goerli.basescan.org/api",
           browserURL: "https://goerli.basescan.org"
+        }
+      },
+      {
+        network: "opbnbtest",
+        chainId: 5611,
+        urls: {
+          apiURL: "https://opbnb-testnet.nodereal.io/v1/" + getOpBnbApiKey(),
+          browserURL: "https://opbnbscan.com/"
+        }
+      },
+      {
+        network: "opbnb",
+        chainId: 204,
+        urls: {
+          apiURL: "https://opbnb-mainnet.nodereal.io/v1/" + getOpBnbApiKey(),
+          browserURL: "https://mainnet.opbnbscan.com/"
         }
       }
     ]
