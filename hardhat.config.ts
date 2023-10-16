@@ -131,7 +131,9 @@ export default {
       celo: getCeloscanApiKey(),
       alfajores: getCeloscanApiKey(),
       base: getBasescanApiKey(),
-      basegoerli: "PLACEHOLDER_STRING"
+      basegoerli: "PLACEHOLDER_STRING",
+      opbnbtest: getOpBnbApiKey(),
+      opbnb: getOpBnbApiKey()
     },
     customChains: [
       {
