@@ -74,6 +74,16 @@ const networks: NetworksUserConfig = {
     chainId: 8453,
     accounts: [getPrivateKey("base")]
   },
+  opbnbtest: {
+    url: "https://opbnb-testnet-rpc.bnbchain.org/",
+    chainId: 5611,
+    accounts: [getPrivateKey("opbnbtest")]
+  },
+  opbnb: {
+    url: "https://opbnb-mainnet-rpc.bnbchain.org",
+    chainId: 204,
+    accounts: [getPrivateKey("opbnb")]
+  },
   goerli: {
     url: getInfuraURL("goerli"),
     chainId: 5,
