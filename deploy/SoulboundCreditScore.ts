@@ -30,7 +30,9 @@ const func: DeployFunction = async ({
     network.name === "goerli" ||
     network.name === "hardhat" ||
     network.name === "mumbai" ||
-    network.name === "polygon"
+    network.name === "polygon" ||
+    network.name === "opbnbtest" ||
+    network.name === "opbnb"
   ) {
     const soulboundIdentityDeployed = await deployments.get(
       "SoulboundIdentity"
@@ -64,7 +66,9 @@ const func: DeployFunction = async ({
     network.name === "goerli" ||
     network.name === "hardhat" ||
     network.name === "mumbai" ||
-    network.name === "polygon"
+    network.name === "polygon" ||
+    network.name === "opbnbtest" ||
+    network.name === "opbnb"
   ) {
     const soulboundCreditScoreDeploymentResult = await deploy(
       "SoulboundCreditScore",
@@ -132,7 +136,9 @@ func.skip = async ({ network }) => {
     network.name !== "goerli" &&
     network.name !== "hardhat" &&
     network.name !== "mumbai" &&
-    network.name !== "polygon"
+    network.name !== "polygon" &&
+    network.name !== "opbnbtest" &&
+    network.name !== "opbnb"
   );
 };
 func.tags = ["SoulboundCreditScore"];
