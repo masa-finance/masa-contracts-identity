@@ -48,9 +48,7 @@ const func: DeployFunction = async ({
     network.name === "goerli" ||
     network.name === "hardhat" ||
     network.name === "mumbai" ||
-    network.name === "polygon" ||
-    network.name === "opbnbtest" ||
-    network.name === "opbnb"
+    network.name === "polygon"
   ) {
     const soulLinkerDeploymentResult = await deploy("SoulLinker", {
       from: deployer,
@@ -102,9 +100,7 @@ func.skip = async ({ network }) => {
     network.name !== "goerli" &&
     network.name !== "hardhat" &&
     network.name !== "mumbai" &&
-    network.name !== "polygon" &&
-    network.name !== "opbnbtest" &&
-    network.name !== "opbnb"
+    network.name !== "polygon"
   );
 };
 func.tags = ["SoulLinker"];
