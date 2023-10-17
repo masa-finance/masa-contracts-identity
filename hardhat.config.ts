@@ -7,7 +7,8 @@ import {
   getPolygonscanApiKey,
   getCeloscanApiKey,
   getBasescanApiKey,
-  getOpBnbApiKey
+  getOpBnbApiKey,
+  getScrollscanApiKey
 } from "./src/EnvParams";
 import "hardhat-deploy";
 import "@nomiclabs/hardhat-ethers";
@@ -84,6 +85,16 @@ const networks: NetworksUserConfig = {
     chainId: 204,
     accounts: [getPrivateKey("opbnb")]
   },
+  scrolltest: {
+    url: "https://sepolia-rpc.scroll.io/",
+    chainId: 534351,
+    accounts: [getPrivateKey("scrolltest")]
+  },
+  scroll: {
+    url: "https://rpc.scroll.io/",
+    chainId: 534352,
+    accounts: [getPrivateKey("scroll")]
+  },
   goerli: {
     url: getInfuraURL("goerli"),
     chainId: 5,
@@ -133,7 +144,9 @@ export default {
       base: getBasescanApiKey(),
       basegoerli: "PLACEHOLDER_STRING",
       opbnbtest: getOpBnbApiKey(),
-      opbnb: getOpBnbApiKey()
+      opbnb: getOpBnbApiKey(),
+      scrolltest: getScrollscanApiKey(),
+      scroll: getScrollscanApiKey()
     },
     customChains: [
       {
@@ -182,6 +195,22 @@ export default {
         urls: {
           apiURL: "https://opbnb-mainnet.nodereal.io/v1/" + getOpBnbApiKey(),
           browserURL: "https://mainnet.opbnbscan.com/"
+        }
+      },
+      {
+        network: "scrolltest",
+        chainId: 534351,
+        urls: {
+          apiURL: "https://sepolia.scrollscan.com/api" + getScrollscanApiKey(),
+          browserURL: "https://sepolia.scrollscan.com/"
+        }
+      },
+      {
+        network: "scroll",
+        chainId: 534352,
+        urls: {
+          apiURL: "https://scrollscan.com/api" + getScrollscanApiKey(),
+          browserURL: "https://scrollscan.com/"
         }
       }
     ]
