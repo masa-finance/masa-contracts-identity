@@ -76,7 +76,8 @@ async function main() {
     network.name !== "bsc" &&
     network.name !== "celo" &&
     network.name !== "mainnet" &&
-    network.name !== "polygon"
+    network.name !== "polygon" &&
+    network.name !== "opbnb"
   ) {
     const signer = new ethers.Wallet(
       getPrivateKey(network.name),
