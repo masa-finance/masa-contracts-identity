@@ -63,6 +63,10 @@ export function getBasescanApiKey() {
   return process.env.BASESCAN_API_KEY || getSecretParam("BASESCAN_API_KEY");
 }
 
+export function getOpBnbApiKey() {
+  return process.env.OPBNB_API_KEY || getSecretParam("OPBNB_API_KEY");
+}
+
 export function getCoinMarketCapApiKey() {
   return (
     process.env.COINMARKETCAP_API_KEY || getSecretParam("COINMARKETCAP_API_KEY")

@@ -89,7 +89,8 @@ const func: DeployFunction = async ({
     network.name === "alfajores" ||
     network.name === "bsctest" ||
     network.name === "mumbai" ||
-    network.name === "basegoerli"
+    network.name === "basegoerli" ||
+    network.name === "opbnbtest"
   ) {
     const signer = env.ADMIN
       ? new ethers.Wallet(getPrivateKey(network.name), ethers.provider)
