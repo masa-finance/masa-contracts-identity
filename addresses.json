@@ -65,5 +65,11 @@
     "SoulboundCreditScore": "0x1C7652919598b32C576D362E74F44C6E34EF7Aba",
     "SoulboundGreen": "0x4d236e55e54Ed960887659d046C60f377cCa58F8",
     "SoulboundIdentity": "0x7ab73C2F083B2725E5b6e245E6EA945d5f3CaaeA"
+  },
+  "scroll": {
+    "SoulboundIdentity": "0x8903D8D4F4c06814D7ecb42b1258E2209d53A7d4"
+  },
+  "scrolltest": {
+    "SoulboundIdentity": "0x78A660183257C4699a57a2D85a7Cf49b4DA75A6E"
   }
 }
