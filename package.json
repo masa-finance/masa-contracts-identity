@@ -25,6 +25,8 @@
     "deploy:polygon": "hardhat deploy --network polygon && yarn addresses",
     "deploy:opbnbtest": "hardhat deploy --network opbnbtest && yarn addresses",
     "deploy:opbnb": "hardhat deploy --network opbnb && yarn addresses",
+    "deploy:scrolltest": "hardhat deploy --network scrolltest && yarn addresses",
+    "deploy:scroll": "hardhat deploy --network scroll && yarn addresses",
     "deployASBT": "hardhat run src/deployASBT.ts",
     "deploySSSBT": "hardhat run src/deploySSSBT.ts",
     "run:node": "hardhat node",
