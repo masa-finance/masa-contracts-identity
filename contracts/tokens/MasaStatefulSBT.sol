@@ -139,6 +139,19 @@ abstract contract MasaStatefulSBT is MasaSBT {
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
 
+    function _beforeTokenTransfer(
+        address,
+        address to,
+        uint256
+    ) internal virtual override {
+        if (to != address(0)) {
+            for (uint256 i = 0; i < _preMintStates.length; i++) {
+                if (!addressStates[to][_preMintStates[i]])
+                    revert StateNotSet(_preMintStates[i]);
+            }
+        }
+    }
+
     /* ========== MODIFIERS ================================================= */
 
     /* ========== EVENTS ==================================================== */

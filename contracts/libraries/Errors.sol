@@ -39,6 +39,7 @@ error SBTAlreadyLinked(address token);
 error SoulNameContractNotSet();
 error SoulNameNotExist();
 error SoulNameNotRegistered(address token);
+error StateNotSet(string state);
 error TokenNotFound(uint256 tokenId);
 error TransferFailed();
 error URIAlreadyExists(string tokenURI);

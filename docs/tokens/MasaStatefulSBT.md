@@ -1445,6 +1445,22 @@ error SameValue()
 
 
 
+### StateNotSet
+
+```solidity
+error StateNotSet(string state)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| state | string | undefined |
+
 ### UserMustHaveProtocolOrProjectAdminRole
 
 ```solidity
