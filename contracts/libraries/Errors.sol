@@ -28,6 +28,7 @@ error LinkDoesNotExist();
 error NameAlreadyExists(string name);
 error NameNotFound(string name);
 error NameRegisteredByOtherAccount(string name, uint256 tokenId);
+error NotAllPreMintStatesSet();
 error NotAuthorized(address signer);
 error NonExistingErc20Token(address erc20token);
 error NotLinkedToAnIdentitySBT();

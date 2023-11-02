@@ -108,6 +108,30 @@ abstract contract MasaStatefulSBT is MasaSBT {
 
     /* ========== VIEWS ===================================================== */
 
+    function getPreMintStates() external view returns (string[] memory) {
+        return _preMintStates;
+    }
+
+    function getPostMintStates() external view returns (string[] memory) {
+        return _postMintStates;
+    }
+
+    function allPreMintStatesSet(address account) public view returns (bool) {
+        for (uint256 i = 0; i < _preMintStates.length; i++) {
+            if (!addressStates[account][_preMintStates[i]]) return false;
+        }
+        return true;
+    }
+
+    function allPostMintStatesSet(
+        uint256 tokenId
+    ) external view returns (bool) {
+        for (uint256 i = 0; i < _postMintStates.length; i++) {
+            if (!tokenStates[tokenId][_postMintStates[i]]) return false;
+        }
+        return true;
+    }
+
     /* ========== PRIVATE FUNCTIONS ========================================= */
 
     /// @notice Sets a state for an account
@@ -147,10 +171,7 @@ abstract contract MasaStatefulSBT is MasaSBT {
         uint256
     ) internal virtual override {
         if (to != address(0)) {
-            for (uint256 i = 0; i < _preMintStates.length; i++) {
-                if (!addressStates[to][_preMintStates[i]])
-                    revert StateNotSet(_preMintStates[i]);
-            }
+            if (!allPreMintStatesSet(to)) revert NotAllPreMintStatesSet();
         }
     }
 
