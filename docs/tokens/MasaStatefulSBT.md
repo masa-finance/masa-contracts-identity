@@ -669,6 +669,38 @@ function queryLinkPriceMASA() external view returns (uint256)
 |---|---|---|
 | _0 | uint256 | undefined |
 
+### removePostMintState
+
+```solidity
+function removePostMintState(string _state) external nonpayable
+```
+
+Removes a postMintState
+
+*The caller must have the admin or project admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _state | string | postMintState to remove |
+
+### removePreMintState
+
+```solidity
+function removePreMintState(string _state) external nonpayable
+```
+
+Removes a preMintState
+
+*The caller must have the admin or project admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _state | string | preMintState to remove |
+
 ### renounceRole
 
 ```solidity

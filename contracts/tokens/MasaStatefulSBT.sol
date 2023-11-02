@@ -58,6 +58,52 @@ abstract contract MasaStatefulSBT is MasaSBT {
         _postMintStates.push(_state);
     }
 
+    /// @notice Removes a preMintState
+    /// @dev The caller must have the admin or project admin role to call this function
+    /// @param _state preMintState to remove
+    function removePreMintState(string memory _state) external {
+        if (
+            !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
+            !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
+        ) revert UserMustHaveProtocolOrProjectAdminRole();
+        if (!_validPreMintStates[_state]) revert InvalidState(_state);
+        _validPreMintStates[_state] = false;
+
+        for (uint256 i = 0; i < _preMintStates.length; i++) {
+            if (
+                keccak256(bytes(_preMintStates[i])) == keccak256(bytes(_state))
+            ) {
+                _preMintStates[i] = _preMintStates[_preMintStates.length - 1];
+                _preMintStates.pop();
+                return;
+            }
+        }
+    }
+
+    /// @notice Removes a postMintState
+    /// @dev The caller must have the admin or project admin role to call this function
+    /// @param _state postMintState to remove
+    function removePostMintState(string memory _state) external {
+        if (
+            !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
+            !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
+        ) revert UserMustHaveProtocolOrProjectAdminRole();
+        if (!_validPostMintStates[_state]) revert InvalidState(_state);
+        _validPostMintStates[_state] = false;
+
+        for (uint256 i = 0; i < _postMintStates.length; i++) {
+            if (
+                keccak256(bytes(_postMintStates[i])) == keccak256(bytes(_state))
+            ) {
+                _postMintStates[i] = _postMintStates[
+                    _postMintStates.length - 1
+                ];
+                _postMintStates.pop();
+                return;
+            }
+        }
+    }
+
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
     /// @notice Sets a state for an account
