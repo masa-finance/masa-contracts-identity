@@ -8,8 +8,7 @@ import "../libraries/Errors.sol";
 /// @author Masa Finance
 /// @notice MasaStatefulSBT. SBT with states
 /// @dev Adds states to SBTs
-abstract contract MasaStatefulSBT is MasaSBT
-{
+abstract contract MasaStatefulSBT is MasaSBT {
     /* ========== STATE VARIABLES =========================================== */
 
     // states needed to be set before minting
@@ -18,14 +17,14 @@ abstract contract MasaStatefulSBT is MasaSBT
     string[] internal _postMintStates;
 
     // valid preMintStates
-    mapping (string => bool) internal _validPreMintStates;
+    mapping(string => bool) internal _validPreMintStates;
     // valid postMintStates
-    mapping (string => bool) internal _validPostMintStates;
+    mapping(string => bool) internal _validPostMintStates;
 
     // states for each address (preMintStates)
-    mapping (address => mapping (string => bool)) public addressStates;
+    mapping(address => mapping(string => bool)) public addressStates;
     // states for each token (postMintStates)
-    mapping (uint256 => mapping (string => bool)) public tokenStates;
+    mapping(uint256 => mapping(string => bool)) public tokenStates;
 
     /* ========== INITIALIZE ================================================ */
 
@@ -66,7 +65,11 @@ abstract contract MasaStatefulSBT is MasaSBT
     /// @param account Account to set the state for
     /// @param state State to set
     /// @param value Value of the state
-    function setState(address account, string memory state, bool value) external {
+    function setState(
+        address account,
+        string memory state,
+        bool value
+    ) external {
         if (!_validPreMintStates[state]) revert InvalidState(state);
         addressStates[account][state] = value;
     }
@@ -76,7 +79,11 @@ abstract contract MasaStatefulSBT is MasaSBT
     /// @param tokenId Token to set the state for
     /// @param state State to set
     /// @param value Value of the state
-    function setState(uint256 tokenId, string memory state, bool value) external {
+    function setState(
+        uint256 tokenId,
+        string memory state,
+        bool value
+    ) external {
         if (!_validPostMintStates[state]) revert InvalidState(state);
         tokenStates[tokenId][state] = value;
     }
