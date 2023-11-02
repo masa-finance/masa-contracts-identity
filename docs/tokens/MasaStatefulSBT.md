@@ -78,6 +78,22 @@ function addLinkPriceMASA() external view returns (uint256)
 |---|---|---|
 | _0 | uint256 | undefined |
 
+### addPostMintState
+
+```solidity
+function addPostMintState(string _state) external nonpayable
+```
+
+Adds a postMintState
+
+*The caller must have the admin or project admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _state | string | New postMintState to add |
+
 ### addPreMintState
 
 ```solidity
