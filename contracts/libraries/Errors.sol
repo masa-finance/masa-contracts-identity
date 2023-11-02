@@ -14,6 +14,7 @@ error IdentityOwnerNotTokenOwner(uint256 tokenId, uint256 ownerIdentityId);
 error InvalidPaymentMethod(address paymentMethod);
 error InvalidSignature();
 error InvalidSignatureDate(uint256 signatureDate);
+error InvalidState(string state);
 error InvalidToken(address token);
 error InvalidTokenURI(string tokenURI);
 error LinkAlreadyExists(

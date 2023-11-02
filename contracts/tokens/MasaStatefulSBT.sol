@@ -25,7 +25,7 @@ abstract contract MasaStatefulSBT is MasaSBT
     // states for each address (preMintStates)
     mapping (address => mapping (string => bool)) public addressStates;
     // states for each token (postMintStates)
-    mapping (uint256 => mapping (string => bool)) public tokenIdStates;
+    mapping (uint256 => mapping (string => bool)) public tokenStates;
 
     /* ========== INITIALIZE ================================================ */
 
@@ -60,6 +60,26 @@ abstract contract MasaStatefulSBT is MasaSBT
     }
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
+
+    /// @notice Sets a state for an account
+    /// @dev
+    /// @param account Account to set the state for
+    /// @param state State to set
+    /// @param value Value of the state
+    function setState(address account, string memory state, bool value) external {
+        if (!_validPreMintStates[state]) revert InvalidState(state);
+        addressStates[account][state] = value;
+    }
+
+    /// @notice Sets a state for a token
+    /// @dev
+    /// @param tokenId Token to set the state for
+    /// @param state State to set
+    /// @param value Value of the state
+    function setState(uint256 tokenId, string memory state, bool value) external {
+        if (!_validPostMintStates[state]) revert InvalidState(state);
+        tokenStates[tokenId][state] = value;
+    }
 
     /* ========== VIEWS ===================================================== */
 

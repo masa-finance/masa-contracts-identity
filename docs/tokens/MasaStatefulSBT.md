@@ -927,6 +927,42 @@ Sets the stable coin to pay the fee in (USDC)
 |---|---|---|
 | _stableCoin | address | New stable coin to pay the fee in |
 
+### setState
+
+```solidity
+function setState(address account, string state, bool value) external nonpayable
+```
+
+Sets a state for an account
+
+*@param account Account to set the state for*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| account | address | undefined |
+| state | string | State to set |
+| value | bool | Value of the state |
+
+### setState
+
+```solidity
+function setState(uint256 tokenId, string state, bool value) external nonpayable
+```
+
+Sets a state for a token
+
+*@param tokenId Token to set the state for*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId | uint256 | undefined |
+| state | string | State to set |
+| value | bool | Value of the state |
+
 ### setSwapRouter
 
 ```solidity
@@ -1071,29 +1107,6 @@ function tokenByIndex(uint256 index) external view returns (uint256)
 |---|---|---|
 | _0 | uint256 | undefined |
 
-### tokenIdStates
-
-```solidity
-function tokenIdStates(uint256, string) external view returns (bool)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | undefined |
-| _1 | string | undefined |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | bool | undefined |
-
 ### tokenOfOwnerByIndex
 
 ```solidity
@@ -1116,6 +1129,29 @@ function tokenOfOwnerByIndex(address owner, uint256 index) external view returns
 | Name | Type | Description |
 |---|---|---|
 | _0 | uint256 | undefined |
+
+### tokenStates
+
+```solidity
+function tokenStates(uint256, string) external view returns (bool)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+| _1 | string | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bool | undefined |
 
 ### tokenURI
 
@@ -1295,6 +1331,22 @@ error InvalidPaymentMethod(address paymentMethod)
 | Name | Type | Description |
 |---|---|---|
 | paymentMethod | address | undefined |
+
+### InvalidState
+
+```solidity
+error InvalidState(string state)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| state | string | undefined |
 
 ### InvalidToken
 
