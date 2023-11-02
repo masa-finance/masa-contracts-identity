@@ -131,7 +131,7 @@ abstract contract MasaStatefulSBT is MasaSBT {
         bool value
     ) external {
         if (!_validPostMintStates[state]) revert InvalidState(state);
-        if (!_exists(tokenId)) revert TokenNotFound(tokenId);
+        _requireMinted(tokenId);
         tokenStates[tokenId][state] = value;
     }
 
