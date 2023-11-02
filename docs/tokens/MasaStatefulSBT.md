@@ -133,6 +133,50 @@ function addressStates(address, string) external view returns (bool)
 |---|---|---|
 | _0 | bool | undefined |
 
+### allPostMintStatesSet
+
+```solidity
+function allPostMintStatesSet(uint256 tokenId) external view returns (bool)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bool | undefined |
+
+### allPreMintStatesSet
+
+```solidity
+function allPreMintStatesSet(address account) external view returns (bool)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| account | address | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bool | undefined |
+
 ### balanceOf
 
 ```solidity
@@ -352,6 +396,40 @@ Returns the price for minting with protocol fee
 |---|---|---|
 | price | uint256 | Current price for minting in the given payment method |
 | protocolFee | uint256 | Current protocol fee for minting in the given payment method |
+
+### getPostMintStates
+
+```solidity
+function getPostMintStates() external view returns (string[])
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string[] | undefined |
+
+### getPreMintStates
+
+```solidity
+function getPreMintStates() external view returns (string[])
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string[] | undefined |
 
 ### getProtocolFee
 
@@ -959,42 +1037,6 @@ Sets the stable coin to pay the fee in (USDC)
 |---|---|---|
 | _stableCoin | address | New stable coin to pay the fee in |
 
-### setState
-
-```solidity
-function setState(address account, string state, bool value) external nonpayable
-```
-
-Sets a state for an account
-
-*@param account Account to set the state for*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| account | address | undefined |
-| state | string | State to set |
-| value | bool | Value of the state |
-
-### setState
-
-```solidity
-function setState(uint256 tokenId, string state, bool value) external nonpayable
-```
-
-Sets a state for a token
-
-*@param tokenId Token to set the state for*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| tokenId | uint256 | undefined |
-| state | string | State to set |
-| value | bool | Value of the state |
-
 ### setSwapRouter
 
 ```solidity
@@ -1412,6 +1454,17 @@ error NonExistingErc20Token(address erc20token)
 |---|---|---|
 | erc20token | address | undefined |
 
+### NotAllPreMintStatesSet
+
+```solidity
+error NotAllPreMintStatesSet()
+```
+
+
+
+
+
+
 ### NotLinkedToAnIdentitySBT
 
 ```solidity
@@ -1444,22 +1497,6 @@ error SameValue()
 
 
 
-
-### StateNotSet
-
-```solidity
-error StateNotSet(string state)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| state | string | undefined |
 
 ### UserMustHaveProtocolOrProjectAdminRole
 
