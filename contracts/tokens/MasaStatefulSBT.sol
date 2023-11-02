@@ -139,6 +139,8 @@ abstract contract MasaStatefulSBT is MasaSBT {
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
 
+    /// @notice Checks if a token can be minted
+    /// @dev Checks if all preMintStates are set for the account
     function _beforeTokenTransfer(
         address,
         address to,
