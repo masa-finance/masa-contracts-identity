@@ -106,16 +106,20 @@ abstract contract MasaStatefulSBT is MasaSBT {
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
+    /* ========== VIEWS ===================================================== */
+
+    /* ========== PRIVATE FUNCTIONS ========================================= */
+
     /// @notice Sets a state for an account
     /// @dev
     /// @param account Account to set the state for
     /// @param state State to set
     /// @param value Value of the state
-    function setState(
+    function _setState(
         address account,
         string memory state,
         bool value
-    ) external {
+    ) internal {
         if (!_validPreMintStates[state]) revert InvalidState(state);
         addressStates[account][state] = value;
     }
@@ -125,19 +129,15 @@ abstract contract MasaStatefulSBT is MasaSBT {
     /// @param tokenId Token to set the state for
     /// @param state State to set
     /// @param value Value of the state
-    function setState(
+    function _setState(
         uint256 tokenId,
         string memory state,
         bool value
-    ) external {
+    ) internal {
         if (!_validPostMintStates[state]) revert InvalidState(state);
         _requireMinted(tokenId);
         tokenStates[tokenId][state] = value;
     }
-
-    /* ========== VIEWS ===================================================== */
-
-    /* ========== PRIVATE FUNCTIONS ========================================= */
 
     /// @notice Checks if a token can be minted
     /// @dev Checks if all preMintStates are set for the account
