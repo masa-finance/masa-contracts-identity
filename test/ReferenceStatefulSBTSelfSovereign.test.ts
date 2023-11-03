@@ -71,9 +71,8 @@ describe("ReferenceStatefulSBTSelfSovereign", () => {
   beforeEach(async () => {
     await deployments.fixture("SoulboundIdentity", { fallbackToGlobal: true });
 
-    const { address: soulboundIdentityAddress } = await deployments.get(
-      "SoulboundIdentity"
-    );
+    const { address: soulboundIdentityAddress } =
+      await deployments.get("SoulboundIdentity");
 
     const env = getEnvParams("hardhat");
     const baseUri = `${env.BASE_URI}/green/hardhat/`;
@@ -148,24 +147,21 @@ describe("ReferenceStatefulSBTSelfSovereign", () => {
       await statefulSBT.connect(owner).addPreMintState("discord");
       await statefulSBT.connect(owner).addPreMintState("twitter");
 
-      expect(await statefulSBT.getPreMintStates()).to.deep.equal(
-        ["discord", "twitter"]
-      );
+      expect(await statefulSBT.getPreMintStates()).to.deep.equal([
+        "discord",
+        "twitter"
+      ]);
 
       await statefulSBT.connect(owner).addPostMintState("discord");
 
-      expect(await statefulSBT.getPostMintStates()).to.deep.equal(
-        ["discord"]
-      ); 
+      expect(await statefulSBT.getPostMintStates()).to.deep.equal(["discord"]);
     });
 
     it("should fail to add state from non owner", async () => {
-      await expect(
-        statefulSBT.connect(address1).addPreMintState("discord")
-      ).to.be.rejected;
-      await expect(
-        statefulSBT.connect(address1).addPostMintState("discord")
-      ).to.be.rejected;
+      await expect(statefulSBT.connect(address1).addPreMintState("discord")).to
+        .be.rejected;
+      await expect(statefulSBT.connect(address1).addPostMintState("discord")).to
+        .be.rejected;
     });
   });
 
@@ -292,15 +288,17 @@ describe("ReferenceStatefulSBTSelfSovereign", () => {
     });
 
     it("should not mint if not all pre mint states are set", async () => {
-      await expect(statefulSBT
-        .connect(address1)
-        ["mint(address,address,address,uint256,bytes)"](
-          ethers.constants.AddressZero,
-          address1.address,
-          authority.address,
-          signatureDate,
-          signatureToAddress
-      )).to.be.rejected;
+      await expect(
+        statefulSBT
+          .connect(address1)
+          ["mint(address,address,address,uint256,bytes)"](
+            ethers.constants.AddressZero,
+            address1.address,
+            authority.address,
+            signatureDate,
+            signatureToAddress
+          )
+      ).to.be.rejected;
     });
   });
 });
