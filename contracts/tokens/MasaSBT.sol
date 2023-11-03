@@ -259,9 +259,17 @@ abstract contract MasaSBT is
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
 
-    function _mintWithCounter(address to) internal virtual returns (uint256) {
+    function _mintWithCounter(
+        address paymentMethod,
+        address to
+    ) internal virtual returns (uint256) {
         if (maxSBTToMint > 0 && balanceOf(to) >= maxSBTToMint)
             revert MaxSBTMinted(to, maxSBTToMint);
+
+        (uint256 price, uint256 protocolFee) = getMintPriceWithProtocolFee(
+            paymentMethod
+        );
+        _pay(paymentMethod, price, protocolFee);
 
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();

@@ -91,6 +91,15 @@ contract ReferenceStatefulSBTAuthority is
         super._beforeTokenTransfer(from, to, tokenId);
     }
 
+    function _mintWithCounter(
+        address paymentMethod,
+        address to
+    ) internal virtual override(MasaSBT, MasaSBTAuthority) returns (uint256) {
+        uint256 tokenId = MasaSBTAuthority._mintWithCounter(paymentMethod, to);
+
+        return tokenId;
+    }
+
     /* ========== MODIFIERS ================================================= */
 
     /* ========== EVENTS ==================================================== */

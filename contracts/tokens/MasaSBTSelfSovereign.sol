@@ -103,12 +103,7 @@ abstract contract MasaSBTSelfSovereign is MasaSBT, EIP712 {
     ) internal virtual returns (uint256) {
         _verify(digest, signature, authorityAddress);
 
-        (uint256 price, uint256 protocolFee) = getMintPriceWithProtocolFee(
-            paymentMethod
-        );
-        _pay(paymentMethod, price, protocolFee);
-
-        uint256 tokenId = _mintWithCounter(to);
+        uint256 tokenId = MasaSBT._mintWithCounter(paymentMethod, to);
 
         return tokenId;
     }
