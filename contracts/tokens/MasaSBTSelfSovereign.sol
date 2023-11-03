@@ -27,13 +27,15 @@ abstract contract MasaSBTSelfSovereign is MasaSBT, EIP712 {
     /// @param baseTokenURI Base URI of the token
     /// @param soulboundIdentity Address of the SoulboundIdentity contract
     /// @param paymentParams Payment gateway params
+    /// @param maxSBTToMint Maximum number of SBT that can be minted
     constructor(
         address admin,
         string memory name,
         string memory symbol,
         string memory baseTokenURI,
         address soulboundIdentity,
-        PaymentParams memory paymentParams
+        PaymentParams memory paymentParams,
+        uint256 maxSBTToMint
     )
         MasaSBT(
             admin,
@@ -41,7 +43,8 @@ abstract contract MasaSBTSelfSovereign is MasaSBT, EIP712 {
             symbol,
             baseTokenURI,
             soulboundIdentity,
-            paymentParams
+            paymentParams,
+            maxSBTToMint
         )
     {}
 

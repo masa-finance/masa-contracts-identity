@@ -25,6 +25,7 @@ error LinkAlreadyExists(
 );
 error LinkAlreadyRevoked();
 error LinkDoesNotExist();
+error MaxSBTMinted(address to, uint256 maximum);
 error NameAlreadyExists(string name);
 error NameNotFound(string name);
 error NameRegisteredByOtherAccount(string name, uint256 tokenId);

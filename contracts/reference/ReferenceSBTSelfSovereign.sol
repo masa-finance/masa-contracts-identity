@@ -10,10 +10,6 @@ import "../tokens/MasaSBTSelfSovereign.sol";
 /// @notice Soulbound token that represents a Self-Sovereign SBT
 /// @dev Inherits from the SBT contract.
 contract ReferenceSBTSelfSovereign is MasaSBTSelfSovereign, ReentrancyGuard {
-    error MaxSBTMinted(address to, uint256 maximum);
-
-    uint256 public maxSBTToMint = 1;
-
     /* ========== STATE VARIABLES =========================================== */
 
     /* ========== INITIALIZE ================================================ */
@@ -26,7 +22,7 @@ contract ReferenceSBTSelfSovereign is MasaSBTSelfSovereign, ReentrancyGuard {
     /// @param baseTokenURI Base URI of the token
     /// @param soulboundIdentity Address of the SoulboundIdentity contract
     /// @param paymentParams Payment gateway params
-    /// @param _maxSBTToMint Maximum number of SBT that can be minted
+    /// @param maxSBTToMint Maximum number of SBT that can be minted
     constructor(
         address admin,
         string memory name,
@@ -34,7 +30,7 @@ contract ReferenceSBTSelfSovereign is MasaSBTSelfSovereign, ReentrancyGuard {
         string memory baseTokenURI,
         address soulboundIdentity,
         PaymentParams memory paymentParams,
-        uint256 _maxSBTToMint
+        uint256 maxSBTToMint
     )
         MasaSBTSelfSovereign(
             admin,
@@ -42,12 +38,11 @@ contract ReferenceSBTSelfSovereign is MasaSBTSelfSovereign, ReentrancyGuard {
             symbol,
             baseTokenURI,
             soulboundIdentity,
-            paymentParams
+            paymentParams,
+            maxSBTToMint
         )
         EIP712("ReferenceSBTSelfSovereign", "1.0.0")
-    {
-        maxSBTToMint = _maxSBTToMint;
-    }
+    {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
@@ -69,8 +64,6 @@ contract ReferenceSBTSelfSovereign is MasaSBTSelfSovereign, ReentrancyGuard {
         bytes calldata signature
     ) external payable virtual nonReentrant returns (uint256) {
         address to = soulboundIdentity.ownerOf(identityId);
-        if (maxSBTToMint > 0 && balanceOf(to) >= maxSBTToMint)
-            revert MaxSBTMinted(to, maxSBTToMint);
         if (to != _msgSender()) revert CallerNotOwner(_msgSender());
 
         uint256 tokenId = _mintWithCounter(
@@ -108,8 +101,6 @@ contract ReferenceSBTSelfSovereign is MasaSBTSelfSovereign, ReentrancyGuard {
         uint256 signatureDate,
         bytes calldata signature
     ) external payable virtual returns (uint256) {
-        if (maxSBTToMint > 0 && balanceOf(to) >= maxSBTToMint)
-            revert MaxSBTMinted(to, maxSBTToMint);
         if (to != _msgSender()) revert CallerNotOwner(_msgSender());
 
         uint256 tokenId = _mintWithCounter(

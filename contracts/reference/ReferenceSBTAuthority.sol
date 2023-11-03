@@ -10,10 +10,6 @@ import "../tokens/MasaSBTAuthority.sol";
 /// @notice Soulbound token that represents a Authority SBT
 /// @dev Inherits from the SBT contract.
 contract ReferenceSBTAuthority is MasaSBTAuthority, ReentrancyGuard {
-    error MaxSBTMinted(address to, uint256 maximum);
-
-    uint256 public maxSBTToMint = 1;
-
     /* ========== STATE VARIABLES =========================================== */
 
     /* ========== INITIALIZE ================================================ */
@@ -26,7 +22,7 @@ contract ReferenceSBTAuthority is MasaSBTAuthority, ReentrancyGuard {
     /// @param baseTokenURI Base URI of the token
     /// @param soulboundIdentity Address of the SoulboundIdentity contract
     /// @param paymentParams Payment gateway params
-    /// @param _maxSBTToMint Maximum number of SBT that can be minted
+    /// @param maxSBTToMint Maximum number of SBT that can be minted
     constructor(
         address admin,
         string memory name,
@@ -34,7 +30,7 @@ contract ReferenceSBTAuthority is MasaSBTAuthority, ReentrancyGuard {
         string memory baseTokenURI,
         address soulboundIdentity,
         PaymentParams memory paymentParams,
-        uint256 _maxSBTToMint
+        uint256 maxSBTToMint
     )
         MasaSBTAuthority(
             admin,
@@ -42,11 +38,10 @@ contract ReferenceSBTAuthority is MasaSBTAuthority, ReentrancyGuard {
             symbol,
             baseTokenURI,
             soulboundIdentity,
-            paymentParams
+            paymentParams,
+            maxSBTToMint
         )
-    {
-        maxSBTToMint = _maxSBTToMint;
-    }
+    {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
@@ -62,8 +57,6 @@ contract ReferenceSBTAuthority is MasaSBTAuthority, ReentrancyGuard {
         uint256 identityId
     ) external payable nonReentrant returns (uint256) {
         address to = soulboundIdentity.ownerOf(identityId);
-        if (maxSBTToMint > 0 && balanceOf(to) >= maxSBTToMint)
-            revert MaxSBTMinted(to, maxSBTToMint);
 
         uint256 tokenId = _mintWithCounter(paymentMethod, to);
 
@@ -81,9 +74,6 @@ contract ReferenceSBTAuthority is MasaSBTAuthority, ReentrancyGuard {
         address paymentMethod,
         address to
     ) external payable nonReentrant returns (uint256) {
-        if (maxSBTToMint > 0 && balanceOf(to) >= maxSBTToMint)
-            revert MaxSBTMinted(to, maxSBTToMint);
-
         uint256 tokenId = _mintWithCounter(paymentMethod, to);
 
         emit MintedToAddress(tokenId, to);
@@ -105,8 +95,6 @@ contract ReferenceSBTAuthority is MasaSBTAuthority, ReentrancyGuard {
 
         for (uint256 i = 0; i < identityId.length; i++) {
             address to = soulboundIdentity.ownerOf(identityId[i]);
-            if (maxSBTToMint > 0 && balanceOf(to) >= maxSBTToMint)
-                revert MaxSBTMinted(to, maxSBTToMint);
 
             uint256 tokenId = _mintWithCounter(paymentMethod, to);
 
@@ -131,9 +119,6 @@ contract ReferenceSBTAuthority is MasaSBTAuthority, ReentrancyGuard {
         uint256 t = 0;
 
         for (uint256 i = 0; i < to.length; i++) {
-            if (maxSBTToMint > 0 && balanceOf(to[i]) >= maxSBTToMint)
-                revert MaxSBTMinted(to[i], maxSBTToMint);
-
             uint256 tokenId = _mintWithCounter(paymentMethod, to[i]);
 
             emit MintedToAddress(tokenId, to[i]);

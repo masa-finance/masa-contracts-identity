@@ -23,13 +23,15 @@ contract SoulboundGreen is MasaSBTSelfSovereign, ReentrancyGuard {
     /// @param baseTokenURI Base URI of the token
     /// @param soulboundIdentity Address of the SoulboundIdentity contract
     /// @param paymentParams Payment gateway params
+    /// @param maxSBTToMint Maximum number of SBT that can be minted
     constructor(
         address admin,
         string memory name,
         string memory symbol,
         string memory baseTokenURI,
         address soulboundIdentity,
-        PaymentParams memory paymentParams
+        PaymentParams memory paymentParams,
+        uint256 maxSBTToMint
     )
         MasaSBTSelfSovereign(
             admin,
@@ -37,7 +39,8 @@ contract SoulboundGreen is MasaSBTSelfSovereign, ReentrancyGuard {
             symbol,
             baseTokenURI,
             soulboundIdentity,
-            paymentParams
+            paymentParams,
+            maxSBTToMint
         )
         EIP712("SoulboundGreen", "1.0.0")
     {}

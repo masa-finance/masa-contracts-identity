@@ -422,6 +422,23 @@ function masaToken() external view returns (address)
 |---|---|---|
 | _0 | address | undefined |
 
+### maxSBTToMint
+
+```solidity
+function maxSBTToMint() external view returns (uint256)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
 ### mintPrice
 
 ```solidity

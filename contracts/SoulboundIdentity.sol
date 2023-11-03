@@ -30,12 +30,14 @@ contract SoulboundIdentity is
     /// @param symbol Symbol of the token
     /// @param baseTokenURI Base URI of the token
     /// @param paymentParams Payment gateway params
+    /// @param maxSBTToMint Maximum number of SBT that can be minted
     constructor(
         address admin,
         string memory name,
         string memory symbol,
         string memory baseTokenURI,
-        PaymentParams memory paymentParams
+        PaymentParams memory paymentParams,
+        uint256 maxSBTToMint
     )
         MasaSBTAuthority(
             admin,
@@ -43,7 +45,8 @@ contract SoulboundIdentity is
             symbol,
             baseTokenURI,
             address(0),
-            paymentParams
+            paymentParams,
+            maxSBTToMint
         )
     {}
 
