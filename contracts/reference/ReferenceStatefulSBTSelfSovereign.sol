@@ -49,6 +49,33 @@ contract ReferenceStatefulSBTSelfSovereign is
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
+    function setState(
+        address account,
+        string memory state,
+        bool value,
+        address authorityAddress,
+        uint256 signatureDate,
+        bytes calldata signature
+    ) external {
+        if (account != _msgSender()) revert CallerNotOwner(_msgSender());
+
+        _setState(account, state, value);
+    }
+
+    function setState(
+        uint256 tokenId,
+        string memory state,
+        bool value,
+        address authorityAddress,
+        uint256 signatureDate,
+        bytes calldata signature
+    ) external {
+        address to = ownerOf(tokenId);
+        if (to != _msgSender()) revert CallerNotOwner(_msgSender());
+
+        _setState(tokenId, state, value);
+    }
+
     /* ========== VIEWS ===================================================== */
 
     function tokenURI(
@@ -73,6 +100,54 @@ contract ReferenceStatefulSBTSelfSovereign is
         uint256 tokenId
     ) internal virtual override(MasaSBT, MasaStatefulSBT) {
         super._beforeTokenTransfer(from, to, tokenId);
+    }
+
+    function _hash(
+        address account,
+        string memory state,
+        bool value,
+        address authorityAddress,
+        uint256 signatureDate
+    ) internal view returns (bytes32) {
+        return
+            _hashTypedDataV4(
+                keccak256(
+                    abi.encode(
+                        keccak256(
+                            "SetState(address account,string state,bool value,address authorityAddress,uint256 signatureDate)"
+                        ),
+                        account,
+                        keccak256(bytes(state)),
+                        value,
+                        authorityAddress,
+                        signatureDate
+                    )
+                )
+            );
+    }
+
+    function _hash(
+        uint256 tokenId,
+        string memory state,
+        bool value,
+        address authorityAddress,
+        uint256 signatureDate
+    ) internal view returns (bytes32) {
+        return
+            _hashTypedDataV4(
+                keccak256(
+                    abi.encode(
+                        keccak256(
+                            "SetState(uint256 tokenId,string state,bool value,address authorityAddress,uint256 signatureDate)"
+                        ),
+                        tokenId,
+                        keccak256(bytes(state)),
+                        value,
+                        authorityAddress,
+                        signatureDate
+                    )
+                )
+            );
     }
 
     /* ========== MODIFIERS ================================================= */
