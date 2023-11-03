@@ -284,4 +284,23 @@ describe("ReferenceStatefulSBTSelfSovereign", () => {
       expect(tokenUri).to.contain("/green/");
     });
   });
+
+  describe("preMintStates", () => {
+    beforeEach(async () => {
+      await statefulSBT.connect(owner).addPreMintState("discord");
+      await statefulSBT.connect(owner).addPreMintState("twitter");
+    });
+
+    it("should not mint if not all pre mint states are set", async () => {
+      await expect(statefulSBT
+        .connect(address1)
+        ["mint(address,address,address,uint256,bytes)"](
+          ethers.constants.AddressZero,
+          address1.address,
+          authority.address,
+          signatureDate,
+          signatureToAddress
+      )).to.be.rejected;
+    });
+  });
 });
