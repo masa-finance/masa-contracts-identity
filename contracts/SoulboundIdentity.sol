@@ -82,9 +82,6 @@ contract SoulboundIdentity is
         address paymentMethod,
         address to
     ) public payable override returns (uint256) {
-        // Soulbound identity already created!
-        if (balanceOf(to) > 0) revert IdentityAlreadyCreated(to);
-
         return _mintWithCounter(paymentMethod, to);
     }
 

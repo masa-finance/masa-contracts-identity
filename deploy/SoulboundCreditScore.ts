@@ -56,7 +56,7 @@ const func: DeployFunction = async ({
       env.PROTOCOLFEE_PERCENT || 0,
       env.PROTOCOLFEE_PERCENT_SUB || 0
     ],
-    0
+    1
   ];
 
   if (

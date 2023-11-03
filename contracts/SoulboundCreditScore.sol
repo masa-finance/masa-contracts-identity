@@ -66,7 +66,6 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign, ReentrancyGuard {
     ) external payable nonReentrant returns (uint256) {
         address to = soulboundIdentity.ownerOf(identityId);
         if (to != _msgSender()) revert CallerNotOwner(_msgSender());
-        if (balanceOf(to) > 0) revert CreditScoreAlreadyCreated(to);
 
         uint256 tokenId = _mintWithCounter(
             paymentMethod,
@@ -104,7 +103,6 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign, ReentrancyGuard {
         bytes calldata signature
     ) external payable nonReentrant returns (uint256) {
         if (to != _msgSender()) revert CallerNotOwner(_msgSender());
-        if (balanceOf(to) > 0) revert CreditScoreAlreadyCreated(to);
 
         uint256 tokenId = _mintWithCounter(
             paymentMethod,
