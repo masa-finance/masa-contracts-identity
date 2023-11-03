@@ -43,9 +43,8 @@ describe("Soul Name", () => {
     await deployments.fixture("SoulboundIdentity", { fallbackToGlobal: false });
     await deployments.fixture("SoulName", { fallbackToGlobal: false });
 
-    const { address: soulboundIdentityAddress } = await deployments.get(
-      "SoulboundIdentity"
-    );
+    const { address: soulboundIdentityAddress } =
+      await deployments.get("SoulboundIdentity");
     const { address: soulNameAddress } = await deployments.get("SoulName");
 
     soulboundIdentity = SoulboundIdentity__factory.connect(
@@ -244,9 +243,8 @@ describe("Soul Name", () => {
     });
 
     it("getTokenData with an existing name", async () => {
-      const { sbtName, identityId, tokenId } = await soulName.getTokenData(
-        SOUL_NAME1
-      );
+      const { sbtName, identityId, tokenId } =
+        await soulName.getTokenData(SOUL_NAME1);
       const extension = await soulName.getExtension();
 
       await expect(sbtName).to.be.equal(SOUL_NAME1 + extension);
@@ -396,9 +394,8 @@ describe("Soul Name", () => {
     });
 
     it("should return an active registration period", async () => {
-      const { expirationDate, active } = await soulName.getTokenData(
-        SOUL_NAME1
-      );
+      const { expirationDate, active } =
+        await soulName.getTokenData(SOUL_NAME1);
 
       expect(expirationDate).to.be.above(YEAR_PERIOD);
       expect(active).to.be.true;
@@ -412,9 +409,8 @@ describe("Soul Name", () => {
       await network.provider.send("evm_increaseTime", [YEAR_PERIOD + 1]);
       await network.provider.send("evm_mine");
 
-      const { expirationDate, active } = await soulName.getTokenData(
-        SOUL_NAME1
-      );
+      const { expirationDate, active } =
+        await soulName.getTokenData(SOUL_NAME1);
 
       expect(expirationDate).to.be.above(YEAR_PERIOD);
       expect(active).to.be.false;

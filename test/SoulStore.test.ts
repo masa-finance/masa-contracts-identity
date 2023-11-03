@@ -575,9 +575,8 @@ describe("Soul Store", () => {
         SOUL_NAME.length,
         YEAR
       );
-      const projectFeeWalletBalanceBefore = await ethers.provider.getBalance(
-        projectFeeReceiver
-      );
+      const projectFeeWalletBalanceBefore =
+        await ethers.provider.getBalance(projectFeeReceiver);
 
       const signature = await signMintSoulName(
         address1.address,
@@ -599,9 +598,8 @@ describe("Soul Store", () => {
         { value: price }
       );
 
-      const projectFeeWalletBalanceAfter = await ethers.provider.getBalance(
-        projectFeeReceiver
-      );
+      const projectFeeWalletBalanceAfter =
+        await ethers.provider.getBalance(projectFeeReceiver);
 
       // we check that the project fee wallet received the ETH
       expect(
@@ -620,9 +618,8 @@ describe("Soul Store", () => {
       // set allowance for soul store
       const usdc: IERC20 = IERC20__factory.connect(env.USDC_TOKEN, owner);
       await usdc.connect(address1).approve(soulStore.address, price);
-      const projectFeeWalletBalanceBefore = await usdc.balanceOf(
-        projectFeeReceiver
-      );
+      const projectFeeWalletBalanceBefore =
+        await usdc.balanceOf(projectFeeReceiver);
 
       const signature = await signMintSoulName(
         address1.address,
@@ -643,9 +640,8 @@ describe("Soul Store", () => {
         signature
       );
 
-      const projectFeeWalletBalanceAfter = await usdc.balanceOf(
-        projectFeeReceiver
-      );
+      const projectFeeWalletBalanceAfter =
+        await usdc.balanceOf(projectFeeReceiver);
 
       // we check that the project fee wallet received the stable coin
       expect(
@@ -664,9 +660,8 @@ describe("Soul Store", () => {
       // set allowance for soul store
       const masa: IERC20 = IERC20__factory.connect(env.MASA_TOKEN, owner);
       await masa.connect(address1).approve(soulStore.address, price);
-      const projectFeeWalletBalanceBefore = await masa.balanceOf(
-        projectFeeReceiver
-      );
+      const projectFeeWalletBalanceBefore =
+        await masa.balanceOf(projectFeeReceiver);
 
       const signature = await signMintSoulName(
         address1.address,
@@ -687,9 +682,8 @@ describe("Soul Store", () => {
         signature
       );
 
-      const projectFeeWalletBalanceAfter = await masa.balanceOf(
-        projectFeeReceiver
-      );
+      const projectFeeWalletBalanceAfter =
+        await masa.balanceOf(projectFeeReceiver);
 
       // we check that the project fee wallet received the stable coin
       expect(
