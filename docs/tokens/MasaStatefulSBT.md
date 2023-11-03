@@ -1321,6 +1321,42 @@ event Mint(address indexed _owner, uint256 indexed _tokenId)
 | _owner `indexed` | address | undefined |
 | _tokenId `indexed` | uint256 | undefined |
 
+### PostMintStateSet
+
+```solidity
+event PostMintStateSet(uint256 tokenId, string state, bool value)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId  | uint256 | undefined |
+| state  | string | undefined |
+| value  | bool | undefined |
+
+### PreMintStateSet
+
+```solidity
+event PreMintStateSet(address account, string state, bool value)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| account  | address | undefined |
+| state  | string | undefined |
+| value  | bool | undefined |
+
 ### RoleAdminChanged
 
 ```solidity
@@ -1374,24 +1410,6 @@ event RoleRevoked(bytes32 indexed role, address indexed account, address indexed
 | role `indexed` | bytes32 | undefined |
 | account `indexed` | address | undefined |
 | sender `indexed` | address | undefined |
-
-### StateSet
-
-```solidity
-event StateSet(uint256 tokenId, string state, bool value)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| tokenId  | uint256 | undefined |
-| state  | string | undefined |
-| value  | bool | undefined |
 
 
 
