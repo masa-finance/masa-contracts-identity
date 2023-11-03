@@ -143,6 +143,30 @@ describe("ReferenceStatefulSBTSelfSovereign", () => {
         statefulSBT.connect(address1).setSoulboundIdentity(address1.address)
       ).to.be.rejected;
     });
+
+    it("should add state from owner", async () => {
+      await statefulSBT.connect(owner).addPreMintState("discord");
+      await statefulSBT.connect(owner).addPreMintState("twitter");
+
+      expect(await statefulSBT.getPreMintStates()).to.deep.equal(
+        ["discord", "twitter"]
+      );
+
+      await statefulSBT.connect(owner).addPostMintState("discord");
+
+      expect(await statefulSBT.getPostMintStates()).to.deep.equal(
+        ["discord"]
+      ); 
+    });
+
+    it("should fail to add state from non owner", async () => {
+      await expect(
+        statefulSBT.connect(address1).addPreMintState("discord")
+      ).to.be.rejected;
+      await expect(
+        statefulSBT.connect(address1).addPostMintState("discord")
+      ).to.be.rejected;
+    });
   });
 
   describe("sbt information", () => {
