@@ -3,7 +3,6 @@ pragma solidity ^0.8.8;
 
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 
 import "../libraries/Errors.sol";
 import "./MasaSBT.sol";
@@ -15,10 +14,6 @@ import "./MasaSBT.sol";
 /// @dev Implementation of https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763 Soulbound token.
 abstract contract MasaSBTSelfSovereign is MasaSBT, EIP712 {
     /* ========== STATE VARIABLES =========================================== */
-
-    using Counters for Counters.Counter;
-
-    Counters.Counter private _tokenIdCounter;
 
     mapping(address => bool) public authorities;
 
@@ -110,9 +105,7 @@ abstract contract MasaSBTSelfSovereign is MasaSBT, EIP712 {
         );
         _pay(paymentMethod, price, protocolFee);
 
-        uint256 tokenId = _tokenIdCounter.current();
-        _tokenIdCounter.increment();
-        _mint(to, tokenId);
+        uint256 tokenId = _mintWithCounter(to);
 
         return tokenId;
     }

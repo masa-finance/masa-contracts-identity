@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.8;
 
+import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 import "../dex/PaymentGateway.sol";
@@ -27,6 +28,9 @@ abstract contract MasaSBT is
     /* ========== STATE VARIABLES =========================================== */
 
     using Strings for uint256;
+    using Counters for Counters.Counter;
+
+    Counters.Counter private _tokenIdCounter;
 
     string private _baseTokenURI;
 
@@ -250,6 +254,14 @@ abstract contract MasaSBT is
     }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
+
+    function _mintWithCounter(address to) internal virtual returns (uint256) {
+        uint256 tokenId = _tokenIdCounter.current();
+        _tokenIdCounter.increment();
+        _mint(to, tokenId);
+
+        return tokenId;
+    }
 
     function _baseURI() internal view virtual override returns (string memory) {
         return _baseTokenURI;

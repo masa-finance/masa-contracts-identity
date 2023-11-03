@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.8;
 
-import "@openzeppelin/contracts/utils/Counters.sol";
-
 import "./MasaSBT.sol";
 
 /// @title MasaSBT
@@ -12,10 +10,7 @@ import "./MasaSBT.sol";
 abstract contract MasaSBTAuthority is MasaSBT {
     /* ========== STATE VARIABLES =========================================== */
 
-    using Counters for Counters.Counter;
-
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
-    Counters.Counter private _tokenIdCounter;
 
     /* ========== INITIALIZE ================================================ */
 
@@ -58,9 +53,7 @@ abstract contract MasaSBTAuthority is MasaSBT {
         );
         _pay(paymentMethod, price, protocolFee);
 
-        uint256 tokenId = _tokenIdCounter.current();
-        _tokenIdCounter.increment();
-        _mint(to, tokenId);
+        uint256 tokenId = _mintWithCounter(to);
 
         return tokenId;
     }
