@@ -142,9 +142,8 @@ describe("Soul Linker", () => {
     });
     await deployments.fixture("SoulLinker", { fallbackToGlobal: false });
 
-    const { address: soulboundIdentityAddress } = await deployments.get(
-      "SoulboundIdentity"
-    );
+    const { address: soulboundIdentityAddress } =
+      await deployments.get("SoulboundIdentity");
     const { address: soulNameAddress } = await deployments.get("SoulName");
     const { address: soulboundCreditScoreAddress } = await deployments.get(
       "SoulboundCreditScore"

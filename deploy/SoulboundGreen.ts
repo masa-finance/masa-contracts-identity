@@ -33,9 +33,8 @@ const func: DeployFunction = async ({
     network.name === "alfajores" ||
     network.name === "basegoerli"
   ) {
-    const soulboundIdentityDeployed = await deployments.get(
-      "SoulboundIdentity"
-    );
+    const soulboundIdentityDeployed =
+      await deployments.get("SoulboundIdentity");
     soulboundIdentityDeployedAddress = soulboundIdentityDeployed.address;
   } else {
     soulboundIdentityDeployedAddress = ethers.constants.AddressZero;
