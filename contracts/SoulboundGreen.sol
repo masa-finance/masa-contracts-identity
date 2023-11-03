@@ -65,7 +65,6 @@ contract SoulboundGreen is MasaSBTSelfSovereign, ReentrancyGuard {
         bytes calldata signature
     ) external payable nonReentrant returns (uint256) {
         address to = soulboundIdentity.ownerOf(identityId);
-        if (to != _msgSender()) revert CallerNotOwner(_msgSender());
 
         uint256 tokenId = _mintWithCounter(
             paymentMethod,
@@ -102,8 +101,6 @@ contract SoulboundGreen is MasaSBTSelfSovereign, ReentrancyGuard {
         uint256 signatureDate,
         bytes calldata signature
     ) external payable nonReentrant returns (uint256) {
-        if (to != _msgSender()) revert CallerNotOwner(_msgSender());
-
         uint256 tokenId = _mintWithCounter(
             paymentMethod,
             to,

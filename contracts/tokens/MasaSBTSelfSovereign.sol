@@ -101,6 +101,8 @@ abstract contract MasaSBTSelfSovereign is MasaSBT, EIP712 {
         address authorityAddress,
         bytes calldata signature
     ) internal virtual returns (uint256) {
+        if (to != _msgSender()) revert CallerNotOwner(_msgSender());
+
         _verify(digest, signature, authorityAddress);
 
         uint256 tokenId = MasaSBT._mintWithCounter(paymentMethod, to);

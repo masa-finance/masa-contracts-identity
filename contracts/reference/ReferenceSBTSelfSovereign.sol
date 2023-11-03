@@ -64,7 +64,6 @@ contract ReferenceSBTSelfSovereign is MasaSBTSelfSovereign, ReentrancyGuard {
         bytes calldata signature
     ) external payable virtual nonReentrant returns (uint256) {
         address to = soulboundIdentity.ownerOf(identityId);
-        if (to != _msgSender()) revert CallerNotOwner(_msgSender());
 
         uint256 tokenId = _mintWithCounter(
             paymentMethod,
@@ -101,8 +100,6 @@ contract ReferenceSBTSelfSovereign is MasaSBTSelfSovereign, ReentrancyGuard {
         uint256 signatureDate,
         bytes calldata signature
     ) external payable virtual returns (uint256) {
-        if (to != _msgSender()) revert CallerNotOwner(_msgSender());
-
         uint256 tokenId = _mintWithCounter(
             paymentMethod,
             to,
