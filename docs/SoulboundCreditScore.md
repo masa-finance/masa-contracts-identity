@@ -1433,22 +1433,6 @@ error CallerNotOwner(address caller)
 |---|---|---|
 | caller | address | undefined |
 
-### CreditScoreAlreadyCreated
-
-```solidity
-error CreditScoreAlreadyCreated(address to)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| to | address | undefined |
-
 ### InsufficientEthAmount
 
 ```solidity

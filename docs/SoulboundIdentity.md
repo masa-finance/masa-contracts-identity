@@ -1580,22 +1580,6 @@ error AlreadyAdded()
 
 
 
-### IdentityAlreadyCreated
-
-```solidity
-error IdentityAlreadyCreated(address to)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| to | address | undefined |
-
 ### InsufficientEthAmount
 
 ```solidity
