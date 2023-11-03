@@ -46,7 +46,7 @@ const signMintSBTToAddress = async (
     },
     // Types
     {
-        Mint: [
+      Mint: [
         { name: "to", type: "address" },
         { name: "authorityAddress", type: "address" },
         { name: "signatureDate", type: "uint256" }
@@ -78,7 +78,9 @@ describe("ReferenceStatefulSBTSelfSovereign", () => {
     const env = getEnvParams("hardhat");
     const baseUri = `${env.BASE_URI}/green/hardhat/`;
 
-    const StatefulSBT = await ethers.getContractFactory('ReferenceStatefulSBTSelfSovereign');
+    const StatefulSBT = await ethers.getContractFactory(
+      "ReferenceStatefulSBTSelfSovereign"
+    );
     const statefulSBTDeploy = await StatefulSBT.deploy(
       env.ADMIN || owner.address,
       env.SOULBOUNDGREEN_NAME,
@@ -104,7 +106,7 @@ describe("ReferenceStatefulSBTSelfSovereign", () => {
       soulboundIdentityAddress,
       owner
     );
-    
+
     statefulSBT = ReferenceStatefulSBTSelfSovereign__factory.connect(
       statefulSBTDeploy.address,
       owner
@@ -121,8 +123,6 @@ describe("ReferenceStatefulSBTSelfSovereign", () => {
     // we add authority account
     await statefulSBT.addAuthority(authority.address);
 
-    await statefulSBT.setMintPrice(0); // 0 USDC
-
     signatureToAddress = await signMintSBTToAddress(
       address1.address,
       authority
@@ -131,9 +131,7 @@ describe("ReferenceStatefulSBTSelfSovereign", () => {
 
   describe("owner functions", () => {
     it("should set SoulboundIdentity from owner", async () => {
-      await statefulSBT
-        .connect(owner)
-        .setSoulboundIdentity(address1.address);
+      await statefulSBT.connect(owner).setSoulboundIdentity(address1.address);
 
       expect(await statefulSBT.soulboundIdentity()).to.be.equal(
         address1.address
@@ -170,7 +168,7 @@ describe("ReferenceStatefulSBTSelfSovereign", () => {
       ).to.be.revertedWith("CallerNotOwner");
     });
 
-    it("should mint twice", async () => {
+    it("can't mint twice", async () => {
       await statefulSBT
         .connect(address1)
         ["mint(address,address,address,uint256,bytes)"](
@@ -180,19 +178,19 @@ describe("ReferenceStatefulSBTSelfSovereign", () => {
           signatureDate,
           signatureToAddress
         );
-      await statefulSBT
-        .connect(address1)
-        ["mint(address,address,address,uint256,bytes)"](
-          ethers.constants.AddressZero,
-          address1.address,
-          authority.address,
-          signatureDate,
-          signatureToAddress
-        );
+      await expect(
+        statefulSBT
+          .connect(address1)
+          ["mint(address,address,address,uint256,bytes)"](
+            ethers.constants.AddressZero,
+            address1.address,
+            authority.address,
+            signatureDate,
+            signatureToAddress
+          )
+      ).to.be.reverted;
 
-      expect(await statefulSBT.totalSupply()).to.equal(2);
-      expect(await statefulSBT.tokenByIndex(0)).to.equal(0);
-      expect(await statefulSBT.tokenByIndex(1)).to.equal(1);
+      expect(await statefulSBT.balanceOf(address1.address)).to.equal(1);
     });
 
     it("should mint from final user address", async () => {
@@ -228,33 +226,12 @@ describe("ReferenceStatefulSBTSelfSovereign", () => {
       let mintReceipt = await mintTx.wait();
       const tokenId1 = mintReceipt.events![0].args![1].toNumber();
 
-      // we mint again
-      mintTx = await statefulSBT
-        .connect(address1)
-        ["mint(address,address,address,uint256,bytes)"](
-          ethers.constants.AddressZero,
-          address1.address,
-          authority.address,
-          signatureDate,
-          signatureToAddress
-        );
-      mintReceipt = await mintTx.wait();
-      const tokenId2 = mintReceipt.events![0].args![1].toNumber();
-
-      expect(await statefulSBT.balanceOf(address1.address)).to.be.equal(2);
-      expect(await statefulSBT.balanceOf(address1.address)).to.be.equal(2);
+      expect(await statefulSBT.balanceOf(address1.address)).to.be.equal(1);
       expect(await statefulSBT["ownerOf(uint256)"](tokenId1)).to.be.equal(
-        address1.address
-      );
-      expect(await statefulSBT["ownerOf(uint256)"](tokenId2)).to.be.equal(
         address1.address
       );
 
       await statefulSBT.connect(address1).burn(tokenId1);
-
-      expect(await statefulSBT.balanceOf(address1.address)).to.be.equal(1);
-
-      await statefulSBT.connect(address1).burn(tokenId2);
 
       expect(await statefulSBT.balanceOf(address1.address)).to.be.equal(0);
     });
