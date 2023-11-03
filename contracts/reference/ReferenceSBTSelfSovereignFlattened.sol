@@ -1,4 +1,4 @@
-// Sources flattened with hardhat v2.17.1 https://hardhat.org
+// Sources flattened with hardhat v2.18.0 https://hardhat.org
 
 // SPDX-License-Identifier: MIT
 
@@ -2715,6 +2715,7 @@ error IdentityOwnerNotTokenOwner(uint256 tokenId, uint256 ownerIdentityId);
 error InvalidPaymentMethod(address paymentMethod);
 error InvalidSignature();
 error InvalidSignatureDate(uint256 signatureDate);
+error InvalidState(string state);
 error InvalidToken(address token);
 error InvalidTokenURI(string tokenURI);
 error LinkAlreadyExists(
@@ -2728,6 +2729,7 @@ error LinkDoesNotExist();
 error NameAlreadyExists(string name);
 error NameNotFound(string name);
 error NameRegisteredByOtherAccount(string name, uint256 tokenId);
+error NotAllPreMintStatesSet();
 error NotAuthorized(address signer);
 error NonExistingErc20Token(address erc20token);
 error NotLinkedToAnIdentitySBT();
@@ -2739,6 +2741,7 @@ error SBTAlreadyLinked(address token);
 error SoulNameContractNotSet();
 error SoulNameNotExist();
 error SoulNameNotRegistered(address token);
+error StateNotSet(string state);
 error TokenNotFound(uint256 tokenId);
 error TransferFailed();
 error URIAlreadyExists(string tokenURI);
@@ -4240,7 +4243,7 @@ abstract contract MasaSBTSelfSovereign is MasaSBT, EIP712 {
         bytes32 digest,
         bytes memory signature,
         address signer
-    ) private view {
+    ) internal view {
         address _signer = ECDSA.recover(digest, signature);
         if (_signer != signer) revert InvalidSignature();
         if (!authorities[_signer]) revert NotAuthorized(_signer);
