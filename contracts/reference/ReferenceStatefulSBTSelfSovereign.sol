@@ -59,6 +59,15 @@ contract ReferenceStatefulSBTSelfSovereign is
     ) external {
         if (account != _msgSender()) revert CallerNotOwner(_msgSender());
 
+        bytes32 digest = _hash(
+            account,
+            state,
+            value,
+            authorityAddress,
+            signatureDate
+        );
+        _verify(digest, signature, authorityAddress);
+
         _setState(account, state, value);
     }
 
@@ -72,6 +81,15 @@ contract ReferenceStatefulSBTSelfSovereign is
     ) external {
         address to = ownerOf(tokenId);
         if (to != _msgSender()) revert CallerNotOwner(_msgSender());
+
+        bytes32 digest = _hash(
+            tokenId,
+            state,
+            value,
+            authorityAddress,
+            signatureDate
+        );
+        _verify(digest, signature, authorityAddress);
 
         _setState(tokenId, state, value);
     }

@@ -90,7 +90,7 @@ abstract contract MasaSBTSelfSovereign is MasaSBT, EIP712 {
         bytes32 digest,
         bytes memory signature,
         address signer
-    ) private view {
+    ) internal view {
         address _signer = ECDSA.recover(digest, signature);
         if (_signer != signer) revert InvalidSignature();
         if (!authorities[_signer]) revert NotAuthorized(_signer);
