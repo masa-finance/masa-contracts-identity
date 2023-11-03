@@ -146,6 +146,8 @@ abstract contract MasaStatefulSBT is MasaSBT {
     ) internal {
         if (!_validPreMintStates[state]) revert InvalidState(state);
         addressStates[account][state] = value;
+
+        emit StateSet(account, state, value);
     }
 
     /// @notice Sets a state for a token
@@ -161,6 +163,8 @@ abstract contract MasaStatefulSBT is MasaSBT {
         if (!_validPostMintStates[state]) revert InvalidState(state);
         _requireMinted(tokenId);
         tokenStates[tokenId][state] = value;
+
+        emit StateSet(tokenId, state, value);
     }
 
     /// @notice Checks if a token can be minted
@@ -178,4 +182,8 @@ abstract contract MasaStatefulSBT is MasaSBT {
     /* ========== MODIFIERS ================================================= */
 
     /* ========== EVENTS ==================================================== */
+
+    event StateSet(address account, string state, bool value);
+
+    event StateSet(uint256 tokenId, string state, bool value);
 }

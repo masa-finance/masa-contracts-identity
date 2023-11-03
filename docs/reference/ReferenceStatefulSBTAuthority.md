@@ -1535,6 +1535,24 @@ event RoleRevoked(bytes32 indexed role, address indexed account, address indexed
 | account `indexed` | address | undefined |
 | sender `indexed` | address | undefined |
 
+### StateSet
+
+```solidity
+event StateSet(uint256 tokenId, string state, bool value)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId  | uint256 | undefined |
+| state  | string | undefined |
+| value  | bool | undefined |
+
 
 
 ## Errors
