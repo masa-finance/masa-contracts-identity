@@ -332,7 +332,7 @@ describe("Soulbound Credit Score", () => {
             signatureDate,
             signatureToAddress
           )
-      ).to.be.revertedWith("CreditScoreAlreadyCreated");
+      ).to.be.revertedWith("MaxSBTMinted");
 
       expect(await soulboundCreditScore.totalSupply()).to.equal(1);
       expect(await soulboundCreditScore.tokenByIndex(0)).to.equal(0);
