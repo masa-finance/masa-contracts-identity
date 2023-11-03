@@ -107,12 +107,10 @@ describe("Soulbound Two-factor authentication (Green)", () => {
       fallbackToGlobal: true
     });
 
-    const { address: soulboundIdentityAddress } = await deployments.get(
-      "SoulboundIdentity"
-    );
-    const { address: soulboundGreenAddress } = await deployments.get(
-      "SoulboundGreen"
-    );
+    const { address: soulboundIdentityAddress } =
+      await deployments.get("SoulboundIdentity");
+    const { address: soulboundGreenAddress } =
+      await deployments.get("SoulboundGreen");
 
     soulboundIdentity = SoulboundIdentity__factory.connect(
       soulboundIdentityAddress,

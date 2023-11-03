@@ -1,13 +1,13 @@
 import {
-  getPrivateKey,
-  getInfuraApiKey,
+  getBasescanApiKey,
+  getBscscanApiKey,
+  getCeloscanApiKey,
   getCoinMarketCapApiKey,
   getEtherscanApiKey,
-  getBscscanApiKey,
-  getPolygonscanApiKey,
-  getCeloscanApiKey,
-  getBasescanApiKey,
+  getInfuraApiKey,
   getOpBnbApiKey,
+  getPolygonscanApiKey,
+  getPrivateKey,
   getScrollscanApiKey
 } from "./src/EnvParams";
 import "hardhat-deploy";
@@ -221,6 +221,7 @@ export default {
   },
   dodoc: {},
   typechain: {
-    outDir: "typechain"
+    outDir: "typechain",
+    target: "ethers-v5"
   }
 };

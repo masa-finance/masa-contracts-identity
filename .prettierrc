@@ -1,4 +1,7 @@
 {
+  "plugins": [
+    "prettier-plugin-solidity"
+  ],
   "semi": true,
   "singleQuote": false,
   "trailingComma": "none"

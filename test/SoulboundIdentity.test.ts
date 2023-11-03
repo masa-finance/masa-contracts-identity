@@ -33,9 +33,8 @@ describe("Soulbound Identity", () => {
     await deployments.fixture("SoulboundIdentity", { fallbackToGlobal: false });
     await deployments.fixture("SoulName", { fallbackToGlobal: false });
 
-    const { address: soulboundIdentityAddress } = await deployments.get(
-      "SoulboundIdentity"
-    );
+    const { address: soulboundIdentityAddress } =
+      await deployments.get("SoulboundIdentity");
 
     soulboundIdentity = SoulboundIdentity__factory.connect(
       soulboundIdentityAddress,
