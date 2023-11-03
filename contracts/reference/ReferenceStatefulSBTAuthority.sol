@@ -47,6 +47,22 @@ contract ReferenceStatefulSBTAuthority is
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
+    function setState(
+        address account,
+        string memory state,
+        bool value
+    ) external onlyRole(MINTER_ROLE) {
+        _setState(account, state, value);
+    }
+
+    function setState(
+        uint256 tokenId,
+        string memory state,
+        bool value
+    ) external onlyRole(MINTER_ROLE) {
+        _setState(tokenId, state, value);
+    }
+
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
     /* ========== VIEWS ===================================================== */
