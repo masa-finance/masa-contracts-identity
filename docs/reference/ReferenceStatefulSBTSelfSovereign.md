@@ -1183,6 +1183,48 @@ Sets the stable coin to pay the fee in (USDC)
 |---|---|---|
 | _stableCoin | address | New stable coin to pay the fee in |
 
+### setState
+
+```solidity
+function setState(uint256 tokenId, string state, bool value, address authorityAddress, uint256 signatureDate, bytes signature) external nonpayable
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId | uint256 | undefined |
+| state | string | undefined |
+| value | bool | undefined |
+| authorityAddress | address | undefined |
+| signatureDate | uint256 | undefined |
+| signature | bytes | undefined |
+
+### setState
+
+```solidity
+function setState(address account, string state, bool value, address authorityAddress, uint256 signatureDate, bytes signature) external nonpayable
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| account | address | undefined |
+| state | string | undefined |
+| value | bool | undefined |
+| authorityAddress | address | undefined |
+| signatureDate | uint256 | undefined |
+| signature | bytes | undefined |
+
 ### setSwapRouter
 
 ```solidity
