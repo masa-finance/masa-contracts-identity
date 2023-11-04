@@ -46,6 +46,58 @@ contract ReferenceSBTSelfSovereign is MasaSBTSelfSovereign {
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
+    /// @notice Mints a new SBT
+    /// @dev The caller must have the MINTER role
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param identityId TokenId of the identity to mint the NFT to
+    /// @param authorityAddress Address of the authority that signed the message
+    /// @param signatureDate Date of the signature
+    /// @param signature Signature of the message
+    /// @return The SBT ID of the newly minted SBT
+    function mint(
+        address paymentMethod,
+        uint256 identityId,
+        address authorityAddress,
+        uint256 signatureDate,
+        bytes calldata signature
+    ) external payable virtual returns (uint256) {
+        return
+            _mintWithCounter(
+                paymentMethod,
+                identityId,
+                _hash(identityId, authorityAddress, signatureDate),
+                authorityAddress,
+                signatureDate,
+                signature
+            );
+    }
+
+    /// @notice Mints a new SBT
+    /// @dev The caller must have the MINTER role
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param to The address to mint the SBT to
+    /// @param authorityAddress Address of the authority that signed the message
+    /// @param signatureDate Date of the signature
+    /// @param signature Signature of the message
+    /// @return The SBT ID of the newly minted SBT
+    function mint(
+        address paymentMethod,
+        address to,
+        address authorityAddress,
+        uint256 signatureDate,
+        bytes calldata signature
+    ) external payable virtual returns (uint256) {
+        return
+            _mintWithCounter(
+                paymentMethod,
+                to,
+                _hash(to, authorityAddress, signatureDate),
+                authorityAddress,
+                signatureDate,
+                signature
+            );
+    }
+
     /* ========== VIEWS ===================================================== */
 
     function tokenURI(

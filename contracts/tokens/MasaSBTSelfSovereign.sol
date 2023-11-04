@@ -80,78 +80,6 @@ abstract contract MasaSBTSelfSovereign is MasaSBT, EIP712 {
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
-    /// @notice Mints a new SBT
-    /// @dev The caller must have the MINTER role
-    /// @param paymentMethod Address of token that user want to pay
-    /// @param identityId TokenId of the identity to mint the NFT to
-    /// @param authorityAddress Address of the authority that signed the message
-    /// @param signatureDate Date of the signature
-    /// @param signature Signature of the message
-    /// @return The SBT ID of the newly minted SBT
-    function mint(
-        address paymentMethod,
-        uint256 identityId,
-        address authorityAddress,
-        uint256 signatureDate,
-        bytes calldata signature
-    ) external payable virtual returns (uint256) {
-        address to = soulboundIdentity.ownerOf(identityId);
-
-        uint256 tokenId = _mintWithCounter(
-            paymentMethod,
-            to,
-            _hash(identityId, authorityAddress, signatureDate),
-            authorityAddress,
-            signature
-        );
-
-        emit MintedToIdentity(
-            tokenId,
-            identityId,
-            authorityAddress,
-            signatureDate,
-            paymentMethod,
-            mintPrice
-        );
-
-        return tokenId;
-    }
-
-    /// @notice Mints a new SBT
-    /// @dev The caller must have the MINTER role
-    /// @param paymentMethod Address of token that user want to pay
-    /// @param to The address to mint the SBT to
-    /// @param authorityAddress Address of the authority that signed the message
-    /// @param signatureDate Date of the signature
-    /// @param signature Signature of the message
-    /// @return The SBT ID of the newly minted SBT
-    function mint(
-        address paymentMethod,
-        address to,
-        address authorityAddress,
-        uint256 signatureDate,
-        bytes calldata signature
-    ) external payable virtual returns (uint256) {
-        uint256 tokenId = _mintWithCounter(
-            paymentMethod,
-            to,
-            _hash(to, authorityAddress, signatureDate),
-            authorityAddress,
-            signature
-        );
-
-        emit MintedToAddress(
-            tokenId,
-            to,
-            authorityAddress,
-            signatureDate,
-            paymentMethod,
-            mintPrice
-        );
-
-        return tokenId;
-    }
-
     /* ========== VIEWS ===================================================== */
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
@@ -208,16 +136,53 @@ abstract contract MasaSBTSelfSovereign is MasaSBT, EIP712 {
 
     function _mintWithCounter(
         address paymentMethod,
-        address to,
-        bytes32 digest,
+        uint256 identityId,
+        bytes32 hash,
         address authorityAddress,
+        uint256 signatureDate,
+        bytes calldata signature
+    ) internal virtual returns (uint256) {
+        address to = soulboundIdentity.ownerOf(identityId);
+        if (to != _msgSender()) revert CallerNotOwner(_msgSender());
+
+        _verify(hash, signature, authorityAddress);
+
+        uint256 tokenId = MasaSBT._mintWithCounter(paymentMethod, to);
+
+        emit MintedToIdentity(
+            tokenId,
+            identityId,
+            authorityAddress,
+            signatureDate,
+            paymentMethod,
+            mintPrice
+        );
+
+        return tokenId;
+    }
+
+    function _mintWithCounter(
+        address paymentMethod,
+        address to,
+        bytes32 hash,
+        address authorityAddress,
+        uint256 signatureDate,
         bytes calldata signature
     ) internal virtual returns (uint256) {
         if (to != _msgSender()) revert CallerNotOwner(_msgSender());
 
-        _verify(digest, signature, authorityAddress);
+        _verify(hash, signature, authorityAddress);
 
         uint256 tokenId = MasaSBT._mintWithCounter(paymentMethod, to);
+
+        emit MintedToAddress(
+            tokenId,
+            to,
+            authorityAddress,
+            signatureDate,
+            paymentMethod,
+            mintPrice
+        );
 
         return tokenId;
     }

@@ -500,58 +500,6 @@ function maxSBTToMint() external view returns (uint256)
 |---|---|---|
 | _0 | uint256 | undefined |
 
-### mint
-
-```solidity
-function mint(address paymentMethod, uint256 identityId, address authorityAddress, uint256 signatureDate, bytes signature) external payable returns (uint256)
-```
-
-Mints a new SBT
-
-*The caller must have the MINTER role*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| paymentMethod | address | Address of token that user want to pay |
-| identityId | uint256 | TokenId of the identity to mint the NFT to |
-| authorityAddress | address | Address of the authority that signed the message |
-| signatureDate | uint256 | Date of the signature |
-| signature | bytes | Signature of the message |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | The SBT ID of the newly minted SBT |
-
-### mint
-
-```solidity
-function mint(address paymentMethod, address to, address authorityAddress, uint256 signatureDate, bytes signature) external payable returns (uint256)
-```
-
-Mints a new SBT
-
-*The caller must have the MINTER role*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| paymentMethod | address | Address of token that user want to pay |
-| to | address | The address to mint the SBT to |
-| authorityAddress | address | Address of the authority that signed the message |
-| signatureDate | uint256 | Date of the signature |
-| signature | bytes | Signature of the message |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | The SBT ID of the newly minted SBT |
-
 ### mintPrice
 
 ```solidity
@@ -1417,38 +1365,6 @@ error AuthorityNotExists(address authority)
 |---|---|---|
 | authority | address | undefined |
 
-### CallerNotOwner
-
-```solidity
-error CallerNotOwner(address caller)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| caller | address | undefined |
-
-### InsufficientEthAmount
-
-```solidity
-error InsufficientEthAmount(uint256 amount)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| amount | uint256 | undefined |
-
 ### InvalidPaymentMethod
 
 ```solidity
@@ -1476,17 +1392,6 @@ error InvalidShortString()
 
 
 
-### InvalidSignature
-
-```solidity
-error InvalidSignature()
-```
-
-
-
-
-
-
 ### InvalidToken
 
 ```solidity
@@ -1502,23 +1407,6 @@ error InvalidToken(address token)
 | Name | Type | Description |
 |---|---|---|
 | token | address | undefined |
-
-### MaxSBTMinted
-
-```solidity
-error MaxSBTMinted(address to, uint256 maximum)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| to | address | undefined |
-| maximum | uint256 | undefined |
 
 ### NonExistingErc20Token
 
@@ -1536,22 +1424,6 @@ error NonExistingErc20Token(address erc20token)
 |---|---|---|
 | erc20token | address | undefined |
 
-### NotAuthorized
-
-```solidity
-error NotAuthorized(address signer)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| signer | address | undefined |
-
 ### NotLinkedToAnIdentitySBT
 
 ```solidity
@@ -1567,28 +1439,6 @@ error NotLinkedToAnIdentitySBT()
 
 ```solidity
 error PaymentParamsNotSet()
-```
-
-
-
-
-
-
-### ProtocolFeeReceiverNotSet
-
-```solidity
-error ProtocolFeeReceiverNotSet()
-```
-
-
-
-
-
-
-### RefundFailed
-
-```solidity
-error RefundFailed()
 ```
 
 
@@ -1622,17 +1472,6 @@ error StringTooLong(string str)
 | Name | Type | Description |
 |---|---|---|
 | str | string | undefined |
-
-### TransferFailed
-
-```solidity
-error TransferFailed()
-```
-
-
-
-
-
 
 ### UserMustHaveProtocolOrProjectAdminRole
 
