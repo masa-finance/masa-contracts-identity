@@ -38,7 +38,7 @@ const signatureDate = Math.floor(Date.now() / 1000);
 let signatureToIdentity: string;
 let signatureToAddress: string;
 
-const signMintCreditScoreToIdentity = async (
+const signMintToIdentity = async (
   identityId: number,
   authoritySigner: SignerWithAddress
 ) => {
@@ -54,7 +54,7 @@ const signMintCreditScoreToIdentity = async (
     },
     // Types
     {
-      MintCreditScore: [
+      Mint: [
         { name: "identityId", type: "uint256" },
         { name: "authorityAddress", type: "address" },
         { name: "signatureDate", type: "uint256" }
@@ -71,7 +71,7 @@ const signMintCreditScoreToIdentity = async (
   return signature;
 };
 
-const signMintCreditScoreToAddress = async (
+const signMintToAddress = async (
   to: string,
   authoritySigner: SignerWithAddress
 ) => {
@@ -87,7 +87,7 @@ const signMintCreditScoreToAddress = async (
     },
     // Types
     {
-      MintCreditScore: [
+      Mint: [
         { name: "to", type: "address" },
         { name: "authorityAddress", type: "address" },
         { name: "signatureDate", type: "uint256" }
@@ -170,14 +170,8 @@ describe("Soulbound Credit Score", () => {
 
     await soulboundCreditScore.setMintPrice(0); // 0 USDC
 
-    signatureToIdentity = await signMintCreditScoreToIdentity(
-      identityId1,
-      authority
-    );
-    signatureToAddress = await signMintCreditScoreToAddress(
-      address1.address,
-      authority
-    );
+    signatureToIdentity = await signMintToIdentity(identityId1, authority);
+    signatureToAddress = await signMintToAddress(address1.address, authority);
   });
 
   describe("owner and project admin functions", () => {
@@ -377,7 +371,7 @@ describe("Soulbound Credit Score", () => {
     });
 
     it("should fail to mint with non-authority signature", async () => {
-      const signatureNonAuthority = await signMintCreditScoreToIdentity(
+      const signatureNonAuthority = await signMintToIdentity(
         identityId1,
         address1
       );
@@ -396,7 +390,7 @@ describe("Soulbound Credit Score", () => {
     });
 
     it("should fail to mint with invalid signature", async () => {
-      const signatureNonAuthority = await signMintCreditScoreToIdentity(
+      const signatureNonAuthority = await signMintToIdentity(
         identityId1,
         address1
       );

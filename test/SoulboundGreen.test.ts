@@ -30,7 +30,7 @@ const signatureDate = Math.floor(Date.now() / 1000);
 let signatureToIdentity: string;
 let signatureToAddress: string;
 
-const signMintCreditGreenToIdentity = async (
+const signMintToIdentity = async (
   identityId: number,
   authoritySigner: SignerWithAddress
 ) => {
@@ -46,7 +46,7 @@ const signMintCreditGreenToIdentity = async (
     },
     // Types
     {
-      MintGreen: [
+      Mint: [
         { name: "identityId", type: "uint256" },
         { name: "authorityAddress", type: "address" },
         { name: "signatureDate", type: "uint256" }
@@ -63,7 +63,7 @@ const signMintCreditGreenToIdentity = async (
   return signature;
 };
 
-const signMintCreditGreenToAddress = async (
+const signMintToAddress = async (
   to: string,
   authoritySigner: SignerWithAddress
 ) => {
@@ -79,7 +79,7 @@ const signMintCreditGreenToAddress = async (
     },
     // Types
     {
-      MintGreen: [
+      Mint: [
         { name: "to", type: "address" },
         { name: "authorityAddress", type: "address" },
         { name: "signatureDate", type: "uint256" }
@@ -134,14 +134,8 @@ describe("Soulbound Two-factor authentication (Green)", () => {
 
     await soulboundGreen.setMintPrice(0); // 0 USDC
 
-    signatureToIdentity = await signMintCreditGreenToIdentity(
-      identityId1,
-      authority
-    );
-    signatureToAddress = await signMintCreditGreenToAddress(
-      address1.address,
-      authority
-    );
+    signatureToIdentity = await signMintToIdentity(identityId1, authority);
+    signatureToAddress = await signMintToAddress(address1.address, authority);
   });
 
   describe("owner functions", () => {
@@ -262,7 +256,7 @@ describe("Soulbound Two-factor authentication (Green)", () => {
       // we set the identity SC to 0x0
       await soulboundGreen.setSoulboundIdentity(ethers.constants.AddressZero);
 
-      const signatureToAddress2 = await signMintCreditGreenToAddress(
+      const signatureToAddress2 = await signMintToAddress(
         address2.address,
         authority
       );

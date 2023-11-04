@@ -95,7 +95,7 @@ const signLink = async (
   return signature;
 };
 
-const signMintCreditScore = async (
+const signMint = async (
   identityId: number,
   authoritySigner: SignerWithAddress
 ) => {
@@ -111,7 +111,7 @@ const signMintCreditScore = async (
     },
     // Types
     {
-      MintCreditScore: [
+      Mint: [
         { name: "identityId", type: "uint256" },
         { name: "authorityAddress", type: "address" },
         { name: "signatureDate", type: "uint256" }
@@ -197,10 +197,7 @@ describe("Soul Linker", () => {
     await soulboundCreditScore.setMintPrice(0); // 0 USDC
 
     // we mint credit score SBT for dataOwner
-    const signatureMintCreditScore = await signMintCreditScore(
-      ownerIdentityId,
-      authority
-    );
+    const signatureMint = await signMint(ownerIdentityId, authority);
 
     mintTx = await soulboundCreditScore
       .connect(dataOwner)
@@ -209,7 +206,7 @@ describe("Soul Linker", () => {
         ownerIdentityId,
         authority.address,
         signatureDate,
-        signatureMintCreditScore
+        signatureMint
       );
     mintReceipt = await mintTx.wait();
 

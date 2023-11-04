@@ -132,46 +132,6 @@ contract ReferenceSBTSelfSovereign is MasaSBTSelfSovereign, ReentrancyGuard {
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
 
-    function _hash(
-        uint256 identityId,
-        address authorityAddress,
-        uint256 signatureDate
-    ) internal view returns (bytes32) {
-        return
-            _hashTypedDataV4(
-                keccak256(
-                    abi.encode(
-                        keccak256(
-                            "Mint(uint256 identityId,address authorityAddress,uint256 signatureDate)"
-                        ),
-                        identityId,
-                        authorityAddress,
-                        signatureDate
-                    )
-                )
-            );
-    }
-
-    function _hash(
-        address to,
-        address authorityAddress,
-        uint256 signatureDate
-    ) internal view returns (bytes32) {
-        return
-            _hashTypedDataV4(
-                keccak256(
-                    abi.encode(
-                        keccak256(
-                            "Mint(address to,address authorityAddress,uint256 signatureDate)"
-                        ),
-                        to,
-                        authorityAddress,
-                        signatureDate
-                    )
-                )
-            );
-    }
-
     /* ========== MODIFIERS ================================================= */
 
     /* ========== EVENTS ==================================================== */
