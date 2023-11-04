@@ -4,7 +4,6 @@ pragma solidity ^0.8.8;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
@@ -19,7 +18,6 @@ abstract contract MasaNFT is
     ERC721,
     ERC721Enumerable,
     Ownable,
-    ReentrancyGuard,
     AccessControl,
     ERC721Burnable
 {
@@ -58,7 +56,7 @@ abstract contract MasaNFT is
 
     function _mintWithCounter(
         address to
-    ) internal nonReentrant onlyRole(MINTER_ROLE) returns (uint256) {
+    ) internal onlyRole(MINTER_ROLE) returns (uint256) {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);

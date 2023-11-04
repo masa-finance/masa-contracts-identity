@@ -262,7 +262,7 @@ abstract contract MasaSBT is
     function _mintWithCounter(
         address paymentMethod,
         address to
-    ) internal virtual nonReentrant returns (uint256) {
+    ) internal virtual returns (uint256) {
         if (maxSBTToMint > 0 && balanceOf(to) >= maxSBTToMint)
             revert MaxSBTMinted(to, maxSBTToMint);
 
