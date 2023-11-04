@@ -373,6 +373,8 @@ abstract contract PaymentGateway is AccessControl, ReentrancyGuard {
                 );
             }
         }
+
+        emit Pay(paymentMethod, amount, protocolFee);
     }
 
     function _estimateSwapAmount(
@@ -424,4 +426,10 @@ abstract contract PaymentGateway is AccessControl, ReentrancyGuard {
     }
 
     /* ========== EVENTS ==================================================== */
+
+    event Pay(
+        address indexed paymentMethod,
+        uint256 amount,
+        uint256 protocolFee
+    );
 }
