@@ -459,115 +459,24 @@ function maxSBTToMint() external view returns (uint256)
 ### mint
 
 ```solidity
-function mint(address paymentMethod, address[] to) external payable returns (uint256[] tokenIds)
-```
-
-Bulk mint of new SBTs
-
-*The caller must have the MINTER role*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| paymentMethod | address | Address of token that user want to pay |
-| to | address[] | Addresses array to mint the SBT to |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| tokenIds | uint256[] | The SBT IDs of the newly minted SBTs |
-
-### mint
-
-```solidity
-function mint(address paymentMethod, uint256 identityId) external payable returns (uint256)
-```
-
-Mints a new SBT
-
-*The caller must have the MINTER role*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| paymentMethod | address | Address of token that user want to pay |
-| identityId | uint256 | TokenId of the identity to mint the NFT to |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | The SBT ID of the newly minted SBT |
-
-### mint
-
-```solidity
 function mint(address to) external payable returns (uint256)
 ```
 
-Mints a new SBT
 
-*The caller must have the MINTER role*
 
-#### Parameters
 
-| Name | Type | Description |
-|---|---|---|
-| to | address | The address to mint the SBT to |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | The SBT ID of the newly minted SBT |
-
-### mint
-
-```solidity
-function mint(uint256 identityId) external payable returns (uint256)
-```
-
-Mints a new SBT
-
-*The caller must have the MINTER role*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| identityId | uint256 | TokenId of the identity to mint the NFT to |
+| to | address | undefined |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256 | The SBT ID of the newly minted SBT |
-
-### mint
-
-```solidity
-function mint(address paymentMethod, uint256[] identityId) external payable returns (uint256[] tokenIds)
-```
-
-Bulk mint of new SBTs
-
-*The caller must have the MINTER role*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| paymentMethod | address | Address of token that user want to pay |
-| identityId | uint256[] | TokenIds array of the identity to mint the NFT to |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| tokenIds | uint256[] | The SBT IDs of the newly minted SBTs |
+| _0 | uint256 | undefined |
 
 ### mint
 
@@ -575,22 +484,22 @@ Bulk mint of new SBTs
 function mint(address paymentMethod, address to) external payable returns (uint256)
 ```
 
-Mints a new SBT
 
-*The caller must have the MINTER role*
+
+
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| paymentMethod | address | Address of token that user want to pay |
-| to | address | The address to mint the SBT to |
+| paymentMethod | address | undefined |
+| to | address | undefined |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256 | The SBT ID of the newly minted SBT |
+| _0 | uint256 | undefined |
 
 ### mintPrice
 
@@ -1406,22 +1315,6 @@ error AlreadyAdded()
 
 
 
-### InsufficientEthAmount
-
-```solidity
-error InsufficientEthAmount(uint256 amount)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| amount | uint256 | undefined |
-
 ### InvalidPaymentMethod
 
 ```solidity
@@ -1453,23 +1346,6 @@ error InvalidToken(address token)
 | Name | Type | Description |
 |---|---|---|
 | token | address | undefined |
-
-### MaxSBTMinted
-
-```solidity
-error MaxSBTMinted(address to, uint256 maximum)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| to | address | undefined |
-| maximum | uint256 | undefined |
 
 ### NonExistingErc20Token
 
@@ -1509,43 +1385,10 @@ error PaymentParamsNotSet()
 
 
 
-### ProtocolFeeReceiverNotSet
-
-```solidity
-error ProtocolFeeReceiverNotSet()
-```
-
-
-
-
-
-
-### RefundFailed
-
-```solidity
-error RefundFailed()
-```
-
-
-
-
-
-
 ### SameValue
 
 ```solidity
 error SameValue()
-```
-
-
-
-
-
-
-### TransferFailed
-
-```solidity
-error TransferFailed()
 ```
 
 

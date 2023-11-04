@@ -59,6 +59,26 @@ contract SoulboundIdentity is MasaSBTAuthority, ISoulboundIdentity {
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
+    /// @notice Mints a new SBT
+    /// @dev The caller must have the MINTER role
+    /// @param to The address to mint the SBT to
+    /// @return The SBT ID of the newly minted SBT
+    function mint(address to) external payable override returns (uint256) {
+        return mint(address(0), to);
+    }
+
+    /// @notice Mints a new SBT
+    /// @dev The caller must have the MINTER role
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param to The address to mint the SBT to
+    /// @return The SBT ID of the newly minted SBT
+    function mint(
+        address paymentMethod,
+        address to
+    ) public payable override returns (uint256) {
+        return _mintWithCounter(paymentMethod, to);
+    }
+
     /// @notice Mints a new soulbound identity with a SoulName associated to it
     /// @dev The caller can only mint one identity per address, and the name must be unique
     /// @param to Address of the owner of the new identity
