@@ -638,6 +638,50 @@ Mints a new SBT
 ### mint
 
 ```solidity
+function mint(address to) external payable returns (uint256)
+```
+
+Mints a new SBT
+
+*The caller must have the MINTER role*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| to | address | The address to mint the SBT to |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | The SBT ID of the newly minted SBT |
+
+### mint
+
+```solidity
+function mint(uint256 identityId) external payable returns (uint256)
+```
+
+Mints a new SBT
+
+*The caller must have the MINTER role*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| identityId | uint256 | TokenId of the identity to mint the NFT to |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | The SBT ID of the newly minted SBT |
+
+### mint
+
+```solidity
 function mint(address paymentMethod, uint256[] identityId) external payable returns (uint256[] tokenIds)
 ```
 

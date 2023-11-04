@@ -1,18 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.8;
 
-import "../tokens/SBT/ISBT.sol";
-
+import "./IMasaSBTAuthority.sol";
 import "./ISoulName.sol";
 
-interface ISoulboundIdentity is ISBT {
-    function mint(address to) external payable returns (uint256);
-
-    function mint(
-        address paymentMethod,
-        address to
-    ) external payable returns (uint256);
-
+interface ISoulboundIdentity is IMasaSBTAuthority {
     function mintIdentityWithName(
         address to,
         string memory name,

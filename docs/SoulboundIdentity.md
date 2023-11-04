@@ -586,24 +586,115 @@ function maxSBTToMint() external view returns (uint256)
 ### mint
 
 ```solidity
-function mint(address to) external payable returns (uint256)
+function mint(address paymentMethod, address[] to) external payable returns (uint256[] tokenIds)
 ```
 
-Mints a new soulbound identity
+Bulk mint of new SBTs
 
-*The caller can only mint one identity per address*
+*The caller must have the MINTER role*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| to | address | Address of the owner of the new identity |
+| paymentMethod | address | Address of token that user want to pay |
+| to | address[] | Addresses array to mint the SBT to |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256 | The identity ID of the newly minted identity |
+| tokenIds | uint256[] | The SBT IDs of the newly minted SBTs |
+
+### mint
+
+```solidity
+function mint(address paymentMethod, uint256 identityId) external payable returns (uint256)
+```
+
+Mints a new SBT
+
+*The caller must have the MINTER role*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| paymentMethod | address | Address of token that user want to pay |
+| identityId | uint256 | TokenId of the identity to mint the NFT to |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | The SBT ID of the newly minted SBT |
+
+### mint
+
+```solidity
+function mint(address to) external payable returns (uint256)
+```
+
+Mints a new SBT
+
+*The caller must have the MINTER role*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| to | address | The address to mint the SBT to |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | The SBT ID of the newly minted SBT |
+
+### mint
+
+```solidity
+function mint(uint256 identityId) external payable returns (uint256)
+```
+
+Mints a new SBT
+
+*The caller must have the MINTER role*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| identityId | uint256 | TokenId of the identity to mint the NFT to |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | The SBT ID of the newly minted SBT |
+
+### mint
+
+```solidity
+function mint(address paymentMethod, uint256[] identityId) external payable returns (uint256[] tokenIds)
+```
+
+Bulk mint of new SBTs
+
+*The caller must have the MINTER role*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| paymentMethod | address | Address of token that user want to pay |
+| identityId | uint256[] | TokenIds array of the identity to mint the NFT to |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| tokenIds | uint256[] | The SBT IDs of the newly minted SBTs |
 
 ### mint
 
@@ -611,22 +702,22 @@ Mints a new soulbound identity
 function mint(address paymentMethod, address to) external payable returns (uint256)
 ```
 
-Mints a new soulbound identity
+Mints a new SBT
 
-*The caller can only mint one identity per address*
+*The caller must have the MINTER role*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| paymentMethod | address | Address of the payment method to use |
-| to | address | Address of the owner of the new identity |
+| paymentMethod | address | Address of token that user want to pay |
+| to | address | The address to mint the SBT to |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256 | The identity ID of the newly minted identity |
+| _0 | uint256 | The SBT ID of the newly minted SBT |
 
 ### mintIdentityWithName
 
@@ -1510,6 +1601,40 @@ event Mint(address indexed _owner, uint256 indexed _tokenId)
 |---|---|---|
 | _owner `indexed` | address | undefined |
 | _tokenId `indexed` | uint256 | undefined |
+
+### MintedToAddress
+
+```solidity
+event MintedToAddress(uint256 tokenId, address to)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId  | uint256 | undefined |
+| to  | address | undefined |
+
+### MintedToIdentity
+
+```solidity
+event MintedToIdentity(uint256 tokenId, uint256 identityId)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId  | uint256 | undefined |
+| identityId  | uint256 | undefined |
 
 ### RoleAdminChanged
 
