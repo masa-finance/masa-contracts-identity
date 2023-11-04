@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.8;
 
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-
 import "./libraries/Errors.sol";
 import "./interfaces/ISoulboundIdentity.sol";
 import "./interfaces/ISoulName.sol";
@@ -12,11 +10,7 @@ import "./tokens/MasaSBTAuthority.sol";
 /// @author Masa Finance
 /// @notice Soulbound token that represents an identity.
 /// @dev Soulbound identity, that inherits from the SBT contract.
-contract SoulboundIdentity is
-    MasaSBTAuthority,
-    ISoulboundIdentity,
-    ReentrancyGuard
-{
+contract SoulboundIdentity is MasaSBTAuthority, ISoulboundIdentity {
     /* ========== STATE VARIABLES =========================================== */
 
     ISoulName public soulName;
@@ -114,14 +108,7 @@ contract SoulboundIdentity is
         string memory name,
         uint256 yearsPeriod,
         string memory _tokenURI
-    )
-        public
-        payable
-        override
-        soulNameAlreadySet
-        nonReentrant
-        returns (uint256)
-    {
+    ) public payable override soulNameAlreadySet returns (uint256) {
         uint256 identityId = mint(paymentMethod, to);
         soulName.mint(to, name, yearsPeriod, _tokenURI);
 

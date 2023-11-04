@@ -2,7 +2,6 @@
 pragma solidity ^0.8.8;
 
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 
@@ -16,7 +15,7 @@ import "./interfaces/ISoulName.sol";
 /// @notice Soul Store, that can mint new Soulbound Identities and Soul Name NFTs, paying a fee
 /// @dev From this smart contract we can mint new Soulbound Identities and Soul Name NFTs.
 /// This minting can be done paying a fee in ETH, USDC or MASA
-contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
+contract SoulStore is PaymentGateway, Pausable, EIP712 {
     using SafeMath for uint256;
 
     /* ========== STATE VARIABLES ========== */
@@ -161,7 +160,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         string memory tokenURI,
         address authorityAddress,
         bytes calldata signature
-    ) external payable virtual whenNotPaused nonReentrant returns (uint256) {
+    ) external payable virtual whenNotPaused returns (uint256) {
         (
             uint256 price,
             uint256 protocolFee
@@ -228,7 +227,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         string memory tokenURI,
         address authorityAddress,
         bytes calldata signature
-    ) external payable virtual whenNotPaused nonReentrant returns (uint256) {
+    ) external payable virtual whenNotPaused returns (uint256) {
         (
             uint256 price,
             uint256 protocolFee

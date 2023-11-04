@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.8;
 
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-
 import "./libraries/Errors.sol";
 import "./tokens/MasaSBTSelfSovereign.sol";
 
@@ -10,7 +8,7 @@ import "./tokens/MasaSBTSelfSovereign.sol";
 /// @author Masa Finance
 /// @notice Soulbound token that represents a Two-factor authentication (2FA)
 /// @dev Soulbound Green, that inherits from the SBT contract.
-contract SoulboundGreen is MasaSBTSelfSovereign, ReentrancyGuard {
+contract SoulboundGreen is MasaSBTSelfSovereign {
     /* ========== STATE VARIABLES =========================================== */
 
     /* ========== INITIALIZE ================================================ */
@@ -63,7 +61,7 @@ contract SoulboundGreen is MasaSBTSelfSovereign, ReentrancyGuard {
         address authorityAddress,
         uint256 signatureDate,
         bytes calldata signature
-    ) external payable nonReentrant returns (uint256) {
+    ) external payable returns (uint256) {
         address to = soulboundIdentity.ownerOf(identityId);
 
         uint256 tokenId = _mintWithCounter(
@@ -100,7 +98,7 @@ contract SoulboundGreen is MasaSBTSelfSovereign, ReentrancyGuard {
         address authorityAddress,
         uint256 signatureDate,
         bytes calldata signature
-    ) external payable nonReentrant returns (uint256) {
+    ) external payable returns (uint256) {
         uint256 tokenId = _mintWithCounter(
             paymentMethod,
             to,

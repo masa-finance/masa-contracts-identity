@@ -1,15 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.8;
 
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-
 import "../tokens/MasaSBTAuthority.sol";
 
 /// @title Soulbound reference Authority SBT
 /// @author Masa Finance
 /// @notice Soulbound token that represents a Authority SBT
 /// @dev Inherits from the SBT contract.
-contract ReferenceSBTAuthority is MasaSBTAuthority, ReentrancyGuard {
+contract ReferenceSBTAuthority is MasaSBTAuthority {
     /* ========== STATE VARIABLES =========================================== */
 
     /* ========== INITIALIZE ================================================ */
@@ -55,7 +53,7 @@ contract ReferenceSBTAuthority is MasaSBTAuthority, ReentrancyGuard {
     function mint(
         address paymentMethod,
         uint256 identityId
-    ) external payable nonReentrant returns (uint256) {
+    ) external payable returns (uint256) {
         address to = soulboundIdentity.ownerOf(identityId);
 
         uint256 tokenId = _mintWithCounter(paymentMethod, to);
@@ -73,7 +71,7 @@ contract ReferenceSBTAuthority is MasaSBTAuthority, ReentrancyGuard {
     function mint(
         address paymentMethod,
         address to
-    ) external payable nonReentrant returns (uint256) {
+    ) external payable returns (uint256) {
         uint256 tokenId = _mintWithCounter(paymentMethod, to);
 
         emit MintedToAddress(tokenId, to);
@@ -89,7 +87,7 @@ contract ReferenceSBTAuthority is MasaSBTAuthority, ReentrancyGuard {
     function mint(
         address paymentMethod,
         uint256[] memory identityId
-    ) external payable nonReentrant returns (uint256[] memory tokenIds) {
+    ) external payable returns (uint256[] memory tokenIds) {
         tokenIds = new uint256[](identityId.length);
         uint256 t = 0;
 
@@ -114,7 +112,7 @@ contract ReferenceSBTAuthority is MasaSBTAuthority, ReentrancyGuard {
     function mint(
         address paymentMethod,
         address[] memory to
-    ) external payable nonReentrant returns (uint256[] memory tokenIds) {
+    ) external payable returns (uint256[] memory tokenIds) {
         tokenIds = new uint256[](to.length);
         uint256 t = 0;
 
