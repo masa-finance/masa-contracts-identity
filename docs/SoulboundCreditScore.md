@@ -524,7 +524,7 @@ Mints a new SBT
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256 | The NFT ID of the newly minted SBT |
+| _0 | uint256 | The SBT ID of the newly minted SBT |
 
 ### mint
 
@@ -1290,6 +1290,48 @@ event Mint(address indexed _owner, uint256 indexed _tokenId)
 | _owner `indexed` | address | undefined |
 | _tokenId `indexed` | uint256 | undefined |
 
+### MintedToAddress
+
+```solidity
+event MintedToAddress(uint256 tokenId, address to, address authorityAddress, uint256 signatureDate, address paymentMethod, uint256 mintPrice)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId  | uint256 | undefined |
+| to  | address | undefined |
+| authorityAddress  | address | undefined |
+| signatureDate  | uint256 | undefined |
+| paymentMethod  | address | undefined |
+| mintPrice  | uint256 | undefined |
+
+### MintedToIdentity
+
+```solidity
+event MintedToIdentity(uint256 tokenId, uint256 identityId, address authorityAddress, uint256 signatureDate, address paymentMethod, uint256 mintPrice)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId  | uint256 | undefined |
+| identityId  | uint256 | undefined |
+| authorityAddress  | address | undefined |
+| signatureDate  | uint256 | undefined |
+| paymentMethod  | address | undefined |
+| mintPrice  | uint256 | undefined |
+
 ### RoleAdminChanged
 
 ```solidity
@@ -1343,48 +1385,6 @@ event RoleRevoked(bytes32 indexed role, address indexed account, address indexed
 | role `indexed` | bytes32 | undefined |
 | account `indexed` | address | undefined |
 | sender `indexed` | address | undefined |
-
-### SoulboundCreditScoreMintedToAddress
-
-```solidity
-event SoulboundCreditScoreMintedToAddress(uint256 tokenId, address to, address authorityAddress, uint256 signatureDate, address paymentMethod, uint256 mintPrice)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| tokenId  | uint256 | undefined |
-| to  | address | undefined |
-| authorityAddress  | address | undefined |
-| signatureDate  | uint256 | undefined |
-| paymentMethod  | address | undefined |
-| mintPrice  | uint256 | undefined |
-
-### SoulboundCreditScoreMintedToIdentity
-
-```solidity
-event SoulboundCreditScoreMintedToIdentity(uint256 tokenId, uint256 identityId, address authorityAddress, uint256 signatureDate, address paymentMethod, uint256 mintPrice)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| tokenId  | uint256 | undefined |
-| identityId  | uint256 | undefined |
-| authorityAddress  | address | undefined |
-| signatureDate  | uint256 | undefined |
-| paymentMethod  | address | undefined |
-| mintPrice  | uint256 | undefined |
 
 
 

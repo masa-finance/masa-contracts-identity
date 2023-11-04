@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.8;
 
-import "./libraries/Errors.sol";
 import "./tokens/MasaSBTSelfSovereign.sol";
 
 /// @title Soulbound Credit Score
@@ -47,78 +46,6 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
-    /// @notice Mints a new SBT
-    /// @dev The caller must have the MINTER role
-    /// @param paymentMethod Address of token that user want to pay
-    /// @param identityId TokenId of the identity to mint the NFT to
-    /// @param authorityAddress Address of the authority that signed the message
-    /// @param signatureDate Date of the signature
-    /// @param signature Signature of the message
-    /// @return The NFT ID of the newly minted SBT
-    function mint(
-        address paymentMethod,
-        uint256 identityId,
-        address authorityAddress,
-        uint256 signatureDate,
-        bytes calldata signature
-    ) external payable returns (uint256) {
-        address to = soulboundIdentity.ownerOf(identityId);
-
-        uint256 tokenId = _mintWithCounter(
-            paymentMethod,
-            to,
-            _hash(identityId, authorityAddress, signatureDate),
-            authorityAddress,
-            signature
-        );
-
-        emit SoulboundCreditScoreMintedToIdentity(
-            tokenId,
-            identityId,
-            authorityAddress,
-            signatureDate,
-            paymentMethod,
-            mintPrice
-        );
-
-        return tokenId;
-    }
-
-    /// @notice Mints a new SBT
-    /// @dev The caller must have the MINTER role
-    /// @param paymentMethod Address of token that user want to pay
-    /// @param to The address to mint the SBT to
-    /// @param authorityAddress Address of the authority that signed the message
-    /// @param signatureDate Date of the signature
-    /// @param signature Signature of the message
-    /// @return The SBT ID of the newly minted SBT
-    function mint(
-        address paymentMethod,
-        address to,
-        address authorityAddress,
-        uint256 signatureDate,
-        bytes calldata signature
-    ) external payable returns (uint256) {
-        uint256 tokenId = _mintWithCounter(
-            paymentMethod,
-            to,
-            _hash(to, authorityAddress, signatureDate),
-            authorityAddress,
-            signature
-        );
-
-        emit SoulboundCreditScoreMintedToAddress(
-            tokenId,
-            to,
-            authorityAddress,
-            signatureDate,
-            paymentMethod,
-            mintPrice
-        );
-
-        return tokenId;
-    }
-
     /* ========== VIEWS ===================================================== */
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
@@ -126,22 +53,4 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
     /* ========== MODIFIERS ================================================= */
 
     /* ========== EVENTS ==================================================== */
-
-    event SoulboundCreditScoreMintedToIdentity(
-        uint256 tokenId,
-        uint256 identityId,
-        address authorityAddress,
-        uint256 signatureDate,
-        address paymentMethod,
-        uint256 mintPrice
-    );
-
-    event SoulboundCreditScoreMintedToAddress(
-        uint256 tokenId,
-        address to,
-        address authorityAddress,
-        uint256 signatureDate,
-        address paymentMethod,
-        uint256 mintPrice
-    );
 }
