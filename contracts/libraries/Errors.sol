@@ -27,7 +27,7 @@ error MaxSBTMinted(address to, uint256 maximum);
 error NameAlreadyExists(string name);
 error NameNotFound(string name);
 error NameRegisteredByOtherAccount(string name, uint256 tokenId);
-error NotAllPreMintStatesSet();
+error NotAllBeforeMintStatesSet();
 error NotAuthorized(address signer);
 error NonExistingErc20Token(address erc20token);
 error NotLinkedToAnIdentitySBT();

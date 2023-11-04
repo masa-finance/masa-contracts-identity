@@ -12,93 +12,97 @@ abstract contract MasaSBTDynamic is MasaSBT {
     /* ========== STATE VARIABLES =========================================== */
 
     // states needed to be set before minting
-    string[] internal _preMintStates;
+    string[] internal _beforeMintStates;
     // states needed to be set after minting
-    string[] internal _postMintStates;
+    string[] internal _afterMintStates;
 
-    // valid preMintStates
-    mapping(string => bool) internal _validPreMintStates;
-    // valid postMintStates
-    mapping(string => bool) internal _validPostMintStates;
+    // valid beforeMintStates
+    mapping(string => bool) internal _validBeforeMintStates;
+    // valid afterMintStates
+    mapping(string => bool) internal _validAfterMintStates;
 
-    // states for each address (preMintStates)
-    mapping(address => mapping(string => bool)) public addressStates;
-    // states for each token (postMintStates)
-    mapping(uint256 => mapping(string => bool)) public tokenStates;
+    // states for each address (beforeMintStates)
+    mapping(address => mapping(string => bool)) public beforeMintState;
+    // states for each token (afterMintStates)
+    mapping(uint256 => mapping(string => bool)) public afterMintState;
 
     /* ========== INITIALIZE ================================================ */
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
-    /// @notice Adds a preMintState
+    /// @notice Adds a beforeMintState
     /// @dev The caller must have the admin or project admin role to call this function
-    /// @param _state New preMintState to add
-    function addPreMintState(string memory _state) external {
+    /// @param _state New beforeMintState to add
+    function addBeforeMintState(string memory _state) external {
         if (
             !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
             !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
         ) revert UserMustHaveProtocolOrProjectAdminRole();
-        if (_validPreMintStates[_state]) revert AlreadyAdded();
-        _validPreMintStates[_state] = true;
+        if (_validBeforeMintStates[_state]) revert AlreadyAdded();
+        _validBeforeMintStates[_state] = true;
 
-        _preMintStates.push(_state);
+        _beforeMintStates.push(_state);
     }
 
-    /// @notice Adds a postMintState
+    /// @notice Adds a afterMintState
     /// @dev The caller must have the admin or project admin role to call this function
-    /// @param _state New postMintState to add
-    function addPostMintState(string memory _state) external {
+    /// @param _state New afterMintState to add
+    function addAfterMintState(string memory _state) external {
         if (
             !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
             !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
         ) revert UserMustHaveProtocolOrProjectAdminRole();
-        if (_validPostMintStates[_state]) revert AlreadyAdded();
-        _validPostMintStates[_state] = true;
+        if (_validAfterMintStates[_state]) revert AlreadyAdded();
+        _validAfterMintStates[_state] = true;
 
-        _postMintStates.push(_state);
+        _afterMintStates.push(_state);
     }
 
-    /// @notice Removes a preMintState
+    /// @notice Removes a beforeMintState
     /// @dev The caller must have the admin or project admin role to call this function
-    /// @param _state preMintState to remove
-    function removePreMintState(string memory _state) external {
+    /// @param _state beforeMintState to remove
+    function removeBeforeMintState(string memory _state) external {
         if (
             !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
             !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
         ) revert UserMustHaveProtocolOrProjectAdminRole();
-        if (!_validPreMintStates[_state]) revert InvalidState(_state);
-        _validPreMintStates[_state] = false;
+        if (!_validBeforeMintStates[_state]) revert InvalidState(_state);
+        _validBeforeMintStates[_state] = false;
 
-        for (uint256 i = 0; i < _preMintStates.length; i++) {
+        for (uint256 i = 0; i < _beforeMintStates.length; i++) {
             if (
-                keccak256(bytes(_preMintStates[i])) == keccak256(bytes(_state))
+                keccak256(bytes(_beforeMintStates[i])) ==
+                keccak256(bytes(_state))
             ) {
-                _preMintStates[i] = _preMintStates[_preMintStates.length - 1];
-                _preMintStates.pop();
+                _beforeMintStates[i] = _beforeMintStates[
+                    _beforeMintStates.length - 1
+                ];
+                _beforeMintStates.pop();
                 return;
             }
         }
     }
 
-    /// @notice Removes a postMintState
+    /// @notice Removes a afterMintState
     /// @dev The caller must have the admin or project admin role to call this function
-    /// @param _state postMintState to remove
-    function removePostMintState(string memory _state) external {
+    /// @param _state afterMintState to remove
+    function removeAfterMintState(string memory _state) external {
         if (
             !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
             !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
         ) revert UserMustHaveProtocolOrProjectAdminRole();
-        if (!_validPostMintStates[_state]) revert InvalidState(_state);
-        _validPostMintStates[_state] = false;
+        if (!_validAfterMintStates[_state]) revert InvalidState(_state);
+        _validAfterMintStates[_state] = false;
 
-        for (uint256 i = 0; i < _postMintStates.length; i++) {
+        for (uint256 i = 0; i < _afterMintStates.length; i++) {
             if (
-                keccak256(bytes(_postMintStates[i])) == keccak256(bytes(_state))
+                keccak256(bytes(_afterMintStates[i])) ==
+                keccak256(bytes(_state))
             ) {
-                _postMintStates[i] = _postMintStates[
-                    _postMintStates.length - 1
+                _afterMintStates[i] = _afterMintStates[
+                    _afterMintStates.length - 1
                 ];
-                _postMintStates.pop();
+                _afterMintStates.pop();
                 return;
             }
         }
@@ -108,26 +112,28 @@ abstract contract MasaSBTDynamic is MasaSBT {
 
     /* ========== VIEWS ===================================================== */
 
-    function getPreMintStates() external view returns (string[] memory) {
-        return _preMintStates;
+    function getBeforeMintStates() external view returns (string[] memory) {
+        return _beforeMintStates;
     }
 
-    function getPostMintStates() external view returns (string[] memory) {
-        return _postMintStates;
+    function getAfterMintStates() external view returns (string[] memory) {
+        return _afterMintStates;
     }
 
-    function allPreMintStatesSet(address account) public view returns (bool) {
-        for (uint256 i = 0; i < _preMintStates.length; i++) {
-            if (!addressStates[account][_preMintStates[i]]) return false;
+    function allBeforeMintStatesSet(
+        address account
+    ) public view returns (bool) {
+        for (uint256 i = 0; i < _beforeMintStates.length; i++) {
+            if (!beforeMintState[account][_beforeMintStates[i]]) return false;
         }
         return true;
     }
 
-    function allPostMintStatesSet(
+    function allAfterMintStatesSet(
         uint256 tokenId
     ) external view returns (bool) {
-        for (uint256 i = 0; i < _postMintStates.length; i++) {
-            if (!tokenStates[tokenId][_postMintStates[i]]) return false;
+        for (uint256 i = 0; i < _afterMintStates.length; i++) {
+            if (!afterMintState[tokenId][_afterMintStates[i]]) return false;
         }
         return true;
     }
@@ -144,10 +150,10 @@ abstract contract MasaSBTDynamic is MasaSBT {
         string memory state,
         bool value
     ) internal {
-        if (!_validPreMintStates[state]) revert InvalidState(state);
-        addressStates[account][state] = value;
+        if (!_validBeforeMintStates[state]) revert InvalidState(state);
+        beforeMintState[account][state] = value;
 
-        emit PreMintStateSet(account, state, value);
+        emit BeforeMintStateSet(account, state, value);
     }
 
     /// @notice Sets a state for a token
@@ -160,22 +166,22 @@ abstract contract MasaSBTDynamic is MasaSBT {
         string memory state,
         bool value
     ) internal {
-        if (!_validPostMintStates[state]) revert InvalidState(state);
+        if (!_validAfterMintStates[state]) revert InvalidState(state);
         _requireMinted(tokenId);
-        tokenStates[tokenId][state] = value;
+        afterMintState[tokenId][state] = value;
 
-        emit PostMintStateSet(tokenId, state, value);
+        emit AfterMintStateSet(tokenId, state, value);
     }
 
     /// @notice Checks if a token can be minted
-    /// @dev Checks if all preMintStates are set for the account
+    /// @dev Checks if all beforeMintStates are set for the account
     function _beforeTokenTransfer(
         address,
         address to,
         uint256
     ) internal virtual override {
         if (to != address(0)) {
-            if (!allPreMintStatesSet(to)) revert NotAllPreMintStatesSet();
+            if (!allBeforeMintStatesSet(to)) revert NotAllBeforeMintStatesSet();
         }
     }
 
@@ -183,7 +189,7 @@ abstract contract MasaSBTDynamic is MasaSBT {
 
     /* ========== EVENTS ==================================================== */
 
-    event PreMintStateSet(address account, string state, bool value);
+    event BeforeMintStateSet(address account, string state, bool value);
 
-    event PostMintStateSet(uint256 tokenId, string state, bool value);
+    event AfterMintStateSet(uint256 tokenId, string state, bool value);
 }

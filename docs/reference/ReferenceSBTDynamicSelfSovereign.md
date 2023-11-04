@@ -44,6 +44,22 @@ function PROJECT_ADMIN_ROLE() external view returns (bytes32)
 |---|---|---|
 | _0 | bytes32 | undefined |
 
+### addAfterMintState
+
+```solidity
+function addAfterMintState(string _state) external nonpayable
+```
+
+Adds a afterMintState
+
+*The caller must have the admin or project admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _state | string | New afterMintState to add |
+
 ### addAuthority
 
 ```solidity
@@ -59,6 +75,22 @@ Adds a new authority to the list of authorities
 | Name | Type | Description |
 |---|---|---|
 | _authority | address | New authority to add |
+
+### addBeforeMintState
+
+```solidity
+function addBeforeMintState(string _state) external nonpayable
+```
+
+Adds a beforeMintState
+
+*The caller must have the admin or project admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _state | string | New beforeMintState to add |
 
 ### addLinkPrice
 
@@ -94,42 +126,10 @@ function addLinkPriceMASA() external view returns (uint256)
 |---|---|---|
 | _0 | uint256 | undefined |
 
-### addPostMintState
+### afterMintState
 
 ```solidity
-function addPostMintState(string _state) external nonpayable
-```
-
-Adds a postMintState
-
-*The caller must have the admin or project admin role to call this function*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _state | string | New postMintState to add |
-
-### addPreMintState
-
-```solidity
-function addPreMintState(string _state) external nonpayable
-```
-
-Adds a preMintState
-
-*The caller must have the admin or project admin role to call this function*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _state | string | New preMintState to add |
-
-### addressStates
-
-```solidity
-function addressStates(address, string) external view returns (bool)
+function afterMintState(uint256, string) external view returns (bool)
 ```
 
 
@@ -140,7 +140,7 @@ function addressStates(address, string) external view returns (bool)
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | address | undefined |
+| _0 | uint256 | undefined |
 | _1 | string | undefined |
 
 #### Returns
@@ -149,10 +149,10 @@ function addressStates(address, string) external view returns (bool)
 |---|---|---|
 | _0 | bool | undefined |
 
-### allPostMintStatesSet
+### allAfterMintStatesSet
 
 ```solidity
-function allPostMintStatesSet(uint256 tokenId) external view returns (bool)
+function allAfterMintStatesSet(uint256 tokenId) external view returns (bool)
 ```
 
 
@@ -171,10 +171,10 @@ function allPostMintStatesSet(uint256 tokenId) external view returns (bool)
 |---|---|---|
 | _0 | bool | undefined |
 
-### allPreMintStatesSet
+### allBeforeMintStatesSet
 
 ```solidity
-function allPreMintStatesSet(address account) external view returns (bool)
+function allBeforeMintStatesSet(address account) external view returns (bool)
 ```
 
 
@@ -236,6 +236,29 @@ function balanceOf(address owner) external view returns (uint256)
 | Name | Type | Description |
 |---|---|---|
 | _0 | uint256 | undefined |
+
+### beforeMintState
+
+```solidity
+function beforeMintState(address, string) external view returns (bool)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+| _1 | string | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bool | undefined |
 
 ### burn
 
@@ -374,6 +397,40 @@ Returns true if the token exists
 |---|---|---|
 | _0 | bool | True if the token exists |
 
+### getAfterMintStates
+
+```solidity
+function getAfterMintStates() external view returns (string[])
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string[] | undefined |
+
+### getBeforeMintStates
+
+```solidity
+function getBeforeMintStates() external view returns (string[])
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string[] | undefined |
+
 ### getEnabledPaymentMethods
 
 ```solidity
@@ -457,40 +514,6 @@ Returns the price for minting with protocol fee
 |---|---|---|
 | price | uint256 | Current price for minting in the given payment method |
 | protocolFee | uint256 | Current protocol fee for minting in the given payment method |
-
-### getPostMintStates
-
-```solidity
-function getPostMintStates() external view returns (string[])
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | string[] | undefined |
-
-### getPreMintStates
-
-```solidity
-function getPreMintStates() external view returns (string[])
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | string[] | undefined |
 
 ### getProtocolFee
 
@@ -877,6 +900,22 @@ function queryLinkPriceMASA() external view returns (uint256)
 |---|---|---|
 | _0 | uint256 | undefined |
 
+### removeAfterMintState
+
+```solidity
+function removeAfterMintState(string _state) external nonpayable
+```
+
+Removes a afterMintState
+
+*The caller must have the admin or project admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _state | string | afterMintState to remove |
+
 ### removeAuthority
 
 ```solidity
@@ -893,13 +932,13 @@ Removes an authority from the list of authorities
 |---|---|---|
 | _authority | address | Authority to remove |
 
-### removePostMintState
+### removeBeforeMintState
 
 ```solidity
-function removePostMintState(string _state) external nonpayable
+function removeBeforeMintState(string _state) external nonpayable
 ```
 
-Removes a postMintState
+Removes a beforeMintState
 
 *The caller must have the admin or project admin role to call this function*
 
@@ -907,23 +946,7 @@ Removes a postMintState
 
 | Name | Type | Description |
 |---|---|---|
-| _state | string | postMintState to remove |
-
-### removePreMintState
-
-```solidity
-function removePreMintState(string _state) external nonpayable
-```
-
-Removes a preMintState
-
-*The caller must have the admin or project admin role to call this function*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _state | string | preMintState to remove |
+| _state | string | beforeMintState to remove |
 
 ### renounceRole
 
@@ -1392,29 +1415,6 @@ function tokenOfOwnerByIndex(address owner, uint256 index) external view returns
 |---|---|---|
 | _0 | uint256 | undefined |
 
-### tokenStates
-
-```solidity
-function tokenStates(uint256, string) external view returns (bool)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | undefined |
-| _1 | string | undefined |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | bool | undefined |
-
 ### tokenURI
 
 ```solidity
@@ -1474,6 +1474,42 @@ function wrappedNativeToken() external view returns (address)
 
 
 ## Events
+
+### AfterMintStateSet
+
+```solidity
+event AfterMintStateSet(uint256 tokenId, string state, bool value)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId  | uint256 | undefined |
+| state  | string | undefined |
+| value  | bool | undefined |
+
+### BeforeMintStateSet
+
+```solidity
+event BeforeMintStateSet(address account, string state, bool value)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| account  | address | undefined |
+| state  | string | undefined |
+| value  | bool | undefined |
 
 ### Burn
 
@@ -1561,42 +1597,6 @@ event MintedToIdentity(uint256 tokenId, uint256 identityId, address authorityAdd
 | signatureDate  | uint256 | undefined |
 | paymentMethod  | address | undefined |
 | mintPrice  | uint256 | undefined |
-
-### PostMintStateSet
-
-```solidity
-event PostMintStateSet(uint256 tokenId, string state, bool value)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| tokenId  | uint256 | undefined |
-| state  | string | undefined |
-| value  | bool | undefined |
-
-### PreMintStateSet
-
-```solidity
-event PreMintStateSet(address account, string state, bool value)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| account  | address | undefined |
-| state  | string | undefined |
-| value  | bool | undefined |
 
 ### RoleAdminChanged
 
@@ -1818,10 +1818,10 @@ error NonExistingErc20Token(address erc20token)
 |---|---|---|
 | erc20token | address | undefined |
 
-### NotAllPreMintStatesSet
+### NotAllBeforeMintStatesSet
 
 ```solidity
-error NotAllPreMintStatesSet()
+error NotAllBeforeMintStatesSet()
 ```
 
 
