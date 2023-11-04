@@ -57,7 +57,7 @@ contract ReferenceSBTAuthority is MasaSBTAuthority {
     /// @dev The caller must have the MINTER role
     /// @param to The address to mint the SBT to
     /// @return The SBT ID of the newly minted SBT
-    function mint(address to) external payable override returns (uint256) {
+    function mint(address to) external payable returns (uint256) {
         return mint(address(0), to);
     }
 
@@ -81,7 +81,7 @@ contract ReferenceSBTAuthority is MasaSBTAuthority {
     function mint(
         address paymentMethod,
         address to
-    ) public payable override returns (uint256) {
+    ) public payable returns (uint256) {
         return _mintWithCounter(paymentMethod, to);
     }
 
