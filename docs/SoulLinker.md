@@ -1228,6 +1228,24 @@ event Paused(address account)
 |---|---|---|
 | account  | address | undefined |
 
+### Pay
+
+```solidity
+event Pay(address indexed paymentMethod, uint256 amount, uint256 protocolFee)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| paymentMethod `indexed` | address | undefined |
+| amount  | uint256 | undefined |
+| protocolFee  | uint256 | undefined |
+
 ### RoleAdminChanged
 
 ```solidity

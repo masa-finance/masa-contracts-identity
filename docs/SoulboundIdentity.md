@@ -1545,6 +1545,24 @@ event MintedToIdentity(uint256 tokenId, uint256 identityId)
 | tokenId  | uint256 | undefined |
 | identityId  | uint256 | undefined |
 
+### Pay
+
+```solidity
+event Pay(address indexed paymentMethod, uint256 amount, uint256 protocolFee)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| paymentMethod `indexed` | address | undefined |
+| amount  | uint256 | undefined |
+| protocolFee  | uint256 | undefined |
+
 ### RoleAdminChanged
 
 ```solidity
