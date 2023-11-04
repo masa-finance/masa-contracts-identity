@@ -2,15 +2,15 @@
 pragma solidity ^0.8.8;
 
 import "./ReferenceSBTSelfSovereign.sol";
-import "../tokens/MasaStatefulSBT.sol";
+import "../tokens/MasaSBTDynamic.sol";
 
 /// @title Soulbound reference Self-Sovereign SBT with states
 /// @author Masa Finance
 /// @notice Soulbound token that represents a Self-Sovereign SBT with states
 /// @dev Inherits from the SBT contract.
-contract ReferenceStatefulSBTSelfSovereign is
+contract ReferenceSBTDynamicSelfSovereign is
     ReferenceSBTSelfSovereign,
-    MasaStatefulSBT
+    MasaSBTDynamic
 {
     /* ========== STATE VARIABLES =========================================== */
 
@@ -116,7 +116,7 @@ contract ReferenceStatefulSBTSelfSovereign is
         address from,
         address to,
         uint256 tokenId
-    ) internal virtual override(MasaSBT, MasaStatefulSBT) {
+    ) internal virtual override(MasaSBT, MasaSBTDynamic) {
         super._beforeTokenTransfer(from, to, tokenId);
     }
 

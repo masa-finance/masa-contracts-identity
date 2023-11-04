@@ -1,12 +1,12 @@
-# ReferenceStatefulSBTAuthority
+# MasaSBTDynamic
 
 *Masa Finance*
 
-> Soulbound reference Authority SBT with states
+> MasaSBTDynamic
 
-Soulbound token that represents a Authority SBT with states
+MasaSBTDynamic. SBT with states
 
-*Inherits from the SBT contract.*
+*Adds states to SBTs*
 
 ## Methods
 
@@ -14,23 +14,6 @@ Soulbound token that represents a Authority SBT with states
 
 ```solidity
 function DEFAULT_ADMIN_ROLE() external view returns (bytes32)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | bytes32 | undefined |
-
-### MINTER_ROLE
-
-```solidity
-function MINTER_ROLE() external view returns (bytes32)
 ```
 
 
@@ -589,142 +572,6 @@ function maxSBTToMint() external view returns (uint256)
 |---|---|---|
 | _0 | uint256 | undefined |
 
-### mint
-
-```solidity
-function mint(address paymentMethod, address[] to) external payable returns (uint256[] tokenIds)
-```
-
-Bulk mint of new SBTs
-
-*The caller must have the MINTER role*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| paymentMethod | address | Address of token that user want to pay |
-| to | address[] | Addresses array to mint the SBT to |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| tokenIds | uint256[] | The SBT IDs of the newly minted SBTs |
-
-### mint
-
-```solidity
-function mint(address paymentMethod, uint256 identityId) external payable returns (uint256)
-```
-
-Mints a new SBT
-
-*The caller must have the MINTER role*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| paymentMethod | address | Address of token that user want to pay |
-| identityId | uint256 | TokenId of the identity to mint the NFT to |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | The SBT ID of the newly minted SBT |
-
-### mint
-
-```solidity
-function mint(address to) external payable returns (uint256)
-```
-
-Mints a new SBT
-
-*The caller must have the MINTER role*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| to | address | The address to mint the SBT to |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | The SBT ID of the newly minted SBT |
-
-### mint
-
-```solidity
-function mint(uint256 identityId) external payable returns (uint256)
-```
-
-Mints a new SBT
-
-*The caller must have the MINTER role*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| identityId | uint256 | TokenId of the identity to mint the NFT to |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | The SBT ID of the newly minted SBT |
-
-### mint
-
-```solidity
-function mint(address paymentMethod, uint256[] identityId) external payable returns (uint256[] tokenIds)
-```
-
-Bulk mint of new SBTs
-
-*The caller must have the MINTER role*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| paymentMethod | address | Address of token that user want to pay |
-| identityId | uint256[] | TokenIds array of the identity to mint the NFT to |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| tokenIds | uint256[] | The SBT IDs of the newly minted SBTs |
-
-### mint
-
-```solidity
-function mint(address paymentMethod, address to) external payable returns (uint256)
-```
-
-Mints a new SBT
-
-*The caller must have the MINTER role*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| paymentMethod | address | Address of token that user want to pay |
-| to | address | The address to mint the SBT to |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | The SBT ID of the newly minted SBT |
-
 ### mintPrice
 
 ```solidity
@@ -1207,42 +1054,6 @@ Sets the stable coin to pay the fee in (USDC)
 |---|---|---|
 | _stableCoin | address | New stable coin to pay the fee in |
 
-### setState
-
-```solidity
-function setState(address account, string state, bool value) external nonpayable
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| account | address | undefined |
-| state | string | undefined |
-| value | bool | undefined |
-
-### setState
-
-```solidity
-function setState(uint256 tokenId, string state, bool value) external nonpayable
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| tokenId | uint256 | undefined |
-| state | string | undefined |
-| value | bool | undefined |
-
 ### setSwapRouter
 
 ```solidity
@@ -1439,21 +1250,21 @@ function tokenStates(uint256, string) external view returns (bool)
 function tokenURI(uint256 tokenId) external view returns (string)
 ```
 
+A distinct Uniform Resource Identifier (URI) for a given asset.
 
-
-
+*Throws if `_tokenId` is not a valid SBT. URIs are defined in RFC  3986. The URI may point to a JSON file that conforms to the &quot;ERC721  Metadata JSON Schema&quot;.*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| tokenId | uint256 | undefined |
+| tokenId | uint256 | SBT to get the URI of |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | string | undefined |
+| _0 | string | URI of the SBT |
 
 ### totalSupply
 
@@ -1526,40 +1337,6 @@ event Mint(address indexed _owner, uint256 indexed _tokenId)
 |---|---|---|
 | _owner `indexed` | address | undefined |
 | _tokenId `indexed` | uint256 | undefined |
-
-### MintedToAddress
-
-```solidity
-event MintedToAddress(uint256 tokenId, address to)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| tokenId  | uint256 | undefined |
-| to  | address | undefined |
-
-### MintedToIdentity
-
-```solidity
-event MintedToIdentity(uint256 tokenId, uint256 identityId)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| tokenId  | uint256 | undefined |
-| identityId  | uint256 | undefined |
 
 ### PostMintStateSet
 
@@ -1666,22 +1443,6 @@ error AlreadyAdded()
 
 
 
-### InsufficientEthAmount
-
-```solidity
-error InsufficientEthAmount(uint256 amount)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| amount | uint256 | undefined |
-
 ### InvalidPaymentMethod
 
 ```solidity
@@ -1729,23 +1490,6 @@ error InvalidToken(address token)
 | Name | Type | Description |
 |---|---|---|
 | token | address | undefined |
-
-### MaxSBTMinted
-
-```solidity
-error MaxSBTMinted(address to, uint256 maximum)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| to | address | undefined |
-| maximum | uint256 | undefined |
 
 ### NonExistingErc20Token
 
@@ -1796,43 +1540,10 @@ error PaymentParamsNotSet()
 
 
 
-### ProtocolFeeReceiverNotSet
-
-```solidity
-error ProtocolFeeReceiverNotSet()
-```
-
-
-
-
-
-
-### RefundFailed
-
-```solidity
-error RefundFailed()
-```
-
-
-
-
-
-
 ### SameValue
 
 ```solidity
 error SameValue()
-```
-
-
-
-
-
-
-### TransferFailed
-
-```solidity
-error TransferFailed()
 ```
 
 

@@ -4,8 +4,8 @@ import { solidity } from "ethereum-waffle";
 import { ethers, deployments, getChainId } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
-  ReferenceStatefulSBTSelfSovereign,
-  ReferenceStatefulSBTSelfSovereign__factory,
+  ReferenceSBTDynamicSelfSovereign,
+  ReferenceSBTDynamicSelfSovereign__factory,
   SoulboundIdentity,
   SoulboundIdentity__factory
 } from "../typechain";
@@ -17,7 +17,7 @@ const expect = chai.expect;
 
 // contract instances
 let soulboundIdentity: SoulboundIdentity;
-let statefulSBT: ReferenceStatefulSBTSelfSovereign;
+let sbtDynamic: ReferenceSBTDynamicSelfSovereign;
 
 let owner: SignerWithAddress;
 let address1: SignerWithAddress;
@@ -42,7 +42,7 @@ const signMintSBTToAddress = async (
       name: "ReferenceSBTSelfSovereign",
       version: "1.0.0",
       chainId: chainId,
-      verifyingContract: statefulSBT.address
+      verifyingContract: sbtDynamic.address
     },
     // Types
     {
@@ -63,7 +63,7 @@ const signMintSBTToAddress = async (
   return signature;
 };
 
-describe("ReferenceStatefulSBTSelfSovereign", () => {
+describe("ReferenceSBTDynamicSelfSovereign", () => {
   before(async () => {
     [, owner, address1, address2, authority] = await ethers.getSigners();
   });
@@ -77,10 +77,10 @@ describe("ReferenceStatefulSBTSelfSovereign", () => {
     const env = getEnvParams("hardhat");
     const baseUri = `${env.BASE_URI}/green/hardhat/`;
 
-    const StatefulSBT = await ethers.getContractFactory(
-      "ReferenceStatefulSBTSelfSovereign"
+    const SBTDynamic = await ethers.getContractFactory(
+      "ReferenceSBTDynamicSelfSovereign"
     );
-    const statefulSBTDeploy = await StatefulSBT.deploy(
+    const sbtDynamicDeploy = await SBTDynamic.deploy(
       env.ADMIN || owner.address,
       env.SOULBOUNDGREEN_NAME,
       env.SOULBOUNDGREEN_SYMBOL,
@@ -99,15 +99,15 @@ describe("ReferenceStatefulSBTSelfSovereign", () => {
       ],
       1
     );
-    await statefulSBTDeploy.deployed();
+    await sbtDynamicDeploy.deployed();
 
     soulboundIdentity = SoulboundIdentity__factory.connect(
       soulboundIdentityAddress,
       owner
     );
 
-    statefulSBT = ReferenceStatefulSBTSelfSovereign__factory.connect(
-      statefulSBTDeploy.address,
+    sbtDynamic = ReferenceSBTDynamicSelfSovereign__factory.connect(
+      sbtDynamicDeploy.address,
       owner
     );
 
@@ -120,7 +120,7 @@ describe("ReferenceStatefulSBTSelfSovereign", () => {
     identityId1 = mintReceipt.events![0].args![1].toNumber();
 
     // we add authority account
-    await statefulSBT.addAuthority(authority.address);
+    await sbtDynamic.addAuthority(authority.address);
 
     signatureToAddress = await signMintSBTToAddress(
       address1.address,
@@ -130,53 +130,53 @@ describe("ReferenceStatefulSBTSelfSovereign", () => {
 
   describe("owner functions", () => {
     it("should set SoulboundIdentity from owner", async () => {
-      await statefulSBT.connect(owner).setSoulboundIdentity(address1.address);
+      await sbtDynamic.connect(owner).setSoulboundIdentity(address1.address);
 
-      expect(await statefulSBT.soulboundIdentity()).to.be.equal(
+      expect(await sbtDynamic.soulboundIdentity()).to.be.equal(
         address1.address
       );
     });
 
     it("should fail to set SoulboundIdentity from non owner", async () => {
       await expect(
-        statefulSBT.connect(address1).setSoulboundIdentity(address1.address)
+        sbtDynamic.connect(address1).setSoulboundIdentity(address1.address)
       ).to.be.rejected;
     });
 
     it("should add state from owner", async () => {
-      await statefulSBT.connect(owner).addPreMintState("discord");
-      await statefulSBT.connect(owner).addPreMintState("twitter");
+      await sbtDynamic.connect(owner).addPreMintState("discord");
+      await sbtDynamic.connect(owner).addPreMintState("twitter");
 
-      expect(await statefulSBT.getPreMintStates()).to.deep.equal([
+      expect(await sbtDynamic.getPreMintStates()).to.deep.equal([
         "discord",
         "twitter"
       ]);
 
-      await statefulSBT.connect(owner).addPostMintState("discord");
+      await sbtDynamic.connect(owner).addPostMintState("discord");
 
-      expect(await statefulSBT.getPostMintStates()).to.deep.equal(["discord"]);
+      expect(await sbtDynamic.getPostMintStates()).to.deep.equal(["discord"]);
     });
 
     it("should fail to add state from non owner", async () => {
-      await expect(statefulSBT.connect(address1).addPreMintState("discord")).to
+      await expect(sbtDynamic.connect(address1).addPreMintState("discord")).to
         .be.rejected;
-      await expect(statefulSBT.connect(address1).addPostMintState("discord")).to
+      await expect(sbtDynamic.connect(address1).addPostMintState("discord")).to
         .be.rejected;
     });
   });
 
   describe("sbt information", () => {
     it("should be able to get sbt information", async () => {
-      expect(await statefulSBT.name()).to.equal("Masa Green");
+      expect(await sbtDynamic.name()).to.equal("Masa Green");
 
-      expect(await statefulSBT.symbol()).to.equal("MG-2FA");
+      expect(await sbtDynamic.symbol()).to.equal("MG-2FA");
     });
   });
 
   describe("mint", () => {
     it("should fail to mint from owner address", async () => {
       await expect(
-        statefulSBT
+        sbtDynamic
           .connect(owner)
           ["mint(address,address,address,uint256,bytes)"](
             ethers.constants.AddressZero,
@@ -189,7 +189,7 @@ describe("ReferenceStatefulSBTSelfSovereign", () => {
     });
 
     it("can't mint twice", async () => {
-      await statefulSBT
+      await sbtDynamic
         .connect(address1)
         ["mint(address,address,address,uint256,bytes)"](
           ethers.constants.AddressZero,
@@ -199,7 +199,7 @@ describe("ReferenceStatefulSBTSelfSovereign", () => {
           signatureToAddress
         );
       await expect(
-        statefulSBT
+        sbtDynamic
           .connect(address1)
           ["mint(address,address,address,uint256,bytes)"](
             ethers.constants.AddressZero,
@@ -210,11 +210,11 @@ describe("ReferenceStatefulSBTSelfSovereign", () => {
           )
       ).to.be.reverted;
 
-      expect(await statefulSBT.balanceOf(address1.address)).to.equal(1);
+      expect(await sbtDynamic.balanceOf(address1.address)).to.equal(1);
     });
 
     it("should mint from final user address", async () => {
-      const mintTx = await statefulSBT
+      const mintTx = await sbtDynamic
         .connect(address1)
         ["mint(address,address,address,uint256,bytes)"](
           ethers.constants.AddressZero,
@@ -234,7 +234,7 @@ describe("ReferenceStatefulSBTSelfSovereign", () => {
   describe("burn", () => {
     it("should burn", async () => {
       // we mint
-      let mintTx = await statefulSBT
+      let mintTx = await sbtDynamic
         .connect(address1)
         ["mint(address,address,address,uint256,bytes)"](
           ethers.constants.AddressZero,
@@ -246,20 +246,20 @@ describe("ReferenceStatefulSBTSelfSovereign", () => {
       let mintReceipt = await mintTx.wait();
       const tokenId1 = mintReceipt.events![0].args![1].toNumber();
 
-      expect(await statefulSBT.balanceOf(address1.address)).to.be.equal(1);
-      expect(await statefulSBT["ownerOf(uint256)"](tokenId1)).to.be.equal(
+      expect(await sbtDynamic.balanceOf(address1.address)).to.be.equal(1);
+      expect(await sbtDynamic["ownerOf(uint256)"](tokenId1)).to.be.equal(
         address1.address
       );
 
-      await statefulSBT.connect(address1).burn(tokenId1);
+      await sbtDynamic.connect(address1).burn(tokenId1);
 
-      expect(await statefulSBT.balanceOf(address1.address)).to.be.equal(0);
+      expect(await sbtDynamic.balanceOf(address1.address)).to.be.equal(0);
     });
   });
 
   describe("tokenUri", () => {
     it("should get a valid token URI from its tokenId", async () => {
-      const mintTx = await statefulSBT
+      const mintTx = await sbtDynamic
         .connect(address1)
         ["mint(address,address,address,uint256,bytes)"](
           ethers.constants.AddressZero,
@@ -271,7 +271,7 @@ describe("ReferenceStatefulSBTSelfSovereign", () => {
 
       const mintReceipt = await mintTx.wait();
       const tokenId = mintReceipt.events![0].args![1].toNumber();
-      const tokenUri = await statefulSBT.tokenURI(tokenId);
+      const tokenUri = await sbtDynamic.tokenURI(tokenId);
 
       // check if it's a valid url
       expect(() => new URL(tokenUri)).to.not.throw();
@@ -283,13 +283,13 @@ describe("ReferenceStatefulSBTSelfSovereign", () => {
 
   describe("preMintStates", () => {
     beforeEach(async () => {
-      await statefulSBT.connect(owner).addPreMintState("discord");
-      await statefulSBT.connect(owner).addPreMintState("twitter");
+      await sbtDynamic.connect(owner).addPreMintState("discord");
+      await sbtDynamic.connect(owner).addPreMintState("twitter");
     });
 
     it("should not mint if not all pre mint states are set", async () => {
       await expect(
-        statefulSBT
+        sbtDynamic
           .connect(address1)
           ["mint(address,address,address,uint256,bytes)"](
             ethers.constants.AddressZero,

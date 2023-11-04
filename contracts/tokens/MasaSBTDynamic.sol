@@ -4,11 +4,11 @@ pragma solidity ^0.8.8;
 import "./MasaSBT.sol";
 import "../libraries/Errors.sol";
 
-/// @title MasaStatefulSBT
+/// @title MasaSBTDynamic
 /// @author Masa Finance
-/// @notice MasaStatefulSBT. SBT with states
+/// @notice MasaSBTDynamic. SBT with states
 /// @dev Adds states to SBTs
-abstract contract MasaStatefulSBT is MasaSBT {
+abstract contract MasaSBTDynamic is MasaSBT {
     /* ========== STATE VARIABLES =========================================== */
 
     // states needed to be set before minting

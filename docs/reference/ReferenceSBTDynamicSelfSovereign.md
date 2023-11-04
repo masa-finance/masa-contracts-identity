@@ -1,4 +1,4 @@
-# ReferenceStatefulSBTSelfSovereign
+# ReferenceSBTDynamicSelfSovereign
 
 *Masa Finance*
 
