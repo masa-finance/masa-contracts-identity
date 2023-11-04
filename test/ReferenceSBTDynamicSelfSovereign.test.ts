@@ -144,23 +144,23 @@ describe("ReferenceSBTDynamicSelfSovereign", () => {
     });
 
     it("should add state from owner", async () => {
-      await sbtDynamic.connect(owner).addPreMintState("discord");
-      await sbtDynamic.connect(owner).addPreMintState("twitter");
+      await sbtDynamic.connect(owner).addBeforeMintState("discord");
+      await sbtDynamic.connect(owner).addBeforeMintState("twitter");
 
-      expect(await sbtDynamic.getPreMintStates()).to.deep.equal([
+      expect(await sbtDynamic.getBeforeMintStates()).to.deep.equal([
         "discord",
         "twitter"
       ]);
 
-      await sbtDynamic.connect(owner).addPostMintState("discord");
+      await sbtDynamic.connect(owner).addAfterMintState("discord");
 
-      expect(await sbtDynamic.getPostMintStates()).to.deep.equal(["discord"]);
+      expect(await sbtDynamic.getAfterMintStates()).to.deep.equal(["discord"]);
     });
 
     it("should fail to add state from non owner", async () => {
-      await expect(sbtDynamic.connect(address1).addPreMintState("discord")).to
-        .be.rejected;
-      await expect(sbtDynamic.connect(address1).addPostMintState("discord")).to
+      await expect(sbtDynamic.connect(address1).addBeforeMintState("discord"))
+        .to.be.rejected;
+      await expect(sbtDynamic.connect(address1).addAfterMintState("discord")).to
         .be.rejected;
     });
   });
@@ -281,13 +281,13 @@ describe("ReferenceSBTDynamicSelfSovereign", () => {
     });
   });
 
-  describe("preMintStates", () => {
+  describe("beforeMintStates", () => {
     beforeEach(async () => {
-      await sbtDynamic.connect(owner).addPreMintState("discord");
-      await sbtDynamic.connect(owner).addPreMintState("twitter");
+      await sbtDynamic.connect(owner).addBeforeMintState("discord");
+      await sbtDynamic.connect(owner).addBeforeMintState("twitter");
     });
 
-    it("should not mint if not all pre mint states are set", async () => {
+    it("should not mint if not all before mint states are set", async () => {
       await expect(
         sbtDynamic
           .connect(address1)
