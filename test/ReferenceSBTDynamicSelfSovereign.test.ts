@@ -175,39 +175,19 @@ describe("ReferenceSBTDynamicSelfSovereign", () => {
   });
 
   describe("mint", () => {
-    it("should fail to mint from owner address", async () => {
-      await expect(
-        sbtDynamic
-          .connect(owner)
-          ["mint(address,address,address,uint256,bytes)"](
-            ethers.constants.AddressZero,
-            address1.address,
-            authority.address,
-            signatureDate,
-            signatureToAddress
-          )
-      ).to.be.revertedWith("CallerNotOwner");
-    });
-
     it("can't mint twice", async () => {
       await sbtDynamic
         .connect(address1)
-        ["mint(address,address,address,uint256,bytes)"](
+        ["mint(address,address)"](
           ethers.constants.AddressZero,
-          address1.address,
-          authority.address,
-          signatureDate,
-          signatureToAddress
+          address1.address
         );
       await expect(
         sbtDynamic
           .connect(address1)
-          ["mint(address,address,address,uint256,bytes)"](
+          ["mint(address,address)"](
             ethers.constants.AddressZero,
-            address1.address,
-            authority.address,
-            signatureDate,
-            signatureToAddress
+            address1.address
           )
       ).to.be.reverted;
 
@@ -217,12 +197,9 @@ describe("ReferenceSBTDynamicSelfSovereign", () => {
     it("should mint from final user address", async () => {
       const mintTx = await sbtDynamic
         .connect(address1)
-        ["mint(address,address,address,uint256,bytes)"](
+        ["mint(address,address)"](
           ethers.constants.AddressZero,
-          address1.address,
-          authority.address,
-          signatureDate,
-          signatureToAddress
+          address1.address
         );
       const mintReceipt = await mintTx.wait();
 
@@ -237,12 +214,9 @@ describe("ReferenceSBTDynamicSelfSovereign", () => {
       // we mint
       let mintTx = await sbtDynamic
         .connect(address1)
-        ["mint(address,address,address,uint256,bytes)"](
+        ["mint(address,address)"](
           ethers.constants.AddressZero,
-          address1.address,
-          authority.address,
-          signatureDate,
-          signatureToAddress
+          address1.address
         );
       let mintReceipt = await mintTx.wait();
       const tokenId1 = mintReceipt.events![0].args![1].toNumber();
@@ -262,12 +236,9 @@ describe("ReferenceSBTDynamicSelfSovereign", () => {
     it("should get a valid token URI from its tokenId", async () => {
       const mintTx = await sbtDynamic
         .connect(address1)
-        ["mint(address,address,address,uint256,bytes)"](
+        ["mint(address,address)"](
           ethers.constants.AddressZero,
-          address1.address,
-          authority.address,
-          signatureDate,
-          signatureToAddress
+          address1.address
         );
 
       const mintReceipt = await mintTx.wait();
@@ -292,12 +263,9 @@ describe("ReferenceSBTDynamicSelfSovereign", () => {
       await expect(
         sbtDynamic
           .connect(address1)
-          ["mint(address,address,address,uint256,bytes)"](
+          ["mint(address,address)"](
             ethers.constants.AddressZero,
-            address1.address,
-            authority.address,
-            signatureDate,
-            signatureToAddress
+            address1.address
           )
       ).to.be.rejected;
     });
