@@ -15,7 +15,7 @@ jobs:
 
     runs-on: dockershared
     container:
-      image: node:18-alpine3
+      image: node:18-alpine3.17
 
     steps:
       - uses: actions/checkout@v4
