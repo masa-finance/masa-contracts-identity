@@ -8,6 +8,7 @@
   "license": "MIT",
   "scripts": {
     "compile": "hardhat compile",
+    "postcompile": "yarn flatten",
     "tsc": "npx tsc -p . && cp typechain/*.d.ts dist/typechain/",
     "build": "yarn compile && yarn tsc",
     "clean": "hardhat clean",
@@ -35,7 +36,10 @@
     "solhint": "solhint contracts/**/*.sol",
     "release": "GITHUB_TOKEN=$(grep GITHUB_TOKEN .env | cut -d '=' -f2) release-it",
     "addresses": "hardhat run src/addresses.ts",
-    "check-protocol-fee": "hardhat run src/check-protocol-fee.ts"
+    "check-protocol-fee": "hardhat run src/check-protocol-fee.ts",
+    "flatten": "yarn flatten:asbt && yarn flatten:sssbt",
+    "flatten:asbt": "hardhat flatten contracts/reference/ReferenceSBTAuthority.sol > contracts/reference/ReferenceSBTAuthorityFlattened.sol",
+    "flatten:sssbt": "hardhat flatten contracts/reference/ReferenceSBTSelfSovereign.sol > contracts/reference/ReferenceSBTSelfSovereignFlattened.sol"
   },
   "dependencies": {
     "ethers": "~5.7.2"
