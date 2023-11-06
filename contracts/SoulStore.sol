@@ -228,7 +228,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         string memory tokenURI,
         address authorityAddress,
         bytes calldata signature
-    ) external payable virtual whenNotPaused returns (uint256) {
+    ) external payable virtual whenNotPaused nonReentrant returns (uint256) {
         (
             uint256 price,
             uint256 protocolFee
