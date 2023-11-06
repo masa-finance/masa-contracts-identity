@@ -199,7 +199,13 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @notice Mints a new Soulbound Identity purchasing it
     /// @dev This function allows the purchase of a soulbound identity for free
     /// @return TokenId of the new soulbound identity
-    function purchaseIdentity() external virtual returns (uint256) {
+    function purchaseIdentity()
+        external
+        virtual
+        whenNotPaused
+        nonReentrant
+        returns (uint256)
+    {
         uint256 tokenId = _mintSoulboundIdentity(_msgSender());
 
         emit SoulboundIdentityPurchased(_msgSender(), tokenId);
