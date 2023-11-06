@@ -2,7 +2,6 @@
 pragma solidity ^0.8.8;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
@@ -16,7 +15,7 @@ import "../interfaces/dex/IUniswapRouter.sol";
 /// wallet recipient
 /// @dev This smart contract will call the Uniswap Router interface, based on
 /// https://github.com/Uniswap/v2-periphery/blob/master/contracts/interfaces/IUniswapV2Router01.sol
-abstract contract PaymentGateway is AccessControl, ReentrancyGuard {
+abstract contract PaymentGateway is AccessControl {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
@@ -309,7 +308,7 @@ abstract contract PaymentGateway is AccessControl, ReentrancyGuard {
         address paymentMethod,
         uint256 amount,
         uint256 protocolFee
-    ) internal nonReentrant paymentParamsAlreadySet(amount.add(protocolFee)) {
+    ) internal paymentParamsAlreadySet(amount.add(protocolFee)) {
         if (amount == 0 && protocolFee == 0) return;
 
         uint256 protocolFeeSub = _getProtocolFeeSub(amount);

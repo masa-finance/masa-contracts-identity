@@ -1,13 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.8;
 
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+
 import "./tokens/MasaSBTSelfSovereign.sol";
 
 /// @title Soulbound Credit Score
 /// @author Masa Finance
 /// @notice Soulbound token that represents a credit score.
 /// @dev Soulbound credit score, that inherits from the SBT contract.
-contract SoulboundCreditScore is MasaSBTSelfSovereign {
+contract SoulboundCreditScore is MasaSBTSelfSovereign, ReentrancyGuard {
     /* ========== STATE VARIABLES =========================================== */
 
     /* ========== INITIALIZE ================================================ */
@@ -58,7 +60,7 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
         address authorityAddress,
         uint256 signatureDate,
         bytes calldata signature
-    ) external payable virtual returns (uint256) {
+    ) external payable virtual nonReentrant returns (uint256) {
         return
             _mintWithCounter(
                 paymentMethod,
@@ -84,7 +86,7 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign {
         address authorityAddress,
         uint256 signatureDate,
         bytes calldata signature
-    ) external payable virtual returns (uint256) {
+    ) external payable virtual nonReentrant returns (uint256) {
         return
             _mintWithCounter(
                 paymentMethod,
