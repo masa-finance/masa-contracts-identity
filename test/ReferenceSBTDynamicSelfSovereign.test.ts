@@ -195,14 +195,17 @@ describe("ReferenceSBTDynamicSelfSovereign", () => {
 
       await sbtDynamic.connect(owner).addAfterMintState(discordState);
 
-      expect(await sbtDynamic.getAfterMintStates()).to.deep.equal([discordState]);
+      expect(await sbtDynamic.getAfterMintStates()).to.deep.equal([
+        discordState
+      ]);
     });
 
     it("should fail to add state from non owner", async () => {
-      await expect(sbtDynamic.connect(address1).addBeforeMintState(discordState))
+      await expect(
+        sbtDynamic.connect(address1).addBeforeMintState(discordState)
+      ).to.be.rejected;
+      await expect(sbtDynamic.connect(address1).addAfterMintState(discordState))
         .to.be.rejected;
-      await expect(sbtDynamic.connect(address1).addAfterMintState(discordState)).to
-        .be.rejected;
     });
   });
 
@@ -325,14 +328,16 @@ describe("ReferenceSBTDynamicSelfSovereign", () => {
           )
       ).to.be.rejected;
 
-      await sbtDynamic.connect(address1)["setState(address,string,bool,address,uint256,bytes)"](
-        address1.address,
-        discordState,
-        true,
-        authority.address,
-        signatureDate,
-        signatureSetDiscordStateToAccount
-      );
+      await sbtDynamic
+        .connect(address1)
+        ["setState(address,string,bool,address,uint256,bytes)"](
+          address1.address,
+          discordState,
+          true,
+          authority.address,
+          signatureDate,
+          signatureSetDiscordStateToAccount
+        );
 
       await expect(
         sbtDynamic
@@ -342,6 +347,39 @@ describe("ReferenceSBTDynamicSelfSovereign", () => {
             address1.address
           )
       ).to.be.rejected;
+    });
+
+    it("should mint if all before mint states are set", async () => {
+      await sbtDynamic
+        .connect(address1)
+        ["setState(address,string,bool,address,uint256,bytes)"](
+          address1.address,
+          discordState,
+          true,
+          authority.address,
+          signatureDate,
+          signatureSetDiscordStateToAccount
+        );
+
+      await sbtDynamic
+        .connect(address1)
+        ["setState(address,string,bool,address,uint256,bytes)"](
+          address1.address,
+          twitterState,
+          true,
+          authority.address,
+          signatureDate,
+          signatureSetTwitterStateToAccount
+        );
+
+      await sbtDynamic
+        .connect(address1)
+        ["mint(address,address)"](
+          ethers.constants.AddressZero,
+          address1.address
+        );
+
+      expect(await sbtDynamic.balanceOf(address1.address)).to.equal(1);
     });
   });
 });
