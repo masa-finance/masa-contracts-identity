@@ -426,7 +426,7 @@ describe("ReferenceSBTDynamicSelfSovereign", () => {
       );
     });
 
-    it("should mint if all before mint states are set", async () => {
+    it("should set all after mint states", async () => {
       await sbtDynamic
         .connect(address1)
         ["setState(uint256,string,bool,address,uint256,bytes)"](
