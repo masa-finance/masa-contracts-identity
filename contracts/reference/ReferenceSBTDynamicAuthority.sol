@@ -10,7 +10,11 @@ import "../tokens/MasaSBTDynamic.sol";
 /// @author Masa Finance
 /// @notice Soulbound token that represents a Authority SBT with states
 /// @dev Inherits from the SBT contract.
-contract ReferenceSBTDynamicAuthority is MasaSBTAuthority, MasaSBTDynamic, ReentrancyGuard {
+contract ReferenceSBTDynamicAuthority is
+    MasaSBTAuthority,
+    MasaSBTDynamic,
+    ReentrancyGuard
+{
     /* ========== STATE VARIABLES =========================================== */
 
     /* ========== INITIALIZE ================================================ */
