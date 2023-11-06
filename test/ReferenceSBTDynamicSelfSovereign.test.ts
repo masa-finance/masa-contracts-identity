@@ -48,7 +48,7 @@ const signSetStateToAccount = async (
     },
     // Types
     {
-      Mint: [
+      SetState: [
         { name: "account", type: "address" },
         { name: "state", type: "string" },
         { name: "value", type: "bool" },
@@ -87,7 +87,7 @@ const signSetStateToTokenId = async (
     },
     // Types
     {
-      Mint: [
+      SetState: [
         { name: "tokenId", type: "uint256" },
         { name: "state", type: "string" },
         { name: "value", type: "bool" },
