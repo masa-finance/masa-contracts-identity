@@ -505,6 +505,50 @@ Mints a new SBT
 ### mint
 
 ```solidity
+function mint(address to) external payable returns (uint256)
+```
+
+Mints a new SBT
+
+*The caller must have the MINTER role*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| to | address | The address to mint the SBT to |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | The SBT ID of the newly minted SBT |
+
+### mint
+
+```solidity
+function mint(uint256 identityId) external payable returns (uint256)
+```
+
+Mints a new SBT
+
+*The caller must have the MINTER role*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| identityId | uint256 | TokenId of the identity to mint the NFT to |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | The SBT ID of the newly minted SBT |
+
+### mint
+
+```solidity
 function mint(address paymentMethod, uint256[] identityId) external payable returns (uint256[] tokenIds)
 ```
 
@@ -1292,6 +1336,24 @@ event MintedToIdentity(uint256 tokenId, uint256 identityId)
 |---|---|---|
 | tokenId  | uint256 | undefined |
 | identityId  | uint256 | undefined |
+
+### Pay
+
+```solidity
+event Pay(address indexed paymentMethod, uint256 amount, uint256 protocolFee)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| paymentMethod `indexed` | address | undefined |
+| amount  | uint256 | undefined |
+| protocolFee  | uint256 | undefined |
 
 ### RoleAdminChanged
 
