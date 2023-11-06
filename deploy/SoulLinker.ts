@@ -1,4 +1,4 @@
-import hre from "hardhat";
+import { run } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
 import { getEnvParams, getPrivateKey } from "../src/EnvParams";
@@ -60,7 +60,7 @@ const func: DeployFunction = async ({
     // verify contract with etherscan, if its not a local network or celo
     if (network.name !== "hardhat") {
       try {
-        await hre.run("verify:verify", {
+        await run("verify:verify", {
           address: soulLinkerDeploymentResult.address,
           constructorArguments
         });

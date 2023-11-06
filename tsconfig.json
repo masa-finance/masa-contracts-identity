@@ -1,20 +1,24 @@
 {
   "compilerOptions": {
-    "target": "es2018",
-    "module": "commonjs",
+    "target": "ES2018",
+    "module": "CommonJS",
     "outDir": "dist",
     "declaration": true,
     "strict": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "rootDirs": ["./test"],
+    "rootDirs": [
+      "./test"
+    ],
+    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "useUnknownInCatchVariables": false,
     "noImplicitAny": false
   },
   "include": [
     "./typechain",
-    "./src"
+    "./src",
+    "./test"
   ],
   "exclude": [
     "./node_modules/*"

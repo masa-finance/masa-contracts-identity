@@ -1,7 +1,7 @@
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 import { solidity } from "ethereum-waffle";
-import { ethers, deployments, getChainId } from "hardhat";
+import { deployments, ethers, getChainId } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
   ReferenceSBTDynamicSelfSovereign,
@@ -86,17 +86,18 @@ describe("ReferenceSBTDynamicSelfSovereign", () => {
       env.SOULBOUNDGREEN_SYMBOL,
       baseUri,
       soulboundIdentityAddress,
-      [
-        env.SWAP_ROUTER,
-        env.WETH_TOKEN,
-        env.USDC_TOKEN,
-        env.MASA_TOKEN,
-        env.PROJECTFEE_RECEIVER || owner.address,
-        env.PROTOCOLFEE_RECEIVER || ethers.constants.AddressZero,
-        env.PROTOCOLFEE_AMOUNT || 0,
-        env.PROTOCOLFEE_PERCENT || 0,
-        env.PROTOCOLFEE_PERCENT_SUB || 0
-      ],
+      {
+        swapRouter: env.SWAP_ROUTER,
+        wrappedNativeToken: env.WETH_TOKEN,
+        stableCoin: env.USDC_TOKEN,
+        masaToken: env.MASA_TOKEN,
+        projectFeeReceiver: env.PROJECTFEE_RECEIVER || owner.address,
+        protocolFeeReceiver:
+          env.PROTOCOLFEE_RECEIVER || ethers.constants.AddressZero,
+        protocolFeeAmount: env.PROTOCOLFEE_AMOUNT || 0,
+        protocolFeePercent: env.PROTOCOLFEE_PERCENT || 0,
+        protocolFeePercentSub: env.PROTOCOLFEE_PERCENT_SUB || 0
+      },
       1
     );
     await sbtDynamicDeploy.deployed();
