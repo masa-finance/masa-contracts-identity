@@ -56,8 +56,7 @@ const func: DeployFunction = async ({
       env.PROTOCOLFEE_AMOUNT || 0,
       env.PROTOCOLFEE_PERCENT || 0,
       env.PROTOCOLFEE_PERCENT_SUB || 0
-    ],
-    0
+    ]
   ];
 
   const soulboundGreenDeploymentResult = await deploy("SoulboundGreen", {
