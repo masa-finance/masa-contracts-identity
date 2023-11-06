@@ -33,7 +33,7 @@ abstract contract MasaSBT is
     Counters.Counter private _tokenIdCounter;
 
     string private _baseTokenURI;
-    uint256 public maxSBTToMint = 1;
+    uint256 public immutable maxSBTToMint;
 
     ISoulboundIdentity public soulboundIdentity;
 
