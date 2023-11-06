@@ -27,11 +27,13 @@ let authority: SignerWithAddress;
 let identityId1: number;
 
 const signatureDate = Math.floor(Date.now() / 1000);
+const discordState = "discord";
+const twitterState = "twitter";
 
-let signatureToAddress: string;
-
-const signMintSBTToAddress = async (
-  to: string,
+const signSetStateToAccount = async (
+  account: string,
+  state: string,
+  value: boolean,
   authoritySigner: SignerWithAddress
 ) => {
   const chainId = await getChainId();
@@ -39,7 +41,7 @@ const signMintSBTToAddress = async (
   const signature = await authoritySigner._signTypedData(
     // Domain
     {
-      name: "ReferenceSBTSelfSovereign",
+      name: "ReferenceSBTDynamicSelfSovereign",
       version: "1.0.0",
       chainId: chainId,
       verifyingContract: sbtDynamic.address
@@ -47,14 +49,57 @@ const signMintSBTToAddress = async (
     // Types
     {
       Mint: [
-        { name: "to", type: "address" },
+        { name: "account", type: "address" },
+        { name: "state", type: "string" },
+        { name: "value", type: "bool" },
         { name: "authorityAddress", type: "address" },
         { name: "signatureDate", type: "uint256" }
       ]
     },
     // Value
     {
-      to: to,
+      account: account,
+      state: state,
+      value: value,
+      authorityAddress: authoritySigner.address,
+      signatureDate: signatureDate
+    }
+  );
+
+  return signature;
+};
+
+const signSetStateToTokenId = async (
+  tokenId: number,
+  state: string,
+  value: boolean,
+  authoritySigner: SignerWithAddress
+) => {
+  const chainId = await getChainId();
+
+  const signature = await authoritySigner._signTypedData(
+    // Domain
+    {
+      name: "ReferenceSBTDynamicSelfSovereign",
+      version: "1.0.0",
+      chainId: chainId,
+      verifyingContract: sbtDynamic.address
+    },
+    // Types
+    {
+      Mint: [
+        { name: "tokenId", type: "uint256" },
+        { name: "state", type: "string" },
+        { name: "value", type: "bool" },
+        { name: "authorityAddress", type: "address" },
+        { name: "signatureDate", type: "uint256" }
+      ]
+    },
+    // Value
+    {
+      tokenId: tokenId,
+      state: state,
+      value: value,
       authorityAddress: authoritySigner.address,
       signatureDate: signatureDate
     }
@@ -122,11 +167,6 @@ describe("ReferenceSBTDynamicSelfSovereign", () => {
 
     // we add authority account
     await sbtDynamic.addAuthority(authority.address);
-
-    signatureToAddress = await signMintSBTToAddress(
-      address1.address,
-      authority
-    );
   });
 
   describe("owner functions", () => {
@@ -145,23 +185,23 @@ describe("ReferenceSBTDynamicSelfSovereign", () => {
     });
 
     it("should add state from owner", async () => {
-      await sbtDynamic.connect(owner).addBeforeMintState("discord");
-      await sbtDynamic.connect(owner).addBeforeMintState("twitter");
+      await sbtDynamic.connect(owner).addBeforeMintState(discordState);
+      await sbtDynamic.connect(owner).addBeforeMintState(twitterState);
 
       expect(await sbtDynamic.getBeforeMintStates()).to.deep.equal([
-        "discord",
-        "twitter"
+        discordState,
+        twitterState
       ]);
 
-      await sbtDynamic.connect(owner).addAfterMintState("discord");
+      await sbtDynamic.connect(owner).addAfterMintState(discordState);
 
-      expect(await sbtDynamic.getAfterMintStates()).to.deep.equal(["discord"]);
+      expect(await sbtDynamic.getAfterMintStates()).to.deep.equal([discordState]);
     });
 
     it("should fail to add state from non owner", async () => {
-      await expect(sbtDynamic.connect(address1).addBeforeMintState("discord"))
+      await expect(sbtDynamic.connect(address1).addBeforeMintState(discordState))
         .to.be.rejected;
-      await expect(sbtDynamic.connect(address1).addAfterMintState("discord")).to
+      await expect(sbtDynamic.connect(address1).addAfterMintState(discordState)).to
         .be.rejected;
     });
   });
@@ -254,12 +294,46 @@ describe("ReferenceSBTDynamicSelfSovereign", () => {
   });
 
   describe("beforeMintStates", () => {
+    let signatureSetDiscordStateToAccount;
+    let signatureSetTwitterStateToAccount;
+
     beforeEach(async () => {
-      await sbtDynamic.connect(owner).addBeforeMintState("discord");
-      await sbtDynamic.connect(owner).addBeforeMintState("twitter");
+      await sbtDynamic.connect(owner).addBeforeMintState(discordState);
+      await sbtDynamic.connect(owner).addBeforeMintState(twitterState);
+
+      signatureSetDiscordStateToAccount = await signSetStateToAccount(
+        address1.address,
+        discordState,
+        true,
+        authority
+      );
+      signatureSetTwitterStateToAccount = await signSetStateToAccount(
+        address1.address,
+        twitterState,
+        true,
+        authority
+      );
     });
 
     it("should not mint if not all before mint states are set", async () => {
+      await expect(
+        sbtDynamic
+          .connect(address1)
+          ["mint(address,address)"](
+            ethers.constants.AddressZero,
+            address1.address
+          )
+      ).to.be.rejected;
+
+      await sbtDynamic.connect(address1)["setState(address,string,bool,address,uint256,bytes)"](
+        address1.address,
+        discordState,
+        true,
+        authority.address,
+        signatureDate,
+        signatureSetDiscordStateToAccount
+      );
+
       await expect(
         sbtDynamic
           .connect(address1)
