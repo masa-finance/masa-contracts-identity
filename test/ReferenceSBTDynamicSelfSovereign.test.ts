@@ -21,10 +21,7 @@ let sbtDynamic: ReferenceSBTDynamicSelfSovereign;
 
 let owner: SignerWithAddress;
 let address1: SignerWithAddress;
-let address2: SignerWithAddress;
 let authority: SignerWithAddress;
-
-let identityId1: number;
 
 const signatureDate = Math.floor(Date.now() / 1000);
 const discordState = "discord";
@@ -110,7 +107,7 @@ const signSetStateToTokenId = async (
 
 describe("ReferenceSBTDynamicSelfSovereign", () => {
   before(async () => {
-    [, owner, address1, address2, authority] = await ethers.getSigners();
+    [, owner, address1, authority] = await ethers.getSigners();
   });
 
   beforeEach(async () => {
@@ -161,9 +158,6 @@ describe("ReferenceSBTDynamicSelfSovereign", () => {
     const mintTx = await soulboundIdentity
       .connect(owner)
       ["mint(address)"](address1.address);
-    const mintReceipt = await mintTx.wait();
-
-    identityId1 = mintReceipt.events![0].args![1].toNumber();
 
     // we add authority account
     await sbtDynamic.addAuthority(authority.address);
@@ -304,6 +298,11 @@ describe("ReferenceSBTDynamicSelfSovereign", () => {
       await sbtDynamic.connect(owner).addBeforeMintState(discordState);
       await sbtDynamic.connect(owner).addBeforeMintState(twitterState);
 
+      expect(await sbtDynamic.getBeforeMintStates()).to.deep.equal([
+        discordState,
+        twitterState
+      ]);
+
       signatureSetDiscordStateToAccount = await signSetStateToAccount(
         address1.address,
         discordState,
@@ -379,7 +378,80 @@ describe("ReferenceSBTDynamicSelfSovereign", () => {
           address1.address
         );
 
+      expect(await sbtDynamic.beforeMintState(address1.address, discordState))
+        .to.be.true;
+      expect(await sbtDynamic.beforeMintState(address1.address, twitterState))
+        .to.be.true;
+      expect(await sbtDynamic.allBeforeMintStatesSet(address1.address)).to.be
+        .true;
       expect(await sbtDynamic.balanceOf(address1.address)).to.equal(1);
+    });
+  });
+
+  describe("afterMintStates", () => {
+    let signatureSetDiscordStateToAccount;
+    let signatureSetTwitterStateToAccount;
+    let tokenId;
+
+    beforeEach(async () => {
+      await sbtDynamic.connect(owner).addAfterMintState(discordState);
+      await sbtDynamic.connect(owner).addAfterMintState(twitterState);
+
+      expect(await sbtDynamic.getAfterMintStates()).to.deep.equal([
+        discordState,
+        twitterState
+      ]);
+
+      const mintTx = await sbtDynamic
+        .connect(address1)
+        ["mint(address,address)"](
+          ethers.constants.AddressZero,
+          address1.address
+        );
+      const mintReceipt = await mintTx.wait();
+
+      tokenId = mintReceipt.events![0].args![1].toNumber();
+
+      signatureSetDiscordStateToAccount = await signSetStateToTokenId(
+        tokenId,
+        discordState,
+        true,
+        authority
+      );
+      signatureSetTwitterStateToAccount = await signSetStateToTokenId(
+        tokenId,
+        twitterState,
+        true,
+        authority
+      );
+    });
+
+    it("should mint if all before mint states are set", async () => {
+      await sbtDynamic
+        .connect(address1)
+        ["setState(uint256,string,bool,address,uint256,bytes)"](
+          tokenId,
+          discordState,
+          true,
+          authority.address,
+          signatureDate,
+          signatureSetDiscordStateToAccount
+        );
+
+      await sbtDynamic
+        .connect(address1)
+        ["setState(uint256,string,bool,address,uint256,bytes)"](
+          tokenId,
+          twitterState,
+          true,
+          authority.address,
+          signatureDate,
+          signatureSetTwitterStateToAccount
+        );
+
+      expect(await sbtDynamic.afterMintState(tokenId, discordState)).to.be.true;
+      expect(await sbtDynamic.afterMintState(tokenId, twitterState)).to.be.true;
+      expect(await sbtDynamic.allAfterMintStatesSet(tokenId)).to.be.true;
     });
   });
 });
