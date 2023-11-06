@@ -115,55 +115,43 @@ contract ReferenceSBTDynamicSelfSovereign is
     }
 
     /// @notice Mints a new SBT
-    /// @dev The signer of the signature must be a valid authority
-    /// @param paymentMethod Address of token that user want to pay
+    /// @dev The caller must have the MINTER role
     /// @param identityId TokenId of the identity to mint the NFT to
-    /// @param authorityAddress Address of the authority that signed the message
-    /// @param signatureDate Date of the signature
-    /// @param signature Signature of the message
     /// @return The SBT ID of the newly minted SBT
-    function mint(
-        address paymentMethod,
-        uint256 identityId,
-        address authorityAddress,
-        uint256 signatureDate,
-        bytes calldata signature
-    ) external payable virtual nonReentrant returns (uint256) {
-        return
-            _mintWithCounter(
-                paymentMethod,
-                identityId,
-                _hash(identityId, authorityAddress, signatureDate),
-                authorityAddress,
-                signatureDate,
-                signature
-            );
+    function mint(uint256 identityId) external payable returns (uint256) {
+        return mint(address(0), identityId);
     }
 
     /// @notice Mints a new SBT
-    /// @dev The signer of the signature must be a valid authority
-    /// @param paymentMethod Address of token that user want to pay
+    /// @dev The caller must have the MINTER role
     /// @param to The address to mint the SBT to
-    /// @param authorityAddress Address of the authority that signed the message
-    /// @param signatureDate Date of the signature
-    /// @param signature Signature of the message
+    /// @return The SBT ID of the newly minted SBT
+    function mint(address to) external payable returns (uint256) {
+        return mint(address(0), to);
+    }
+
+    /// @notice Mints a new SBT
+    /// @dev The caller must have the MINTER role
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param identityId TokenId of the identity to mint the NFT to
     /// @return The SBT ID of the newly minted SBT
     function mint(
         address paymentMethod,
-        address to,
-        address authorityAddress,
-        uint256 signatureDate,
-        bytes calldata signature
-    ) external payable virtual nonReentrant returns (uint256) {
-        return
-            _mintWithCounter(
-                paymentMethod,
-                to,
-                _hash(to, authorityAddress, signatureDate),
-                authorityAddress,
-                signatureDate,
-                signature
-            );
+        uint256 identityId
+    ) public payable nonReentrant returns (uint256) {
+        return _mintWithCounter(paymentMethod, identityId);
+    }
+
+    /// @notice Mints a new SBT
+    /// @dev The caller must have the MINTER role
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param to The address to mint the SBT to
+    /// @return The SBT ID of the newly minted SBT
+    function mint(
+        address paymentMethod,
+        address to
+    ) public payable nonReentrant returns (uint256) {
+        return _mintWithCounter(paymentMethod, to);
     }
 
     /* ========== VIEWS ===================================================== */
@@ -226,7 +214,32 @@ contract ReferenceSBTDynamicSelfSovereign is
             );
     }
 
+    function _mintWithCounter(
+        address paymentMethod,
+        uint256 identityId
+    ) internal virtual returns (uint256) {
+        address to = soulboundIdentity.ownerOf(identityId);
+        uint256 tokenId = MasaSBT._mintWithCounter(paymentMethod, to);
+        emit MintedToIdentity(tokenId, identityId);
+
+        return tokenId;
+    }
+
+    function _mintWithCounter(
+        address paymentMethod,
+        address to
+    ) internal virtual override returns (uint256) {
+        uint256 tokenId = MasaSBT._mintWithCounter(paymentMethod, to);
+        emit MintedToAddress(tokenId, to);
+
+        return tokenId;
+    }
+
     /* ========== MODIFIERS ================================================= */
 
     /* ========== EVENTS ==================================================== */
+
+    event MintedToIdentity(uint256 tokenId, uint256 identityId);
+
+    event MintedToAddress(uint256 tokenId, address to);
 }

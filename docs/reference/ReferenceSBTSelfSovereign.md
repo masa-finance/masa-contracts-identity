@@ -508,7 +508,7 @@ function mint(address paymentMethod, uint256 identityId, address authorityAddres
 
 Mints a new SBT
 
-*The caller must have the MINTER role*
+*The signer of the signature must be a valid authority*
 
 #### Parameters
 
@@ -534,7 +534,7 @@ function mint(address paymentMethod, address to, address authorityAddress, uint2
 
 Mints a new SBT
 
-*The caller must have the MINTER role*
+*The signer of the signature must be a valid authority*
 
 #### Parameters
 
