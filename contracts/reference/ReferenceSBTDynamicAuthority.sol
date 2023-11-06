@@ -1,14 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
-import "./ReferenceSBTAuthority.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+
+import "../tokens/MasaSBTAuthority.sol";
 import "../tokens/MasaSBTDynamic.sol";
 
 /// @title Soulbound reference Authority SBT with states
 /// @author Masa Finance
 /// @notice Soulbound token that represents a Authority SBT with states
 /// @dev Inherits from the SBT contract.
-contract ReferenceSBTDynamicAuthority is ReferenceSBTAuthority, MasaSBTDynamic {
+contract ReferenceSBTDynamicAuthority is MasaSBTAuthority, MasaSBTDynamic, ReentrancyGuard {
     /* ========== STATE VARIABLES =========================================== */
 
     /* ========== INITIALIZE ================================================ */
@@ -31,7 +33,7 @@ contract ReferenceSBTDynamicAuthority is ReferenceSBTAuthority, MasaSBTDynamic {
         PaymentParams memory paymentParams,
         uint256 maxSBTToMint
     )
-        ReferenceSBTAuthority(
+        MasaSBTAuthority(
             admin,
             name,
             symbol,
@@ -60,23 +62,49 @@ contract ReferenceSBTDynamicAuthority is ReferenceSBTAuthority, MasaSBTDynamic {
         _setState(tokenId, state, value);
     }
 
+    /// @notice Mints a new SBT
+    /// @dev The caller must have the MINTER role
+    /// @param identityId TokenId of the identity to mint the NFT to
+    /// @return The SBT ID of the newly minted SBT
+    function mint(uint256 identityId) external payable returns (uint256) {
+        return mint(address(0), identityId);
+    }
+
+    /// @notice Mints a new SBT
+    /// @dev The caller must have the MINTER role
+    /// @param to The address to mint the SBT to
+    /// @return The SBT ID of the newly minted SBT
+    function mint(address to) external payable returns (uint256) {
+        return mint(address(0), to);
+    }
+
+    /// @notice Mints a new SBT
+    /// @dev The caller must have the MINTER role
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param identityId TokenId of the identity to mint the NFT to
+    /// @return The SBT ID of the newly minted SBT
+    function mint(
+        address paymentMethod,
+        uint256 identityId
+    ) public payable nonReentrant returns (uint256) {
+        return _mintWithCounter(paymentMethod, identityId);
+    }
+
+    /// @notice Mints a new SBT
+    /// @dev The caller must have the MINTER role
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param to The address to mint the SBT to
+    /// @return The SBT ID of the newly minted SBT
+    function mint(
+        address paymentMethod,
+        address to
+    ) public payable nonReentrant returns (uint256) {
+        return _mintWithCounter(paymentMethod, to);
+    }
+
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
     /* ========== VIEWS ===================================================== */
-
-    function tokenURI(
-        uint256 tokenId
-    )
-        public
-        view
-        virtual
-        override(MasaSBT, ReferenceSBTAuthority)
-        returns (string memory)
-    {
-        _requireMinted(tokenId);
-
-        return _baseURI();
-    }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
 
@@ -92,9 +120,7 @@ contract ReferenceSBTDynamicAuthority is ReferenceSBTAuthority, MasaSBTDynamic {
         address paymentMethod,
         address to
     ) internal virtual override(MasaSBT, MasaSBTAuthority) returns (uint256) {
-        uint256 tokenId = MasaSBTAuthority._mintWithCounter(paymentMethod, to);
-
-        return tokenId;
+        return MasaSBTAuthority._mintWithCounter(paymentMethod, to);
     }
 
     /* ========== MODIFIERS ================================================= */

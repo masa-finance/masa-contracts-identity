@@ -615,29 +615,6 @@ function maxSBTToMint() external view returns (uint256)
 ### mint
 
 ```solidity
-function mint(address paymentMethod, address[] to) external payable returns (uint256[] tokenIds)
-```
-
-Bulk mint of new SBTs
-
-*The caller must have the MINTER role*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| paymentMethod | address | Address of token that user want to pay |
-| to | address[] | Addresses array to mint the SBT to |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| tokenIds | uint256[] | The SBT IDs of the newly minted SBTs |
-
-### mint
-
-```solidity
 function mint(address paymentMethod, uint256 identityId) external payable returns (uint256)
 ```
 
@@ -701,29 +678,6 @@ Mints a new SBT
 | Name | Type | Description |
 |---|---|---|
 | _0 | uint256 | The SBT ID of the newly minted SBT |
-
-### mint
-
-```solidity
-function mint(address paymentMethod, uint256[] identityId) external payable returns (uint256[] tokenIds)
-```
-
-Bulk mint of new SBTs
-
-*The caller must have the MINTER role*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| paymentMethod | address | Address of token that user want to pay |
-| identityId | uint256[] | TokenIds array of the identity to mint the NFT to |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| tokenIds | uint256[] | The SBT IDs of the newly minted SBTs |
 
 ### mint
 
@@ -1439,21 +1393,21 @@ function tokenOfOwnerByIndex(address owner, uint256 index) external view returns
 function tokenURI(uint256 tokenId) external view returns (string)
 ```
 
+A distinct Uniform Resource Identifier (URI) for a given asset.
 
-
-
+*Throws if `_tokenId` is not a valid SBT. URIs are defined in RFC  3986. The URI may point to a JSON file that conforms to the &quot;ERC721  Metadata JSON Schema&quot;.*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| tokenId | uint256 | undefined |
+| tokenId | uint256 | SBT to get the URI of |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | string | undefined |
+| _0 | string | URI of the SBT |
 
 ### totalSupply
 
