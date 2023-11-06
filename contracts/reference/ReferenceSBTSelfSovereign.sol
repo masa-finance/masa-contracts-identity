@@ -49,7 +49,7 @@ contract ReferenceSBTSelfSovereign is MasaSBTSelfSovereign, ReentrancyGuard {
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
     /// @notice Mints a new SBT
-    /// @dev The caller must have the MINTER role
+    /// @dev The signer of the signature must be a valid authority
     /// @param paymentMethod Address of token that user want to pay
     /// @param identityId TokenId of the identity to mint the NFT to
     /// @param authorityAddress Address of the authority that signed the message
@@ -75,7 +75,7 @@ contract ReferenceSBTSelfSovereign is MasaSBTSelfSovereign, ReentrancyGuard {
     }
 
     /// @notice Mints a new SBT
-    /// @dev The caller must have the MINTER role
+    /// @dev The signer of the signature must be a valid authority
     /// @param paymentMethod Address of token that user want to pay
     /// @param to The address to mint the SBT to
     /// @param authorityAddress Address of the authority that signed the message

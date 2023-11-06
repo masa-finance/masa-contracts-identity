@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
-import "./ReferenceSBTSelfSovereign.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+
+import "../tokens/MasaSBTSelfSovereign.sol";
 import "../tokens/MasaSBTDynamic.sol";
 
 /// @title Soulbound reference Self-Sovereign SBT with states
@@ -9,8 +11,9 @@ import "../tokens/MasaSBTDynamic.sol";
 /// @notice Soulbound token that represents a Self-Sovereign SBT with states
 /// @dev Inherits from the SBT contract.
 contract ReferenceSBTDynamicSelfSovereign is
-    ReferenceSBTSelfSovereign,
-    MasaSBTDynamic
+    MasaSBTSelfSovereign,
+    MasaSBTDynamic,
+    ReentrancyGuard
 {
     /* ========== STATE VARIABLES =========================================== */
 
@@ -34,7 +37,7 @@ contract ReferenceSBTDynamicSelfSovereign is
         PaymentParams memory paymentParams,
         uint256 maxSBTToMint
     )
-        ReferenceSBTSelfSovereign(
+        MasaSBTSelfSovereign(
             admin,
             name,
             symbol,
@@ -43,12 +46,21 @@ contract ReferenceSBTDynamicSelfSovereign is
             paymentParams,
             maxSBTToMint
         )
+        EIP712("ReferenceSBTDynamicSelfSovereign", "1.0.0")
     {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
+    /// @notice Sets the state of an account
+    /// @dev The signer of the signature must be a valid authority
+    /// @param account Address of the account to set the state
+    /// @param state Name of the state to set
+    /// @param value Value of the state to set
+    /// @param authorityAddress Address of the authority that signed the message
+    /// @param signatureDate Date of the signature
+    /// @param signature Signature of the message
     function setState(
         address account,
         string memory state,
@@ -71,6 +83,14 @@ contract ReferenceSBTDynamicSelfSovereign is
         _setState(account, state, value);
     }
 
+    /// @notice Sets the state of an account
+    /// @dev The signer of the signature must be a valid authority
+    /// @param tokenId TokenId of the token to set the state
+    /// @param state Name of the state to set
+    /// @param value Value of the state to set
+    /// @param authorityAddress Address of the authority that signed the message
+    /// @param signatureDate Date of the signature
+    /// @param signature Signature of the message
     function setState(
         uint256 tokenId,
         string memory state,
@@ -94,21 +114,59 @@ contract ReferenceSBTDynamicSelfSovereign is
         _setState(tokenId, state, value);
     }
 
-    /* ========== VIEWS ===================================================== */
-
-    function tokenURI(
-        uint256 tokenId
-    )
-        public
-        view
-        virtual
-        override(MasaSBT, ReferenceSBTSelfSovereign)
-        returns (string memory)
-    {
-        _requireMinted(tokenId);
-
-        return _baseURI();
+    /// @notice Mints a new SBT
+    /// @dev The signer of the signature must be a valid authority
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param identityId TokenId of the identity to mint the NFT to
+    /// @param authorityAddress Address of the authority that signed the message
+    /// @param signatureDate Date of the signature
+    /// @param signature Signature of the message
+    /// @return The SBT ID of the newly minted SBT
+    function mint(
+        address paymentMethod,
+        uint256 identityId,
+        address authorityAddress,
+        uint256 signatureDate,
+        bytes calldata signature
+    ) external payable virtual nonReentrant returns (uint256) {
+        return
+            _mintWithCounter(
+                paymentMethod,
+                identityId,
+                _hash(identityId, authorityAddress, signatureDate),
+                authorityAddress,
+                signatureDate,
+                signature
+            );
     }
+
+    /// @notice Mints a new SBT
+    /// @dev The signer of the signature must be a valid authority
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param to The address to mint the SBT to
+    /// @param authorityAddress Address of the authority that signed the message
+    /// @param signatureDate Date of the signature
+    /// @param signature Signature of the message
+    /// @return The SBT ID of the newly minted SBT
+    function mint(
+        address paymentMethod,
+        address to,
+        address authorityAddress,
+        uint256 signatureDate,
+        bytes calldata signature
+    ) external payable virtual nonReentrant returns (uint256) {
+        return
+            _mintWithCounter(
+                paymentMethod,
+                to,
+                _hash(to, authorityAddress, signatureDate),
+                authorityAddress,
+                signatureDate,
+                signature
+            );
+    }
+
+    /* ========== VIEWS ===================================================== */
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
 

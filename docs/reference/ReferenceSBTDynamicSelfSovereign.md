@@ -664,7 +664,7 @@ function mint(address paymentMethod, uint256 identityId, address authorityAddres
 
 Mints a new SBT
 
-*The caller must have the MINTER role*
+*The signer of the signature must be a valid authority*
 
 #### Parameters
 
@@ -690,7 +690,7 @@ function mint(address paymentMethod, address to, address authorityAddress, uint2
 
 Mints a new SBT
 
-*The caller must have the MINTER role*
+*The signer of the signature must be a valid authority*
 
 #### Parameters
 
@@ -1212,20 +1212,20 @@ Sets the stable coin to pay the fee in (USDC)
 function setState(uint256 tokenId, string state, bool value, address authorityAddress, uint256 signatureDate, bytes signature) external nonpayable
 ```
 
+Sets the state of an account
 
-
-
+*The signer of the signature must be a valid authority*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| tokenId | uint256 | undefined |
-| state | string | undefined |
-| value | bool | undefined |
-| authorityAddress | address | undefined |
-| signatureDate | uint256 | undefined |
-| signature | bytes | undefined |
+| tokenId | uint256 | TokenId of the token to set the state |
+| state | string | Name of the state to set |
+| value | bool | Value of the state to set |
+| authorityAddress | address | Address of the authority that signed the message |
+| signatureDate | uint256 | Date of the signature |
+| signature | bytes | Signature of the message |
 
 ### setState
 
@@ -1233,20 +1233,20 @@ function setState(uint256 tokenId, string state, bool value, address authorityAd
 function setState(address account, string state, bool value, address authorityAddress, uint256 signatureDate, bytes signature) external nonpayable
 ```
 
+Sets the state of an account
 
-
-
+*The signer of the signature must be a valid authority*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| account | address | undefined |
-| state | string | undefined |
-| value | bool | undefined |
-| authorityAddress | address | undefined |
-| signatureDate | uint256 | undefined |
-| signature | bytes | undefined |
+| account | address | Address of the account to set the state |
+| state | string | Name of the state to set |
+| value | bool | Value of the state to set |
+| authorityAddress | address | Address of the authority that signed the message |
+| signatureDate | uint256 | Date of the signature |
+| signature | bytes | Signature of the message |
 
 ### setSwapRouter
 
@@ -1421,21 +1421,21 @@ function tokenOfOwnerByIndex(address owner, uint256 index) external view returns
 function tokenURI(uint256 tokenId) external view returns (string)
 ```
 
+A distinct Uniform Resource Identifier (URI) for a given asset.
 
-
-
+*Throws if `_tokenId` is not a valid SBT. URIs are defined in RFC  3986. The URI may point to a JSON file that conforms to the &quot;ERC721  Metadata JSON Schema&quot;.*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| tokenId | uint256 | undefined |
+| tokenId | uint256 | SBT to get the URI of |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | string | undefined |
+| _0 | string | URI of the SBT |
 
 ### totalSupply
 
