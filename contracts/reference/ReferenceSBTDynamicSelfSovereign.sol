@@ -220,7 +220,14 @@ contract ReferenceSBTDynamicSelfSovereign is
     ) internal virtual returns (uint256) {
         address to = soulboundIdentity.ownerOf(identityId);
         uint256 tokenId = MasaSBT._mintWithCounter(paymentMethod, to);
-        emit MintedToIdentity(tokenId, identityId);
+        emit MintedToIdentity(
+            tokenId,
+            identityId,
+            address(0),
+            0,
+            address(0),
+            0
+        );
 
         return tokenId;
     }
@@ -230,7 +237,7 @@ contract ReferenceSBTDynamicSelfSovereign is
         address to
     ) internal virtual override returns (uint256) {
         uint256 tokenId = MasaSBT._mintWithCounter(paymentMethod, to);
-        emit MintedToAddress(tokenId, to);
+        emit MintedToAddress(tokenId, to, address(0), 0, address(0), 0);
 
         return tokenId;
     }
@@ -238,8 +245,4 @@ contract ReferenceSBTDynamicSelfSovereign is
     /* ========== MODIFIERS ================================================= */
 
     /* ========== EVENTS ==================================================== */
-
-    event MintedToIdentity(uint256 tokenId, uint256 identityId);
-
-    event MintedToAddress(uint256 tokenId, address to);
 }
