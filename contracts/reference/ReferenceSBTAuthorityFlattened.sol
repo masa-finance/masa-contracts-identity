@@ -1903,7 +1903,7 @@ library SafeMath {
 // File contracts/interfaces/dex/IUniswapRouter.sol
 
 // Original license: SPDX_License_Identifier: MIT
-pragma solidity ^0.8.8;
+pragma solidity ^0.8.18;
 
 /// @title Uniswap Router interface
 /// @author Masa Finance
@@ -1949,7 +1949,7 @@ interface IUniswapRouter {
 // File contracts/libraries/Errors.sol
 
 // Original license: SPDX_License_Identifier: MIT
-pragma solidity ^0.8.8;
+pragma solidity ^0.8.18;
 
 error AddressDoesNotHaveIdentity(address to);
 error AlreadyAdded();
@@ -2003,7 +2003,7 @@ error ZeroYearsPeriod(uint256 yearsPeriod);
 // File contracts/dex/PaymentGateway.sol
 
 // Original license: SPDX_License_Identifier: MIT
-pragma solidity ^0.8.8;
+pragma solidity ^0.8.18;
 
 /// @title Pay using a Decentralized automated market maker (AMM) when needed
 /// @author Masa Finance
@@ -2424,7 +2424,7 @@ abstract contract PaymentGateway is AccessControl {
 // File contracts/tokens/SBT/ISBT.sol
 
 // Original license: SPDX_License_Identifier: MIT
-pragma solidity ^0.8.8;
+pragma solidity ^0.8.18;
 
 interface ISBT is IERC165 {
     /// @dev This emits when an SBT is newly minted.
@@ -2453,7 +2453,7 @@ interface ISBT is IERC165 {
 // File contracts/interfaces/ILinkableSBT.sol
 
 // Original license: SPDX_License_Identifier: MIT
-pragma solidity ^0.8.8;
+pragma solidity ^0.8.18;
 
 interface ILinkableSBT is ISBT {
     function addLinkPrice() external view returns (uint256);
@@ -2468,7 +2468,7 @@ interface ILinkableSBT is ISBT {
 // File contracts/interfaces/ISoulName.sol
 
 // Original license: SPDX_License_Identifier: MIT
-pragma solidity ^0.8.8;
+pragma solidity ^0.8.18;
 
 interface ISoulName {
     function mint(
@@ -2516,7 +2516,7 @@ interface ISoulName {
 // File contracts/interfaces/ISoulboundIdentity.sol
 
 // Original license: SPDX_License_Identifier: MIT
-pragma solidity ^0.8.8;
+pragma solidity ^0.8.18;
 
 interface ISoulboundIdentity is ISBT {
     function mint(address to) external payable returns (uint256);
@@ -2675,7 +2675,7 @@ library Counters {
 // File contracts/tokens/SBT/extensions/ISBTMetadata.sol
 
 // Original license: SPDX_License_Identifier: MIT
-pragma solidity ^0.8.8;
+pragma solidity ^0.8.18;
 
 /**
  * @title SBT Soulbound Token Standard, optional metadata extension
@@ -2700,7 +2700,7 @@ interface ISBTMetadata is ISBT {
 // File contracts/tokens/SBT/SBT.sol
 
 // Original license: SPDX_License_Identifier: MIT
-pragma solidity ^0.8.8;
+pragma solidity ^0.8.18;
 
 /// @title SBT
 /// @author Masa Finance
@@ -2910,7 +2910,7 @@ contract SBT is Context, ERC165, ISBT, ISBTMetadata {
 // File contracts/tokens/SBT/extensions/SBTBurnable.sol
 
 // Original license: SPDX_License_Identifier: MIT
-pragma solidity ^0.8.8;
+pragma solidity ^0.8.18;
 
 /**
  * @title SBT Burnable Token
@@ -2937,7 +2937,7 @@ abstract contract SBTBurnable is Context, SBT {
 // File contracts/tokens/SBT/extensions/ISBTEnumerable.sol
 
 // Original license: SPDX_License_Identifier: MIT
-pragma solidity ^0.8.8;
+pragma solidity ^0.8.18;
 
 /**
  * @title SBT Soulbound Token Standard, optional enumeration extension
@@ -2967,7 +2967,7 @@ interface ISBTEnumerable is ISBT {
 // File contracts/tokens/SBT/extensions/SBTEnumerable.sol
 
 // Original license: SPDX_License_Identifier: MIT
-pragma solidity ^0.8.8;
+pragma solidity ^0.8.18;
 
 /**
  * @dev This implements an optional extension of {SBT} defined in the EIP that adds
@@ -3146,7 +3146,7 @@ abstract contract SBTEnumerable is SBT, ISBTEnumerable {
 // File contracts/tokens/MasaSBT.sol
 
 // Original license: SPDX_License_Identifier: MIT
-pragma solidity ^0.8.8;
+pragma solidity ^0.8.18;
 
 /// @title MasaSBT
 /// @author Masa Finance
@@ -3408,7 +3408,7 @@ abstract contract MasaSBT is
 // File contracts/tokens/MasaSBTAuthority.sol
 
 // Original license: SPDX_License_Identifier: MIT
-pragma solidity ^0.8.8;
+pragma solidity ^0.8.18;
 
 /// @title MasaSBT
 /// @author Masa Finance
@@ -3484,7 +3484,7 @@ abstract contract MasaSBTAuthority is MasaSBT {
 // File contracts/reference/ReferenceSBTAuthority.sol
 
 // Original license: SPDX_License_Identifier: MIT
-pragma solidity ^0.8.8;
+pragma solidity ^0.8.18;
 
 /// @title Soulbound reference Authority SBT
 /// @author Masa Finance
