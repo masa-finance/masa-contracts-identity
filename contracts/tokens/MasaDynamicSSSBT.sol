@@ -3,14 +3,14 @@ pragma solidity ^0.8.18;
 
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-import "../tokens/MasaSBTSelfSovereign.sol";
-import "../tokens/MasaSBTDynamic.sol";
+import "./MasaSBTSelfSovereign.sol";
+import "./MasaSBTDynamic.sol";
 
-/// @title Soulbound reference Self-Sovereign SBT with states
+/// @title Soulbound Self-Sovereign SBT with states
 /// @author Masa Finance
 /// @notice Soulbound token that represents a Self-Sovereign SBT with states
 /// @dev Inherits from the SBT contract.
-contract ReferenceSBTDynamicSelfSovereign is
+contract MasaDynamicSSSBT is
     MasaSBTSelfSovereign,
     MasaSBTDynamic,
     ReentrancyGuard
@@ -46,7 +46,7 @@ contract ReferenceSBTDynamicSelfSovereign is
             paymentParams,
             maxSBTToMint
         )
-        EIP712("ReferenceSBTDynamicSelfSovereign", "1.0.0")
+        EIP712("MasaDynamicSSSBT", "1.0.0")
     {}
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */

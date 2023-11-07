@@ -3,18 +3,14 @@ pragma solidity ^0.8.18;
 
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-import "../tokens/MasaSBTAuthority.sol";
-import "../tokens/MasaSBTDynamic.sol";
+import "./MasaSBTAuthority.sol";
+import "./MasaSBTDynamic.sol";
 
-/// @title Soulbound reference Authority SBT with states
+/// @title Soulbound Authority SBT with states
 /// @author Masa Finance
 /// @notice Soulbound token that represents a Authority SBT with states
 /// @dev Inherits from the SBT contract.
-contract ReferenceSBTDynamicAuthority is
-    MasaSBTAuthority,
-    MasaSBTDynamic,
-    ReentrancyGuard
-{
+contract MasaDynamicASBT is MasaSBTAuthority, MasaSBTDynamic, ReentrancyGuard {
     /* ========== STATE VARIABLES =========================================== */
 
     /* ========== INITIALIZE ================================================ */

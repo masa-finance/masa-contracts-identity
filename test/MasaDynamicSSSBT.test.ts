@@ -4,8 +4,8 @@ import { solidity } from "ethereum-waffle";
 import { deployments, ethers, getChainId } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
-  ReferenceSBTDynamicSelfSovereign,
-  ReferenceSBTDynamicSelfSovereign__factory,
+  MasaDynamicSSSBT,
+  MasaDynamicSSSBT__factory,
   SoulboundIdentity,
   SoulboundIdentity__factory
 } from "../typechain";
@@ -17,7 +17,7 @@ const expect = chai.expect;
 
 // contract instances
 let soulboundIdentity: SoulboundIdentity;
-let sbtDynamic: ReferenceSBTDynamicSelfSovereign;
+let sbtDynamic: MasaDynamicSSSBT;
 
 let owner: SignerWithAddress;
 let address1: SignerWithAddress;
@@ -38,7 +38,7 @@ const signSetStateToAccount = async (
   const signature = await authoritySigner._signTypedData(
     // Domain
     {
-      name: "ReferenceSBTDynamicSelfSovereign",
+      name: "MasaDynamicSSSBT",
       version: "1.0.0",
       chainId: chainId,
       verifyingContract: sbtDynamic.address
@@ -77,7 +77,7 @@ const signSetStateToTokenId = async (
   const signature = await authoritySigner._signTypedData(
     // Domain
     {
-      name: "ReferenceSBTDynamicSelfSovereign",
+      name: "MasaDynamicSSSBT",
       version: "1.0.0",
       chainId: chainId,
       verifyingContract: sbtDynamic.address
@@ -105,7 +105,7 @@ const signSetStateToTokenId = async (
   return signature;
 };
 
-describe("ReferenceSBTDynamicSelfSovereign", () => {
+describe("MasaDynamicSSSBT", () => {
   before(async () => {
     [, owner, address1, authority] = await ethers.getSigners();
   });
@@ -119,9 +119,7 @@ describe("ReferenceSBTDynamicSelfSovereign", () => {
     const env = getEnvParams("hardhat");
     const baseUri = `${env.BASE_URI}/green/hardhat/`;
 
-    const SBTDynamic = await ethers.getContractFactory(
-      "ReferenceSBTDynamicSelfSovereign"
-    );
+    const SBTDynamic = await ethers.getContractFactory("MasaDynamicSSSBT");
     const sbtDynamicDeploy = await SBTDynamic.deploy(
       env.ADMIN || owner.address,
       env.SOULBOUNDGREEN_NAME,
@@ -149,7 +147,7 @@ describe("ReferenceSBTDynamicSelfSovereign", () => {
       owner
     );
 
-    sbtDynamic = ReferenceSBTDynamicSelfSovereign__factory.connect(
+    sbtDynamic = MasaDynamicSSSBT__factory.connect(
       sbtDynamicDeploy.address,
       owner
     );

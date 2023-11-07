@@ -1,10 +1,10 @@
-# ReferenceSBTDynamicAuthority
+# MasaDynamicSSSBT
 
 *Masa Finance*
 
-> Soulbound reference Authority SBT with states
+> Soulbound Self-Sovereign SBT with states
 
-Soulbound token that represents a Authority SBT with states
+Soulbound token that represents a Self-Sovereign SBT with states
 
 *Inherits from the SBT contract.*
 
@@ -14,23 +14,6 @@ Soulbound token that represents a Authority SBT with states
 
 ```solidity
 function DEFAULT_ADMIN_ROLE() external view returns (bytes32)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | bytes32 | undefined |
-
-### MINTER_ROLE
-
-```solidity
-function MINTER_ROLE() external view returns (bytes32)
 ```
 
 
@@ -76,6 +59,22 @@ Adds a afterMintState
 | Name | Type | Description |
 |---|---|---|
 | state | string | New afterMintState to add |
+
+### addAuthority
+
+```solidity
+function addAuthority(address _authority) external nonpayable
+```
+
+Adds a new authority to the list of authorities
+
+*The caller must have the admin or project admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _authority | address | New authority to add |
 
 ### addBeforeMintState
 
@@ -194,6 +193,28 @@ function allBeforeMintStatesSet(address account) external view returns (bool)
 |---|---|---|
 | _0 | bool | undefined |
 
+### authorities
+
+```solidity
+function authorities(address) external view returns (bool)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bool | undefined |
+
 ### balanceOf
 
 ```solidity
@@ -270,6 +291,29 @@ Removes a token as a valid payment method
 | Name | Type | Description |
 |---|---|---|
 | _paymentMethod | address | Token to remove |
+
+### eip712Domain
+
+```solidity
+function eip712Domain() external view returns (bytes1 fields, string name, string version, uint256 chainId, address verifyingContract, bytes32 salt, uint256[] extensions)
+```
+
+
+
+*See {EIP-5267}. _Available since v4.9._*
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| fields | bytes1 | undefined |
+| name | string | undefined |
+| version | string | undefined |
+| chainId | uint256 | undefined |
+| verifyingContract | address | undefined |
+| salt | bytes32 | undefined |
+| extensions | uint256[] | undefined |
 
 ### enablePaymentMethod
 
@@ -910,6 +954,22 @@ Removes a afterMintState
 |---|---|---|
 | state | string | afterMintState to remove |
 
+### removeAuthority
+
+```solidity
+function removeAuthority(address _authority) external nonpayable
+```
+
+Removes an authority from the list of authorities
+
+*The caller must have the admin or project admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _authority | address | Authority to remove |
+
 ### removeBeforeMintState
 
 ```solidity
@@ -1187,38 +1247,44 @@ Sets the stable coin to pay the fee in (USDC)
 ### setState
 
 ```solidity
-function setState(address account, string state, bool value) external nonpayable
+function setState(uint256 tokenId, string state, bool value, address authorityAddress, uint256 signatureDate, bytes signature) external nonpayable
 ```
 
+Sets the state of an account
 
-
-
+*The signer of the signature must be a valid authority*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| account | address | undefined |
-| state | string | undefined |
-| value | bool | undefined |
+| tokenId | uint256 | TokenId of the token to set the state |
+| state | string | Name of the state to set |
+| value | bool | Value of the state to set |
+| authorityAddress | address | Address of the authority that signed the message |
+| signatureDate | uint256 | Date of the signature |
+| signature | bytes | Signature of the message |
 
 ### setState
 
 ```solidity
-function setState(uint256 tokenId, string state, bool value) external nonpayable
+function setState(address account, string state, bool value, address authorityAddress, uint256 signatureDate, bytes signature) external nonpayable
 ```
 
+Sets the state of an account
 
-
-
+*The signer of the signature must be a valid authority*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| tokenId | uint256 | undefined |
-| state | string | undefined |
-| value | bool | undefined |
+| account | address | Address of the account to set the state |
+| state | string | Name of the state to set |
+| value | bool | Value of the state to set |
+| authorityAddress | address | Address of the authority that signed the message |
+| signatureDate | uint256 | Date of the signature |
+| signature | bytes | Signature of the message |
 
 ### setSwapRouter
 
@@ -1500,6 +1566,17 @@ event Burn(address indexed _owner, uint256 indexed _tokenId)
 | _owner `indexed` | address | undefined |
 | _tokenId `indexed` | uint256 | undefined |
 
+### EIP712DomainChanged
+
+```solidity
+event EIP712DomainChanged()
+```
+
+
+
+*MAY be emitted to signal that the domain could have changed.*
+
+
 ### Mint
 
 ```solidity
@@ -1520,7 +1597,7 @@ event Mint(address indexed _owner, uint256 indexed _tokenId)
 ### MintedToAddress
 
 ```solidity
-event MintedToAddress(uint256 tokenId, address to)
+event MintedToAddress(uint256 tokenId, address to, address authorityAddress, uint256 signatureDate, address paymentMethod, uint256 mintPrice)
 ```
 
 
@@ -1533,11 +1610,15 @@ event MintedToAddress(uint256 tokenId, address to)
 |---|---|---|
 | tokenId  | uint256 | undefined |
 | to  | address | undefined |
+| authorityAddress  | address | undefined |
+| signatureDate  | uint256 | undefined |
+| paymentMethod  | address | undefined |
+| mintPrice  | uint256 | undefined |
 
 ### MintedToIdentity
 
 ```solidity
-event MintedToIdentity(uint256 tokenId, uint256 identityId)
+event MintedToIdentity(uint256 tokenId, uint256 identityId, address authorityAddress, uint256 signatureDate, address paymentMethod, uint256 mintPrice)
 ```
 
 
@@ -1550,6 +1631,10 @@ event MintedToIdentity(uint256 tokenId, uint256 identityId)
 |---|---|---|
 | tokenId  | uint256 | undefined |
 | identityId  | uint256 | undefined |
+| authorityAddress  | address | undefined |
+| signatureDate  | uint256 | undefined |
+| paymentMethod  | address | undefined |
+| mintPrice  | uint256 | undefined |
 
 ### Pay
 
@@ -1638,6 +1723,38 @@ error AlreadyAdded()
 
 
 
+### AuthorityNotExists
+
+```solidity
+error AuthorityNotExists(address authority)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| authority | address | undefined |
+
+### CallerNotOwner
+
+```solidity
+error CallerNotOwner(address caller)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| caller | address | undefined |
+
 ### InsufficientEthAmount
 
 ```solidity
@@ -1669,6 +1786,28 @@ error InvalidPaymentMethod(address paymentMethod)
 | Name | Type | Description |
 |---|---|---|
 | paymentMethod | address | undefined |
+
+### InvalidShortString
+
+```solidity
+error InvalidShortString()
+```
+
+
+
+
+
+
+### InvalidSignature
+
+```solidity
+error InvalidSignature()
+```
+
+
+
+
+
 
 ### InvalidState
 
@@ -1746,6 +1885,22 @@ error NotAllBeforeMintStatesSet()
 
 
 
+### NotAuthorized
+
+```solidity
+error NotAuthorized(address signer)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| signer | address | undefined |
+
 ### NotLinkedToAnIdentitySBT
 
 ```solidity
@@ -1801,6 +1956,22 @@ error SameValue()
 
 
 
+### StringTooLong
+
+```solidity
+error StringTooLong(string str)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| str | string | undefined |
+
 ### TransferFailed
 
 ```solidity
@@ -1827,6 +1998,17 @@ error UserMustHaveProtocolOrProjectAdminRole()
 
 ```solidity
 error WithoutBeforeMintStates()
+```
+
+
+
+
+
+
+### ZeroAddress
+
+```solidity
+error ZeroAddress()
 ```
 
 
