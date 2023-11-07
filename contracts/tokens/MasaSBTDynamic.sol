@@ -96,8 +96,7 @@ abstract contract MasaSBTDynamic is MasaSBT {
 
         for (uint256 i = 0; i < _afterMintStates.length; i++) {
             if (
-                keccak256(bytes(_afterMintStates[i])) ==
-                keccak256(bytes(state))
+                keccak256(bytes(_afterMintStates[i])) == keccak256(bytes(state))
             ) {
                 _afterMintStates[i] = _afterMintStates[
                     _afterMintStates.length - 1
@@ -178,10 +177,12 @@ abstract contract MasaSBTDynamic is MasaSBT {
     /// @notice Checks if a token can be minted
     /// @dev Checks if all beforeMintStates are set for the account
     function _beforeTokenTransfer(
-        address,
+        address from,
         address to,
-        uint256
+        uint256 tokenId
     ) internal virtual override {
+        super._beforeTokenTransfer(from, to, tokenId);
+
         if (to != address(0)) {
             if (!allBeforeMintStatesSet(to)) revert NotAllBeforeMintStatesSet();
         }
