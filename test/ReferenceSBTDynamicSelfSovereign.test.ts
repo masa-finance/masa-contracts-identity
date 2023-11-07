@@ -229,6 +229,7 @@ describe("ReferenceSBTDynamicSelfSovereign", () => {
       ).to.be.reverted;
 
       expect(await sbtDynamic.balanceOf(address1.address)).to.equal(1);
+      expect(await sbtDynamic.totalSupply()).to.equal(1);
     });
 
     it("should mint from final user address", async () => {
@@ -259,6 +260,7 @@ describe("ReferenceSBTDynamicSelfSovereign", () => {
       const tokenId1 = mintReceipt.events![0].args![1].toNumber();
 
       expect(await sbtDynamic.balanceOf(address1.address)).to.be.equal(1);
+      expect(await sbtDynamic.totalSupply()).to.equal(1);
       expect(await sbtDynamic["ownerOf(uint256)"](tokenId1)).to.be.equal(
         address1.address
       );
@@ -266,6 +268,7 @@ describe("ReferenceSBTDynamicSelfSovereign", () => {
       await sbtDynamic.connect(address1).burn(tokenId1);
 
       expect(await sbtDynamic.balanceOf(address1.address)).to.be.equal(0);
+      expect(await sbtDynamic.totalSupply()).to.equal(0);
     });
   });
 
@@ -385,6 +388,7 @@ describe("ReferenceSBTDynamicSelfSovereign", () => {
       expect(await sbtDynamic.allBeforeMintStatesSet(address1.address)).to.be
         .true;
       expect(await sbtDynamic.balanceOf(address1.address)).to.equal(1);
+      expect(await sbtDynamic.totalSupply()).to.equal(1);
     });
   });
 
