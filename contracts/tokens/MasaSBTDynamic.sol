@@ -32,47 +32,47 @@ abstract contract MasaSBTDynamic is MasaSBT {
 
     /// @notice Adds a beforeMintState
     /// @dev The caller must have the admin or project admin role to call this function
-    /// @param _state New beforeMintState to add
-    function addBeforeMintState(string memory _state) external {
+    /// @param state New beforeMintState to add
+    function addBeforeMintState(string memory state) external {
         if (
             !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
             !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
         ) revert UserMustHaveProtocolOrProjectAdminRole();
-        if (_validBeforeMintStates[_state]) revert AlreadyAdded();
-        _validBeforeMintStates[_state] = true;
+        if (_validBeforeMintStates[state]) revert AlreadyAdded();
+        _validBeforeMintStates[state] = true;
 
-        _beforeMintStates.push(_state);
+        _beforeMintStates.push(state);
     }
 
     /// @notice Adds a afterMintState
     /// @dev The caller must have the admin or project admin role to call this function
-    /// @param _state New afterMintState to add
-    function addAfterMintState(string memory _state) external {
+    /// @param state New afterMintState to add
+    function addAfterMintState(string memory state) external {
         if (
             !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
             !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
         ) revert UserMustHaveProtocolOrProjectAdminRole();
-        if (_validAfterMintStates[_state]) revert AlreadyAdded();
-        _validAfterMintStates[_state] = true;
+        if (_validAfterMintStates[state]) revert AlreadyAdded();
+        _validAfterMintStates[state] = true;
 
-        _afterMintStates.push(_state);
+        _afterMintStates.push(state);
     }
 
     /// @notice Removes a beforeMintState
     /// @dev The caller must have the admin or project admin role to call this function
-    /// @param _state beforeMintState to remove
-    function removeBeforeMintState(string memory _state) external {
+    /// @param state beforeMintState to remove
+    function removeBeforeMintState(string memory state) external {
         if (
             !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
             !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
         ) revert UserMustHaveProtocolOrProjectAdminRole();
-        if (!_validBeforeMintStates[_state]) revert InvalidState(_state);
-        _validBeforeMintStates[_state] = false;
+        if (!_validBeforeMintStates[state]) revert InvalidState(state);
+        _validBeforeMintStates[state] = false;
 
         for (uint256 i = 0; i < _beforeMintStates.length; i++) {
             if (
                 keccak256(bytes(_beforeMintStates[i])) ==
-                keccak256(bytes(_state))
+                keccak256(bytes(state))
             ) {
                 _beforeMintStates[i] = _beforeMintStates[
                     _beforeMintStates.length - 1
@@ -85,19 +85,19 @@ abstract contract MasaSBTDynamic is MasaSBT {
 
     /// @notice Removes a afterMintState
     /// @dev The caller must have the admin or project admin role to call this function
-    /// @param _state afterMintState to remove
-    function removeAfterMintState(string memory _state) external {
+    /// @param state afterMintState to remove
+    function removeAfterMintState(string memory state) external {
         if (
             !hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) &&
             !hasRole(PROJECT_ADMIN_ROLE, _msgSender())
         ) revert UserMustHaveProtocolOrProjectAdminRole();
-        if (!_validAfterMintStates[_state]) revert InvalidState(_state);
-        _validAfterMintStates[_state] = false;
+        if (!_validAfterMintStates[state]) revert InvalidState(state);
+        _validAfterMintStates[state] = false;
 
         for (uint256 i = 0; i < _afterMintStates.length; i++) {
             if (
                 keccak256(bytes(_afterMintStates[i])) ==
-                keccak256(bytes(_state))
+                keccak256(bytes(state))
             ) {
                 _afterMintStates[i] = _afterMintStates[
                     _afterMintStates.length - 1
@@ -123,7 +123,8 @@ abstract contract MasaSBTDynamic is MasaSBT {
     function allBeforeMintStatesSet(
         address account
     ) public view returns (bool) {
-        for (uint256 i = 0; i < _beforeMintStates.length; i++) {
+        uint _beforeMintStatesLength = _beforeMintStates.length;
+        for (uint256 i = 0; i < _beforeMintStatesLength; i++) {
             if (!beforeMintState[account][_beforeMintStates[i]]) return false;
         }
         return true;
@@ -132,7 +133,8 @@ abstract contract MasaSBTDynamic is MasaSBT {
     function allAfterMintStatesSet(
         uint256 tokenId
     ) external view returns (bool) {
-        for (uint256 i = 0; i < _afterMintStates.length; i++) {
+        uint _afterMintStatesLength = _afterMintStates.length;
+        for (uint256 i = 0; i < _afterMintStatesLength; i++) {
             if (!afterMintState[tokenId][_afterMintStates[i]]) return false;
         }
         return true;
