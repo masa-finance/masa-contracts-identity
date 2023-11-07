@@ -13,7 +13,9 @@ on:
 jobs:
   test:
 
-    runs-on: ubuntu-latest
+    runs-on: dockershared
+    container:
+      image: node:18-alpine3.17
 
     steps:
       - uses: actions/checkout@v4
