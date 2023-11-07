@@ -112,7 +112,7 @@ contract SoulboundGreen is MasaSBTSelfSovereign, ReentrancyGuard {
                 keccak256(
                     abi.encode(
                         keccak256(
-                            "MintCreditScore(uint256 identityId,address authorityAddress,uint256 signatureDate)"
+                            "MintGreen(uint256 identityId,address authorityAddress,uint256 signatureDate)"
                         ),
                         identityId,
                         authorityAddress,
