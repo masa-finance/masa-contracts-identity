@@ -341,12 +341,13 @@ describe("ReferenceSBTDynamicSelfSovereign", () => {
         twitterState
       ]);
 
-      const signatureSetDiscordBeforeStateToAccount = await signSetStateToAccount(
-        address1.address,
-        discordState,
-        true,
-        authority
-      );
+      const signatureSetDiscordBeforeStateToAccount =
+        await signSetStateToAccount(
+          address1.address,
+          discordState,
+          true,
+          authority
+        );
       await sbtDynamic
         .connect(address1)
         ["setState(address,string,bool,address,uint256,bytes)"](

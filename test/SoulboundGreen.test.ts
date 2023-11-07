@@ -46,7 +46,7 @@ const signMintToIdentity = async (
     },
     // Types
     {
-      Mint: [
+      MintGreen: [
         { name: "identityId", type: "uint256" },
         { name: "authorityAddress", type: "address" },
         { name: "signatureDate", type: "uint256" }
@@ -79,7 +79,7 @@ const signMintToAddress = async (
     },
     // Types
     {
-      Mint: [
+      MintGreen: [
         { name: "to", type: "address" },
         { name: "authorityAddress", type: "address" },
         { name: "signatureDate", type: "uint256" }

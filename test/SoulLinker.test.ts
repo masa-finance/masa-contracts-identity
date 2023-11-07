@@ -111,7 +111,7 @@ const signMint = async (
     },
     // Types
     {
-      Mint: [
+      MintCreditScore: [
         { name: "identityId", type: "uint256" },
         { name: "authorityAddress", type: "address" },
         { name: "signatureDate", type: "uint256" }

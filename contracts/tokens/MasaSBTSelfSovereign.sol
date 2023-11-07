@@ -98,7 +98,7 @@ abstract contract MasaSBTSelfSovereign is MasaSBT, EIP712 {
         uint256 identityId,
         address authorityAddress,
         uint256 signatureDate
-    ) internal view returns (bytes32) {
+    ) internal view virtual returns (bytes32) {
         return
             _hashTypedDataV4(
                 keccak256(
@@ -118,7 +118,7 @@ abstract contract MasaSBTSelfSovereign is MasaSBT, EIP712 {
         address to,
         address authorityAddress,
         uint256 signatureDate
-    ) internal view returns (bytes32) {
+    ) internal view virtual returns (bytes32) {
         return
             _hashTypedDataV4(
                 keccak256(
