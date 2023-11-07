@@ -45,6 +45,7 @@ error TransferFailed();
 error URIAlreadyExists(string tokenURI);
 error UserMustHaveProtocolOrProjectAdminRole();
 error ValidPeriodExpired(uint256 expirationDate);
+error WithoutBeforeMintStates();
 error ZeroAddress();
 error ZeroLengthName(string name);
 error ZeroYearsPeriod(uint256 yearsPeriod);

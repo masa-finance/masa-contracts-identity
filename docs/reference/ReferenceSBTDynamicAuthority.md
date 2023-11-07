@@ -1823,4 +1823,15 @@ error UserMustHaveProtocolOrProjectAdminRole()
 
 
 
+### WithoutBeforeMintStates
+
+```solidity
+error WithoutBeforeMintStates()
+```
+
+
+
+
+
+
 

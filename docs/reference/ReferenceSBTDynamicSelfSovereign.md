@@ -1994,6 +1994,17 @@ error UserMustHaveProtocolOrProjectAdminRole()
 
 
 
+### WithoutBeforeMintStates
+
+```solidity
+error WithoutBeforeMintStates()
+```
+
+
+
+
+
+
 ### ZeroAddress
 
 ```solidity

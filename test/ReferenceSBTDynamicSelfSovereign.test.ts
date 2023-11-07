@@ -212,13 +212,7 @@ describe("ReferenceSBTDynamicSelfSovereign", () => {
   });
 
   describe("mint", () => {
-    it("can't mint twice", async () => {
-      await sbtDynamic
-        .connect(address1)
-        ["mint(address,address)"](
-          ethers.constants.AddressZero,
-          address1.address
-        );
+    it("can't mint if no beforeMintStates are added", async () => {
       await expect(
         sbtDynamic
           .connect(address1)
@@ -226,70 +220,10 @@ describe("ReferenceSBTDynamicSelfSovereign", () => {
             ethers.constants.AddressZero,
             address1.address
           )
-      ).to.be.reverted;
+      ).to.be.rejectedWith("WithoutBeforeMintStates");
 
-      expect(await sbtDynamic.balanceOf(address1.address)).to.equal(1);
-      expect(await sbtDynamic.totalSupply()).to.equal(1);
-    });
-
-    it("should mint from final user address", async () => {
-      const mintTx = await sbtDynamic
-        .connect(address1)
-        ["mint(address,address)"](
-          ethers.constants.AddressZero,
-          address1.address
-        );
-      const mintReceipt = await mintTx.wait();
-
-      const toAddress = mintReceipt.events![1].args![1];
-
-      expect(toAddress).to.equal(address1.address);
-    });
-  });
-
-  describe("burn", () => {
-    it("should burn", async () => {
-      // we mint
-      let mintTx = await sbtDynamic
-        .connect(address1)
-        ["mint(address,address)"](
-          ethers.constants.AddressZero,
-          address1.address
-        );
-      let mintReceipt = await mintTx.wait();
-      const tokenId1 = mintReceipt.events![0].args![1].toNumber();
-
-      expect(await sbtDynamic.balanceOf(address1.address)).to.be.equal(1);
-      expect(await sbtDynamic.totalSupply()).to.equal(1);
-      expect(await sbtDynamic["ownerOf(uint256)"](tokenId1)).to.be.equal(
-        address1.address
-      );
-
-      await sbtDynamic.connect(address1).burn(tokenId1);
-
-      expect(await sbtDynamic.balanceOf(address1.address)).to.be.equal(0);
+      expect(await sbtDynamic.balanceOf(address1.address)).to.equal(0);
       expect(await sbtDynamic.totalSupply()).to.equal(0);
-    });
-  });
-
-  describe("tokenUri", () => {
-    it("should get a valid token URI from its tokenId", async () => {
-      const mintTx = await sbtDynamic
-        .connect(address1)
-        ["mint(address,address)"](
-          ethers.constants.AddressZero,
-          address1.address
-        );
-
-      const mintReceipt = await mintTx.wait();
-      const tokenId = mintReceipt.events![0].args![1].toNumber();
-      const tokenUri = await sbtDynamic.tokenURI(tokenId);
-
-      // check if it's a valid url
-      expect(() => new URL(tokenUri)).to.not.throw();
-      // we expect that the token uri is already encoded
-      expect(tokenUri).to.equal(encodeURI(tokenUri));
-      expect(tokenUri).to.contain("/green/");
     });
   });
 
@@ -398,6 +332,7 @@ describe("ReferenceSBTDynamicSelfSovereign", () => {
     let tokenId;
 
     beforeEach(async () => {
+      await sbtDynamic.connect(owner).addBeforeMintState(discordState);
       await sbtDynamic.connect(owner).addAfterMintState(discordState);
       await sbtDynamic.connect(owner).addAfterMintState(twitterState);
 
@@ -405,6 +340,23 @@ describe("ReferenceSBTDynamicSelfSovereign", () => {
         discordState,
         twitterState
       ]);
+
+      const signatureSetDiscordBeforeStateToAccount = await signSetStateToAccount(
+        address1.address,
+        discordState,
+        true,
+        authority
+      );
+      await sbtDynamic
+        .connect(address1)
+        ["setState(address,string,bool,address,uint256,bytes)"](
+          address1.address,
+          discordState,
+          true,
+          authority.address,
+          signatureDate,
+          signatureSetDiscordBeforeStateToAccount
+        );
 
       const mintTx = await sbtDynamic
         .connect(address1)

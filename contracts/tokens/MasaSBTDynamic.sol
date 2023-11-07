@@ -184,6 +184,7 @@ abstract contract MasaSBTDynamic is MasaSBT {
         super._beforeTokenTransfer(from, to, tokenId);
 
         if (to != address(0)) {
+            if (_beforeMintStates.length == 0) revert WithoutBeforeMintStates();
             if (!allBeforeMintStatesSet(to)) revert NotAllBeforeMintStatesSet();
         }
     }
