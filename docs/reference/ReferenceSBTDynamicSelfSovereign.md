@@ -47,7 +47,7 @@ function PROJECT_ADMIN_ROLE() external view returns (bytes32)
 ### addAfterMintState
 
 ```solidity
-function addAfterMintState(string _state) external nonpayable
+function addAfterMintState(string state) external nonpayable
 ```
 
 Adds a afterMintState
@@ -58,7 +58,7 @@ Adds a afterMintState
 
 | Name | Type | Description |
 |---|---|---|
-| _state | string | New afterMintState to add |
+| state | string | New afterMintState to add |
 
 ### addAuthority
 
@@ -79,7 +79,7 @@ Adds a new authority to the list of authorities
 ### addBeforeMintState
 
 ```solidity
-function addBeforeMintState(string _state) external nonpayable
+function addBeforeMintState(string state) external nonpayable
 ```
 
 Adds a beforeMintState
@@ -90,7 +90,7 @@ Adds a beforeMintState
 
 | Name | Type | Description |
 |---|---|---|
-| _state | string | New beforeMintState to add |
+| state | string | New beforeMintState to add |
 
 ### addLinkPrice
 
@@ -941,7 +941,7 @@ function queryLinkPriceMASA() external view returns (uint256)
 ### removeAfterMintState
 
 ```solidity
-function removeAfterMintState(string _state) external nonpayable
+function removeAfterMintState(string state) external nonpayable
 ```
 
 Removes a afterMintState
@@ -952,7 +952,7 @@ Removes a afterMintState
 
 | Name | Type | Description |
 |---|---|---|
-| _state | string | afterMintState to remove |
+| state | string | afterMintState to remove |
 
 ### removeAuthority
 
@@ -973,7 +973,7 @@ Removes an authority from the list of authorities
 ### removeBeforeMintState
 
 ```solidity
-function removeBeforeMintState(string _state) external nonpayable
+function removeBeforeMintState(string state) external nonpayable
 ```
 
 Removes a beforeMintState
@@ -984,7 +984,7 @@ Removes a beforeMintState
 
 | Name | Type | Description |
 |---|---|---|
-| _state | string | beforeMintState to remove |
+| state | string | beforeMintState to remove |
 
 ### renounceRole
 
