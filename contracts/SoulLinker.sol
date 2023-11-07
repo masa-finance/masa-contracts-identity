@@ -103,7 +103,8 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
         ISoulName soulName
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (address(soulName) == address(0)) revert ZeroAddress();
-        for (uint256 i = 0; i < soulNames.length; i++) {
+        uint _soulNamesLength = soulNames.length;
+        for (uint256 i = 0; i < _soulNamesLength; i++) {
             if (soulNames[i] == soulName) revert SameValue();
         }
         soulNames.push(soulName);
@@ -534,7 +535,8 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
         address owner
     ) public view returns (string memory defaultName, string[] memory names) {
         uint256 nameCount = 0;
-        for (uint256 i = 0; i < soulNames.length; i++) {
+        uint _soulNamesLength = soulNames.length;
+        for (uint256 i = 0; i < _soulNamesLength; i++) {
             string[] memory _soulNamesFromIdentity = soulNames[i].getSoulNames(
                 owner
             );
@@ -545,7 +547,8 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
 
         string[] memory _soulNames = new string[](nameCount);
         uint256 n = 0;
-        for (uint256 i = 0; i < soulNames.length; i++) {
+        _soulNamesLength = soulNames.length;
+        for (uint256 i = 0; i < _soulNamesLength; i++) {
             string[] memory _soulNamesFromIdentity = soulNames[i].getSoulNames(
                 owner
             );
