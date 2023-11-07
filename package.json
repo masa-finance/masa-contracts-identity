@@ -30,6 +30,7 @@
     "deploy:scroll": "hardhat deploy --network scroll && yarn addresses",
     "deployASBT": "hardhat run src/deployASBT.ts",
     "deploySSSBT": "hardhat run src/deploySSSBT.ts",
+    "deployDynamicSSSBT": "hardhat run src/deployDynamicSSSBT.ts",
     "run:node": "hardhat node",
     "test": "hardhat test",
     "prettier": "prettier --write 'contracts/**/*.sol' '**/*.ts'",
