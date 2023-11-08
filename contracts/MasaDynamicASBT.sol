@@ -3,8 +3,8 @@ pragma solidity ^0.8.18;
 
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-import "./MasaSBTAuthority.sol";
-import "./MasaSBTDynamic.sol";
+import "./tokens/MasaSBTAuthority.sol";
+import "./tokens/MasaSBTDynamic.sol";
 
 /// @title Soulbound Authority SBT with states
 /// @author Masa Finance
