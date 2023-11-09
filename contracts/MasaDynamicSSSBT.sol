@@ -177,6 +177,10 @@ contract MasaDynamicSSSBT is
 
         _verify(digest, signature, authorityAddress);
 
+        for (uint256 i = 0; i < states.length; i++) {
+            _setState(to, states[i], true);
+        }
+
         return _mintWithCounter(paymentMethod, to);
     }
 
