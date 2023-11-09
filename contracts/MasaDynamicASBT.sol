@@ -46,6 +46,11 @@ contract MasaDynamicASBT is MasaSBTAuthority, MasaSBTDynamic, ReentrancyGuard {
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
 
+    /// @notice Sets the state of an account
+    /// @dev The caller must have the MINTER role
+    /// @param account Address of the account to set the state
+    /// @param state Name of the state to set
+    /// @param value Value of the state to set
     function setState(
         address account,
         string memory state,
@@ -54,6 +59,11 @@ contract MasaDynamicASBT is MasaSBTAuthority, MasaSBTDynamic, ReentrancyGuard {
         _setState(account, state, value);
     }
 
+    /// @notice Sets the state of a token
+    /// @dev The caller must have the MINTER role
+    /// @param tokenId TokenId of the token to set the state
+    /// @param state Name of the state to set
+    /// @param value Value of the state to set
     function setState(
         uint256 tokenId,
         string memory state,
@@ -99,6 +109,24 @@ contract MasaDynamicASBT is MasaSBTAuthority, MasaSBTDynamic, ReentrancyGuard {
         address paymentMethod,
         address to
     ) public payable nonReentrant returns (uint256) {
+        return _mintWithCounter(paymentMethod, to);
+    }
+
+    /// @notice Sets some states of an account and mints
+    /// @dev The caller must have the MINTER role
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param to The address to mint the SBT to
+    /// @param states Names of the state to set
+    /// @return The SBT ID of the newly minted SBT
+    function setStatesAndMint(
+        address paymentMethod,
+        address to,
+        string[] memory states
+    ) external onlyRole(MINTER_ROLE) returns (uint256) {
+        for (uint256 i = 0; i < states.length; i++) {
+            _setState(to, states[i], true);
+        }
+
         return _mintWithCounter(paymentMethod, to);
     }
 
