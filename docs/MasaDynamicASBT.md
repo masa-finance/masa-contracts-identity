@@ -1190,17 +1190,17 @@ Sets the stable coin to pay the fee in (USDC)
 function setState(address account, string state, bool value) external nonpayable
 ```
 
+Sets the state of an account
 
-
-
+*The caller must have the MINTER role*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| account | address | undefined |
-| state | string | undefined |
-| value | bool | undefined |
+| account | address | Address of the account to set the state |
+| state | string | Name of the state to set |
+| value | bool | Value of the state to set |
 
 ### setState
 
@@ -1208,17 +1208,41 @@ function setState(address account, string state, bool value) external nonpayable
 function setState(uint256 tokenId, string state, bool value) external nonpayable
 ```
 
+Sets the state of a token
 
-
-
+*The caller must have the MINTER role*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| tokenId | uint256 | undefined |
-| state | string | undefined |
-| value | bool | undefined |
+| tokenId | uint256 | TokenId of the token to set the state |
+| state | string | Name of the state to set |
+| value | bool | Value of the state to set |
+
+### setStatesAndMint
+
+```solidity
+function setStatesAndMint(address paymentMethod, address to, string[] states) external payable returns (uint256)
+```
+
+Sets some states of an account and mints
+
+*The caller must have the MINTER role*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| paymentMethod | address | Address of token that user want to pay |
+| to | address | The address to mint the SBT to |
+| states | string[] | Names of the state to set |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | The SBT ID of the newly minted SBT |
 
 ### setSwapRouter
 

@@ -1250,7 +1250,7 @@ Sets the stable coin to pay the fee in (USDC)
 function setState(uint256 tokenId, string state, bool value, address authorityAddress, uint256 signatureDate, bytes signature) external nonpayable
 ```
 
-Sets the state of an account
+Sets the state of a token
 
 *The signer of the signature must be a valid authority*
 
@@ -1285,6 +1285,33 @@ Sets the state of an account
 | authorityAddress | address | Address of the authority that signed the message |
 | signatureDate | uint256 | Date of the signature |
 | signature | bytes | Signature of the message |
+
+### setStatesAndMint
+
+```solidity
+function setStatesAndMint(address paymentMethod, address to, string[] states, address authorityAddress, uint256 signatureDate, bytes signature) external payable returns (uint256)
+```
+
+Sets some states of an account and mints
+
+*The signer of the signature must be a valid authority*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| paymentMethod | address | Address of token that user want to pay |
+| to | address | The address to mint the SBT to |
+| states | string[] | Names of the state to set |
+| authorityAddress | address | Address of the authority that signed the message |
+| signatureDate | uint256 | Date of the signature |
+| signature | bytes | Signature of the message |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | The SBT ID of the newly minted SBT |
 
 ### setSwapRouter
 
