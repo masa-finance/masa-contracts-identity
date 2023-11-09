@@ -251,7 +251,7 @@ contract MasaDynamicSSSBT is
                 keccak256(
                     abi.encode(
                         keccak256(
-                            "SetState(address account,string[] states,address authorityAddress,uint256 signatureDate)"
+                            "setStatesAndMint(address account,string[] states,address authorityAddress,uint256 signatureDate)"
                         ),
                         account,
                         _encodeHashes(states),

@@ -105,6 +105,42 @@ const signSetStateToTokenId = async (
   return signature;
 };
 
+const signSetStatesAndMint = async (
+  account: string,
+  states: string[],
+  authoritySigner: SignerWithAddress
+) => {
+  const chainId = await getChainId();
+
+  const signature = await authoritySigner._signTypedData(
+    // Domain
+    {
+      name: "MasaDynamicSSSBT",
+      version: "1.0.0",
+      chainId: chainId,
+      verifyingContract: sbtDynamic.address
+    },
+    // Types
+    {
+      setStatesAndMint: [
+        { name: "account", type: "address" },
+        { name: "states", type: "string[]" },
+        { name: "authorityAddress", type: "address" },
+        { name: "signatureDate", type: "uint256" }
+      ]
+    },
+    // Value
+    {
+      account: account,
+      states: states,
+      authorityAddress: authoritySigner.address,
+      signatureDate: signatureDate
+    }
+  );
+
+  return signature;
+};
+
 describe("MasaDynamicSSSBT", () => {
   before(async () => {
     [, owner, address1, authority] = await ethers.getSigners();
@@ -343,6 +379,34 @@ describe("MasaDynamicSSSBT", () => {
         ["mint(address,address)"](
           ethers.constants.AddressZero,
           address1.address
+        );
+
+      expect(await sbtDynamic.beforeMintState(address1.address, discordState))
+        .to.be.true;
+      expect(await sbtDynamic.beforeMintState(address1.address, twitterState))
+        .to.be.true;
+      expect(await sbtDynamic.allBeforeMintStatesSet(address1.address)).to.be
+        .true;
+      expect(await sbtDynamic.balanceOf(address1.address)).to.equal(1);
+      expect(await sbtDynamic.totalSupply()).to.equal(1);
+    });
+
+    it("test setStatesAndMint funtion", async () => {
+      const signatureSetStatesAndMint = await signSetStatesAndMint(
+        address1.address,
+        [discordState, twitterState],
+        authority
+      );
+
+      await sbtDynamic
+        .connect(address1)
+        .setStatesAndMint(
+          ethers.constants.AddressZero,
+          address1.address,
+          [discordState, twitterState],
+          authority.address,
+          signatureDate,
+          signatureSetStatesAndMint
         );
 
       expect(await sbtDynamic.beforeMintState(address1.address, discordState))
