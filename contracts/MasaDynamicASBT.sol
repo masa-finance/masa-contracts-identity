@@ -122,7 +122,7 @@ contract MasaDynamicASBT is MasaSBTAuthority, MasaSBTDynamic, ReentrancyGuard {
         address paymentMethod,
         address to,
         string[] memory states
-    ) external onlyRole(MINTER_ROLE) returns (uint256) {
+    ) external payable nonReentrant onlyRole(MINTER_ROLE) returns (uint256) {
         for (uint256 i = 0; i < states.length; i++) {
             _setState(to, states[i], true);
         }
