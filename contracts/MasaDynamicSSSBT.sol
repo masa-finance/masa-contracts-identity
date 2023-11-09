@@ -83,7 +83,7 @@ contract MasaDynamicSSSBT is
         _setState(account, state, value);
     }
 
-    /// @notice Sets the state of an account
+    /// @notice Sets the state of a token
     /// @dev The signer of the signature must be a valid authority
     /// @param tokenId TokenId of the token to set the state
     /// @param state Name of the state to set
@@ -154,6 +154,32 @@ contract MasaDynamicSSSBT is
         return _mintWithCounter(paymentMethod, to);
     }
 
+    /// @notice Sets some states of an account and mints
+    /// @dev The signer of the signature must be a valid authority
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param to The address to mint the SBT to
+    /// @param states Names of the state to set
+    /// @param authorityAddress Address of the authority that signed the message
+    /// @param signatureDate Date of the signature
+    /// @param signature Signature of the message
+    /// @return The SBT ID of the newly minted SBT
+    function setStatesAndMint(
+        address paymentMethod,
+        address to,
+        string[] memory states,
+        address authorityAddress,
+        uint256 signatureDate,
+        bytes calldata signature
+    ) external payable nonReentrant returns (uint256) {
+        if (to != _msgSender()) revert CallerNotOwner(_msgSender());
+
+        bytes32 digest = _hash(to, states, authorityAddress, signatureDate);
+
+        _verify(digest, signature, authorityAddress);
+
+        return _mintWithCounter(paymentMethod, to);
+    }
+
     /* ========== VIEWS ===================================================== */
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
@@ -212,6 +238,42 @@ contract MasaDynamicSSSBT is
                     )
                 )
             );
+    }
+
+    function _hash(
+        address account,
+        string[] memory states,
+        address authorityAddress,
+        uint256 signatureDate
+    ) internal view returns (bytes32) {
+        return
+            _hashTypedDataV4(
+                keccak256(
+                    abi.encode(
+                        keccak256(
+                            "SetState(address account,string[] states,address authorityAddress,uint256 signatureDate)"
+                        ),
+                        account,
+                        _encodeHashes(states),
+                        authorityAddress,
+                        signatureDate
+                    )
+                )
+            );
+    }
+
+    /// @notice Encodes the hashes of the metadata for signature verification
+    /// @param metadataHashes The hashes of the metadata
+    /// @return encodedHashes The encoded hashes of the metadata
+    function _encodeHashes(
+        string[] memory metadataHashes
+    ) internal pure returns (bytes32) {
+        bytes32[] memory encodedHashes = new bytes32[](metadataHashes.length);
+        for (uint256 i = 0; i < metadataHashes.length; i++) {
+            encodedHashes[i] = keccak256((abi.encodePacked(metadataHashes[i])));
+        }
+
+        return keccak256(abi.encodePacked(encodedHashes));
     }
 
     function _mintWithCounter(
