@@ -199,6 +199,38 @@ describe("MasaDynamicSSSBT", () => {
       await expect(sbtDynamic.connect(address1).addAfterMintState(discordState))
         .to.be.rejected;
     });
+
+    it("should remove beforeMintState from owner", async () => {
+      await sbtDynamic.connect(owner).addBeforeMintState(discordState);
+
+      await sbtDynamic.connect(owner).removeBeforeMintState(discordState);
+
+      expect(await sbtDynamic.getBeforeMintStates()).to.deep.equal([]);
+    });
+
+    it("should fail to remove beforeMintState from non owner", async () => {
+      await sbtDynamic.connect(owner).addBeforeMintState(discordState);
+
+      await expect(
+        sbtDynamic.connect(address1).removeBeforeMintState(discordState)
+      ).to.be.rejected;
+    });
+
+    it("should remove afterMintState from owner", async () => {
+      await sbtDynamic.connect(owner).addAfterMintState(discordState);
+
+      await sbtDynamic.connect(owner).removeAfterMintState(discordState);
+
+      expect(await sbtDynamic.getAfterMintStates()).to.deep.equal([]);
+    });
+
+    it("should fail to remove afterMintState from non owner", async () => {
+      await sbtDynamic.connect(owner).addAfterMintState(discordState);
+
+      await expect(
+        sbtDynamic.connect(address1).removeAfterMintState(discordState)
+      ).to.be.rejected;
+    });
   });
 
   describe("sbt information", () => {
