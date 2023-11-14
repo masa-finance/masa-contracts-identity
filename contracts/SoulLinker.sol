@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.8;
+pragma solidity ^0.8.18;
 
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
@@ -103,7 +103,8 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
         ISoulName soulName
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (address(soulName) == address(0)) revert ZeroAddress();
-        for (uint256 i = 0; i < soulNames.length; i++) {
+        uint _soulNamesLength = soulNames.length;
+        for (uint256 i = 0; i < _soulNamesLength; i++) {
             if (soulNames[i] == soulName) revert SameValue();
         }
         soulNames.push(soulName);
@@ -296,7 +297,7 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
     /// @param token Address of the SoulName contract
     /// @param tokenId TokenId of the soul name
     function setDefaultSoulName(address token, uint256 tokenId) external {
-        if (isSoulName[token] == false) revert SoulNameNotRegistered(token);
+        if (!isSoulName[token]) revert SoulNameNotRegistered(token);
         address soulNameOwner = ISBTEnumerable(token).ownerOf(tokenId);
         if (_msgSender() != soulNameOwner) revert CallerNotOwner(_msgSender());
 
@@ -534,7 +535,8 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
         address owner
     ) public view returns (string memory defaultName, string[] memory names) {
         uint256 nameCount = 0;
-        for (uint256 i = 0; i < soulNames.length; i++) {
+        uint _soulNamesLength = soulNames.length;
+        for (uint256 i = 0; i < _soulNamesLength; i++) {
             string[] memory _soulNamesFromIdentity = soulNames[i].getSoulNames(
                 owner
             );
@@ -545,7 +547,8 @@ contract SoulLinker is PaymentGateway, EIP712, Pausable, ReentrancyGuard {
 
         string[] memory _soulNames = new string[](nameCount);
         uint256 n = 0;
-        for (uint256 i = 0; i < soulNames.length; i++) {
+        _soulNamesLength = soulNames.length;
+        for (uint256 i = 0; i < _soulNamesLength; i++) {
             string[] memory _soulNamesFromIdentity = soulNames[i].getSoulNames(
                 owner
             );

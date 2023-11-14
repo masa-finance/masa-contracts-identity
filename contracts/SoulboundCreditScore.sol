@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.8;
+pragma solidity ^0.8.18;
 
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-import "./libraries/Errors.sol";
 import "./tokens/MasaSBTSelfSovereign.sol";
 
 /// @title Soulbound Credit Score
@@ -37,7 +36,8 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign, ReentrancyGuard {
             symbol,
             baseTokenURI,
             soulboundIdentity,
-            paymentParams
+            paymentParams,
+            1 // maxSBTToMint
         )
         EIP712("SoulboundCreditScore", "1.0.0")
     {}
@@ -53,36 +53,23 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign, ReentrancyGuard {
     /// @param authorityAddress Address of the authority that signed the message
     /// @param signatureDate Date of the signature
     /// @param signature Signature of the message
-    /// @return The NFT ID of the newly minted SBT
+    /// @return The SBT ID of the newly minted SBT
     function mint(
         address paymentMethod,
         uint256 identityId,
         address authorityAddress,
         uint256 signatureDate,
         bytes calldata signature
-    ) external payable nonReentrant returns (uint256) {
-        address to = soulboundIdentity.ownerOf(identityId);
-        if (to != _msgSender()) revert CallerNotOwner(_msgSender());
-        if (balanceOf(to) > 0) revert CreditScoreAlreadyCreated(to);
-
-        uint256 tokenId = _mintWithCounter(
-            paymentMethod,
-            to,
-            _hash(identityId, authorityAddress, signatureDate),
-            authorityAddress,
-            signature
-        );
-
-        emit SoulboundCreditScoreMintedToIdentity(
-            tokenId,
-            identityId,
-            authorityAddress,
-            signatureDate,
-            paymentMethod,
-            mintPrice
-        );
-
-        return tokenId;
+    ) external payable virtual nonReentrant returns (uint256) {
+        return
+            _mintWithCounter(
+                paymentMethod,
+                identityId,
+                _hash(identityId, authorityAddress, signatureDate),
+                authorityAddress,
+                signatureDate,
+                signature
+            );
     }
 
     /// @notice Mints a new SBT
@@ -99,28 +86,16 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign, ReentrancyGuard {
         address authorityAddress,
         uint256 signatureDate,
         bytes calldata signature
-    ) external payable nonReentrant returns (uint256) {
-        if (to != _msgSender()) revert CallerNotOwner(_msgSender());
-        if (balanceOf(to) > 0) revert CreditScoreAlreadyCreated(to);
-
-        uint256 tokenId = _mintWithCounter(
-            paymentMethod,
-            to,
-            _hash(to, authorityAddress, signatureDate),
-            authorityAddress,
-            signature
-        );
-
-        emit SoulboundCreditScoreMintedToAddress(
-            tokenId,
-            to,
-            authorityAddress,
-            signatureDate,
-            paymentMethod,
-            mintPrice
-        );
-
-        return tokenId;
+    ) external payable virtual nonReentrant returns (uint256) {
+        return
+            _mintWithCounter(
+                paymentMethod,
+                to,
+                _hash(to, authorityAddress, signatureDate),
+                authorityAddress,
+                signatureDate,
+                signature
+            );
     }
 
     /* ========== VIEWS ===================================================== */
@@ -131,7 +106,7 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign, ReentrancyGuard {
         uint256 identityId,
         address authorityAddress,
         uint256 signatureDate
-    ) internal view returns (bytes32) {
+    ) internal view virtual override returns (bytes32) {
         return
             _hashTypedDataV4(
                 keccak256(
@@ -151,7 +126,7 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign, ReentrancyGuard {
         address to,
         address authorityAddress,
         uint256 signatureDate
-    ) internal view returns (bytes32) {
+    ) internal view virtual override returns (bytes32) {
         return
             _hashTypedDataV4(
                 keccak256(
@@ -170,22 +145,4 @@ contract SoulboundCreditScore is MasaSBTSelfSovereign, ReentrancyGuard {
     /* ========== MODIFIERS ================================================= */
 
     /* ========== EVENTS ==================================================== */
-
-    event SoulboundCreditScoreMintedToIdentity(
-        uint256 tokenId,
-        uint256 identityId,
-        address authorityAddress,
-        uint256 signatureDate,
-        address paymentMethod,
-        uint256 mintPrice
-    );
-
-    event SoulboundCreditScoreMintedToAddress(
-        uint256 tokenId,
-        address to,
-        address authorityAddress,
-        uint256 signatureDate,
-        address paymentMethod,
-        uint256 mintPrice
-    );
 }

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.8;
+pragma solidity ^0.8.18;
 
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
@@ -43,7 +43,8 @@ contract SoulboundIdentity is
             symbol,
             baseTokenURI,
             address(0),
-            paymentParams
+            paymentParams,
+            1 // maxSBTToMint
         )
     {}
 
@@ -62,26 +63,23 @@ contract SoulboundIdentity is
 
     /* ========== MUTATIVE FUNCTIONS ======================================== */
 
-    /// @notice Mints a new soulbound identity
-    /// @dev The caller can only mint one identity per address
-    /// @param to Address of the owner of the new identity
-    /// @return The identity ID of the newly minted identity
+    /// @notice Mints a new SBT
+    /// @dev The caller must have the MINTER role
+    /// @param to The address to mint the SBT to
+    /// @return The SBT ID of the newly minted SBT
     function mint(address to) external payable override returns (uint256) {
         return mint(address(0), to);
     }
 
-    /// @notice Mints a new soulbound identity
-    /// @dev The caller can only mint one identity per address
-    /// @param paymentMethod Address of the payment method to use
-    /// @param to Address of the owner of the new identity
-    /// @return The identity ID of the newly minted identity
+    /// @notice Mints a new SBT
+    /// @dev The caller must have the MINTER role
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param to The address to mint the SBT to
+    /// @return The SBT ID of the newly minted SBT
     function mint(
         address paymentMethod,
         address to
-    ) public payable override returns (uint256) {
-        // Soulbound identity already created!
-        if (balanceOf(to) > 0) revert IdentityAlreadyCreated(to);
-
+    ) public payable override nonReentrant returns (uint256) {
         return _mintWithCounter(paymentMethod, to);
     }
 
@@ -114,14 +112,7 @@ contract SoulboundIdentity is
         string memory name,
         uint256 yearsPeriod,
         string memory _tokenURI
-    )
-        public
-        payable
-        override
-        soulNameAlreadySet
-        nonReentrant
-        returns (uint256)
-    {
+    ) public payable override returns (uint256) {
         uint256 identityId = mint(paymentMethod, to);
         soulName.mint(to, name, yearsPeriod, _tokenURI);
 

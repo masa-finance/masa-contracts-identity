@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.8;
+pragma solidity ^0.8.18;
 
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
@@ -199,7 +199,13 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @notice Mints a new Soulbound Identity purchasing it
     /// @dev This function allows the purchase of a soulbound identity for free
     /// @return TokenId of the new soulbound identity
-    function purchaseIdentity() external virtual returns (uint256) {
+    function purchaseIdentity()
+        external
+        virtual
+        whenNotPaused
+        nonReentrant
+        returns (uint256)
+    {
         uint256 tokenId = _mintSoulboundIdentity(_msgSender());
 
         emit SoulboundIdentityPurchased(_msgSender(), tokenId);

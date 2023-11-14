@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.8;
+pragma solidity ^0.8.18;
 
+import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 import "../dex/PaymentGateway.sol";
@@ -27,8 +28,12 @@ abstract contract MasaSBT is
     /* ========== STATE VARIABLES =========================================== */
 
     using Strings for uint256;
+    using Counters for Counters.Counter;
+
+    Counters.Counter private _tokenIdCounter;
 
     string private _baseTokenURI;
+    uint256 public immutable maxSBTToMint;
 
     ISoulboundIdentity public soulboundIdentity;
 
@@ -50,18 +55,21 @@ abstract contract MasaSBT is
     /// @param baseTokenURI Base URI of the token
     /// @param _soulboundIdentity Address of the SoulboundIdentity contract
     /// @param paymentParams Payment gateway params
+    /// @param _maxSBTToMint Maximum number of SBT that can be minted
     constructor(
         address admin,
         string memory name,
         string memory symbol,
         string memory baseTokenURI,
         address _soulboundIdentity,
-        PaymentParams memory paymentParams
+        PaymentParams memory paymentParams,
+        uint256 _maxSBTToMint
     ) SBT(name, symbol) PaymentGateway(admin, paymentParams) {
         _grantRole(DEFAULT_ADMIN_ROLE, admin);
 
         _baseTokenURI = baseTokenURI;
         soulboundIdentity = ISoulboundIdentity(_soulboundIdentity);
+        maxSBTToMint = _maxSBTToMint;
     }
 
     /* ========== RESTRICTED FUNCTIONS ====================================== */
@@ -250,6 +258,25 @@ abstract contract MasaSBT is
     }
 
     /* ========== PRIVATE FUNCTIONS ========================================= */
+
+    function _mintWithCounter(
+        address paymentMethod,
+        address to
+    ) internal virtual returns (uint256) {
+        if (maxSBTToMint > 0 && balanceOf(to) >= maxSBTToMint)
+            revert MaxSBTMinted(to, maxSBTToMint);
+
+        (uint256 price, uint256 protocolFee) = getMintPriceWithProtocolFee(
+            paymentMethod
+        );
+        _pay(paymentMethod, price, protocolFee);
+
+        uint256 tokenId = _tokenIdCounter.current();
+        _tokenIdCounter.increment();
+        _mint(to, tokenId);
+
+        return tokenId;
+    }
 
     function _baseURI() internal view virtual override returns (string memory) {
         return _baseTokenURI;

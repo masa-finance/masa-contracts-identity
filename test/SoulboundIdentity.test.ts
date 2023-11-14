@@ -85,7 +85,7 @@ describe("Soulbound Identity", () => {
       await soulboundIdentity.connect(owner)["mint(address)"](someone.address);
       await expect(
         soulboundIdentity.connect(owner)["mint(address)"](someone.address)
-      ).to.be.rejectedWith("Soulbound identity already created!");
+      ).to.be.revertedWith("MaxSBTMinted");
 
       expect(await soulboundIdentity.totalSupply()).to.equal(1);
       expect(await soulboundIdentity.tokenByIndex(0)).to.equal(0);
@@ -211,7 +211,7 @@ describe("Soulbound Identity", () => {
             YEAR,
             ARWEAVE_LINK
           )
-      ).to.be.rejectedWith("Soulbound identity already created!");
+      ).to.be.revertedWith("MaxSBTMinted");
     });
 
     it("should fail to mint duplicated name", async () => {

@@ -38,7 +38,7 @@ const signatureDate = Math.floor(Date.now() / 1000);
 let signatureToIdentity: string;
 let signatureToAddress: string;
 
-const signMintCreditScoreToIdentity = async (
+const signMintToIdentity = async (
   identityId: number,
   authoritySigner: SignerWithAddress
 ) => {
@@ -71,7 +71,7 @@ const signMintCreditScoreToIdentity = async (
   return signature;
 };
 
-const signMintCreditScoreToAddress = async (
+const signMintToAddress = async (
   to: string,
   authoritySigner: SignerWithAddress
 ) => {
@@ -170,14 +170,8 @@ describe("Soulbound Credit Score", () => {
 
     await soulboundCreditScore.setMintPrice(0); // 0 USDC
 
-    signatureToIdentity = await signMintCreditScoreToIdentity(
-      identityId1,
-      authority
-    );
-    signatureToAddress = await signMintCreditScoreToAddress(
-      address1.address,
-      authority
-    );
+    signatureToIdentity = await signMintToIdentity(identityId1, authority);
+    signatureToAddress = await signMintToAddress(address1.address, authority);
   });
 
   describe("owner and project admin functions", () => {
@@ -332,7 +326,7 @@ describe("Soulbound Credit Score", () => {
             signatureDate,
             signatureToAddress
           )
-      ).to.be.revertedWith("CreditScoreAlreadyCreated");
+      ).to.be.revertedWith("MaxSBTMinted");
 
       expect(await soulboundCreditScore.totalSupply()).to.equal(1);
       expect(await soulboundCreditScore.tokenByIndex(0)).to.equal(0);
@@ -369,7 +363,7 @@ describe("Soulbound Credit Score", () => {
         );
       const mintReceipt = await mintTx.wait();
 
-      const tokenId = mintReceipt.events![0].args![1].toNumber();
+      const tokenId = mintReceipt.events![1].args![1].toNumber();
 
       expect(await soulboundCreditScore.getIdentityId(tokenId)).to.equal(
         identityId1
@@ -377,7 +371,7 @@ describe("Soulbound Credit Score", () => {
     });
 
     it("should fail to mint with non-authority signature", async () => {
-      const signatureNonAuthority = await signMintCreditScoreToIdentity(
+      const signatureNonAuthority = await signMintToIdentity(
         identityId1,
         address1
       );
@@ -396,7 +390,7 @@ describe("Soulbound Credit Score", () => {
     });
 
     it("should fail to mint with invalid signature", async () => {
-      const signatureNonAuthority = await signMintCreditScoreToIdentity(
+      const signatureNonAuthority = await signMintToIdentity(
         identityId1,
         address1
       );
@@ -441,7 +435,7 @@ describe("Soulbound Credit Score", () => {
         );
       const mintReceipt = await mintTx.wait();
 
-      const tokenId = mintReceipt.events![0].args![1].toNumber();
+      const tokenId = mintReceipt.events![1].args![1].toNumber();
 
       expect(await soulboundCreditScore.getIdentityId(tokenId)).to.equal(
         identityId1
@@ -477,7 +471,7 @@ describe("Soulbound Credit Score", () => {
         );
       const mintReceipt = await mintTx.wait();
 
-      const tokenId = mintReceipt.events![0].args![1].toNumber();
+      const tokenId = mintReceipt.events![1].args![1].toNumber();
 
       expect(await soulboundCreditScore.getIdentityId(tokenId)).to.equal(
         identityId1
@@ -512,7 +506,7 @@ describe("Soulbound Credit Score", () => {
         );
       const mintReceipt = await mintTx.wait();
 
-      const tokenId = mintReceipt.events![1].args![1].toNumber();
+      const tokenId = mintReceipt.events![2].args![1].toNumber();
 
       expect(await soulboundCreditScore.getIdentityId(tokenId)).to.equal(
         identityId1
@@ -539,7 +533,7 @@ describe("Soulbound Credit Score", () => {
         );
       const mintReceipt = await mintTx.wait();
 
-      const tokenId = mintReceipt.events![2].args![1].toNumber();
+      const tokenId = mintReceipt.events![3].args![1].toNumber();
 
       expect(await soulboundCreditScore.getIdentityId(tokenId)).to.equal(
         identityId1
@@ -616,7 +610,7 @@ describe("Soulbound Credit Score", () => {
         );
       const mintReceipt = await mintTx.wait();
 
-      const tokenId = mintReceipt.events![0].args![1].toNumber();
+      const tokenId = mintReceipt.events![1].args![1].toNumber();
 
       expect(await soulboundCreditScore.getIdentityId(tokenId)).to.equal(
         identityId1
@@ -681,7 +675,7 @@ describe("Soulbound Credit Score", () => {
         );
       const mintReceipt = await mintTx.wait();
 
-      const tokenId = mintReceipt.events![0].args![1].toNumber();
+      const tokenId = mintReceipt.events![1].args![1].toNumber();
 
       expect(await soulboundCreditScore.getIdentityId(tokenId)).to.equal(
         identityId1
@@ -746,7 +740,7 @@ describe("Soulbound Credit Score", () => {
         );
       const mintReceipt = await mintTx.wait();
 
-      const tokenId = mintReceipt.events![0].args![1].toNumber();
+      const tokenId = mintReceipt.events![1].args![1].toNumber();
 
       expect(await soulboundCreditScore.getIdentityId(tokenId)).to.equal(
         identityId1
@@ -801,7 +795,7 @@ describe("Soulbound Credit Score", () => {
         );
       const mintReceipt = await mintTx.wait();
 
-      const tokenId = mintReceipt.events![2].args![1].toNumber();
+      const tokenId = mintReceipt.events![3].args![1].toNumber();
 
       expect(await soulboundCreditScore.getIdentityId(tokenId)).to.equal(
         identityId1
@@ -856,7 +850,7 @@ describe("Soulbound Credit Score", () => {
         );
       const mintReceipt = await mintTx.wait();
 
-      const tokenId = mintReceipt.events![2].args![1].toNumber();
+      const tokenId = mintReceipt.events![3].args![1].toNumber();
 
       expect(await soulboundCreditScore.getIdentityId(tokenId)).to.equal(
         identityId1
@@ -911,7 +905,7 @@ describe("Soulbound Credit Score", () => {
         );
       const mintReceipt = await mintTx.wait();
 
-      const tokenId = mintReceipt.events![2].args![1].toNumber();
+      const tokenId = mintReceipt.events![3].args![1].toNumber();
 
       expect(await soulboundCreditScore.getIdentityId(tokenId)).to.equal(
         identityId1

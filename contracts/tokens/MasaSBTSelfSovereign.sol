@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.8;
+pragma solidity ^0.8.18;
 
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 
 import "../libraries/Errors.sol";
 import "./MasaSBT.sol";
@@ -15,10 +14,6 @@ import "./MasaSBT.sol";
 /// @dev Implementation of https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763 Soulbound token.
 abstract contract MasaSBTSelfSovereign is MasaSBT, EIP712 {
     /* ========== STATE VARIABLES =========================================== */
-
-    using Counters for Counters.Counter;
-
-    Counters.Counter private _tokenIdCounter;
 
     mapping(address => bool) public authorities;
 
@@ -32,13 +27,15 @@ abstract contract MasaSBTSelfSovereign is MasaSBT, EIP712 {
     /// @param baseTokenURI Base URI of the token
     /// @param soulboundIdentity Address of the SoulboundIdentity contract
     /// @param paymentParams Payment gateway params
+    /// @param maxSBTToMint Maximum number of SBT that can be minted
     constructor(
         address admin,
         string memory name,
         string memory symbol,
         string memory baseTokenURI,
         address soulboundIdentity,
-        PaymentParams memory paymentParams
+        PaymentParams memory paymentParams,
+        uint256 maxSBTToMint
     )
         MasaSBT(
             admin,
@@ -46,7 +43,8 @@ abstract contract MasaSBTSelfSovereign is MasaSBT, EIP712 {
             symbol,
             baseTokenURI,
             soulboundIdentity,
-            paymentParams
+            paymentParams,
+            maxSBTToMint
         )
     {}
 
@@ -90,29 +88,101 @@ abstract contract MasaSBTSelfSovereign is MasaSBT, EIP712 {
         bytes32 digest,
         bytes memory signature,
         address signer
-    ) private view {
+    ) internal view {
         address _signer = ECDSA.recover(digest, signature);
         if (_signer != signer) revert InvalidSignature();
         if (!authorities[_signer]) revert NotAuthorized(_signer);
     }
 
+    function _hash(
+        uint256 identityId,
+        address authorityAddress,
+        uint256 signatureDate
+    ) internal view virtual returns (bytes32) {
+        return
+            _hashTypedDataV4(
+                keccak256(
+                    abi.encode(
+                        keccak256(
+                            "Mint(uint256 identityId,address authorityAddress,uint256 signatureDate)"
+                        ),
+                        identityId,
+                        authorityAddress,
+                        signatureDate
+                    )
+                )
+            );
+    }
+
+    function _hash(
+        address to,
+        address authorityAddress,
+        uint256 signatureDate
+    ) internal view virtual returns (bytes32) {
+        return
+            _hashTypedDataV4(
+                keccak256(
+                    abi.encode(
+                        keccak256(
+                            "Mint(address to,address authorityAddress,uint256 signatureDate)"
+                        ),
+                        to,
+                        authorityAddress,
+                        signatureDate
+                    )
+                )
+            );
+    }
+
+    function _mintWithCounter(
+        address paymentMethod,
+        uint256 identityId,
+        bytes32 hash,
+        address authorityAddress,
+        uint256 signatureDate,
+        bytes calldata signature
+    ) internal virtual returns (uint256) {
+        address to = soulboundIdentity.ownerOf(identityId);
+        if (to != _msgSender()) revert CallerNotOwner(_msgSender());
+
+        _verify(hash, signature, authorityAddress);
+
+        uint256 tokenId = MasaSBT._mintWithCounter(paymentMethod, to);
+
+        emit MintedToIdentity(
+            tokenId,
+            identityId,
+            authorityAddress,
+            signatureDate,
+            paymentMethod,
+            mintPrice
+        );
+
+        return tokenId;
+    }
+
     function _mintWithCounter(
         address paymentMethod,
         address to,
-        bytes32 digest,
+        bytes32 hash,
         address authorityAddress,
+        uint256 signatureDate,
         bytes calldata signature
     ) internal virtual returns (uint256) {
-        _verify(digest, signature, authorityAddress);
+        if (to != _msgSender()) revert CallerNotOwner(_msgSender());
 
-        (uint256 price, uint256 protocolFee) = getMintPriceWithProtocolFee(
-            paymentMethod
+        _verify(hash, signature, authorityAddress);
+
+        uint256 tokenId = MasaSBT._mintWithCounter(paymentMethod, to);
+
+        emit MintedToAddress(
+            tokenId,
+            to,
+            authorityAddress,
+            signatureDate,
+            paymentMethod,
+            mintPrice
         );
-        _pay(paymentMethod, price, protocolFee);
-
-        uint256 tokenId = _tokenIdCounter.current();
-        _tokenIdCounter.increment();
-        _mint(to, tokenId);
 
         return tokenId;
     }
@@ -120,4 +190,22 @@ abstract contract MasaSBTSelfSovereign is MasaSBT, EIP712 {
     /* ========== MODIFIERS ================================================= */
 
     /* ========== EVENTS ==================================================== */
+
+    event MintedToIdentity(
+        uint256 tokenId,
+        uint256 identityId,
+        address authorityAddress,
+        uint256 signatureDate,
+        address paymentMethod,
+        uint256 mintPrice
+    );
+
+    event MintedToAddress(
+        uint256 tokenId,
+        address to,
+        address authorityAddress,
+        uint256 signatureDate,
+        address paymentMethod,
+        uint256 mintPrice
+    );
 }

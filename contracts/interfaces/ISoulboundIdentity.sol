@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.8;
+pragma solidity ^0.8.18;
 
 import "../tokens/SBT/ISBT.sol";
-
 import "./ISoulName.sol";
 
 interface ISoulboundIdentity is ISBT {
