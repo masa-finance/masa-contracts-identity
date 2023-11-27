@@ -1379,10 +1379,10 @@
   dependencies:
     "@types/chai" "*"
 
-"@types/chai@*", "@types/chai@^4.3.10":
-  version "4.3.10"
-  resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.3.10.tgz#2ad2959d1767edee5b0e4efb1a0cd2b500747317"
-  integrity sha512-of+ICnbqjmFCiixUnqRulbylyXQrPqIGf/B3Jax1wIF3DvSheysQxAWvqHhZiW3IQrycvokcLcFQlveGp+vyNg==
+"@types/chai@*", "@types/chai@^4.3.11":
+  version "4.3.11"
+  resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.3.11.tgz#e95050bf79a932cb7305dd130254ccdf9bde671c"
+  integrity sha512-qQR1dr2rGIHYlJulmr8Ioq3De0Le9E4MJ5AiaeAETJJpndT1uUNHsGFK3L/UIu+rbkQSdj8J/w2bCsBZc/Y5fQ==
 
 "@types/concat-stream@^1.6.0":
   version "1.6.1"
@@ -1473,10 +1473,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/mocha@^10.0.4":
-  version "10.0.4"
-  resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-10.0.4.tgz#b5331955ebca216604691fd4fcd2dbdc2bd559a4"
-  integrity sha512-xKU7bUjiFTIttpWaIZ9qvgg+22O1nmbA+HRxdlR+u6TWsGfmFdXrheJoK4fFxrHNVIOBDvDNKZG+LYBpMHpX3w==
+"@types/mocha@^10.0.6":
+  version "10.0.6"
+  resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-10.0.6.tgz#818551d39113081048bdddbef96701b4e8bb9d1b"
+  integrity sha512-dJvrYWxP/UcXm36Qn36fxhUKu8A/xMRXVT2cliFF1Z7UA9liG5Psj3ezNSZw+5puH2czDXRLcXQxf8JbJt0ejg==
 
 "@types/node-fetch@^2.6.1":
   version "2.6.6"
@@ -3238,10 +3238,10 @@ env-paths@^2.2.0:
   resolved "https://registry.yarnpkg.com/env-paths/-/env-paths-2.2.1.tgz#420399d416ce1fbe9bc0a07c62fa68d67fd0f8f2"
   integrity sha512-+h1lkLKhZMTYjog1VEpJNG7NZJWcuc2DDk/qsqSTRRCOXiLjeQ1d1/udrUGhqMxUgAlwKNZ0cf2uqan5GLuS2A==
 
-envfile@^6.20.0:
-  version "6.20.0"
-  resolved "https://registry.yarnpkg.com/envfile/-/envfile-6.20.0.tgz#1855fd29a9d853d12f75286c3391bf22ebeed17c"
-  integrity sha512-kEknIdkGS7ivvwGnOEqQd70crRQxqbVMwgl/Zp8Z6a2wUzEr63RsKTvj4gxyXnS+m4ueGeV9BVt5JvSDvl3Sdg==
+envfile@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/envfile/-/envfile-7.0.0.tgz#70f3a16c7162b8987a059e9fac9530ba11d4ceee"
+  integrity sha512-q6GTPMuGokB1Kz72+1mj8/O+sZQUhoae3JcAGEVJdN7Y/o2zv/PjLzbVdB+nsUBjIXLgRUb2W3hDKDJOPvtpMQ==
 
 errno@~0.1.1:
   version "0.1.8"
@@ -7695,10 +7695,10 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==
 
-typescript@^5.2.2:
-  version "5.2.2"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.2.2.tgz#5ebb5e5a5b75f085f22bc3f8460fba308310fa78"
-  integrity sha512-mI4WrpHsbCIcwT9cF4FZvr80QUeKvsUsUvKDoR+X/7XHQH98xYD8YHZg7ANtz2GtZt/CBq2QJ0thkGJMHfqc1w==
+typescript@^5.3.2:
+  version "5.3.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.3.2.tgz#00d1c7c1c46928c5845c1ee8d0cc2791031d4c43"
+  integrity sha512-6l+RyNy7oAHDfxC4FzSJcz9vnjTKxrLpDG5M2Vu4SHRVNg6xzqZp6LYSR9zjqQTu8DU/f5xwxUdADOkbrIX2gQ==
 
 typical@^4.0.0:
   version "4.0.0"
