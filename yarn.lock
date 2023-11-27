@@ -3238,10 +3238,10 @@ env-paths@^2.2.0:
   resolved "https://registry.yarnpkg.com/env-paths/-/env-paths-2.2.1.tgz#420399d416ce1fbe9bc0a07c62fa68d67fd0f8f2"
   integrity sha512-+h1lkLKhZMTYjog1VEpJNG7NZJWcuc2DDk/qsqSTRRCOXiLjeQ1d1/udrUGhqMxUgAlwKNZ0cf2uqan5GLuS2A==
 
-envfile@^6.20.0:
-  version "6.20.0"
-  resolved "https://registry.yarnpkg.com/envfile/-/envfile-6.20.0.tgz#1855fd29a9d853d12f75286c3391bf22ebeed17c"
-  integrity sha512-kEknIdkGS7ivvwGnOEqQd70crRQxqbVMwgl/Zp8Z6a2wUzEr63RsKTvj4gxyXnS+m4ueGeV9BVt5JvSDvl3Sdg==
+envfile@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/envfile/-/envfile-7.0.0.tgz#70f3a16c7162b8987a059e9fac9530ba11d4ceee"
+  integrity sha512-q6GTPMuGokB1Kz72+1mj8/O+sZQUhoae3JcAGEVJdN7Y/o2zv/PjLzbVdB+nsUBjIXLgRUb2W3hDKDJOPvtpMQ==
 
 errno@~0.1.1:
   version "0.1.8"
