@@ -25,6 +25,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
 
     ISoulboundIdentity public soulboundIdentity;
     ISoulName public soulName;
+    ISoulName public soulNameV1;
 
     mapping(uint256 => uint256) public nameRegistrationPricePerYear; // (length --> price in stable coin per year)
 
@@ -78,6 +79,16 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         if (address(_soulName) == address(0)) revert ZeroAddress();
         if (soulName == _soulName) revert SameValue();
         soulName = _soulName;
+    }
+
+    /// @notice Sets the SoulNameV1 contract address linked to this store
+    /// @dev The caller must have the admin role to call this function
+    /// @param _soulNameV1 New SoulNameV1 contract address
+    function setSoulNameV1(
+        ISoulName _soulNameV1
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        if (soulNameV1 == _soulNameV1) revert SameValue();
+        soulNameV1 = _soulNameV1;
     }
 
     /// @notice Sets the price of the name registering per one year in stable coin
