@@ -167,6 +167,23 @@ function mint(address to, string name, uint256 yearsPeriod, string _tokenURI) ex
 |---|---|---|
 | _0 | uint256 | undefined |
 
+### renewYearsPeriod
+
+```solidity
+function renewYearsPeriod(uint256 tokenId, uint256 yearsPeriod) external nonpayable
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId | uint256 | undefined |
+| yearsPeriod | uint256 | undefined |
+
 ### tokenData
 
 ```solidity

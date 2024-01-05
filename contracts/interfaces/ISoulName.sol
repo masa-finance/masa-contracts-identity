@@ -9,6 +9,8 @@ interface ISoulName {
         string memory _tokenURI
     ) external returns (uint256);
 
+    function renewYearsPeriod(uint256 tokenId, uint256 yearsPeriod) external;
+
     function getExtension() external view returns (string memory);
 
     function isAvailable(
