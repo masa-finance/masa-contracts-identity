@@ -21,6 +21,8 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
 
     /* ========== STATE VARIABLES ========== */
 
+    string public constant version = "2";
+
     ISoulboundIdentity public soulboundIdentity;
     ISoulName public soulName;
 

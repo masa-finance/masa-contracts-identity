@@ -17,6 +17,9 @@ import "./tokens/MasaNFT.sol";
 /// It has an extension, and stores all the information about the identity names.
 contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     /* ========== STATE VARIABLES ========== */
+
+    string public constant version = "2";
+
     using SafeMath for uint256;
 
     uint256 constant YEAR = 31536000; // 60 seconds * 60 minutes * 24 hours * 365 days
