@@ -271,6 +271,15 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         return tokenId;
     }
 
+    /// @notice Renews a Soul Name purchasing it
+    /// @dev This function allows the renewal of a soul name using
+    /// stable coin (USDC), native token (ETH) or utility token (MASA)
+    /// @param paymentMethod Address of token that user want to pay
+    /// @param nameLength Length of the name
+    /// @param tokenId TokenId of the soul name
+    /// @param yearsPeriod Years of validity of the name
+    /// @param authorityAddress Address of the authority
+    /// @param signature Signature of the authority
     function purchaseNameRenewal(
         address paymentMethod,
         uint256 nameLength,
@@ -455,6 +464,14 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         return tokenId;
     }
 
+    /// @notice Renews a Soul Name
+    /// @dev The final step of all purchase options. Will renew a
+    /// Soul Name NFT
+    /// @param nameLength Length of the name
+    /// @param tokenId TokenId of the soul name
+    /// @param yearsPeriod Years of validity of the name
+    /// @param authorityAddress Address of the authority
+    /// @param signature Signature of the authority
     function _renewSoulName(
         uint256 nameLength,
         uint256 tokenId,
