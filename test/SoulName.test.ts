@@ -463,6 +463,15 @@ describe("Soul Name", () => {
       ).to.deep.equal([SOUL_NAME1.toLowerCase()]);
     });
 
+    it("should fail to renew period from non minter", async () => {
+      // increase time to half the registration period
+      await network.provider.send("evm_increaseTime", [YEAR_PERIOD / 2]);
+      await network.provider.send("evm_mine");
+
+      await expect(soulName.connect(address1).renewYearsPeriod(nameId, YEAR)).to
+        .be.rejected;
+    });
+
     it("should allow mint same name if previous has expired", async () => {
       // increase time to expire the registration period
       await network.provider.send("evm_increaseTime", [YEAR_PERIOD + 1]);
