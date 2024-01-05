@@ -1048,22 +1048,6 @@ error AddressDoesNotHaveIdentity(address to)
 |---|---|---|
 | to | address | undefined |
 
-### CallerNotOwner
-
-```solidity
-error CallerNotOwner(address caller)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| caller | address | undefined |
-
 ### InvalidTokenURI
 
 ```solidity
