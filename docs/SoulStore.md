@@ -602,6 +602,27 @@ Mints a new Soul Name purchasing it
 |---|---|---|
 | _0 | uint256 | TokenId of the new sou name |
 
+### purchaseNameRenewal
+
+```solidity
+function purchaseNameRenewal(address paymentMethod, uint256 nameLength, uint256 tokenId, uint256 yearsPeriod, address authorityAddress, bytes signature) external payable
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| paymentMethod | address | undefined |
+| nameLength | uint256 | undefined |
+| tokenId | uint256 | undefined |
+| yearsPeriod | uint256 | undefined |
+| authorityAddress | address | undefined |
+| signature | bytes | undefined |
+
 ### removeAuthority
 
 ```solidity
@@ -946,6 +967,23 @@ Unpauses the smart contract
 *The caller must have the admin role to call this function*
 
 
+### version
+
+```solidity
+function version() external view returns (string)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string | undefined |
+
 ### wrappedNativeToken
 
 ```solidity
@@ -1083,6 +1121,27 @@ event SoulNamePurchased(address indexed account, uint256 tokenId, string indexed
 | account `indexed` | address | undefined |
 | tokenId  | uint256 | undefined |
 | name `indexed` | string | undefined |
+| yearsPeriod  | uint256 | undefined |
+| paymentMethod `indexed` | address | undefined |
+| price  | uint256 | undefined |
+| protocolFee  | uint256 | undefined |
+
+### SoulNameRenewalPurchased
+
+```solidity
+event SoulNameRenewalPurchased(uint256 tokenId, uint256 nameLength, uint256 yearsPeriod, address indexed paymentMethod, uint256 price, uint256 protocolFee)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId  | uint256 | undefined |
+| nameLength  | uint256 | undefined |
 | yearsPeriod  | uint256 | undefined |
 | paymentMethod `indexed` | address | undefined |
 | price  | uint256 | undefined |
