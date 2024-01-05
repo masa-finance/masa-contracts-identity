@@ -427,7 +427,7 @@ describe("Soul Name", () => {
       const { expirationDate: expirationDateStart } =
         await soulName.getTokenData(SOUL_NAME1);
 
-      await soulName.connect(address1).renewYearsPeriod(nameId, YEAR);
+      await soulName.connect(owner).renewYearsPeriod(nameId, YEAR);
 
       const { expirationDate: expirationDateFinish, active } =
         await soulName.getTokenData(SOUL_NAME1);
@@ -449,7 +449,7 @@ describe("Soul Name", () => {
       const { expirationDate: expirationDateStart } =
         await soulName.getTokenData(SOUL_NAME1);
 
-      await soulName.connect(address1).renewYearsPeriod(nameId, YEAR);
+      await soulName.connect(owner).renewYearsPeriod(nameId, YEAR);
 
       const { expirationDate: expirationDateFinish, active } =
         await soulName.getTokenData(SOUL_NAME1);
