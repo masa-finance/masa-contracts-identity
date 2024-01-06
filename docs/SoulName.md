@@ -482,21 +482,21 @@ function owner() external view returns (address)
 function ownerOf(uint256 tokenId) external view returns (address)
 ```
 
+Returns the owner of the soul name
 
-
-*See {IERC721-ownerOf}.*
+*This function queries the owner of the soul name*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| tokenId | uint256 | undefined |
+| tokenId | uint256 | TokenId of the soul name |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | address | undefined |
+| _0 | address | Address of the owner of the soul name |
 
 ### renewYearsPeriod
 

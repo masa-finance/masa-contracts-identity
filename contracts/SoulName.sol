@@ -356,7 +356,7 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     /// @return URI of the NFT
     function tokenURI(
         uint256 tokenId
-    ) public view virtual override returns (string memory) {
+    ) public view virtual override(MasaNFT, ISoulName) returns (string memory) {
         _requireMinted(tokenId);
 
         string memory _tokenURI = _tokenURIs[tokenId];
@@ -372,6 +372,22 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         }
 
         return super.tokenURI(tokenId);
+    }
+
+    /// @notice Returns the owner of the soul name
+    /// @dev This function queries the owner of the soul name
+    /// @param tokenId TokenId of the soul name
+    /// @return Address of the owner of the soul name
+    function ownerOf(
+        uint256 tokenId
+    )
+        public
+        view
+        virtual
+        override(ERC721, IERC721, ISoulName)
+        returns (address)
+    {
+        return super.ownerOf(tokenId);
     }
 
     /* ========== PRIVATE FUNCTIONS ========== */
