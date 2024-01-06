@@ -605,23 +605,24 @@ Mints a new Soul Name purchasing it
 ### purchaseNameRenewal
 
 ```solidity
-function purchaseNameRenewal(address paymentMethod, uint256 nameLength, uint256 tokenId, uint256 yearsPeriod, address authorityAddress, bytes signature) external payable
+function purchaseNameRenewal(address paymentMethod, uint256 tokenId, string name, uint256 nameLength, uint256 yearsPeriod, address authorityAddress, bytes signature) external payable
 ```
 
+Renews a Soul Name purchasing it
 
-
-
+*This function allows the renewal of a soul name using stable coin (USDC), native token (ETH) or utility token (MASA)*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| paymentMethod | address | undefined |
-| nameLength | uint256 | undefined |
-| tokenId | uint256 | undefined |
-| yearsPeriod | uint256 | undefined |
-| authorityAddress | address | undefined |
-| signature | bytes | undefined |
+| paymentMethod | address | Address of token that user want to pay |
+| tokenId | uint256 | TokenId of the soul name |
+| name | string | Name of the soul name |
+| nameLength | uint256 | Length of the name |
+| yearsPeriod | uint256 | Years of validity of the name |
+| authorityAddress | address | Address of the authority |
+| signature | bytes | Signature of the authority |
 
 ### removeAuthority
 
@@ -802,6 +803,22 @@ Sets the SoulName contract address linked to this store
 |---|---|---|
 | _soulName | contract ISoulName | New SoulName contract address |
 
+### setSoulNameV1
+
+```solidity
+function setSoulNameV1(contract ISoulName _soulNameV1) external nonpayable
+```
+
+Sets the SoulNameV1 contract address linked to this store
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _soulNameV1 | contract ISoulName | New SoulNameV1 contract address |
+
 ### setSoulboundIdentity
 
 ```solidity
@@ -870,6 +887,23 @@ Sets the wrapped native token address
 
 ```solidity
 function soulName() external view returns (contract ISoulName)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | contract ISoulName | undefined |
+
+### soulNameV1
+
+```solidity
+function soulNameV1() external view returns (contract ISoulName)
 ```
 
 
