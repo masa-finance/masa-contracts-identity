@@ -126,30 +126,7 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         uint256 yearsPeriod,
         string memory _tokenURI
     ) external override nonReentrant returns (uint256) {
-        if (!isAvailable(name)) revert NameAlreadyExists(name);
-        if (bytes(name).length == 0) revert ZeroLengthName(name);
-        if (yearsPeriod == 0) revert ZeroYearsPeriod(yearsPeriod);
-        if (soulboundIdentity.balanceOf(to) == 0)
-            revert AddressDoesNotHaveIdentity(to);
-        if (
-            !Utils.startsWith(_tokenURI, "ar://") &&
-            !Utils.startsWith(_tokenURI, "https://arweave.net/") &&
-            !Utils.startsWith(_tokenURI, "ipfs://")
-        ) revert InvalidTokenURI(_tokenURI);
-
-        uint256 tokenId = _mintWithCounter(to);
-        _setTokenURI(tokenId, _tokenURI);
-
-        tokenData[tokenId].name = name;
-        tokenData[tokenId].expirationDate = block.timestamp.add(
-            YEAR.mul(yearsPeriod)
-        );
-
-        string memory lowercaseName = Utils.toLowerCase(name);
-        nameData[lowercaseName].tokenId = tokenId;
-        nameData[lowercaseName].exists = true;
-
-        return tokenId;
+        return _mint(to, name, yearsPeriod, block.timestamp, _tokenURI);
     }
 
     /// @notice Mints a new soul name from a specific date
@@ -166,29 +143,7 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         uint256 fromDate,
         string memory _tokenURI
     ) external override nonReentrant returns (uint256) {
-        if (!isAvailable(name)) revert NameAlreadyExists(name);
-        if (bytes(name).length == 0) revert ZeroLengthName(name);
-        if (yearsPeriod == 0) revert ZeroYearsPeriod(yearsPeriod);
-        if (fromDate == 0) revert ZeroDate(fromDate);
-        if (soulboundIdentity.balanceOf(to) == 0)
-            revert AddressDoesNotHaveIdentity(to);
-        if (
-            !Utils.startsWith(_tokenURI, "ar://") &&
-            !Utils.startsWith(_tokenURI, "https://arweave.net/") &&
-            !Utils.startsWith(_tokenURI, "ipfs://")
-        ) revert InvalidTokenURI(_tokenURI);
-
-        uint256 tokenId = _mintWithCounter(to);
-        _setTokenURI(tokenId, _tokenURI);
-
-        tokenData[tokenId].name = name;
-        tokenData[tokenId].expirationDate = fromDate.add(YEAR.mul(yearsPeriod));
-
-        string memory lowercaseName = Utils.toLowerCase(name);
-        nameData[lowercaseName].tokenId = tokenId;
-        nameData[lowercaseName].exists = true;
-
-        return tokenId;
+        return _mint(to, name, yearsPeriod, fromDate, _tokenURI);
     }
 
     /// @notice Update the expiration date of a soul name
@@ -451,6 +406,38 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
 
         _tokenURIs[tokenId] = _tokenURI;
         _URIs[_tokenURI] = true;
+    }
+
+    function _mint(
+        address to,
+        string memory name,
+        uint256 yearsPeriod,
+        uint256 fromDate,
+        string memory _tokenURI
+    ) internal returns (uint256) {
+        if (!isAvailable(name)) revert NameAlreadyExists(name);
+        if (bytes(name).length == 0) revert ZeroLengthName(name);
+        if (yearsPeriod == 0) revert ZeroYearsPeriod(yearsPeriod);
+        if (fromDate == 0) revert ZeroDate(fromDate);
+        if (soulboundIdentity.balanceOf(to) == 0)
+            revert AddressDoesNotHaveIdentity(to);
+        if (
+            !Utils.startsWith(_tokenURI, "ar://") &&
+            !Utils.startsWith(_tokenURI, "https://arweave.net/") &&
+            !Utils.startsWith(_tokenURI, "ipfs://")
+        ) revert InvalidTokenURI(_tokenURI);
+
+        uint256 tokenId = _mintWithCounter(to);
+        _setTokenURI(tokenId, _tokenURI);
+
+        tokenData[tokenId].name = name;
+        tokenData[tokenId].expirationDate = fromDate.add(YEAR.mul(yearsPeriod));
+
+        string memory lowercaseName = Utils.toLowerCase(name);
+        nameData[lowercaseName].tokenId = tokenId;
+        nameData[lowercaseName].exists = true;
+
+        return tokenId;
     }
 
     /* ========== MODIFIERS ========== */
