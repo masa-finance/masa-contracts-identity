@@ -513,9 +513,9 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
                 uint256 expirationDate,
 
             ) = soulNameV1.getTokenData(name);
-            address _to = soulNameV1.ownerOf(_tokenId);
-            string memory _tokenURI = soulNameV1.tokenURI(_tokenId);
-            soulName.mint(_to, sbtName, yearsPeriod, expirationDate, _tokenURI);
+            address to = soulNameV1.ownerOf(_tokenId);
+            string memory tokenURI = soulNameV1.tokenURI(_tokenId);
+            soulName.mint(to, sbtName, yearsPeriod, expirationDate, tokenURI);
         } else {
             // renew Soul Name
             soulName.renewYearsPeriod(tokenId, yearsPeriod);
