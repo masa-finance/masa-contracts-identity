@@ -9,6 +9,14 @@ interface ISoulName {
         string memory _tokenURI
     ) external returns (uint256);
 
+    function mint(
+        address to,
+        string memory name,
+        uint256 yearsPeriod,
+        uint256 fromDate,
+        string memory _tokenURI
+    ) external returns (uint256);
+
     function renewYearsPeriod(uint256 tokenId, uint256 yearsPeriod) external;
 
     function getExtension() external view returns (string memory);

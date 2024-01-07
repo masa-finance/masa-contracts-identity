@@ -397,6 +397,32 @@ Checks if a soul name is available
 ### mint
 
 ```solidity
+function mint(address to, string name, uint256 yearsPeriod, uint256 fromDate, string _tokenURI) external nonpayable returns (uint256)
+```
+
+Mints a new soul name from a specific date
+
+*The caller can mint more than one name. The soul name must be unique.*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| to | address | Address of the owner of the new soul name |
+| name | string | Name of the new soul name |
+| yearsPeriod | uint256 | Years of validity of the name |
+| fromDate | uint256 | Date from which we start counting the years of validity |
+| _tokenURI | string | URI of the NFT |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+### mint
+
+```solidity
 function mint(address to, string name, uint256 yearsPeriod, string _tokenURI) external nonpayable returns (uint256)
 ```
 
@@ -1183,6 +1209,22 @@ error ZeroAddress()
 
 
 
+
+### ZeroDate
+
+```solidity
+error ZeroDate(uint256 date)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| date | uint256 | undefined |
 
 ### ZeroLengthName
 

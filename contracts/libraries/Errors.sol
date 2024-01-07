@@ -47,5 +47,6 @@ error UserMustHaveProtocolOrProjectAdminRole();
 error ValidPeriodExpired(uint256 expirationDate);
 error WithoutBeforeMintStates();
 error ZeroAddress();
+error ZeroDate(uint256 date);
 error ZeroLengthName(string name);
 error ZeroYearsPeriod(uint256 yearsPeriod);

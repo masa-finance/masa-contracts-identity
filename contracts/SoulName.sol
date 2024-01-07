@@ -152,6 +152,45 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         return tokenId;
     }
 
+    /// @notice Mints a new soul name from a specific date
+    /// @dev The caller can mint more than one name. The soul name must be unique.
+    /// @param to Address of the owner of the new soul name
+    /// @param name Name of the new soul name
+    /// @param yearsPeriod Years of validity of the name
+    /// @param fromDate Date from which we start counting the years of validity
+    /// @param _tokenURI URI of the NFT
+    function mint(
+        address to,
+        string memory name,
+        uint256 yearsPeriod,
+        uint256 fromDate,
+        string memory _tokenURI
+    ) external override nonReentrant returns (uint256) {
+        if (!isAvailable(name)) revert NameAlreadyExists(name);
+        if (bytes(name).length == 0) revert ZeroLengthName(name);
+        if (yearsPeriod == 0) revert ZeroYearsPeriod(yearsPeriod);
+        if (fromDate == 0) revert ZeroDate(fromDate);
+        if (soulboundIdentity.balanceOf(to) == 0)
+            revert AddressDoesNotHaveIdentity(to);
+        if (
+            !Utils.startsWith(_tokenURI, "ar://") &&
+            !Utils.startsWith(_tokenURI, "https://arweave.net/") &&
+            !Utils.startsWith(_tokenURI, "ipfs://")
+        ) revert InvalidTokenURI(_tokenURI);
+
+        uint256 tokenId = _mintWithCounter(to);
+        _setTokenURI(tokenId, _tokenURI);
+
+        tokenData[tokenId].name = name;
+        tokenData[tokenId].expirationDate = fromDate.add(YEAR.mul(yearsPeriod));
+
+        string memory lowercaseName = Utils.toLowerCase(name);
+        nameData[lowercaseName].tokenId = tokenId;
+        nameData[lowercaseName].exists = true;
+
+        return tokenId;
+    }
+
     /// @notice Update the expiration date of a soul name
     /// @dev The caller must be the owner or an approved address of the soul name.
     /// @param tokenId TokenId of the soul name
