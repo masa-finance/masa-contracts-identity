@@ -47,7 +47,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         ISoulName _soulName,
         uint256 _nameRegistrationPricePerYear,
         PaymentParams memory paymentParams
-    ) PaymentGateway(admin, paymentParams) EIP712("SoulStore", "1.0.0") {
+    ) PaymentGateway(admin, paymentParams) EIP712("SoulStore", "2.0.0") {
         if (address(_soulBoundIdentity) == address(0)) revert ZeroAddress();
         if (address(_soulName) == address(0)) revert ZeroAddress();
 
