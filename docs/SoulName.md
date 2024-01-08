@@ -119,6 +119,28 @@ function contractURI() external view returns (string)
 ### exists
 
 ```solidity
+function exists(string name) external view returns (bool)
+```
+
+Checks if a soul name exists
+
+*This function queries if a soul name already exists*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | Name of the soul name |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bool | `true` if the soul name exists, `false` otherwise |
+
+### exists
+
+```solidity
 function exists(uint256 tokenId) external view returns (bool)
 ```
 

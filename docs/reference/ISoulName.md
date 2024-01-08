@@ -10,6 +10,28 @@
 
 ## Methods
 
+### exists
+
+```solidity
+function exists(string name) external view returns (bool)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bool | undefined |
+
 ### getExtension
 
 ```solidity

@@ -605,7 +605,7 @@ Mints a new Soul Name purchasing it
 ### purchaseNameRenewal
 
 ```solidity
-function purchaseNameRenewal(address paymentMethod, uint256 tokenId, string name, uint256 nameLength, uint256 yearsPeriod, address authorityAddress, bytes signature) external payable
+function purchaseNameRenewal(address paymentMethod, address to, string name, uint256 nameLength, uint256 yearsPeriod, address authorityAddress, bytes signature) external payable
 ```
 
 Renews a Soul Name purchasing it
@@ -617,7 +617,7 @@ Renews a Soul Name purchasing it
 | Name | Type | Description |
 |---|---|---|
 | paymentMethod | address | Address of token that user want to pay |
-| tokenId | uint256 | TokenId of the soul name |
+| to | address | Address of the owner of the soul name |
 | name | string | Name of the soul name |
 | nameLength | uint256 | Length of the name |
 | yearsPeriod | uint256 | Years of validity of the name |
@@ -1163,7 +1163,7 @@ event SoulNamePurchased(address indexed account, uint256 tokenId, string indexed
 ### SoulNameRenewalPurchased
 
 ```solidity
-event SoulNameRenewalPurchased(uint256 tokenId, uint256 nameLength, uint256 yearsPeriod, address indexed paymentMethod, uint256 price, uint256 protocolFee)
+event SoulNameRenewalPurchased(address indexed account, uint256 nameLength, uint256 yearsPeriod, address indexed paymentMethod, uint256 price, uint256 protocolFee)
 ```
 
 
@@ -1174,7 +1174,7 @@ event SoulNameRenewalPurchased(uint256 tokenId, uint256 nameLength, uint256 year
 
 | Name | Type | Description |
 |---|---|---|
-| tokenId  | uint256 | undefined |
+| account `indexed` | address | undefined |
 | nameLength  | uint256 | undefined |
 | yearsPeriod  | uint256 | undefined |
 | paymentMethod `indexed` | address | undefined |
@@ -1321,6 +1321,22 @@ error InvalidSignature()
 
 
 
+### InvalidToAddress
+
+```solidity
+error InvalidToAddress(address to)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| to | address | undefined |
+
 ### InvalidToken
 
 ```solidity
@@ -1336,6 +1352,22 @@ error InvalidToken(address token)
 | Name | Type | Description |
 |---|---|---|
 | token | address | undefined |
+
+### NameNotFound
+
+```solidity
+error NameNotFound(string name)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | undefined |
 
 ### NonExistingErc20Token
 
