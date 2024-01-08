@@ -259,8 +259,10 @@ describe("Soul Name", () => {
     });
 
     it("isAvailable false with an existing name - case insensitive", async () => {
-      await expect(await soulName["exists(string)"](SOUL_NAME1.toLowerCase())).to.be.true;
-      await expect(await soulName["exists(string)"](SOUL_NAME1.toUpperCase())).to.be.true;
+      await expect(await soulName["exists(string)"](SOUL_NAME1.toLowerCase()))
+        .to.be.true;
+      await expect(await soulName["exists(string)"](SOUL_NAME1.toUpperCase()))
+        .to.be.true;
       await expect(
         await soulName.isAvailable(SOUL_NAME1.toLowerCase())
       ).to.be.equal(false);
