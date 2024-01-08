@@ -142,7 +142,7 @@ describe("Soul Name", () => {
 
       expect(await soulName.balanceOf(address1.address)).to.be.equal(1);
       expect(await soulName.ownerOf(nameId)).to.be.equal(address1.address);
-      expect(await soulName.exists(nameId)).to.be.true;
+      expect(await soulName["exists(uint256)"](nameId)).to.be.true;
     });
 
     it("should success to mint a name twice to the same idenity", async () => {
