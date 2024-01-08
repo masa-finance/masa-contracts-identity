@@ -216,6 +216,16 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         return extension;
     }
 
+    /// @notice Checks if a soul name exists
+    /// @dev This function queries if a soul name already exists
+    /// @param name Name of the soul name
+    /// @return `true` if the soul name exists, `false` otherwise
+    function exists(string memory name) external view override returns (bool) {
+        string memory lowercaseName = Utils.toLowerCase(name);
+
+        return nameData[lowercaseName].exists;
+    }
+
     /// @notice Checks if a soul name is available
     /// @dev This function queries if a soul name already exists and is in the available state
     /// @param name Name of the soul name

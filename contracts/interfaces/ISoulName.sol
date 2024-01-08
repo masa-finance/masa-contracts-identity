@@ -21,6 +21,8 @@ interface ISoulName {
 
     function getExtension() external view returns (string memory);
 
+    function exists(string memory name) external view returns (bool);
+
     function isAvailable(
         string memory name
     ) external view returns (bool available);
