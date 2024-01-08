@@ -286,7 +286,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @dev This function allows the renewal of a soul name using
     /// stable coin (USDC), native token (ETH) or utility token (MASA)
     /// @param paymentMethod Address of token that user want to pay
-    /// @param tokenId TokenId of the soul name
+    /// @param to Address of the owner of the soul name
     /// @param name Name of the soul name
     /// @param nameLength Length of the name
     /// @param yearsPeriod Years of validity of the name
@@ -294,7 +294,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @param signature Signature of the authority
     function purchaseNameRenewal(
         address paymentMethod,
-        uint256 tokenId,
+        address to,
         string memory name,
         uint256 nameLength,
         uint256 yearsPeriod,
@@ -313,7 +313,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
 
         // finalize purchase
         _renewSoulName(
-            tokenId,
+            to,
             name,
             nameLength,
             yearsPeriod,
@@ -322,7 +322,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         );
 
         emit SoulNameRenewalPurchased(
-            tokenId,
+            to,
             nameLength,
             yearsPeriod,
             paymentMethod,
@@ -481,14 +481,14 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     /// @notice Renews a Soul Name
     /// @dev The final step of all purchase options. Will renew a
     /// Soul Name NFT
-    /// @param tokenId TokenId of the soul name
+    /// @param to Address of the owner of the soul name
     /// @param name Name of the soul name
     /// @param nameLength Length of the name
     /// @param yearsPeriod Years of validity of the name
     /// @param authorityAddress Address of the authority
     /// @param signature Signature of the authority
     function _renewSoulName(
-        uint256 tokenId,
+        address to,
         string memory name,
         uint256 nameLength,
         uint256 yearsPeriod,
@@ -496,29 +496,42 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         bytes calldata signature
     ) internal virtual {
         _verify(
-            _hashRenewal(tokenId, name, nameLength, yearsPeriod),
+            _hashRenewal(to, name, nameLength, yearsPeriod),
             signature,
             authorityAddress
         );
 
-        if (
-            (address(soulNameV1) != address(0)) && soulNameV1.isAvailable(name)
-        ) {
-            // if the token is in the v1 contract, we need to mint it in the v2 contract
-            (
-                string memory sbtName,
-                ,
-                ,
-                uint256 _tokenId,
-                uint256 expirationDate,
-
-            ) = soulNameV1.getTokenData(name);
-            address to = soulNameV1.ownerOf(_tokenId);
-            string memory tokenURI = soulNameV1.tokenURI(_tokenId);
-            soulName.mint(to, sbtName, yearsPeriod, expirationDate, tokenURI);
-        } else {
+        if (soulName.exists(name)) {
             // renew Soul Name
-            soulName.renewYearsPeriod(tokenId, yearsPeriod);
+            uint256 _tokenId = soulName.getTokenId(name);
+            address _to = soulName.ownerOf(_tokenId);
+            if (to != _to) {
+                revert InvalidToAddress(to);
+            }
+            soulName.renewYearsPeriod(_tokenId, yearsPeriod);
+        } else {
+            // mint Soul Name token
+            if (address(soulNameV1) != address(0)) {
+                // if the token is in the v1 contract, we need to mint it in the v2 contract
+                (
+                    string memory sbtName,
+                    ,
+                    ,
+                    uint256 _tokenId,
+                    uint256 expirationDate,
+                    bool active
+                ) = soulNameV1.getTokenData(name);
+                address _to = soulNameV1.ownerOf(_tokenId);
+                if (to != _to) {
+                    revert InvalidToAddress(to);
+                }
+                string memory tokenURI = soulNameV1.tokenURI(_tokenId);
+                uint256 fromDate = expirationDate;
+                if (!active) {
+                    fromDate = block.timestamp;
+                }
+                soulName.mint(to, sbtName, yearsPeriod, fromDate, tokenURI);
+            }
         }
     }
 
@@ -557,7 +570,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     }
 
     function _hashRenewal(
-        uint256 tokenId,
+        address to,
         string memory name,
         uint256 nameLength,
         uint256 yearsPeriod
@@ -567,9 +580,9 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
                 keccak256(
                     abi.encode(
                         keccak256(
-                            "RenewSoulName(uint256 tokenId,string name,uint256 nameLength,uint256 yearsPeriod)"
+                            "RenewSoulName(address to,string name,uint256 nameLength,uint256 yearsPeriod)"
                         ),
-                        tokenId,
+                        to,
                         keccak256(bytes(name)),
                         nameLength,
                         yearsPeriod
@@ -605,7 +618,7 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
     );
 
     event SoulNameRenewalPurchased(
-        uint256 tokenId,
+        address indexed account,
         uint256 nameLength,
         uint256 yearsPeriod,
         address indexed paymentMethod,
