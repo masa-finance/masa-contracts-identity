@@ -509,29 +509,28 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
                 revert InvalidToAddress(to);
             }
             soulName.renewYearsPeriod(_tokenId, yearsPeriod);
-        } else {
-            // mint Soul Name token
-            if (address(soulNameV1) != address(0)) {
-                // if the token is in the v1 contract, we need to mint it in the v2 contract
-                (
-                    string memory sbtName,
-                    ,
-                    ,
-                    uint256 _tokenId,
-                    uint256 expirationDate,
-                    bool active
-                ) = soulNameV1.getTokenData(name);
-                address _to = soulNameV1.ownerOf(_tokenId);
-                if (to != _to) {
-                    revert InvalidToAddress(to);
-                }
-                string memory tokenURI = soulNameV1.tokenURI(_tokenId);
-                uint256 fromDate = expirationDate;
-                if (!active) {
-                    fromDate = block.timestamp;
-                }
-                soulName.mint(to, sbtName, yearsPeriod, fromDate, tokenURI);
+        } else if (address(soulNameV1) != address(0)) {
+            // if the token is in the v1 contract, we need to mint it in the v2 contract
+            (
+                string memory sbtName,
+                ,
+                ,
+                uint256 _tokenId,
+                uint256 expirationDate,
+                bool active
+            ) = soulNameV1.getTokenData(name);
+            address _to = soulNameV1.ownerOf(_tokenId);
+            if (to != _to) {
+                revert InvalidToAddress(to);
             }
+            string memory tokenURI = soulNameV1.tokenURI(_tokenId);
+            uint256 fromDate = expirationDate;
+            if (!active) {
+                fromDate = block.timestamp;
+            }
+            soulName.mint(to, sbtName, yearsPeriod, fromDate, tokenURI);
+        } else {
+            revert NameNotFound(name);
         }
     }
 
