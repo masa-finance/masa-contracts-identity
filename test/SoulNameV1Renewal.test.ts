@@ -273,7 +273,7 @@ describe("Soul Name V1 Renewal", () => {
         );
     });
 
-    it("shouldn't renew period when period has expired and somebody has minted same name", async () => {
+    it("shouldn't renew period when period has expired and somebody has minted same name with SoulName V2", async () => {
       // increase time to expire the registration period
       await network.provider.send("evm_increaseTime", [YEAR_PERIOD * 2]);
       await network.provider.send("evm_mine");
@@ -302,6 +302,64 @@ describe("Soul Name V1 Renewal", () => {
         YEAR,
         ARWEAVE_LINK,
         authority
+      );
+
+      await expect(
+        soulStore.connect(address1).purchaseName(
+          ethers.constants.AddressZero, // ETH
+          address1.address,
+          SOUL_NAME,
+          SOUL_NAME.length,
+          YEAR,
+          ARWEAVE_LINK,
+          authority.address,
+          signature,
+          { value: price }
+        )
+      ).to.be.rejectedWith("NameRegisteredByOtherAccount");
+    });
+
+    it("shouldn't renew period when period has expired and somebody has minted same name with SoulName V1", async () => {
+      // increase time to expire the registration period
+      await network.provider.send("evm_increaseTime", [YEAR_PERIOD * 2]);
+      await network.provider.send("evm_mine");
+
+      // once expired, another user mints the same soul name
+      await soulNameV1
+        .connect(owner)
+        ["mint(address,string,uint256,string)"](
+          address2.address,
+          SOUL_NAME,
+          YEAR,
+          ARWEAVE_LINK2
+        );
+
+      // the first owner of the soul name tries to renew the period and fails
+      const { price } = await soulStore.getPriceForMintingNameWithProtocolFee(
+        ethers.constants.AddressZero,
+        SOUL_NAME.length,
+        YEAR
+      );
+
+      const signature = await signMintSoulName(
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length,
+        YEAR,
+        ARWEAVE_LINK,
+        authority
+      );
+
+      await soulStore.connect(address1).purchaseName(
+        ethers.constants.AddressZero, // ETH
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length,
+        YEAR,
+        ARWEAVE_LINK,
+        authority.address,
+        signature,
+        { value: price }
       );
 
       await expect(
