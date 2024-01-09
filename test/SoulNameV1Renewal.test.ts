@@ -160,8 +160,8 @@ describe("Soul Name V1 Renewal", () => {
       owner
     );
 
-    soulboundIdentity["mint(address)"](address1.address);
-    soulName["mint(address,string,uint256,string)"](
+    await soulboundIdentity["mint(address)"](address1.address);
+    await soulName["mint(address,string,uint256,string)"](
       address1.address,
       SOUL_NAME,
       YEAR,
