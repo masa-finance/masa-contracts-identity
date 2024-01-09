@@ -134,7 +134,8 @@ describe("Soul Name V1 Renewal", () => {
     await deployments.fixture("SoulName", { fallbackToGlobal: false });
     await deployments.fixture("SoulStore", { fallbackToGlobal: false });
 
-    const { address: soulboundIdentityAddress } = await deployments.get("SoulboundIdentity");
+    const { address: soulboundIdentityAddress } =
+      await deployments.get("SoulboundIdentity");
     const { address: soulStoreAddress } = await deployments.get("SoulStore");
     const { address: soulNameAddress } = await deployments.get("SoulName");
 
@@ -153,7 +154,10 @@ describe("Soul Name V1 Renewal", () => {
 
     soulStore = SoulStore__factory.connect(soulStoreAddress, owner);
     soulName = SoulName__factory.connect(soulNameAddress, owner);
-    soulNameV1 = SoulName__factory.connect(soulNameV1DeploymentResult.address, owner);
+    soulNameV1 = SoulName__factory.connect(
+      soulNameV1DeploymentResult.address,
+      owner
+    );
 
     // we add authority account
     await soulStore.addAuthority(authority.address);
