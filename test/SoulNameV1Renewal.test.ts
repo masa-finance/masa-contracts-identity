@@ -4,8 +4,6 @@ import { solidity } from "ethereum-waffle";
 import { ethers, deployments, getChainId, network } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
-  IERC20,
-  IERC20__factory,
   SoulName,
   SoulName__factory,
   SoulStore,
@@ -20,8 +18,6 @@ chai.use(solidity);
 const expect = chai.expect;
 
 const env = getEnvParams("hardhat");
-
-const DAI_GOERLI = "0xdc31Ee1784292379Fbb2964b3B9C4124D8F89C60";
 
 // contract instances
 let soulboundIdentity: SoulboundIdentity;
@@ -140,11 +136,11 @@ describe("Soul Name V1 Renewal", () => {
       from: owner.address,
       args: [
         owner.address,
-        "Masa Soul Name",
-        "MSN",
+        env.SOULNAME_NAME + " v1",
+        env.SOULNAME_SYMBOL,
         soulboundIdentityAddress,
-        ".soul",
-        "ar://bfG2m3VJU19fj6uGgyaxNY0QhK0G7RINYtw-GRVVqTM"
+        env.SOULNAME_EXTENSION || ".soul",
+        env.SOUL_NAME_CONTRACT_URI
       ],
       log: true
     });
@@ -161,20 +157,166 @@ describe("Soul Name V1 Renewal", () => {
     );
 
     await soulboundIdentity["mint(address)"](address1.address);
-    await soulName["mint(address,string,uint256,string)"](
+    await soulboundIdentity["mint(address)"](address2.address);
+    await soulNameV1["mint(address,string,uint256,string)"](
       address1.address,
       SOUL_NAME,
       YEAR,
       ARWEAVE_LINK
     );
 
+    // we set the soul name v1 contract in the soul store
+    await soulStore.setSoulNameV1(soulNameV1.address);
+
     // we add authority account
     await soulStore.addAuthority(authority.address);
   });
 
-  describe("check", () => {
-    it("should check soulNameV1 address", async () => {
-      console.log("soulNameV1", soulNameV1.address);
+  describe("purchase name renewal", async () => {
+    it("should renew period when period hasn't expired", async () => {
+      // increase time to half the registration period
+      await network.provider.send("evm_increaseTime", [YEAR_PERIOD / 2]);
+      await network.provider.send("evm_mine");
+
+      const { expirationDate: expirationDateStart } =
+        await soulNameV1.getTokenData(SOUL_NAME);
+
+      const { price } = await soulStore.getPriceForMintingNameWithProtocolFee(
+        ethers.constants.AddressZero,
+        SOUL_NAME.length,
+        YEAR
+      );
+
+      const signature = await signRenewSoulName(
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length,
+        YEAR,
+        authority
+      );
+
+      await soulStore.connect(address1).purchaseNameRenewal(
+        ethers.constants.AddressZero, // ETH
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length,
+        YEAR,
+        authority.address,
+        signature,
+        { value: price }
+      );
+
+      const { expirationDate: expirationDateFinish, active } =
+        await soulName.getTokenData(SOUL_NAME);
+
+      expect(
+        expirationDateFinish.toNumber() - expirationDateStart.toNumber()
+      ).to.be.equal(YEAR_PERIOD);
+      expect(active).to.be.true;
+    });
+
+    it("should renew period when period has expired", async () => {
+      // increase time to expire the registration period
+      await network.provider.send("evm_increaseTime", [YEAR_PERIOD + 1]);
+      await network.provider.send("evm_mine");
+
+      const { expirationDate: expirationDateStart } =
+        await soulNameV1.getTokenData(SOUL_NAME);
+
+      const { price } = await soulStore.getPriceForMintingNameWithProtocolFee(
+        ethers.constants.AddressZero,
+        SOUL_NAME.length,
+        YEAR
+      );
+
+      const signature = await signRenewSoulName(
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length,
+        YEAR,
+        authority
+      );
+
+      await soulStore.connect(address1).purchaseNameRenewal(
+        ethers.constants.AddressZero, // ETH
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length,
+        YEAR,
+        authority.address,
+        signature,
+        { value: price }
+      );
+
+      const { expirationDate: expirationDateFinish, active } =
+        await soulName.getTokenData(SOUL_NAME);
+
+      expect(
+        expirationDateFinish.toNumber() - expirationDateStart.toNumber()
+      ).to.be.above(YEAR_PERIOD);
+      expect(active).to.be.true;
+    });
+
+    it("should allow mint same name if previous has expired", async () => {
+      // increase time to expire the registration period
+      await network.provider.send("evm_increaseTime", [YEAR_PERIOD + 1]);
+      await network.provider.send("evm_mine");
+
+      // once expired, another user mints the same soul name
+      await soulName
+        .connect(owner)
+        ["mint(address,string,uint256,string)"](
+          address2.address,
+          SOUL_NAME,
+          YEAR,
+          ARWEAVE_LINK2
+        );
+    });
+
+    it("shouldn't renew period when period has expired and somebody has minted same name", async () => {
+      // increase time to expire the registration period
+      await network.provider.send("evm_increaseTime", [YEAR_PERIOD + 1]);
+      await network.provider.send("evm_mine");
+
+      // once expired, another user mints the same soul name
+      await soulName
+        .connect(owner)
+        ["mint(address,string,uint256,string)"](
+          address2.address,
+          SOUL_NAME,
+          YEAR,
+          ARWEAVE_LINK2
+        );
+
+      // the first owner of the soul name tries to renew the period and fails
+      const { price } = await soulStore.getPriceForMintingNameWithProtocolFee(
+        ethers.constants.AddressZero,
+        SOUL_NAME.length,
+        YEAR
+      );
+
+      const signature = await signMintSoulName(
+        address1.address,
+        SOUL_NAME,
+        SOUL_NAME.length,
+        YEAR,
+        ARWEAVE_LINK,
+        authority
+      );
+
+      await expect(
+        soulStore.connect(address1).purchaseName(
+          ethers.constants.AddressZero, // ETH
+          address1.address,
+          SOUL_NAME,
+          SOUL_NAME.length,
+          YEAR,
+          ARWEAVE_LINK,
+          authority.address,
+          signature,
+          { value: price }
+        )
+      ).to.be.rejectedWith("NameRegisteredByOtherAccount");
     });
   });
 });
