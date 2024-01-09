@@ -512,13 +512,14 @@ contract SoulStore is PaymentGateway, Pausable, ReentrancyGuard, EIP712 {
         } else if (address(soulNameV1) != address(0)) {
             // if the token is in the v1 contract, we need to mint it in the v2 contract
             (
-                string memory sbtName,
+                ,
                 ,
                 ,
                 uint256 _tokenId,
                 uint256 expirationDate,
                 bool active
             ) = soulNameV1.getTokenData(name);
+            (string memory sbtName, ) = soulNameV1.tokenData(_tokenId);
             address _to = soulNameV1.ownerOf(_tokenId);
             if (to != _to) {
                 revert InvalidToAddress(to);
