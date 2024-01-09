@@ -295,28 +295,26 @@ describe("Soul Name V1 Renewal", () => {
         YEAR
       );
 
-      const signature = await signMintSoulName(
+      const signature = await signRenewSoulName(
         address1.address,
         SOUL_NAME,
         SOUL_NAME.length,
         YEAR,
-        ARWEAVE_LINK,
         authority
       );
 
       await expect(
-        soulStore.connect(address1).purchaseName(
+        soulStore.connect(address1).purchaseNameRenewal(
           ethers.constants.AddressZero, // ETH
           address1.address,
           SOUL_NAME,
           SOUL_NAME.length,
           YEAR,
-          ARWEAVE_LINK,
           authority.address,
           signature,
           { value: price }
         )
-      ).to.be.rejectedWith("NameRegisteredByOtherAccount");
+      ).to.be.rejectedWith("InvalidToAddress");
     });
 
     it("shouldn't renew period when period has expired and somebody has minted same name with SoulName V1", async () => {
@@ -324,7 +322,7 @@ describe("Soul Name V1 Renewal", () => {
       await network.provider.send("evm_increaseTime", [YEAR_PERIOD * 2]);
       await network.provider.send("evm_mine");
 
-      // once expired, another user mints the same soul name
+      // once expired, another user mints the same soul name v1
       await soulNameV1
         .connect(owner)
         ["mint(address,string,uint256,string)"](
@@ -341,40 +339,26 @@ describe("Soul Name V1 Renewal", () => {
         YEAR
       );
 
-      const signature = await signMintSoulName(
+      const signature = await signRenewSoulName(
         address1.address,
         SOUL_NAME,
         SOUL_NAME.length,
         YEAR,
-        ARWEAVE_LINK,
         authority
       );
 
-      await soulStore.connect(address1).purchaseName(
-        ethers.constants.AddressZero, // ETH
-        address1.address,
-        SOUL_NAME,
-        SOUL_NAME.length,
-        YEAR,
-        ARWEAVE_LINK,
-        authority.address,
-        signature,
-        { value: price }
-      );
-
       await expect(
-        soulStore.connect(address1).purchaseName(
+        soulStore.connect(address1).purchaseNameRenewal(
           ethers.constants.AddressZero, // ETH
           address1.address,
           SOUL_NAME,
           SOUL_NAME.length,
           YEAR,
-          ARWEAVE_LINK,
           authority.address,
           signature,
           { value: price }
         )
-      ).to.be.rejectedWith("NameRegisteredByOtherAccount");
+      ).to.be.rejectedWith("InvalidToAddress");
     });
   });
 });
