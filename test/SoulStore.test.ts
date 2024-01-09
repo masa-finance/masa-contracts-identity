@@ -1568,7 +1568,7 @@ describe("Soul Store", () => {
 
     it("should return an inactive registration period", async () => {
       // increase time to expire the registration period
-      await network.provider.send("evm_increaseTime", [YEAR_PERIOD + 1]);
+      await network.provider.send("evm_increaseTime", [YEAR_PERIOD * 2]);
       await network.provider.send("evm_mine");
 
       const { expirationDate, active } = await soulName.getTokenData(SOUL_NAME);
@@ -1621,7 +1621,7 @@ describe("Soul Store", () => {
 
     it("should renew period when period has expired", async () => {
       // increase time to expire the registration period
-      await network.provider.send("evm_increaseTime", [YEAR_PERIOD + 1]);
+      await network.provider.send("evm_increaseTime", [YEAR_PERIOD * 2]);
       await network.provider.send("evm_mine");
 
       const { expirationDate: expirationDateStart } =
@@ -1663,7 +1663,7 @@ describe("Soul Store", () => {
 
     it("should allow mint same name if previous has expired", async () => {
       // increase time to expire the registration period
-      await network.provider.send("evm_increaseTime", [YEAR_PERIOD + 1]);
+      await network.provider.send("evm_increaseTime", [YEAR_PERIOD * 2]);
       await network.provider.send("evm_mine");
 
       // once expired, another user mints the same soul name
@@ -1679,7 +1679,7 @@ describe("Soul Store", () => {
 
     it("shouldn't renew period when period has expired and somebody has minted same name", async () => {
       // increase time to expire the registration period
-      await network.provider.send("evm_increaseTime", [YEAR_PERIOD + 1]);
+      await network.provider.send("evm_increaseTime", [YEAR_PERIOD * 2]);
       await network.provider.send("evm_mine");
 
       // once expired, another user mints the same soul name
