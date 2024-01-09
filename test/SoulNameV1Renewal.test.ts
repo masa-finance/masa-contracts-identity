@@ -9,7 +9,9 @@ import {
   SoulName,
   SoulName__factory,
   SoulStore,
-  SoulStore__factory
+  SoulStore__factory,
+  SoulboundIdentity,
+  SoulboundIdentity__factory
 } from "../typechain";
 import { getEnvParams } from "../src/EnvParams";
 
@@ -22,6 +24,7 @@ const env = getEnvParams("hardhat");
 const DAI_GOERLI = "0xdc31Ee1784292379Fbb2964b3B9C4124D8F89C60";
 
 // contract instances
+let soulboundIdentity: SoulboundIdentity;
 let soulStore: SoulStore;
 let soulName: SoulName;
 let soulNameV1: SoulName;
@@ -31,12 +34,6 @@ let protocolWallet: SignerWithAddress;
 let address1: SignerWithAddress;
 let address2: SignerWithAddress;
 let authority: SignerWithAddress;
-
-const MINTING_NAME_PRICE_1LETTERS = 6_250_000_000; // 6,250 USDC, with 6 decimals
-const MINTING_NAME_PRICE_2LETTERS = 1_250_000_000; // 1,250 USDC, with 6 decimals
-const MINTING_NAME_PRICE_3LETTERS = 250_000_000; // 250 USDC, with 6 decimals
-const MINTING_NAME_PRICE_4LETTERS = 50_000_000; // 50 USDC, with 6 decimals
-const MINTING_NAME_PRICE_5LETTERS = 10_000_000; // 10 USDC, with 6 decimals
 
 const SOUL_NAME = "soulNameTest";
 const YEAR = 1; // 1 year
@@ -152,11 +149,23 @@ describe("Soul Name V1 Renewal", () => {
       log: true
     });
 
+    soulboundIdentity = SoulboundIdentity__factory.connect(
+      soulboundIdentityAddress,
+      owner
+    );
     soulStore = SoulStore__factory.connect(soulStoreAddress, owner);
     soulName = SoulName__factory.connect(soulNameAddress, owner);
     soulNameV1 = SoulName__factory.connect(
       soulNameV1DeploymentResult.address,
       owner
+    );
+
+    soulboundIdentity["mint(address)"](address1.address);
+    soulName["mint(address,string,uint256,string)"](
+      address1.address,
+      SOUL_NAME,
+      YEAR,
+      ARWEAVE_LINK
     );
 
     // we add authority account
