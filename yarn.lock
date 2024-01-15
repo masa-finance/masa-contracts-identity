@@ -7086,10 +7086,10 @@ solhint@^3.4.0:
   optionalDependencies:
     prettier "^2.8.3"
 
-solhint@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/solhint/-/solhint-4.0.0.tgz#fbd27ec9c8348b4fea90b5b469a5c95d625d2e59"
-  integrity sha512-bFViMcFvhqVd/HK3Roo7xZXX5nbujS7Bxeg5vnZc9QvH0yCWCrQ38Yrn1pbAY9tlKROc6wFr+rK1mxYgYrjZgA==
+solhint@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/solhint/-/solhint-4.1.1.tgz#137c935ef028f01ba13687a1f237288d94dae1bf"
+  integrity sha512-7G4iF8H5hKHc0tR+/uyZesSKtfppFIMvPSW+Ku6MSL25oVRuyFeqNhOsXHfkex64wYJyXs4fe+pvhB069I19Tw==
   dependencies:
     "@solidity-parser/parser" "^0.16.0"
     ajv "^6.12.6"
