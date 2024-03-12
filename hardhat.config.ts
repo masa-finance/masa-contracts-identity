@@ -4,7 +4,7 @@ import {
   getCeloscanApiKey,
   getCoinMarketCapApiKey,
   getEtherscanApiKey,
-  getInfuraApiKey,
+  getAnkrApiKey,
   getOpBnbApiKey,
   getPolygonscanApiKey,
   getPrivateKey,
@@ -21,8 +21,8 @@ import "hardhat-gas-reporter";
 import "solidity-coverage";
 import { NetworksUserConfig } from "hardhat/types";
 
-const getInfuraURL = (network: string) => {
-  return `https://${network}.infura.io/v3/${getInfuraApiKey()}`;
+const getAnkrURL = (network: string) => {
+  return `https://rpc.ankr.com/${network}/${getAnkrApiKey()}`;
 };
 
 const networks: NetworksUserConfig = {
@@ -32,7 +32,7 @@ const networks: NetworksUserConfig = {
     gasPrice: "auto",
     gas: 13000000,
     forking: {
-      url: getInfuraURL("goerli")
+      url: getAnkrURL("eth_goerli")
     }
   },
   alfajores: {
@@ -96,14 +96,14 @@ const networks: NetworksUserConfig = {
     accounts: [getPrivateKey("scroll")]
   },
   goerli: {
-    url: getInfuraURL("goerli"),
+    url: getAnkrURL("eth_goerli"),
     chainId: 5,
     accounts: [getPrivateKey("goerli")],
     gas: "auto", // 20000000
     gasPrice: 200000000000 //"auto"
   },
   mainnet: {
-    url: getInfuraURL("mainnet"),
+    url: getAnkrURL("eth"),
     chainId: 1,
     accounts: [getPrivateKey("mainnet")],
     gas: "auto", // 20000000
