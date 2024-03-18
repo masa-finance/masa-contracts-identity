@@ -17,6 +17,9 @@ import "./tokens/MasaNFT.sol";
 /// It has an extension, and stores all the information about the identity names.
 contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     /* ========== STATE VARIABLES ========== */
+
+    string public constant version = "2";
+
     using SafeMath for uint256;
 
     uint256 constant YEAR = 31536000; // 60 seconds * 60 minutes * 24 hours * 365 days
@@ -123,40 +126,34 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         uint256 yearsPeriod,
         string memory _tokenURI
     ) external override nonReentrant returns (uint256) {
-        if (!isAvailable(name)) revert NameAlreadyExists(name);
-        if (bytes(name).length == 0) revert ZeroLengthName(name);
-        if (yearsPeriod == 0) revert ZeroYearsPeriod(yearsPeriod);
-        if (soulboundIdentity.balanceOf(to) == 0)
-            revert AddressDoesNotHaveIdentity(to);
-        if (
-            !Utils.startsWith(_tokenURI, "ar://") &&
-            !Utils.startsWith(_tokenURI, "https://arweave.net/") &&
-            !Utils.startsWith(_tokenURI, "ipfs://")
-        ) revert InvalidTokenURI(_tokenURI);
+        return _mint(to, name, yearsPeriod, block.timestamp, _tokenURI);
+    }
 
-        uint256 tokenId = _mintWithCounter(to);
-        _setTokenURI(tokenId, _tokenURI);
-
-        tokenData[tokenId].name = name;
-        tokenData[tokenId].expirationDate = block.timestamp.add(
-            YEAR.mul(yearsPeriod)
-        );
-
-        string memory lowercaseName = Utils.toLowerCase(name);
-        nameData[lowercaseName].tokenId = tokenId;
-        nameData[lowercaseName].exists = true;
-
-        return tokenId;
+    /// @notice Mints a new soul name from a specific date
+    /// @dev The caller can mint more than one name. The soul name must be unique.
+    /// @param to Address of the owner of the new soul name
+    /// @param name Name of the new soul name
+    /// @param yearsPeriod Years of validity of the name
+    /// @param fromDate Date from which we start counting the years of validity
+    /// @param _tokenURI URI of the NFT
+    function mint(
+        address to,
+        string memory name,
+        uint256 yearsPeriod,
+        uint256 fromDate,
+        string memory _tokenURI
+    ) external override nonReentrant returns (uint256) {
+        return _mint(to, name, yearsPeriod, fromDate, _tokenURI);
     }
 
     /// @notice Update the expiration date of a soul name
     /// @dev The caller must be the owner or an approved address of the soul name.
     /// @param tokenId TokenId of the soul name
     /// @param yearsPeriod Years of validity of the name
-    function renewYearsPeriod(uint256 tokenId, uint256 yearsPeriod) external {
-        // ERC721: caller is not token owner nor approved
-        if (!_isApprovedOrOwner(_msgSender(), tokenId))
-            revert CallerNotOwner(_msgSender());
+    function renewYearsPeriod(
+        uint256 tokenId,
+        uint256 yearsPeriod
+    ) external onlyRole(MINTER_ROLE) {
         if (yearsPeriod == 0) revert ZeroYearsPeriod(yearsPeriod);
 
         // check that the last registered tokenId for that name is the current token
@@ -217,6 +214,16 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     /// @return Extension of the soul name
     function getExtension() external view override returns (string memory) {
         return extension;
+    }
+
+    /// @notice Checks if a soul name exists
+    /// @dev This function queries if a soul name already exists
+    /// @param name Name of the soul name
+    /// @return `true` if the soul name exists, `false` otherwise
+    function exists(string memory name) external view override returns (bool) {
+        string memory lowercaseName = Utils.toLowerCase(name);
+
+        return nameData[lowercaseName].exists;
     }
 
     /// @notice Checks if a soul name is available
@@ -353,7 +360,7 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
     /// @return URI of the NFT
     function tokenURI(
         uint256 tokenId
-    ) public view virtual override returns (string memory) {
+    ) public view virtual override(MasaNFT, ISoulName) returns (string memory) {
         _requireMinted(tokenId);
 
         string memory _tokenURI = _tokenURIs[tokenId];
@@ -369,6 +376,22 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
         }
 
         return super.tokenURI(tokenId);
+    }
+
+    /// @notice Returns the owner of the soul name
+    /// @dev This function queries the owner of the soul name
+    /// @param tokenId TokenId of the soul name
+    /// @return Address of the owner of the soul name
+    function ownerOf(
+        uint256 tokenId
+    )
+        public
+        view
+        virtual
+        override(ERC721, IERC721, ISoulName)
+        returns (address)
+    {
+        return super.ownerOf(tokenId);
     }
 
     /* ========== PRIVATE FUNCTIONS ========== */
@@ -393,6 +416,38 @@ contract SoulName is MasaNFT, ISoulName, ReentrancyGuard {
 
         _tokenURIs[tokenId] = _tokenURI;
         _URIs[_tokenURI] = true;
+    }
+
+    function _mint(
+        address to,
+        string memory name,
+        uint256 yearsPeriod,
+        uint256 fromDate,
+        string memory _tokenURI
+    ) internal returns (uint256) {
+        if (!isAvailable(name)) revert NameAlreadyExists(name);
+        if (bytes(name).length == 0) revert ZeroLengthName(name);
+        if (yearsPeriod == 0) revert ZeroYearsPeriod(yearsPeriod);
+        if (fromDate == 0) revert ZeroDate(fromDate);
+        if (soulboundIdentity.balanceOf(to) == 0)
+            revert AddressDoesNotHaveIdentity(to);
+        if (
+            !Utils.startsWith(_tokenURI, "ar://") &&
+            !Utils.startsWith(_tokenURI, "https://arweave.net/") &&
+            !Utils.startsWith(_tokenURI, "ipfs://")
+        ) revert InvalidTokenURI(_tokenURI);
+
+        uint256 tokenId = _mintWithCounter(to);
+        _setTokenURI(tokenId, _tokenURI);
+
+        tokenData[tokenId].name = name;
+        tokenData[tokenId].expirationDate = fromDate.add(YEAR.mul(yearsPeriod));
+
+        string memory lowercaseName = Utils.toLowerCase(name);
+        nameData[lowercaseName].tokenId = tokenId;
+        nameData[lowercaseName].exists = true;
+
+        return tokenId;
     }
 
     /* ========== MODIFIERS ========== */

@@ -13,6 +13,7 @@ error InvalidPaymentMethod(address paymentMethod);
 error InvalidSignature();
 error InvalidSignatureDate(uint256 signatureDate);
 error InvalidState(string state);
+error InvalidToAddress(address to);
 error InvalidToken(address token);
 error InvalidTokenURI(string tokenURI);
 error LinkAlreadyExists(
@@ -47,5 +48,6 @@ error UserMustHaveProtocolOrProjectAdminRole();
 error ValidPeriodExpired(uint256 expirationDate);
 error WithoutBeforeMintStates();
 error ZeroAddress();
+error ZeroDate(uint256 date);
 error ZeroLengthName(string name);
 error ZeroYearsPeriod(uint256 yearsPeriod);

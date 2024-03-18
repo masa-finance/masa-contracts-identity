@@ -10,6 +10,28 @@
 
 ## Methods
 
+### exists
+
+```solidity
+function exists(string name) external view returns (bool)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bool | undefined |
+
 ### getExtension
 
 ```solidity
@@ -145,6 +167,32 @@ function isAvailable(string name) external view returns (bool available)
 ### mint
 
 ```solidity
+function mint(address to, string name, uint256 yearsPeriod, uint256 fromDate, string _tokenURI) external nonpayable returns (uint256)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| to | address | undefined |
+| name | string | undefined |
+| yearsPeriod | uint256 | undefined |
+| fromDate | uint256 | undefined |
+| _tokenURI | string | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+### mint
+
+```solidity
 function mint(address to, string name, uint256 yearsPeriod, string _tokenURI) external nonpayable returns (uint256)
 ```
 
@@ -166,6 +214,45 @@ function mint(address to, string name, uint256 yearsPeriod, string _tokenURI) ex
 | Name | Type | Description |
 |---|---|---|
 | _0 | uint256 | undefined |
+
+### ownerOf
+
+```solidity
+function ownerOf(uint256 tokenId) external view returns (address)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
+### renewYearsPeriod
+
+```solidity
+function renewYearsPeriod(uint256 tokenId, uint256 yearsPeriod) external nonpayable
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId | uint256 | undefined |
+| yearsPeriod | uint256 | undefined |
 
 ### tokenData
 
@@ -189,6 +276,28 @@ function tokenData(uint256 tokenId) external view returns (string name, uint256 
 |---|---|---|
 | name | string | undefined |
 | expirationDate | uint256 | undefined |
+
+### tokenURI
+
+```solidity
+function tokenURI(uint256 tokenId) external view returns (string)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenId | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string | undefined |
 
 
 

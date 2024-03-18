@@ -602,6 +602,28 @@ Mints a new Soul Name purchasing it
 |---|---|---|
 | _0 | uint256 | TokenId of the new sou name |
 
+### purchaseNameRenewal
+
+```solidity
+function purchaseNameRenewal(address paymentMethod, address to, string name, uint256 nameLength, uint256 yearsPeriod, address authorityAddress, bytes signature) external payable
+```
+
+Renews a Soul Name purchasing it
+
+*This function allows the renewal of a soul name using stable coin (USDC), native token (ETH) or utility token (MASA)*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| paymentMethod | address | Address of token that user want to pay |
+| to | address | Address of the owner of the soul name |
+| name | string | Name of the soul name |
+| nameLength | uint256 | Length of the name |
+| yearsPeriod | uint256 | Years of validity of the name |
+| authorityAddress | address | Address of the authority |
+| signature | bytes | Signature of the authority |
+
 ### removeAuthority
 
 ```solidity
@@ -781,6 +803,22 @@ Sets the SoulName contract address linked to this store
 |---|---|---|
 | _soulName | contract ISoulName | New SoulName contract address |
 
+### setSoulNameV1
+
+```solidity
+function setSoulNameV1(contract ISoulName _soulNameV1) external nonpayable
+```
+
+Sets the SoulNameV1 contract address linked to this store
+
+*The caller must have the admin role to call this function*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _soulNameV1 | contract ISoulName | New SoulNameV1 contract address |
+
 ### setSoulboundIdentity
 
 ```solidity
@@ -849,6 +887,23 @@ Sets the wrapped native token address
 
 ```solidity
 function soulName() external view returns (contract ISoulName)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | contract ISoulName | undefined |
+
+### soulNameV1
+
+```solidity
+function soulNameV1() external view returns (contract ISoulName)
 ```
 
 
@@ -945,6 +1000,23 @@ Unpauses the smart contract
 
 *The caller must have the admin role to call this function*
 
+
+### version
+
+```solidity
+function version() external view returns (string)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string | undefined |
 
 ### wrappedNativeToken
 
@@ -1083,6 +1155,27 @@ event SoulNamePurchased(address indexed account, uint256 tokenId, string indexed
 | account `indexed` | address | undefined |
 | tokenId  | uint256 | undefined |
 | name `indexed` | string | undefined |
+| yearsPeriod  | uint256 | undefined |
+| paymentMethod `indexed` | address | undefined |
+| price  | uint256 | undefined |
+| protocolFee  | uint256 | undefined |
+
+### SoulNameRenewalPurchased
+
+```solidity
+event SoulNameRenewalPurchased(address indexed account, uint256 nameLength, uint256 yearsPeriod, address indexed paymentMethod, uint256 price, uint256 protocolFee)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| account `indexed` | address | undefined |
+| nameLength  | uint256 | undefined |
 | yearsPeriod  | uint256 | undefined |
 | paymentMethod `indexed` | address | undefined |
 | price  | uint256 | undefined |
@@ -1228,6 +1321,22 @@ error InvalidSignature()
 
 
 
+### InvalidToAddress
+
+```solidity
+error InvalidToAddress(address to)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| to | address | undefined |
+
 ### InvalidToken
 
 ```solidity
@@ -1243,6 +1352,22 @@ error InvalidToken(address token)
 | Name | Type | Description |
 |---|---|---|
 | token | address | undefined |
+
+### NameNotFound
+
+```solidity
+error NameNotFound(string name)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | undefined |
 
 ### NonExistingErc20Token
 

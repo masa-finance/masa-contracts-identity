@@ -9,7 +9,19 @@ interface ISoulName {
         string memory _tokenURI
     ) external returns (uint256);
 
+    function mint(
+        address to,
+        string memory name,
+        uint256 yearsPeriod,
+        uint256 fromDate,
+        string memory _tokenURI
+    ) external returns (uint256);
+
+    function renewYearsPeriod(uint256 tokenId, uint256 yearsPeriod) external;
+
     function getExtension() external view returns (string memory);
+
+    function exists(string memory name) external view returns (bool);
 
     function isAvailable(
         string memory name
@@ -42,4 +54,8 @@ interface ISoulName {
     function getSoulNames(
         uint256 identityId
     ) external view returns (string[] memory sbtNames);
+
+    function ownerOf(uint256 tokenId) external view returns (address);
+
+    function tokenURI(uint256 tokenId) external view returns (string memory);
 }

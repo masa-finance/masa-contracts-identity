@@ -119,6 +119,28 @@ function contractURI() external view returns (string)
 ### exists
 
 ```solidity
+function exists(string name) external view returns (bool)
+```
+
+Checks if a soul name exists
+
+*This function queries if a soul name already exists*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| name | string | Name of the soul name |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bool | `true` if the soul name exists, `false` otherwise |
+
+### exists
+
+```solidity
 function exists(uint256 tokenId) external view returns (bool)
 ```
 
@@ -397,6 +419,32 @@ Checks if a soul name is available
 ### mint
 
 ```solidity
+function mint(address to, string name, uint256 yearsPeriod, uint256 fromDate, string _tokenURI) external nonpayable returns (uint256)
+```
+
+Mints a new soul name from a specific date
+
+*The caller can mint more than one name. The soul name must be unique.*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| to | address | Address of the owner of the new soul name |
+| name | string | Name of the new soul name |
+| yearsPeriod | uint256 | Years of validity of the name |
+| fromDate | uint256 | Date from which we start counting the years of validity |
+| _tokenURI | string | URI of the NFT |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+### mint
+
+```solidity
 function mint(address to, string name, uint256 yearsPeriod, string _tokenURI) external nonpayable returns (uint256)
 ```
 
@@ -482,21 +530,21 @@ function owner() external view returns (address)
 function ownerOf(uint256 tokenId) external view returns (address)
 ```
 
+Returns the owner of the soul name
 
-
-*See {IERC721-ownerOf}.*
+*This function queries the owner of the soul name*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| tokenId | uint256 | undefined |
+| tokenId | uint256 | TokenId of the soul name |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | address | undefined |
+| _0 | address | Address of the owner of the soul name |
 
 ### renewYearsPeriod
 
@@ -881,6 +929,23 @@ function transferOwnership(address newOwner) external nonpayable
 |---|---|---|
 | newOwner | address | undefined |
 
+### version
+
+```solidity
+function version() external view returns (string)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string | undefined |
+
 
 
 ## Events
@@ -1048,22 +1113,6 @@ error AddressDoesNotHaveIdentity(address to)
 |---|---|---|
 | to | address | undefined |
 
-### CallerNotOwner
-
-```solidity
-error CallerNotOwner(address caller)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| caller | address | undefined |
-
 ### InvalidTokenURI
 
 ```solidity
@@ -1182,6 +1231,22 @@ error ZeroAddress()
 
 
 
+
+### ZeroDate
+
+```solidity
+error ZeroDate(uint256 date)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| date | uint256 | undefined |
 
 ### ZeroLengthName
 
