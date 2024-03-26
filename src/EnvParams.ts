@@ -41,6 +41,10 @@ export function getInfuraApiKey() {
   return process.env.INFURA_API_KEY || getSecretParam("INFURA_API_KEY");
 }
 
+export function getAnkrApiKey() {
+  return process.env.ANKR_API_KEY || getSecretParam("ANKR_API_KEY");
+}
+
 export function getEtherscanApiKey() {
   return process.env.ETHERSCAN_API_KEY || getSecretParam("ETHERSCAN_API_KEY");
 }
