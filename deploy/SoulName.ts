@@ -33,7 +33,7 @@ const func: DeployFunction = async ({
 
   if (
     network.name === "mainnet" ||
-    network.name === "goerli" ||
+    network.name === "sepolia" ||
     network.name === "hardhat" ||
     network.name === "celo" ||
     network.name === "alfajores" ||
@@ -96,7 +96,7 @@ const func: DeployFunction = async ({
 func.skip = async ({ network }) => {
   return (
     network.name !== "mainnet" &&
-    network.name !== "goerli" &&
+    network.name !== "sepolia" &&
     network.name !== "hardhat" &&
     network.name !== "celo" &&
     network.name !== "alfajores" &&

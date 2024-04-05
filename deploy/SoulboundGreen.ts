@@ -27,7 +27,7 @@ const func: DeployFunction = async ({
   let soulboundIdentityDeployedAddress;
   if (
     network.name === "mainnet" ||
-    network.name === "goerli" ||
+    network.name === "sepolia" ||
     network.name === "hardhat" ||
     network.name === "celo" ||
     network.name === "alfajores" ||
