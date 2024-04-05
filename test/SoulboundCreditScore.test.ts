@@ -282,13 +282,9 @@ describe("Soulbound Credit Score", () => {
       await expect(
         soulboundCreditScore
           .connect(owner)
-          ["mint(address,address,address,uint256,bytes)"](
-            ethers.constants.AddressZero,
-            address1.address,
-            authority.address,
-            signatureDate,
-            signatureToAddress
-          )
+          [
+            "mint(address,address,address,uint256,bytes)"
+          ](ethers.constants.AddressZero, address1.address, authority.address, signatureDate, signatureToAddress)
       ).to.be.revertedWith("CallerNotOwner");
     });
 
@@ -296,36 +292,24 @@ describe("Soulbound Credit Score", () => {
       await expect(
         soulboundCreditScore
           .connect(owner)
-          ["mint(address,uint256,address,uint256,bytes)"](
-            ethers.constants.AddressZero,
-            identityId1,
-            authority.address,
-            signatureDate,
-            signatureToIdentity
-          )
+          [
+            "mint(address,uint256,address,uint256,bytes)"
+          ](ethers.constants.AddressZero, identityId1, authority.address, signatureDate, signatureToIdentity)
       ).to.be.revertedWith("CallerNotOwner");
     });
 
     it("should mint twice", async () => {
       await soulboundCreditScore
         .connect(address1)
-        ["mint(address,address,address,uint256,bytes)"](
-          ethers.constants.AddressZero,
-          address1.address,
-          authority.address,
-          signatureDate,
-          signatureToAddress
-        );
+        [
+          "mint(address,address,address,uint256,bytes)"
+        ](ethers.constants.AddressZero, address1.address, authority.address, signatureDate, signatureToAddress);
       await expect(
         soulboundCreditScore
           .connect(address1)
-          ["mint(address,address,address,uint256,bytes)"](
-            ethers.constants.AddressZero,
-            address1.address,
-            authority.address,
-            signatureDate,
-            signatureToAddress
-          )
+          [
+            "mint(address,address,address,uint256,bytes)"
+          ](ethers.constants.AddressZero, address1.address, authority.address, signatureDate, signatureToAddress)
       ).to.be.revertedWith("MaxSBTMinted");
 
       expect(await soulboundCreditScore.totalSupply()).to.equal(1);
@@ -335,13 +319,9 @@ describe("Soulbound Credit Score", () => {
     it("should mint from final user address", async () => {
       const mintTx = await soulboundCreditScore
         .connect(address1)
-        ["mint(address,address,address,uint256,bytes)"](
-          ethers.constants.AddressZero,
-          address1.address,
-          authority.address,
-          signatureDate,
-          signatureToAddress
-        );
+        [
+          "mint(address,address,address,uint256,bytes)"
+        ](ethers.constants.AddressZero, address1.address, authority.address, signatureDate, signatureToAddress);
       const mintReceipt = await mintTx.wait();
 
       const tokenId = mintReceipt.events![0].args![1].toNumber();
@@ -354,13 +334,9 @@ describe("Soulbound Credit Score", () => {
     it("should mint from final user identity", async () => {
       const mintTx = await soulboundCreditScore
         .connect(address1)
-        ["mint(address,uint256,address,uint256,bytes)"](
-          ethers.constants.AddressZero,
-          identityId1,
-          authority.address,
-          signatureDate,
-          signatureToIdentity
-        );
+        [
+          "mint(address,uint256,address,uint256,bytes)"
+        ](ethers.constants.AddressZero, identityId1, authority.address, signatureDate, signatureToIdentity);
       const mintReceipt = await mintTx.wait();
 
       const tokenId = mintReceipt.events![1].args![1].toNumber();
@@ -379,13 +355,9 @@ describe("Soulbound Credit Score", () => {
       await expect(
         soulboundCreditScore
           .connect(address1)
-          ["mint(address,uint256,address,uint256,bytes)"](
-            ethers.constants.AddressZero,
-            identityId1,
-            address1.address,
-            signatureDate,
-            signatureNonAuthority
-          )
+          [
+            "mint(address,uint256,address,uint256,bytes)"
+          ](ethers.constants.AddressZero, identityId1, address1.address, signatureDate, signatureNonAuthority)
       ).to.be.revertedWith("NotAuthorized");
     });
 
@@ -398,13 +370,9 @@ describe("Soulbound Credit Score", () => {
       await expect(
         soulboundCreditScore
           .connect(address1)
-          ["mint(address,uint256,address,uint256,bytes)"](
-            ethers.constants.AddressZero,
-            identityId1,
-            authority.address,
-            signatureDate,
-            signatureNonAuthority
-          )
+          [
+            "mint(address,uint256,address,uint256,bytes)"
+          ](ethers.constants.AddressZero, identityId1, authority.address, signatureDate, signatureNonAuthority)
       ).to.be.revertedWith("InvalidSignature");
     });
   });
@@ -425,14 +393,9 @@ describe("Soulbound Credit Score", () => {
 
       const mintTx = await soulboundCreditScore
         .connect(address1)
-        ["mint(address,address,address,uint256,bytes)"](
-          ethers.constants.AddressZero,
-          address1.address,
-          authority.address,
-          signatureDate,
-          signatureToAddress,
-          { value: price }
-        );
+        [
+          "mint(address,address,address,uint256,bytes)"
+        ](ethers.constants.AddressZero, address1.address, authority.address, signatureDate, signatureToAddress, { value: price });
       const mintReceipt = await mintTx.wait();
 
       const tokenId = mintReceipt.events![1].args![1].toNumber();
@@ -461,14 +424,9 @@ describe("Soulbound Credit Score", () => {
 
       const mintTx = await soulboundCreditScore
         .connect(address1)
-        ["mint(address,uint256,address,uint256,bytes)"](
-          ethers.constants.AddressZero,
-          identityId1,
-          authority.address,
-          signatureDate,
-          signatureToIdentity,
-          { value: price }
-        );
+        [
+          "mint(address,uint256,address,uint256,bytes)"
+        ](ethers.constants.AddressZero, identityId1, authority.address, signatureDate, signatureToIdentity, { value: price });
       const mintReceipt = await mintTx.wait();
 
       const tokenId = mintReceipt.events![1].args![1].toNumber();
@@ -497,13 +455,9 @@ describe("Soulbound Credit Score", () => {
 
       const mintTx = await soulboundCreditScore
         .connect(address1)
-        ["mint(address,uint256,address,uint256,bytes)"](
-          env.USDC_TOKEN,
-          identityId1,
-          authority.address,
-          signatureDate,
-          signatureToIdentity
-        );
+        [
+          "mint(address,uint256,address,uint256,bytes)"
+        ](env.USDC_TOKEN, identityId1, authority.address, signatureDate, signatureToIdentity);
       const mintReceipt = await mintTx.wait();
 
       const tokenId = mintReceipt.events![2].args![1].toNumber();
@@ -524,13 +478,9 @@ describe("Soulbound Credit Score", () => {
 
       const mintTx = await soulboundCreditScore
         .connect(address1)
-        ["mint(address,uint256,address,uint256,bytes)"](
-          env.MASA_TOKEN,
-          identityId1,
-          authority.address,
-          signatureDate,
-          signatureToIdentity
-        );
+        [
+          "mint(address,uint256,address,uint256,bytes)"
+        ](env.MASA_TOKEN, identityId1, authority.address, signatureDate, signatureToIdentity);
       const mintReceipt = await mintTx.wait();
 
       const tokenId = mintReceipt.events![3].args![1].toNumber();
@@ -588,26 +538,16 @@ describe("Soulbound Credit Score", () => {
       await expect(
         soulboundCreditScore
           .connect(address1)
-          ["mint(address,address,address,uint256,bytes)"](
-            ethers.constants.AddressZero,
-            address1.address,
-            authority.address,
-            signatureDate,
-            signatureToAddress,
-            { value: price }
-          )
+          [
+            "mint(address,address,address,uint256,bytes)"
+          ](ethers.constants.AddressZero, address1.address, authority.address, signatureDate, signatureToAddress, { value: price })
       ).to.be.revertedWith("InsufficientEthAmount");
 
       const mintTx = await soulboundCreditScore
         .connect(address1)
-        ["mint(address,address,address,uint256,bytes)"](
-          ethers.constants.AddressZero,
-          address1.address,
-          authority.address,
-          signatureDate,
-          signatureToAddress,
-          { value: price.add(protocolFee) }
-        );
+        [
+          "mint(address,address,address,uint256,bytes)"
+        ](ethers.constants.AddressZero, address1.address, authority.address, signatureDate, signatureToAddress, { value: price.add(protocolFee) });
       const mintReceipt = await mintTx.wait();
 
       const tokenId = mintReceipt.events![1].args![1].toNumber();
@@ -653,26 +593,16 @@ describe("Soulbound Credit Score", () => {
       await expect(
         soulboundCreditScore
           .connect(address1)
-          ["mint(address,address,address,uint256,bytes)"](
-            ethers.constants.AddressZero,
-            address1.address,
-            authority.address,
-            signatureDate,
-            signatureToAddress,
-            { value: price.sub(1) }
-          )
+          [
+            "mint(address,address,address,uint256,bytes)"
+          ](ethers.constants.AddressZero, address1.address, authority.address, signatureDate, signatureToAddress, { value: price.sub(1) })
       ).to.be.revertedWith("InsufficientEthAmount");
 
       const mintTx = await soulboundCreditScore
         .connect(address1)
-        ["mint(address,address,address,uint256,bytes)"](
-          ethers.constants.AddressZero,
-          address1.address,
-          authority.address,
-          signatureDate,
-          signatureToAddress,
-          { value: price }
-        );
+        [
+          "mint(address,address,address,uint256,bytes)"
+        ](ethers.constants.AddressZero, address1.address, authority.address, signatureDate, signatureToAddress, { value: price });
       const mintReceipt = await mintTx.wait();
 
       const tokenId = mintReceipt.events![1].args![1].toNumber();
@@ -718,26 +648,16 @@ describe("Soulbound Credit Score", () => {
       await expect(
         soulboundCreditScore
           .connect(address1)
-          ["mint(address,address,address,uint256,bytes)"](
-            ethers.constants.AddressZero,
-            address1.address,
-            authority.address,
-            signatureDate,
-            signatureToAddress,
-            { value: price }
-          )
+          [
+            "mint(address,address,address,uint256,bytes)"
+          ](ethers.constants.AddressZero, address1.address, authority.address, signatureDate, signatureToAddress, { value: price })
       ).to.be.revertedWith("InsufficientEthAmount");
 
       const mintTx = await soulboundCreditScore
         .connect(address1)
-        ["mint(address,address,address,uint256,bytes)"](
-          ethers.constants.AddressZero,
-          address1.address,
-          authority.address,
-          signatureDate,
-          signatureToAddress,
-          { value: price.add(protocolFee) }
-        );
+        [
+          "mint(address,address,address,uint256,bytes)"
+        ](ethers.constants.AddressZero, address1.address, authority.address, signatureDate, signatureToAddress, { value: price.add(protocolFee) });
       const mintReceipt = await mintTx.wait();
 
       const tokenId = mintReceipt.events![1].args![1].toNumber();
@@ -786,13 +706,9 @@ describe("Soulbound Credit Score", () => {
 
       const mintTx = await soulboundCreditScore
         .connect(address1)
-        ["mint(address,address,address,uint256,bytes)"](
-          env.USDC_TOKEN,
-          address1.address,
-          authority.address,
-          signatureDate,
-          signatureToAddress
-        );
+        [
+          "mint(address,address,address,uint256,bytes)"
+        ](env.USDC_TOKEN, address1.address, authority.address, signatureDate, signatureToAddress);
       const mintReceipt = await mintTx.wait();
 
       const tokenId = mintReceipt.events![3].args![1].toNumber();
@@ -841,13 +757,9 @@ describe("Soulbound Credit Score", () => {
 
       const mintTx = await soulboundCreditScore
         .connect(address1)
-        ["mint(address,address,address,uint256,bytes)"](
-          env.USDC_TOKEN,
-          address1.address,
-          authority.address,
-          signatureDate,
-          signatureToAddress
-        );
+        [
+          "mint(address,address,address,uint256,bytes)"
+        ](env.USDC_TOKEN, address1.address, authority.address, signatureDate, signatureToAddress);
       const mintReceipt = await mintTx.wait();
 
       const tokenId = mintReceipt.events![3].args![1].toNumber();
@@ -896,13 +808,9 @@ describe("Soulbound Credit Score", () => {
 
       const mintTx = await soulboundCreditScore
         .connect(address1)
-        ["mint(address,address,address,uint256,bytes)"](
-          env.USDC_TOKEN,
-          address1.address,
-          authority.address,
-          signatureDate,
-          signatureToAddress
-        );
+        [
+          "mint(address,address,address,uint256,bytes)"
+        ](env.USDC_TOKEN, address1.address, authority.address, signatureDate, signatureToAddress);
       const mintReceipt = await mintTx.wait();
 
       const tokenId = mintReceipt.events![3].args![1].toNumber();
@@ -931,13 +839,9 @@ describe("Soulbound Credit Score", () => {
       // we mint
       let mintTx = await soulboundCreditScore
         .connect(address1)
-        ["mint(address,address,address,uint256,bytes)"](
-          ethers.constants.AddressZero,
-          address1.address,
-          authority.address,
-          signatureDate,
-          signatureToAddress
-        );
+        [
+          "mint(address,address,address,uint256,bytes)"
+        ](ethers.constants.AddressZero, address1.address, authority.address, signatureDate, signatureToAddress);
       let mintReceipt = await mintTx.wait();
       const tokenId = mintReceipt.events![0].args![1].toNumber();
 
@@ -960,13 +864,9 @@ describe("Soulbound Credit Score", () => {
     it("should get a valid token URI from its tokenId", async () => {
       const mintTx = await soulboundCreditScore
         .connect(address1)
-        ["mint(address,address,address,uint256,bytes)"](
-          ethers.constants.AddressZero,
-          address1.address,
-          authority.address,
-          signatureDate,
-          signatureToAddress
-        );
+        [
+          "mint(address,address,address,uint256,bytes)"
+        ](ethers.constants.AddressZero, address1.address, authority.address, signatureDate, signatureToAddress);
 
       const mintReceipt = await mintTx.wait();
       const tokenId = mintReceipt.events![0].args![1].toNumber();
