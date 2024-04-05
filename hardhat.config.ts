@@ -102,10 +102,10 @@ const networks: NetworksUserConfig = {
     gas: "auto", // 20000000
     gasPrice: 200000000000 //"auto"
   },
-  mainnet: {
+  ethereum: {
     url: getAnkrURL("eth"),
     chainId: 1,
-    accounts: [getPrivateKey("mainnet")],
+    accounts: [getPrivateKey("ethereum")],
     gas: "auto", // 20000000
     gasPrice: "auto" // 100000000000
   }
@@ -138,7 +138,7 @@ export default {
       polygonMumbai: getPolygonscanApiKey(),
       polygon: getPolygonscanApiKey(),
       sepolia: getEtherscanApiKey(),
-      mainnet: getEtherscanApiKey(),
+      ethereum: getEtherscanApiKey(),
       celo: getCeloscanApiKey(),
       alfajores: getCeloscanApiKey(),
       base: getBasescanApiKey(),
