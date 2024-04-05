@@ -19,7 +19,7 @@ const expect = chai.expect;
 
 const env = getEnvParams("hardhat");
 
-const DAI_GOERLI = "0xdc31Ee1784292379Fbb2964b3B9C4124D8F89C60";
+const DAI_SEPOLIA = "0x3e622317f8C93f7328350cF0B56d9eD4C620C5d6";
 
 // contract instances
 let soulStore: SoulStore;
@@ -125,7 +125,7 @@ describe("Soul Store", () => {
     // we get DAI tokens for address1
     await uniswapRouter.swapExactETHForTokens(
       0,
-      [env.WETH_TOKEN, DAI_GOERLI],
+      [env.WETH_TOKEN, DAI_SEPOLIA],
       address1.address,
       Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
       {
@@ -1302,13 +1302,13 @@ describe("Soul Store", () => {
     });
 
     it("should add ERC-20 token from owner", async () => {
-      await soulStore.connect(owner).enablePaymentMethod(DAI_GOERLI);
+      await soulStore.connect(owner).enablePaymentMethod(DAI_SEPOLIA);
 
-      expect(await soulStore.enabledPaymentMethod(DAI_GOERLI)).to.be.true;
+      expect(await soulStore.enabledPaymentMethod(DAI_SEPOLIA)).to.be.true;
     });
 
     it("should get all payment methods information", async () => {
-      await soulStore.connect(owner).enablePaymentMethod(DAI_GOERLI);
+      await soulStore.connect(owner).enablePaymentMethod(DAI_SEPOLIA);
 
       const enabledPaymentMethods = await soulStore.getEnabledPaymentMethods();
 
@@ -1316,45 +1316,46 @@ describe("Soul Store", () => {
         ethers.constants.AddressZero,
         env.USDC_TOKEN,
         env.MASA_TOKEN,
-        DAI_GOERLI
+        DAI_SEPOLIA
       ]);
     });
 
     it("should fail to add ERC-20 token from non owner", async () => {
-      await expect(soulStore.connect(address1).enablePaymentMethod(DAI_GOERLI))
+      await expect(soulStore.connect(address1).enablePaymentMethod(DAI_SEPOLIA))
         .to.be.rejected;
     });
 
     it("should remove ERC-20 token from owner", async () => {
-      await soulStore.connect(owner).enablePaymentMethod(DAI_GOERLI);
+      await soulStore.connect(owner).enablePaymentMethod(DAI_SEPOLIA);
 
-      expect(await soulStore.enabledPaymentMethod(DAI_GOERLI)).to.be.true;
+      expect(await soulStore.enabledPaymentMethod(DAI_SEPOLIA)).to.be.true;
 
-      await soulStore.connect(owner).disablePaymentMethod(DAI_GOERLI);
+      await soulStore.connect(owner).disablePaymentMethod(DAI_SEPOLIA);
 
-      expect(await soulStore.enabledPaymentMethod(DAI_GOERLI)).to.be.false;
+      expect(await soulStore.enabledPaymentMethod(DAI_SEPOLIA)).to.be.false;
     });
 
     it("should fail to remove ERC-20 token from non owner", async () => {
-      await soulStore.connect(owner).enablePaymentMethod(DAI_GOERLI);
+      await soulStore.connect(owner).enablePaymentMethod(DAI_SEPOLIA);
 
-      expect(await soulStore.enabledPaymentMethod(DAI_GOERLI)).to.be.true;
+      expect(await soulStore.enabledPaymentMethod(DAI_SEPOLIA)).to.be.true;
 
-      await expect(soulStore.connect(address1).disablePaymentMethod(DAI_GOERLI))
-        .to.be.rejected;
+      await expect(
+        soulStore.connect(address1).disablePaymentMethod(DAI_SEPOLIA)
+      ).to.be.rejected;
     });
 
     it("we can purchase a name with other ERC-20 token", async () => {
-      await soulStore.connect(owner).enablePaymentMethod(DAI_GOERLI);
+      await soulStore.connect(owner).enablePaymentMethod(DAI_SEPOLIA);
 
       const { price } = await soulStore.getPriceForMintingNameWithProtocolFee(
-        DAI_GOERLI,
+        DAI_SEPOLIA,
         SOUL_NAME.length,
         YEAR
       );
 
       // set allowance for soul store
-      const dai: IERC20 = IERC20__factory.connect(DAI_GOERLI, owner);
+      const dai: IERC20 = IERC20__factory.connect(DAI_SEPOLIA, owner);
       await dai.connect(address1).approve(soulStore.address, price);
 
       const signature = await signMintSoulName(
@@ -1367,7 +1368,7 @@ describe("Soul Store", () => {
       );
 
       await soulStore.connect(address1).purchaseName(
-        DAI_GOERLI, // DAI token, other ERC-20 token
+        DAI_SEPOLIA, // DAI token, other ERC-20 token
         address1.address,
         SOUL_NAME,
         SOUL_NAME.length,
