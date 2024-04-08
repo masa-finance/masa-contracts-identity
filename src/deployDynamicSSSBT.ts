@@ -75,7 +75,7 @@ async function main() {
   if (
     network.name !== "bsc" &&
     network.name !== "celo" &&
-    network.name !== "mainnet" &&
+    network.name !== "ethereum" &&
     network.name !== "polygon" &&
     network.name !== "opbnb"
   ) {

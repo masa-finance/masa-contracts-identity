@@ -169,13 +169,9 @@ describe("Soulbound Two-factor authentication (Green)", () => {
       await expect(
         soulboundGreen
           .connect(owner)
-          ["mint(address,address,address,uint256,bytes)"](
-            ethers.constants.AddressZero,
-            address1.address,
-            authority.address,
-            signatureDate,
-            signatureToAddress
-          )
+          [
+            "mint(address,address,address,uint256,bytes)"
+          ](ethers.constants.AddressZero, address1.address, authority.address, signatureDate, signatureToAddress)
       ).to.be.revertedWith("CallerNotOwner");
     });
 
@@ -183,35 +179,23 @@ describe("Soulbound Two-factor authentication (Green)", () => {
       await expect(
         soulboundGreen
           .connect(owner)
-          ["mint(address,uint256,address,uint256,bytes)"](
-            ethers.constants.AddressZero,
-            identityId1,
-            authority.address,
-            signatureDate,
-            signatureToIdentity
-          )
+          [
+            "mint(address,uint256,address,uint256,bytes)"
+          ](ethers.constants.AddressZero, identityId1, authority.address, signatureDate, signatureToIdentity)
       ).to.be.revertedWith("CallerNotOwner");
     });
 
     it("should mint twice", async () => {
       await soulboundGreen
         .connect(address1)
-        ["mint(address,address,address,uint256,bytes)"](
-          ethers.constants.AddressZero,
-          address1.address,
-          authority.address,
-          signatureDate,
-          signatureToAddress
-        );
+        [
+          "mint(address,address,address,uint256,bytes)"
+        ](ethers.constants.AddressZero, address1.address, authority.address, signatureDate, signatureToAddress);
       await soulboundGreen
         .connect(address1)
-        ["mint(address,address,address,uint256,bytes)"](
-          ethers.constants.AddressZero,
-          address1.address,
-          authority.address,
-          signatureDate,
-          signatureToAddress
-        );
+        [
+          "mint(address,address,address,uint256,bytes)"
+        ](ethers.constants.AddressZero, address1.address, authority.address, signatureDate, signatureToAddress);
 
       expect(await soulboundGreen.totalSupply()).to.equal(2);
       expect(await soulboundGreen.tokenByIndex(0)).to.equal(0);
@@ -221,13 +205,9 @@ describe("Soulbound Two-factor authentication (Green)", () => {
     it("should mint from final user address", async () => {
       const mintTx = await soulboundGreen
         .connect(address1)
-        ["mint(address,address,address,uint256,bytes)"](
-          ethers.constants.AddressZero,
-          address1.address,
-          authority.address,
-          signatureDate,
-          signatureToAddress
-        );
+        [
+          "mint(address,address,address,uint256,bytes)"
+        ](ethers.constants.AddressZero, address1.address, authority.address, signatureDate, signatureToAddress);
       const mintReceipt = await mintTx.wait();
 
       const toAddress = mintReceipt.events![1].args![1];
@@ -238,13 +218,9 @@ describe("Soulbound Two-factor authentication (Green)", () => {
     it("should mint from final user identity", async () => {
       const mintTx = await soulboundGreen
         .connect(address1)
-        ["mint(address,uint256,address,uint256,bytes)"](
-          ethers.constants.AddressZero,
-          identityId1,
-          authority.address,
-          signatureDate,
-          signatureToIdentity
-        );
+        [
+          "mint(address,uint256,address,uint256,bytes)"
+        ](ethers.constants.AddressZero, identityId1, authority.address, signatureDate, signatureToIdentity);
       const mintReceipt = await mintTx.wait();
 
       const tokenId = mintReceipt.events![0].args![1].toNumber();
@@ -262,13 +238,9 @@ describe("Soulbound Two-factor authentication (Green)", () => {
       );
       const mintTx = await soulboundGreen
         .connect(address2)
-        ["mint(address,address,address,uint256,bytes)"](
-          ethers.constants.AddressZero,
-          address2.address,
-          authority.address,
-          signatureDate,
-          signatureToAddress2
-        );
+        [
+          "mint(address,address,address,uint256,bytes)"
+        ](ethers.constants.AddressZero, address2.address, authority.address, signatureDate, signatureToAddress2);
       const mintReceipt = await mintTx.wait();
 
       const toAddress = mintReceipt.events![1].args![1];
@@ -289,26 +261,18 @@ describe("Soulbound Two-factor authentication (Green)", () => {
       // we mint
       let mintTx = await soulboundGreen
         .connect(address1)
-        ["mint(address,address,address,uint256,bytes)"](
-          ethers.constants.AddressZero,
-          address1.address,
-          authority.address,
-          signatureDate,
-          signatureToAddress
-        );
+        [
+          "mint(address,address,address,uint256,bytes)"
+        ](ethers.constants.AddressZero, address1.address, authority.address, signatureDate, signatureToAddress);
       let mintReceipt = await mintTx.wait();
       const tokenId1 = mintReceipt.events![0].args![1].toNumber();
 
       // we mint again
       mintTx = await soulboundGreen
         .connect(address1)
-        ["mint(address,address,address,uint256,bytes)"](
-          ethers.constants.AddressZero,
-          address1.address,
-          authority.address,
-          signatureDate,
-          signatureToAddress
-        );
+        [
+          "mint(address,address,address,uint256,bytes)"
+        ](ethers.constants.AddressZero, address1.address, authority.address, signatureDate, signatureToAddress);
       mintReceipt = await mintTx.wait();
       const tokenId2 = mintReceipt.events![0].args![1].toNumber();
 
@@ -335,13 +299,9 @@ describe("Soulbound Two-factor authentication (Green)", () => {
     it("should get a valid token URI from its tokenId", async () => {
       const mintTx = await soulboundGreen
         .connect(address1)
-        ["mint(address,address,address,uint256,bytes)"](
-          ethers.constants.AddressZero,
-          address1.address,
-          authority.address,
-          signatureDate,
-          signatureToAddress
-        );
+        [
+          "mint(address,address,address,uint256,bytes)"
+        ](ethers.constants.AddressZero, address1.address, authority.address, signatureDate, signatureToAddress);
 
       const mintReceipt = await mintTx.wait();
       const tokenId = mintReceipt.events![0].args![1].toNumber();
