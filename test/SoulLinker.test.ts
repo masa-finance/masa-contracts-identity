@@ -201,13 +201,9 @@ describe("Soul Linker", () => {
 
     mintTx = await soulboundCreditScore
       .connect(dataOwner)
-      ["mint(address,uint256,address,uint256,bytes)"](
-        ethers.constants.AddressZero,
-        ownerIdentityId,
-        authority.address,
-        signatureDate,
-        signatureMint
-      );
+      [
+        "mint(address,uint256,address,uint256,bytes)"
+      ](ethers.constants.AddressZero, ownerIdentityId, authority.address, signatureDate, signatureMint);
     mintReceipt = await mintTx.wait();
 
     creditScore1 = mintReceipt.events![0].args![1].toNumber();

@@ -1,8 +1,8 @@
-// Sources flattened with hardhat v2.19.4 https://hardhat.org
+// Sources flattened with hardhat v2.20.1 https://hardhat.org
 
 // SPDX-License-Identifier: MIT
 
-// File @openzeppelin/contracts/access/IAccessControl.sol@v4.9.3
+// File @openzeppelin/contracts/access/IAccessControl.sol@v4.9.6
 
 // Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts v4.4.1 (access/IAccessControl.sol)
@@ -108,10 +108,10 @@ interface IAccessControl {
     function renounceRole(bytes32 role, address account) external;
 }
 
-// File @openzeppelin/contracts/utils/Context.sol@v4.9.3
+// File @openzeppelin/contracts/utils/Context.sol@v4.9.6
 
 // Original license: SPDX_License_Identifier: MIT
-// OpenZeppelin Contracts v4.4.1 (utils/Context.sol)
+// OpenZeppelin Contracts (last updated v4.9.4) (utils/Context.sol)
 
 pragma solidity ^0.8.0;
 
@@ -133,9 +133,13 @@ abstract contract Context {
     function _msgData() internal view virtual returns (bytes calldata) {
         return msg.data;
     }
+
+    function _contextSuffixLength() internal view virtual returns (uint256) {
+        return 0;
+    }
 }
 
-// File @openzeppelin/contracts/utils/introspection/IERC165.sol@v4.9.3
+// File @openzeppelin/contracts/utils/introspection/IERC165.sol@v4.9.6
 
 // Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts v4.4.1 (utils/introspection/IERC165.sol)
@@ -163,7 +167,7 @@ interface IERC165 {
     function supportsInterface(bytes4 interfaceId) external view returns (bool);
 }
 
-// File @openzeppelin/contracts/utils/introspection/ERC165.sol@v4.9.3
+// File @openzeppelin/contracts/utils/introspection/ERC165.sol@v4.9.6
 
 // Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts v4.4.1 (utils/introspection/ERC165.sol)
@@ -195,7 +199,7 @@ abstract contract ERC165 is IERC165 {
     }
 }
 
-// File @openzeppelin/contracts/utils/math/Math.sol@v4.9.3
+// File @openzeppelin/contracts/utils/math/Math.sol@v4.9.6
 
 // Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.9.0) (utils/math/Math.sol)
@@ -566,7 +570,7 @@ library Math {
     }
 }
 
-// File @openzeppelin/contracts/utils/math/SignedMath.sol@v4.9.3
+// File @openzeppelin/contracts/utils/math/SignedMath.sol@v4.9.6
 
 // Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.8.0) (utils/math/SignedMath.sol)
@@ -612,7 +616,7 @@ library SignedMath {
     }
 }
 
-// File @openzeppelin/contracts/utils/Strings.sol@v4.9.3
+// File @openzeppelin/contracts/utils/Strings.sol@v4.9.6
 
 // Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.9.0) (utils/Strings.sol)
@@ -709,7 +713,7 @@ library Strings {
     }
 }
 
-// File @openzeppelin/contracts/access/AccessControl.sol@v4.9.3
+// File @openzeppelin/contracts/access/AccessControl.sol@v4.9.6
 
 // Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.9.0) (access/AccessControl.sol)
@@ -976,10 +980,10 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
     }
 }
 
-// File @openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol@v4.9.3
+// File @openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol@v4.9.6
 
 // Original license: SPDX_License_Identifier: MIT
-// OpenZeppelin Contracts (last updated v4.9.0) (token/ERC20/extensions/IERC20Permit.sol)
+// OpenZeppelin Contracts (last updated v4.9.4) (token/ERC20/extensions/IERC20Permit.sol)
 
 pragma solidity ^0.8.0;
 
@@ -990,6 +994,34 @@ pragma solidity ^0.8.0;
  * Adds the {permit} method, which can be used to change an account's ERC20 allowance (see {IERC20-allowance}) by
  * presenting a message signed by the account. By not relying on {IERC20-approve}, the token holder account doesn't
  * need to send a transaction, and thus is not required to hold Ether at all.
+ *
+ * ==== Security Considerations
+ *
+ * There are two important considerations concerning the use of `permit`. The first is that a valid permit signature
+ * expresses an allowance, and it should not be assumed to convey additional meaning. In particular, it should not be
+ * considered as an intention to spend the allowance in any specific way. The second is that because permits have
+ * built-in replay protection and can be submitted by anyone, they can be frontrun. A protocol that uses permits should
+ * take this into consideration and allow a `permit` call to fail. Combining these two aspects, a pattern that may be
+ * generally recommended is:
+ *
+ * ```solidity
+ * function doThingWithPermit(..., uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s) public {
+ *     try token.permit(msg.sender, address(this), value, deadline, v, r, s) {} catch {}
+ *     doThing(..., value);
+ * }
+ *
+ * function doThing(..., uint256 value) public {
+ *     token.safeTransferFrom(msg.sender, address(this), value);
+ *     ...
+ * }
+ * ```
+ *
+ * Observe that: 1) `msg.sender` is used as the owner, leaving no ambiguity as to the signer intent, and 2) the use of
+ * `try/catch` allows the permit to fail and makes the code tolerant to frontrunning. (See also
+ * {SafeERC20-safeTransferFrom}).
+ *
+ * Additionally, note that smart contract wallets (such as Argent or Safe) are not able to produce permit signatures, so
+ * contracts should have entry points that don't rely on permit.
  */
 interface IERC20Permit {
     /**
@@ -1012,6 +1044,8 @@ interface IERC20Permit {
      * For more information on the signature format, see the
      * https://eips.ethereum.org/EIPS/eip-2612#specification[relevant EIP
      * section].
+     *
+     * CAUTION: See Security Considerations above.
      */
     function permit(
         address owner,
@@ -1039,7 +1073,7 @@ interface IERC20Permit {
     function DOMAIN_SEPARATOR() external view returns (bytes32);
 }
 
-// File @openzeppelin/contracts/token/ERC20/IERC20.sol@v4.9.3
+// File @openzeppelin/contracts/token/ERC20/IERC20.sol@v4.9.6
 
 // Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.9.0) (token/ERC20/IERC20.sol)
@@ -1131,7 +1165,7 @@ interface IERC20 {
     ) external returns (bool);
 }
 
-// File @openzeppelin/contracts/utils/Address.sol@v4.9.3
+// File @openzeppelin/contracts/utils/Address.sol@v4.9.6
 
 // Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.9.0) (utils/Address.sol)
@@ -1445,7 +1479,7 @@ library Address {
     }
 }
 
-// File @openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol@v4.9.3
+// File @openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol@v4.9.6
 
 // Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.9.3) (token/ERC20/utils/SafeERC20.sol)
@@ -1655,7 +1689,7 @@ library SafeERC20 {
     }
 }
 
-// File @openzeppelin/contracts/interfaces/IERC5267.sol@v4.9.3
+// File @openzeppelin/contracts/interfaces/IERC5267.sol@v4.9.6
 
 // Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.9.0) (interfaces/IERC5267.sol)
@@ -1686,7 +1720,7 @@ interface IERC5267 {
         );
 }
 
-// File @openzeppelin/contracts/utils/cryptography/ECDSA.sol@v4.9.3
+// File @openzeppelin/contracts/utils/cryptography/ECDSA.sol@v4.9.6
 
 // Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.9.0) (utils/cryptography/ECDSA.sol)
@@ -1951,7 +1985,7 @@ library ECDSA {
     }
 }
 
-// File @openzeppelin/contracts/utils/StorageSlot.sol@v4.9.3
+// File @openzeppelin/contracts/utils/StorageSlot.sol@v4.9.6
 
 // Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.9.0) (utils/StorageSlot.sol)
@@ -2108,7 +2142,7 @@ library StorageSlot {
     }
 }
 
-// File @openzeppelin/contracts/utils/ShortStrings.sol@v4.9.3
+// File @openzeppelin/contracts/utils/ShortStrings.sol@v4.9.6
 
 // Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.9.0) (utils/ShortStrings.sol)
@@ -2243,7 +2277,7 @@ library ShortStrings {
     }
 }
 
-// File @openzeppelin/contracts/utils/cryptography/EIP712.sol@v4.9.3
+// File @openzeppelin/contracts/utils/cryptography/EIP712.sol@v4.9.6
 
 // Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.9.0) (utils/cryptography/EIP712.sol)
@@ -2397,7 +2431,7 @@ abstract contract EIP712 is IERC5267 {
     }
 }
 
-// File @openzeppelin/contracts/utils/cryptography/draft-EIP712.sol@v4.9.3
+// File @openzeppelin/contracts/utils/cryptography/draft-EIP712.sol@v4.9.6
 
 // Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.8.0) (utils/cryptography/draft-EIP712.sol)
@@ -2406,7 +2440,7 @@ pragma solidity ^0.8.0;
 
 // EIP-712 is Final as of 2022-08-11. This file is deprecated.
 
-// File @openzeppelin/contracts/utils/math/SafeMath.sol@v4.9.3
+// File @openzeppelin/contracts/utils/math/SafeMath.sol@v4.9.6
 
 // Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.9.0) (utils/math/SafeMath.sol)
@@ -2714,7 +2748,6 @@ error InvalidPaymentMethod(address paymentMethod);
 error InvalidSignature();
 error InvalidSignatureDate(uint256 signatureDate);
 error InvalidState(string state);
-error InvalidToAddress(address to);
 error InvalidToken(address token);
 error InvalidTokenURI(string tokenURI);
 error LinkAlreadyExists(
@@ -2749,7 +2782,6 @@ error UserMustHaveProtocolOrProjectAdminRole();
 error ValidPeriodExpired(uint256 expirationDate);
 error WithoutBeforeMintStates();
 error ZeroAddress();
-error ZeroDate(uint256 date);
 error ZeroLengthName(string name);
 error ZeroYearsPeriod(uint256 yearsPeriod);
 
@@ -3143,12 +3175,8 @@ abstract contract PaymentGateway is AccessControl {
     ) private view returns (address[] memory) {
         if (fromToken == wrappedNativeToken || toToken == wrappedNativeToken) {
             address[] memory path = new address[](2);
-            path[0] = fromToken == wrappedNativeToken
-                ? wrappedNativeToken
-                : fromToken;
-            path[1] = toToken == wrappedNativeToken
-                ? wrappedNativeToken
-                : toToken;
+            path[0] = fromToken;
+            path[1] = toToken;
             return path;
         } else {
             address[] memory path = new address[](3);
@@ -3239,19 +3267,7 @@ interface ISoulName {
         string memory _tokenURI
     ) external returns (uint256);
 
-    function mint(
-        address to,
-        string memory name,
-        uint256 yearsPeriod,
-        uint256 fromDate,
-        string memory _tokenURI
-    ) external returns (uint256);
-
-    function renewYearsPeriod(uint256 tokenId, uint256 yearsPeriod) external;
-
     function getExtension() external view returns (string memory);
-
-    function exists(string memory name) external view returns (bool);
 
     function isAvailable(
         string memory name
@@ -3284,10 +3300,6 @@ interface ISoulName {
     function getSoulNames(
         uint256 identityId
     ) external view returns (string[] memory sbtNames);
-
-    function ownerOf(uint256 tokenId) external view returns (address);
-
-    function tokenURI(uint256 tokenId) external view returns (string memory);
 }
 
 // File contracts/interfaces/ISoulboundIdentity.sol
@@ -3323,7 +3335,7 @@ interface ISoulboundIdentity is ISBT {
     function tokenOfOwner(address owner) external view returns (uint256);
 }
 
-// File @openzeppelin/contracts/security/ReentrancyGuard.sol@v4.9.3
+// File @openzeppelin/contracts/security/ReentrancyGuard.sol@v4.9.6
 
 // Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.9.0) (security/ReentrancyGuard.sol)
@@ -3403,7 +3415,7 @@ abstract contract ReentrancyGuard {
     }
 }
 
-// File @openzeppelin/contracts/utils/Counters.sol@v4.9.3
+// File @openzeppelin/contracts/utils/Counters.sol@v4.9.6
 
 // Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts v4.4.1 (utils/Counters.sol)

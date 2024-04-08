@@ -282,10 +282,9 @@ describe("MasaDynamicSSSBT", () => {
       await expect(
         sbtDynamic
           .connect(address1)
-          ["mint(address,address)"](
-            ethers.constants.AddressZero,
-            address1.address
-          )
+          [
+            "mint(address,address)"
+          ](ethers.constants.AddressZero, address1.address)
       ).to.be.rejectedWith("WithoutBeforeMintStates");
 
       expect(await sbtDynamic.balanceOf(address1.address)).to.equal(0);
@@ -324,62 +323,44 @@ describe("MasaDynamicSSSBT", () => {
       await expect(
         sbtDynamic
           .connect(address1)
-          ["mint(address,address)"](
-            ethers.constants.AddressZero,
-            address1.address
-          )
+          [
+            "mint(address,address)"
+          ](ethers.constants.AddressZero, address1.address)
       ).to.be.rejected;
 
       await sbtDynamic
         .connect(address1)
-        ["setState(address,string,bool,address,uint256,bytes)"](
-          address1.address,
-          discordState,
-          true,
-          authority.address,
-          signatureDate,
-          signatureSetDiscordStateToAccount
-        );
+        [
+          "setState(address,string,bool,address,uint256,bytes)"
+        ](address1.address, discordState, true, authority.address, signatureDate, signatureSetDiscordStateToAccount);
 
       await expect(
         sbtDynamic
           .connect(address1)
-          ["mint(address,address)"](
-            ethers.constants.AddressZero,
-            address1.address
-          )
+          [
+            "mint(address,address)"
+          ](ethers.constants.AddressZero, address1.address)
       ).to.be.rejected;
     });
 
     it("should mint if all before mint states are set", async () => {
       await sbtDynamic
         .connect(address1)
-        ["setState(address,string,bool,address,uint256,bytes)"](
-          address1.address,
-          discordState,
-          true,
-          authority.address,
-          signatureDate,
-          signatureSetDiscordStateToAccount
-        );
+        [
+          "setState(address,string,bool,address,uint256,bytes)"
+        ](address1.address, discordState, true, authority.address, signatureDate, signatureSetDiscordStateToAccount);
 
       await sbtDynamic
         .connect(address1)
-        ["setState(address,string,bool,address,uint256,bytes)"](
-          address1.address,
-          twitterState,
-          true,
-          authority.address,
-          signatureDate,
-          signatureSetTwitterStateToAccount
-        );
+        [
+          "setState(address,string,bool,address,uint256,bytes)"
+        ](address1.address, twitterState, true, authority.address, signatureDate, signatureSetTwitterStateToAccount);
 
       await sbtDynamic
         .connect(address1)
-        ["mint(address,address)"](
-          ethers.constants.AddressZero,
-          address1.address
-        );
+        [
+          "mint(address,address)"
+        ](ethers.constants.AddressZero, address1.address);
 
       expect(await sbtDynamic.beforeMintState(address1.address, discordState))
         .to.be.true;
@@ -444,21 +425,15 @@ describe("MasaDynamicSSSBT", () => {
         );
       await sbtDynamic
         .connect(address1)
-        ["setState(address,string,bool,address,uint256,bytes)"](
-          address1.address,
-          discordState,
-          true,
-          authority.address,
-          signatureDate,
-          signatureSetDiscordBeforeStateToAccount
-        );
+        [
+          "setState(address,string,bool,address,uint256,bytes)"
+        ](address1.address, discordState, true, authority.address, signatureDate, signatureSetDiscordBeforeStateToAccount);
 
       const mintTx = await sbtDynamic
         .connect(address1)
-        ["mint(address,address)"](
-          ethers.constants.AddressZero,
-          address1.address
-        );
+        [
+          "mint(address,address)"
+        ](ethers.constants.AddressZero, address1.address);
       const mintReceipt = await mintTx.wait();
 
       tokenId = mintReceipt.events![0].args![1].toNumber();
@@ -480,25 +455,15 @@ describe("MasaDynamicSSSBT", () => {
     it("should set all after mint states", async () => {
       await sbtDynamic
         .connect(address1)
-        ["setState(uint256,string,bool,address,uint256,bytes)"](
-          tokenId,
-          discordState,
-          true,
-          authority.address,
-          signatureDate,
-          signatureSetDiscordStateToAccount
-        );
+        [
+          "setState(uint256,string,bool,address,uint256,bytes)"
+        ](tokenId, discordState, true, authority.address, signatureDate, signatureSetDiscordStateToAccount);
 
       await sbtDynamic
         .connect(address1)
-        ["setState(uint256,string,bool,address,uint256,bytes)"](
-          tokenId,
-          twitterState,
-          true,
-          authority.address,
-          signatureDate,
-          signatureSetTwitterStateToAccount
-        );
+        [
+          "setState(uint256,string,bool,address,uint256,bytes)"
+        ](tokenId, twitterState, true, authority.address, signatureDate, signatureSetTwitterStateToAccount);
 
       expect(await sbtDynamic.afterMintState(tokenId, discordState)).to.be.true;
       expect(await sbtDynamic.afterMintState(tokenId, twitterState)).to.be.true;
