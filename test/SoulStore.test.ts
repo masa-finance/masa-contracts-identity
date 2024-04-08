@@ -1669,12 +1669,9 @@ describe("Soul Store", () => {
       // once expired, another user mints the same soul name
       await soulName
         .connect(owner)
-        ["mint(address,string,uint256,string)"](
-          address2.address,
-          SOUL_NAME,
-          YEAR,
-          ARWEAVE_LINK2
-        );
+        [
+          "mint(address,string,uint256,string)"
+        ](address2.address, SOUL_NAME, YEAR, ARWEAVE_LINK2);
     });
 
     it("shouldn't renew period when period has expired and somebody has minted same name", async () => {
@@ -1685,12 +1682,9 @@ describe("Soul Store", () => {
       // once expired, another user mints the same soul name
       await soulName
         .connect(owner)
-        ["mint(address,string,uint256,string)"](
-          address2.address,
-          SOUL_NAME,
-          YEAR,
-          ARWEAVE_LINK2
-        );
+        [
+          "mint(address,string,uint256,string)"
+        ](address2.address, SOUL_NAME, YEAR, ARWEAVE_LINK2);
 
       // the first owner of the soul name tries to renew the period and fails
       const { price } = await soulStore.getPriceForMintingNameWithProtocolFee(

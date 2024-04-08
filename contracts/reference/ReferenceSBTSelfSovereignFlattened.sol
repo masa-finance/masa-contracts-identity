@@ -1,4 +1,4 @@
-// Sources flattened with hardhat v2.20.1 https://hardhat.org
+// Sources flattened with hardhat v2.22.2 https://hardhat.org
 
 // SPDX-License-Identifier: MIT
 
@@ -2748,6 +2748,7 @@ error InvalidPaymentMethod(address paymentMethod);
 error InvalidSignature();
 error InvalidSignatureDate(uint256 signatureDate);
 error InvalidState(string state);
+error InvalidToAddress(address to);
 error InvalidToken(address token);
 error InvalidTokenURI(string tokenURI);
 error LinkAlreadyExists(
@@ -2782,6 +2783,7 @@ error UserMustHaveProtocolOrProjectAdminRole();
 error ValidPeriodExpired(uint256 expirationDate);
 error WithoutBeforeMintStates();
 error ZeroAddress();
+error ZeroDate(uint256 date);
 error ZeroLengthName(string name);
 error ZeroYearsPeriod(uint256 yearsPeriod);
 
@@ -3267,7 +3269,19 @@ interface ISoulName {
         string memory _tokenURI
     ) external returns (uint256);
 
+    function mint(
+        address to,
+        string memory name,
+        uint256 yearsPeriod,
+        uint256 fromDate,
+        string memory _tokenURI
+    ) external returns (uint256);
+
+    function renewYearsPeriod(uint256 tokenId, uint256 yearsPeriod) external;
+
     function getExtension() external view returns (string memory);
+
+    function exists(string memory name) external view returns (bool);
 
     function isAvailable(
         string memory name
@@ -3300,6 +3314,10 @@ interface ISoulName {
     function getSoulNames(
         uint256 identityId
     ) external view returns (string[] memory sbtNames);
+
+    function ownerOf(uint256 tokenId) external view returns (address);
+
+    function tokenURI(uint256 tokenId) external view returns (string memory);
 }
 
 // File contracts/interfaces/ISoulboundIdentity.sol

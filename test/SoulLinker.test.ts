@@ -856,21 +856,15 @@ describe("Soul Linker", () => {
       // mint a second name with the first soul name
       await soulName
         .connect(owner)
-        ["mint(address,string,uint256,string)"](
-          dataOwner.address,
-          SOUL_NAME1,
-          YEAR,
-          ARWEAVE_LINK1
-        );
+        [
+          "mint(address,string,uint256,string)"
+        ](dataOwner.address, SOUL_NAME1, YEAR, ARWEAVE_LINK1);
 
       const mintTx = await soulName
         .connect(owner)
-        ["mint(address,string,uint256,string)"](
-          dataOwner.address,
-          SOUL_NAME2,
-          YEAR,
-          ARWEAVE_LINK2
-        );
+        [
+          "mint(address,string,uint256,string)"
+        ](dataOwner.address, SOUL_NAME2, YEAR, ARWEAVE_LINK2);
       const mintReceipt = await mintTx.wait();
 
       nameId2 = mintReceipt.events![0].args![2].toNumber();
@@ -878,12 +872,9 @@ describe("Soul Linker", () => {
       // mint a third name with the second soul name
       const mintTx2 = await soulName2
         .connect(owner)
-        ["mint(address,string,uint256,string)"](
-          dataOwner.address,
-          SOUL_NAME3,
-          YEAR,
-          ARWEAVE_LINK2
-        );
+        [
+          "mint(address,string,uint256,string)"
+        ](dataOwner.address, SOUL_NAME3, YEAR, ARWEAVE_LINK2);
       const mintReceipt2 = await mintTx2.wait();
 
       nameId3 = mintReceipt2.events![0].args![2].toNumber();
