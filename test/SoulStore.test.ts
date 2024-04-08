@@ -19,7 +19,7 @@ const expect = chai.expect;
 
 const env = getEnvParams("hardhat");
 
-const DAI_SEPOLIA = "0x3e622317f8C93f7328350cF0B56d9eD4C620C5d6";
+const TEST_TOKEN = "0x6dD6893Ae38b64167A213A8DedFEe14Bc2396147";
 
 // contract instances
 let soulStore: SoulStore;
@@ -122,16 +122,18 @@ describe("Soul Store", () => {
       }
     );
 
-    // we get DAI tokens for address1
+    // we get test tokens for address1
     await uniswapRouter.swapExactETHForTokens(
       0,
-      [env.WETH_TOKEN, DAI_SEPOLIA],
+      [env.WETH_TOKEN, TEST_TOKEN],
       address1.address,
       Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes from the current Unix time
       {
         value: ethers.utils.parseEther("10")
       }
     );
+
+    console.log(2);
 
     // we add authority account
     await soulStore.addAuthority(authority.address);
@@ -1302,13 +1304,13 @@ describe("Soul Store", () => {
     });
 
     it("should add ERC-20 token from owner", async () => {
-      await soulStore.connect(owner).enablePaymentMethod(DAI_SEPOLIA);
+      await soulStore.connect(owner).enablePaymentMethod(TEST_TOKEN);
 
-      expect(await soulStore.enabledPaymentMethod(DAI_SEPOLIA)).to.be.true;
+      expect(await soulStore.enabledPaymentMethod(TEST_TOKEN)).to.be.true;
     });
 
     it("should get all payment methods information", async () => {
-      await soulStore.connect(owner).enablePaymentMethod(DAI_SEPOLIA);
+      await soulStore.connect(owner).enablePaymentMethod(TEST_TOKEN);
 
       const enabledPaymentMethods = await soulStore.getEnabledPaymentMethods();
 
@@ -1316,47 +1318,46 @@ describe("Soul Store", () => {
         ethers.constants.AddressZero,
         env.USDC_TOKEN,
         env.MASA_TOKEN,
-        DAI_SEPOLIA
+        TEST_TOKEN
       ]);
     });
 
     it("should fail to add ERC-20 token from non owner", async () => {
-      await expect(soulStore.connect(address1).enablePaymentMethod(DAI_SEPOLIA))
+      await expect(soulStore.connect(address1).enablePaymentMethod(TEST_TOKEN))
         .to.be.rejected;
     });
 
     it("should remove ERC-20 token from owner", async () => {
-      await soulStore.connect(owner).enablePaymentMethod(DAI_SEPOLIA);
+      await soulStore.connect(owner).enablePaymentMethod(TEST_TOKEN);
 
-      expect(await soulStore.enabledPaymentMethod(DAI_SEPOLIA)).to.be.true;
+      expect(await soulStore.enabledPaymentMethod(TEST_TOKEN)).to.be.true;
 
-      await soulStore.connect(owner).disablePaymentMethod(DAI_SEPOLIA);
+      await soulStore.connect(owner).disablePaymentMethod(TEST_TOKEN);
 
-      expect(await soulStore.enabledPaymentMethod(DAI_SEPOLIA)).to.be.false;
+      expect(await soulStore.enabledPaymentMethod(TEST_TOKEN)).to.be.false;
     });
 
     it("should fail to remove ERC-20 token from non owner", async () => {
-      await soulStore.connect(owner).enablePaymentMethod(DAI_SEPOLIA);
+      await soulStore.connect(owner).enablePaymentMethod(TEST_TOKEN);
 
-      expect(await soulStore.enabledPaymentMethod(DAI_SEPOLIA)).to.be.true;
+      expect(await soulStore.enabledPaymentMethod(TEST_TOKEN)).to.be.true;
 
-      await expect(
-        soulStore.connect(address1).disablePaymentMethod(DAI_SEPOLIA)
-      ).to.be.rejected;
+      await expect(soulStore.connect(address1).disablePaymentMethod(TEST_TOKEN))
+        .to.be.rejected;
     });
 
     it("we can purchase a name with other ERC-20 token", async () => {
-      await soulStore.connect(owner).enablePaymentMethod(DAI_SEPOLIA);
+      await soulStore.connect(owner).enablePaymentMethod(TEST_TOKEN);
 
       const { price } = await soulStore.getPriceForMintingNameWithProtocolFee(
-        DAI_SEPOLIA,
+        TEST_TOKEN,
         SOUL_NAME.length,
         YEAR
       );
 
       // set allowance for soul store
-      const dai: IERC20 = IERC20__factory.connect(DAI_SEPOLIA, owner);
-      await dai.connect(address1).approve(soulStore.address, price);
+      const testToken: IERC20 = IERC20__factory.connect(TEST_TOKEN, owner);
+      await testToken.connect(address1).approve(soulStore.address, price);
 
       const signature = await signMintSoulName(
         address1.address,
@@ -1368,7 +1369,7 @@ describe("Soul Store", () => {
       );
 
       await soulStore.connect(address1).purchaseName(
-        DAI_SEPOLIA, // DAI token, other ERC-20 token
+        TEST_TOKEN, // test token, other ERC-20 token
         address1.address,
         SOUL_NAME,
         SOUL_NAME.length,
