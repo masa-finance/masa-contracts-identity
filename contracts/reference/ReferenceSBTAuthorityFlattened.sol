@@ -2424,12 +2424,8 @@ abstract contract PaymentGateway is AccessControl {
     ) private view returns (address[] memory) {
         if (fromToken == wrappedNativeToken || toToken == wrappedNativeToken) {
             address[] memory path = new address[](2);
-            path[0] = fromToken == wrappedNativeToken
-                ? wrappedNativeToken
-                : fromToken;
-            path[1] = toToken == wrappedNativeToken
-                ? wrappedNativeToken
-                : toToken;
+            path[0] = fromToken;
+            path[1] = toToken;
             return path;
         } else {
             address[] memory path = new address[](3);
