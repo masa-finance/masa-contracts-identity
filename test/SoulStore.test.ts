@@ -133,8 +133,6 @@ describe("Soul Store", () => {
       }
     );
 
-    console.log(2);
-
     // we add authority account
     await soulStore.addAuthority(authority.address);
   });
