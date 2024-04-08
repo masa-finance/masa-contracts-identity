@@ -37,8 +37,8 @@ export function getPrivateKey(networkName: string | undefined) {
     : "0x0000000000000000000000000000000000000000000000000000000000000000";
 }
 
-export function getInfuraApiKey() {
-  return process.env.INFURA_API_KEY || getSecretParam("INFURA_API_KEY");
+export function getAnkrApiKey() {
+  return process.env.ANKR_API_KEY || getSecretParam("ANKR_API_KEY");
 }
 
 export function getEtherscanApiKey() {
