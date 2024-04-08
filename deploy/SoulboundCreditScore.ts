@@ -26,8 +26,8 @@ const func: DeployFunction = async ({
 
   let soulboundIdentityDeployedAddress;
   if (
-    network.name === "mainnet" ||
-    network.name === "goerli" ||
+    network.name === "ethereum" ||
+    network.name === "sepolia" ||
     network.name === "hardhat" ||
     network.name === "mumbai" ||
     network.name === "polygon"
@@ -59,8 +59,8 @@ const func: DeployFunction = async ({
   ];
 
   if (
-    network.name === "mainnet" ||
-    network.name === "goerli" ||
+    network.name === "ethereum" ||
+    network.name === "sepolia" ||
     network.name === "hardhat" ||
     network.name === "mumbai" ||
     network.name === "polygon"
@@ -127,8 +127,8 @@ const func: DeployFunction = async ({
 
 func.skip = async ({ network }) => {
   return (
-    network.name !== "mainnet" &&
-    network.name !== "goerli" &&
+    network.name !== "ethereum" &&
+    network.name !== "sepolia" &&
     network.name !== "hardhat" &&
     network.name !== "mumbai" &&
     network.name !== "polygon"
