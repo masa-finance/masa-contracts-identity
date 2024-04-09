@@ -55,7 +55,11 @@ async function main() {
   console.log(`MasaDynamicSSSBT deployed to: ${sssbt.address}`);
 
   // Verify contract
-  if (network.name !== "hardhat") {
+  if (
+    network.name !== "hardhat" &&
+    network.name !== "masa" &&
+    network.name !== "masatest"
+  ) {
     try {
       await hre.run("verify:verify", {
         address: sssbt.address,
@@ -77,7 +81,9 @@ async function main() {
     network.name !== "celo" &&
     network.name !== "ethereum" &&
     network.name !== "polygon" &&
-    network.name !== "opbnb"
+    network.name !== "opbnb" &&
+    network.name !== "masa" &&
+    network.name !== "masatest"
   ) {
     const signer = new ethers.Wallet(
       getPrivateKey(network.name),

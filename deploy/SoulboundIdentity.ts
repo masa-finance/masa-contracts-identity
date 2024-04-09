@@ -50,7 +50,11 @@ const func: DeployFunction = async ({
   });
 
   // verify contract with etherscan, if its not a local network or celo
-  if (network.name !== "hardhat") {
+  if (
+    network.name !== "hardhat" &&
+    network.name !== "masa" &&
+    network.name !== "masatest"
+  ) {
     try {
       await run("verify:verify", {
         address: soulboundIdentityDeploymentResult.address,
