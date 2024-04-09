@@ -12,9 +12,9 @@ async function main() {
   const { deployer } = await getNamedAccounts();
   const env = getEnvParams(network.name);
 
-  const SBT_NAME = "";
-  const SBT_SYMBOL = "";
-  const SBT_BASE_URI = "";
+  const SBT_NAME = "Test SSSBT";
+  const SBT_SYMBOL = "TSSSBT";
+  const SBT_BASE_URI = "http://test.com/";
   const SBT_MAXMINTS = 1;
   const PAYMENT_METHODS = "0x0000000000000000000000000000000000000000";
   const MINTING_PRICE = 0;
@@ -55,7 +55,11 @@ async function main() {
   console.log(`ReferenceSBTSelfSovereign deployed to: ${sssbt.address}`);
 
   // Verify contract
-  if (network.name !== "hardhat") {
+  if (
+    network.name !== "hardhat" &&
+    network.name !== "masa" &&
+    network.name !== "masatest"
+  ) {
     try {
       await hre.run("verify:verify", {
         address: sssbt.address,

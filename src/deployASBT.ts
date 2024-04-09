@@ -55,7 +55,11 @@ async function main() {
   console.log(`ReferenceSBTAuthority deployed to: ${asbt.address}`);
 
   // Verify contract
-  if (network.name !== "hardhat") {
+  if (
+    network.name !== "hardhat" &&
+    network.name !== "masa" &&
+    network.name !== "masatest"
+  ) {
     try {
       await hre.run("verify:verify", {
         address: asbt.address,
