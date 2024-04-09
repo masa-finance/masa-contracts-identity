@@ -108,6 +108,21 @@ const networks: NetworksUserConfig = {
     accounts: [getPrivateKey("ethereum")],
     gas: "auto", // 20000000
     gasPrice: "auto" // 100000000000
+  },
+  masa: {
+    // tbd
+    url: "https://subnets.avax.network/masanetwork/mainnet/rpc",
+    chainId: 0x3454,
+    accounts: [getPrivateKey("masa")],
+    gas: "auto",
+    gasPrice: "auto"
+  },
+  masatest: {
+    url: "https://subnets.avax.network/masatestne/testnet/rpc",
+    chainId: 103454,
+    accounts: [getPrivateKey("masatest")],
+    gas: "auto",
+    gasPrice: "auto"
   }
 };
 
