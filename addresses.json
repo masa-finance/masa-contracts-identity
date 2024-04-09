@@ -47,6 +47,9 @@
     "SoulboundGreen": "0xCB3f0EC4019f20D0eA05d7db0f6E82f2DA3a619D",
     "SoulboundIdentity": "0x2c4C19752af9182949f237e843e104Dd79F4bfF1"
   },
+  "masatest": {
+    "SoulboundIdentity": "0x4511815866790D0149712FD7c04f6921176E5a04"
+  },
   "mumbai": {
     "SoulLinker": "0xb1262BdA5dce7D57bEbea4ff9c49C2476A43245c",
     "SoulStore": "0x65627C04433d72283662B58B423bA8A1dfBd3fe3",
