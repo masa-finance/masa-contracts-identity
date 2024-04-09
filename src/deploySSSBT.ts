@@ -12,9 +12,9 @@ async function main() {
   const { deployer } = await getNamedAccounts();
   const env = getEnvParams(network.name);
 
-  const SBT_NAME = "Test SSSBT";
-  const SBT_SYMBOL = "TSSSBT";
-  const SBT_BASE_URI = "http://test.com/";
+  const SBT_NAME = "";
+  const SBT_SYMBOL = "";
+  const SBT_BASE_URI = "";
   const SBT_MAXMINTS = 1;
   const PAYMENT_METHODS = "0x0000000000000000000000000000000000000000";
   const MINTING_PRICE = 0;
