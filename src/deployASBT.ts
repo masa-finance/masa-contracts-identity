@@ -81,7 +81,9 @@ async function main() {
     network.name !== "celo" &&
     network.name !== "ethereum" &&
     network.name !== "polygon" &&
-    network.name !== "opbnb"
+    network.name !== "opbnb" &&
+    network.name !== "masa" &&
+    network.name !== "masatest"
   ) {
     const signer = new ethers.Wallet(
       getPrivateKey(network.name),
