@@ -10,18 +10,30 @@ on:
     branches:
       - '**'
 
+env:
+  FOUNDRY_PROFILE: ci
+
 jobs:
-  test:
+  check:
+    strategy:
+      fail-fast: true
 
     runs-on: ubuntu-latest
-    container:
-      image: node:latest
-
     steps:
       - uses: actions/checkout@v4
-      - run: yarn
-      - run: yarn compile
-      - run: sleep 10
-      - run: yarn test
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - run: yarn install
+
+      - name: Run Forge tests
+        run: |
+          forge test -vvv
         env:
-          ANKR_API_KEY: ${{ secrets.ANKR_API_KEY }}
+          ANKR_API_KEY: ${{ secrets.ANKR_API_KEY }}  
+        id: test
