@@ -14,6 +14,7 @@ import "hardhat-deploy";
 import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-solhint";
 import "@nomiclabs/hardhat-etherscan";
+import "@nomicfoundation/hardhat-foundry";
 import "@primitivefi/hardhat-dodoc";
 import "@typechain/ethers-v5";
 import "@typechain/hardhat";
