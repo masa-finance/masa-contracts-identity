@@ -115,6 +115,10 @@ hot_code
 # System 
 .DS_Store
 
+# Foundry
+out/
+cache_forge/
+
 cache
 artifacts
 
