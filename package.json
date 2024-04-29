@@ -35,7 +35,7 @@
     "deployDynamicSSSBT": "hardhat run src/deployDynamicSSSBT.ts",
     "run:node": "hardhat node",
     "test": "forge test -vv",
-    "prettier": "prettier --write 'contracts/**/*.sol' 'test/**/*.sol' '**/*.ts'",
+    "prettier": "prettier --write 'contracts/**/*.sol' 'test/**/*.test.ts' 'test/**/*.sol' '**/*.ts'",
     "solhint": "solhint contracts/**/*.sol test/**/*.sol",
     "release": "GITHUB_TOKEN=$(grep GITHUB_TOKEN .env | cut -d '=' -f2) release-it",
     "addresses": "hardhat run src/addresses.ts",

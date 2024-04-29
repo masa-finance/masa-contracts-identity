@@ -12,10 +12,10 @@ import {
   SoulboundCreditScore__factory,
   SoulboundIdentity,
   SoulboundIdentity__factory,
-  SoulName,
-  SoulName__factory,
   SoulLinker,
-  SoulLinker__factory
+  SoulLinker__factory,
+  SoulName,
+  SoulName__factory
 } from "../../typechain";
 import { getEnvParams } from "../../src/EnvParams";
 

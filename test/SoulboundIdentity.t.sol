@@ -15,17 +15,18 @@ contract SoulboundIdentityTest is Test {
     address public address2 = address(0x5);
 
     function setUp() public {
-        PaymentGateway.PaymentParams memory paymentParams = PaymentGateway.PaymentParams({
-              swapRouter: 0xC532a74256D3Db42D0Bf7a0400fEFDbad7694008,
-         wrappedNativeToken: 0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9,
-         stableCoin: 0xf8187B6F83790e533DFAB746cAE3B2507c1196Ae,
-         masaToken: 0x300fa0B0a9d373988394EEBFe66E03f90bb419E3,
-         projectFeeReceiver: owner,
-         protocolFeeReceiver: address(0),
-         protocolFeeAmount: 0,
-         protocolFeePercent: 0,
-         protocolFeePercentSub: 0
-        });
+        PaymentGateway.PaymentParams memory paymentParams = PaymentGateway
+            .PaymentParams({
+                swapRouter: 0xC532a74256D3Db42D0Bf7a0400fEFDbad7694008,
+                wrappedNativeToken: 0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9,
+                stableCoin: 0xf8187B6F83790e533DFAB746cAE3B2507c1196Ae,
+                masaToken: 0x300fa0B0a9d373988394EEBFe66E03f90bb419E3,
+                projectFeeReceiver: owner,
+                protocolFeeReceiver: address(0),
+                protocolFeeAmount: 0,
+                protocolFeePercent: 0,
+                protocolFeePercentSub: 0
+            });
 
         soulboundIdentity = new SoulboundIdentity(
             owner,
@@ -33,7 +34,7 @@ contract SoulboundIdentityTest is Test {
             "MID",
             "https://beta.metadata.masa.finance/v1.0/identity/anvil/",
             paymentParams
-          );
+        );
     }
 
     function testDeployment() public view {
