@@ -32,7 +32,8 @@ const networks: NetworksUserConfig = {
     gasPrice: "auto",
     gas: 13000000,
     forking: {
-      url: getAnkrURL("eth_sepolia")
+      url: getAnkrURL("eth_sepolia"),
+      blockNumber: 5700000
     }
   },
   alfajores: {
