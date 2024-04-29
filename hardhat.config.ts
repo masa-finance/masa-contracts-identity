@@ -27,6 +27,8 @@ const getAnkrURL = (network: string) => {
 
 const networks: NetworksUserConfig = {
   hardhat: {
+    hardfork: "istanbul",
+    allowUnlimitedContractSize: true,
     gasPrice: "auto",
     gas: 13000000,
     forking: {
