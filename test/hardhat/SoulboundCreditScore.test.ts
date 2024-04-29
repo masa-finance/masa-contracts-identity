@@ -49,7 +49,7 @@ const signMintToIdentity = async (
     {
       name: "SoulboundCreditScore",
       version: "1.0.0",
-      chainId: chainId,
+      chainId,
       verifyingContract: soulboundCreditScore.address
     },
     // Types
@@ -82,7 +82,7 @@ const signMintToAddress = async (
     {
       name: "SoulboundCreditScore",
       version: "1.0.0",
-      chainId: chainId,
+      chainId,
       verifyingContract: soulboundCreditScore.address
     },
     // Types
@@ -837,12 +837,12 @@ describe("Soulbound Credit Score", () => {
   describe("burn", () => {
     it("should burn", async () => {
       // we mint
-      let mintTx = await soulboundCreditScore
+      const mintTx = await soulboundCreditScore
         .connect(address1)
         [
           "mint(address,address,address,uint256,bytes)"
         ](ethers.constants.AddressZero, address1.address, authority.address, signatureDate, signatureToAddress);
-      let mintReceipt = await mintTx.wait();
+      const mintReceipt = await mintTx.wait();
       const tokenId = mintReceipt.events![0].args![1].toNumber();
 
       expect(

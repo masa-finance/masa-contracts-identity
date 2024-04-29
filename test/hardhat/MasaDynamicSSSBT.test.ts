@@ -40,7 +40,7 @@ const signSetStateToAccount = async (
     {
       name: "MasaDynamicSSSBT",
       version: "1.0.0",
-      chainId: chainId,
+      chainId,
       verifyingContract: sbtDynamic.address
     },
     // Types
@@ -79,7 +79,7 @@ const signSetStateToTokenId = async (
     {
       name: "MasaDynamicSSSBT",
       version: "1.0.0",
-      chainId: chainId,
+      chainId,
       verifyingContract: sbtDynamic.address
     },
     // Types
@@ -117,7 +117,7 @@ const signSetStatesAndMint = async (
     {
       name: "MasaDynamicSSSBT",
       version: "1.0.0",
-      chainId: chainId,
+      chainId,
       verifyingContract: sbtDynamic.address
     },
     // Types
