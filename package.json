@@ -83,6 +83,9 @@
     "typechain": "^8.3.2",
     "typescript": "^5.4.5"
   },
+  "resolutions": {
+    "@nomicfoundation/edr": "0.3.5"
+  },
   "release-it": {
     "hooks": {
       "after:bump": "yarn build"
