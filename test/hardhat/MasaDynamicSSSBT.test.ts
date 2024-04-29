@@ -55,11 +55,11 @@ const signSetStateToAccount = async (
     },
     // Value
     {
-      account: account,
-      state: state,
-      value: value,
+      account,
+      state,
+      value,
       authorityAddress: authoritySigner.address,
-      signatureDate: signatureDate
+      signatureDate
     }
   );
 
@@ -94,11 +94,11 @@ const signSetStateToTokenId = async (
     },
     // Value
     {
-      tokenId: tokenId,
-      state: state,
-      value: value,
+      tokenId,
+      state,
+      value,
       authorityAddress: authoritySigner.address,
-      signatureDate: signatureDate
+      signatureDate
     }
   );
 
@@ -131,10 +131,10 @@ const signSetStatesAndMint = async (
     },
     // Value
     {
-      account: account,
-      states: states,
+      account,
+      states,
       authorityAddress: authoritySigner.address,
-      signatureDate: signatureDate
+      signatureDate
     }
   );
 
@@ -189,9 +189,7 @@ describe("MasaDynamicSSSBT", () => {
     );
 
     // we mint identity SBT
-    const mintTx = await soulboundIdentity
-      .connect(owner)
-      ["mint(address)"](address1.address);
+    await soulboundIdentity.connect(owner)["mint(address)"](address1.address);
 
     // we add authority account
     await sbtDynamic.addAuthority(authority.address);

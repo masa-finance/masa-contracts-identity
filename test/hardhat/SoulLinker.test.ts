@@ -83,12 +83,12 @@ const signLink = async (
     },
     // Value
     {
-      readerIdentityId: readerIdentityId,
-      ownerIdentityId: ownerIdentityId,
-      token: token,
-      tokenId: tokenId,
-      signatureDate: signatureDate,
-      expirationDate: expirationDate
+      readerIdentityId,
+      ownerIdentityId,
+      token,
+      tokenId,
+      signatureDate,
+      expirationDate
     }
   );
 
@@ -119,9 +119,9 @@ const signMint = async (
     },
     // Value
     {
-      identityId: identityId,
+      identityId,
       authorityAddress: authoritySigner.address,
-      signatureDate: signatureDate
+      signatureDate
     }
   );
 
