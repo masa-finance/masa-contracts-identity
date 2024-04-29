@@ -31,6 +31,14 @@
     "SoulboundGreen": "0x4d236e55e54Ed960887659d046C60f377cCa58F8",
     "SoulboundIdentity": "0x836198F984431EcdC97A7549C1Bd6B3Cd9E7a89B"
   },
+  "ethereum": {
+    "SoulLinker": "0xc1E0795Dd6d214bbAf94A805D3b25A69408aCBDb",
+    "SoulName": "0x7ab73C2F083B2725E5b6e245E6EA945d5f3CaaeA",
+    "SoulStore": "0x1C7652919598b32C576D362E74F44C6E34EF7Aba",
+    "SoulboundCreditScore": "0x4d236e55e54Ed960887659d046C60f377cCa58F8",
+    "SoulboundGreen": "0xeB05dca1A7e0E37E364B938d989fc0273Ff3bFCa",
+    "SoulboundIdentity": "0x8903D8D4F4c06814D7ecb42b1258E2209d53A7d4"
+  },
   "goerli": {
     "SoulLinker": "0xB99CA5896D3cb306B6066e22B3CB82eA10361279",
     "SoulName": "0x65627C04433d72283662B58B423bA8A1dfBd3fe3",
@@ -39,13 +47,11 @@
     "SoulboundGreen": "0xCB3f0EC4019f20D0eA05d7db0f6E82f2DA3a619D",
     "SoulboundIdentity": "0x2c4C19752af9182949f237e843e104Dd79F4bfF1"
   },
-  "ethereum": {
-    "SoulLinker": "0xc1E0795Dd6d214bbAf94A805D3b25A69408aCBDb",
-    "SoulName": "0x7ab73C2F083B2725E5b6e245E6EA945d5f3CaaeA",
-    "SoulStore": "0x1C7652919598b32C576D362E74F44C6E34EF7Aba",
-    "SoulboundCreditScore": "0x4d236e55e54Ed960887659d046C60f377cCa58F8",
-    "SoulboundGreen": "0xeB05dca1A7e0E37E364B938d989fc0273Ff3bFCa",
-    "SoulboundIdentity": "0x8903D8D4F4c06814D7ecb42b1258E2209d53A7d4"
+  "masa": {
+    "SoulboundIdentity": "0x0dDD88779fBB936B4dDd5a7C4D18f29C0bcd8e2d"
+  },
+  "masatest": {
+    "SoulboundIdentity": "0x4511815866790D0149712FD7c04f6921176E5a04"
   },
   "mumbai": {
     "SoulLinker": "0xb1262BdA5dce7D57bEbea4ff9c49C2476A43245c",
