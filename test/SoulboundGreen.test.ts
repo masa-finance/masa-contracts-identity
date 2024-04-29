@@ -54,9 +54,9 @@ const signMintToIdentity = async (
     },
     // Value
     {
-      identityId: identityId,
+      identityId,
       authorityAddress: authoritySigner.address,
-      signatureDate: signatureDate
+      signatureDate
     }
   );
 
@@ -87,9 +87,9 @@ const signMintToAddress = async (
     },
     // Value
     {
-      to: to,
+      to,
       authorityAddress: authoritySigner.address,
-      signatureDate: signatureDate
+      signatureDate
     }
   );
 
