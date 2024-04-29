@@ -55,7 +55,7 @@ const signMintSoulName = async (
     {
       name: "SoulStore",
       version: "1.0.0",
-      chainId: chainId,
+      chainId,
       verifyingContract: soulStore.address
     },
     // Types
@@ -70,11 +70,11 @@ const signMintSoulName = async (
     },
     // Value
     {
-      to: to,
-      name: name,
-      nameLength: nameLength,
-      yearsPeriod: yearsPeriod,
-      tokenURI: tokenURI
+      to,
+      name,
+      nameLength,
+      yearsPeriod,
+      tokenURI
     }
   );
 

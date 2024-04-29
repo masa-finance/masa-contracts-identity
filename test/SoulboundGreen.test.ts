@@ -41,7 +41,7 @@ const signMintToIdentity = async (
     {
       name: "SoulboundGreen",
       version: "1.0.0",
-      chainId: chainId,
+      chainId,
       verifyingContract: soulboundGreen.address
     },
     // Types
@@ -74,7 +74,7 @@ const signMintToAddress = async (
     {
       name: "SoulboundGreen",
       version: "1.0.0",
-      chainId: chainId,
+      chainId,
       verifyingContract: soulboundGreen.address
     },
     // Types

@@ -67,7 +67,7 @@ const signLink = async (
     {
       name: "SoulLinker",
       version: "1.0.0",
-      chainId: chainId,
+      chainId,
       verifyingContract: soulLinker.address
     },
     // Types
@@ -106,7 +106,7 @@ const signMint = async (
     {
       name: "SoulboundCreditScore",
       version: "1.0.0",
-      chainId: chainId,
+      chainId,
       verifyingContract: soulboundCreditScore.address
     },
     // Types
