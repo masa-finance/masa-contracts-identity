@@ -19,21 +19,17 @@ jobs:
       fail-fast: true
 
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          submodules: recursive
-
-      - name: Install Foundry
-        uses: foundry-rs/foundry-toolchain@v1
-        with:
-          version: nightly
-
-      - run: yarn install
-
-      - name: Run Forge tests
-        run: |
-          forge test -vvv
+          cache: 'yarn'
+          node-version: '18'
+      - run: yarn
+      - run: yarn compile
+      - run: sleep 10
+      - run: yarn test
         env:
-          ANKR_API_KEY: ${{ secrets.ANKR_API_KEY }}  
+          ANKR_API_KEY: ${{ secrets.ANKR_API_KEY }}
         id: test
