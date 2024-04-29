@@ -745,12 +745,12 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@nomicfoundation/edr-darwin-arm64@0.3.6":
-  version "0.3.6"
-  resolved "https://registry.yarnpkg.com/@nomicfoundation/edr-darwin-arm64/-/edr-darwin-arm64-0.3.6.tgz#2402c07951eb6cfd389f46fa8ed51bbff5883d98"
-  integrity sha512-2bS18UYgwgJ1aE+nBA/03lM1qWlGJfxFzQ0c9g75qniL67po9rpUmqoTF4gtia4fYqyuf/ntOKFJ5CkhA98NkQ==
+"@nomicfoundation/edr-darwin-arm64@0.3.5":
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/@nomicfoundation/edr-darwin-arm64/-/edr-darwin-arm64-0.3.5.tgz#3c428000ec27501617a00f7c447054a272f99177"
+  integrity sha512-gIXUIiPMUy6roLHpNlxf15DumU7/YhffUf7XIB+WUjMecaySfTGyZsTGnCMJZqrDyiYqWPyPKwCV/2u/jqFAUg==
 
-"@nomicfoundation/edr-darwin-x64@0.3.6":
+"@nomicfoundation/edr-darwin-x64@0.3.5":
   version "0.3.5"
   resolved "https://registry.yarnpkg.com/@nomicfoundation/edr-darwin-x64/-/edr-darwin-x64-0.3.5.tgz#fee26c4a83c9fc534bc0a719e88382fafeed69fe"
   integrity sha512-0MrpOCXUK8gmplpYZ2Cy0holHEylvWoNeecFcrP2WJ5DLQzrB23U5JU2MvUzOJ7aL76Za1VXNBWi/UeTWdHM+w==
