@@ -64,7 +64,7 @@
     "chai": "^4.4.1",
     "chai-as-promised": "^7.1.2",
     "chai-ethers": "^0.0.1",
-    "envfile": "^7.1.0",
+    "dotenv": "^16.4.5",
     "ethereum-waffle": "^4.0.10",
     "hardhat": "^2.22.3",
     "hardhat-deploy": "^0.12.4",
