@@ -1,15 +1,4 @@
-import {
-  getAnkrApiKey,
-  getBasescanApiKey,
-  getBscscanApiKey,
-  getCeloscanApiKey,
-  getCoinMarketCapApiKey,
-  getEtherscanApiKey,
-  getOpBnbApiKey,
-  getPolygonscanApiKey,
-  getPrivateKey,
-  getScrollscanApiKey
-} from "./src/EnvParams";
+import "dotenv/config";
 import "hardhat-deploy";
 import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-solhint";
@@ -22,9 +11,8 @@ import "hardhat-gas-reporter";
 import "solidity-coverage";
 import { NetworksUserConfig } from "hardhat/types";
 
-const getAnkrURL = (network: string) => {
-  return `https://rpc.ankr.com/${network}/${getAnkrApiKey()}`;
-};
+const zeroKey =
+  "0x0000000000000000000000000000000000000000000000000000000000000000";
 
 const networks: NetworksUserConfig = {
   hardhat: {
@@ -33,96 +21,106 @@ const networks: NetworksUserConfig = {
     gasPrice: "auto",
     gas: 13000000,
     forking: {
-      url: getAnkrURL("eth_sepolia"),
+      url: process.env.SEPOLIA_RPC_URL ?? "https://rpc2.sepolia.org",
       blockNumber: 5700000
     }
   },
   alfajores: {
-    url: "https://alfajores-forno.celo-testnet.org",
+    url:
+      process.env.ALFAJORES_RPC_URL ??
+      "https://alfajores-forno.celo-testnet.org",
     chainId: 44787,
-    accounts: [getPrivateKey("alfajores")]
+    accounts: [process.env.DEPLOYER_PRIVATE_KEY_TEST ?? zeroKey]
   },
   celo: {
-    url: "https://forno.celo.org",
+    url: process.env.CELO_RPC_URL ?? "https://forno.celo.org",
     chainId: 42220,
-    accounts: [getPrivateKey("celo")]
+    accounts: [process.env.DEPLOYER_PRIVATE_KEY ?? zeroKey]
   },
   bsctest: {
-    url: "https://data-seed-prebsc-1-s1.binance.org:8545",
+    url:
+      process.env.BSCTEST_RPC_URL ??
+      "https://data-seed-prebsc-1-s1.binance.org:8545",
     chainId: 97,
-    accounts: [getPrivateKey("bsctest")]
+    accounts: [process.env.DEPLOYER_PRIVATE_KEY_TEST ?? zeroKey]
   },
   bsc: {
-    url: "https://bsc-dataseed.binance.org/",
+    url: process.env.BSC_RPC_URL ?? "https://bsc-dataseed.binance.org/",
     chainId: 56,
-    accounts: [getPrivateKey("bsc")]
+    accounts: [process.env.DEPLOYER_PRIVATE_KEY ?? zeroKey]
   },
   mumbai: {
-    url: "https://rpc-mumbai.maticvigil.com",
+    url: process.env.MUMBAI_RPC_URL ?? "https://rpc-mumbai.maticvigil.com",
     chainId: 80001,
-    accounts: [getPrivateKey("mumbai")]
+    accounts: [process.env.DEPLOYER_PRIVATE_KEY_TEST ?? zeroKey]
   },
   polygon: {
-    url: "https://polygon-rpc.com/",
+    url: process.env.POLYGON_RPC_URL ?? "https://polygon-rpc.com/",
     chainId: 137,
-    accounts: [getPrivateKey("polygon")]
+    accounts: [process.env.DEPLOYER_PRIVATE_KEY ?? zeroKey]
   },
   basegoerli: {
-    url: "https://goerli.base.org",
+    url: process.env.BASEGOERLI_RPC_URL ?? "https://goerli.base.org",
     chainId: 84531,
-    accounts: [getPrivateKey("basegoerli")]
+    accounts: [process.env.DEPLOYER_PRIVATE_KEY_TEST ?? zeroKey]
   },
   base: {
-    url: "https://mainnet.base.org",
+    url: process.env.BASE_RPC_URL ?? "https://mainnet.base.org",
     chainId: 8453,
-    accounts: [getPrivateKey("base")]
+    accounts: [process.env.DEPLOYER_PRIVATE_KEY ?? zeroKey]
   },
   opbnbtest: {
-    url: "https://opbnb-testnet-rpc.bnbchain.org/",
+    url:
+      process.env.OPBNBTEST_RPC_URL ??
+      "https://opbnb-testnet-rpc.bnbchain.org/",
     chainId: 5611,
-    accounts: [getPrivateKey("opbnbtest")]
+    accounts: [process.env.DEPLOYER_PRIVATE_KEY_TEST ?? zeroKey]
   },
   opbnb: {
-    url: "https://opbnb-mainnet-rpc.bnbchain.org",
+    url: process.env.OPBNB_RPC_URL ?? "https://opbnb-mainnet-rpc.bnbchain.org",
     chainId: 204,
-    accounts: [getPrivateKey("opbnb")]
+    accounts: [process.env.DEPLOYER_PRIVATE_KEY ?? zeroKey]
   },
   scrolltest: {
-    url: "https://sepolia-rpc.scroll.io/",
+    url: process.env.SCROLLTEST_RPC_URL ?? "https://sepolia-rpc.scroll.io/",
     chainId: 534351,
-    accounts: [getPrivateKey("scrolltest")]
+    accounts: [process.env.DEPLOYER_PRIVATE_KEY_TEST ?? zeroKey]
   },
   scroll: {
-    url: "https://rpc.scroll.io/",
+    url: process.env.SCROLL_RPC_URL ?? "https://rpc.scroll.io/",
     chainId: 534352,
-    accounts: [getPrivateKey("scroll")]
+    accounts: [process.env.DEPLOYER_PRIVATE_KEY ?? zeroKey]
   },
   sepolia: {
-    url: getAnkrURL("eth_sepolia"),
+    url: process.env.SEPOLIA_RPC_URL ?? "https://rpc2.sepolia.org",
     chainId: 11155111,
-    accounts: [getPrivateKey("sepolia")],
+    accounts: [process.env.DEPLOYER_PRIVATE_KEY_TEST ?? zeroKey],
     gas: "auto", // 20000000
     gasPrice: 200000000000 //"auto"
   },
   ethereum: {
-    url: getAnkrURL("eth"),
+    url: process.env.ETHEREUM_RPC_URL ?? "",
     chainId: 1,
-    accounts: [getPrivateKey("ethereum")],
+    accounts: [process.env.DEPLOYER_PRIVATE_KEY ?? zeroKey],
     gas: "auto", // 20000000
     gasPrice: "auto" // 100000000000
   },
   masa: {
     // tbd
-    url: "https://subnets.avax.network/masanetwork/mainnet/rpc",
+    url:
+      process.env.MASA_RPC_URL ??
+      "https://subnets.avax.network/masanetwork/mainnet/rpc",
     chainId: 0x3454,
-    accounts: [getPrivateKey("masa")],
+    accounts: [process.env.DEPLOYER_PRIVATE_KEY ?? zeroKey],
     gas: "auto",
     gasPrice: "auto"
   },
   masatest: {
-    url: "https://subnets.avax.network/masatestne/testnet/rpc",
+    url:
+      process.env.MASATEST_RPC_URL ??
+      "https://subnets.avax.network/masatestne/testnet/rpc",
     chainId: 103454,
-    accounts: [getPrivateKey("masatest")],
+    accounts: [process.env.DEPLOYER_PRIVATE_KEY_TEST ?? zeroKey],
     gas: "auto",
     gasPrice: "auto"
   }
@@ -150,20 +148,20 @@ export default {
   },
   etherscan: {
     apiKey: {
-      bscTestnet: getBscscanApiKey(),
-      bsc: getBscscanApiKey(),
-      polygonMumbai: getPolygonscanApiKey(),
-      polygon: getPolygonscanApiKey(),
-      sepolia: getEtherscanApiKey(),
-      ethereum: getEtherscanApiKey(),
-      celo: getCeloscanApiKey(),
-      alfajores: getCeloscanApiKey(),
-      base: getBasescanApiKey(),
-      basegoerli: "PLACEHOLDER_STRING",
-      opbnbtest: getOpBnbApiKey(),
-      opbnb: getOpBnbApiKey(),
-      scrolltest: getScrollscanApiKey(),
-      scroll: getScrollscanApiKey()
+      bscTestnet: process.env.BSCSCAN_API_KEY ?? "",
+      bsc: process.env.BSCSCAN_API_KEY ?? "",
+      polygonMumbai: process.env.POLYGONSCAN_API_KEY ?? "",
+      polygon: process.env.POLYGONSCAN_API_KEY ?? "",
+      sepolia: process.env.ETHERSCAN_API_KEY ?? "",
+      ethereum: process.env.ETHERSCAN_API_KEY ?? "",
+      celo: process.env.CELOSCAN_API_KEY ?? "",
+      alfajores: process.env.CELOSCAN_API_KEY ?? "",
+      base: process.env.BASESCAN_API_KEY ?? "",
+      basegoerli: process.env.BASESCAN_API_KEY ?? "",
+      opbnbtest: process.env.OPBNB_API_KEY ?? "",
+      opbnb: process.env.OPBNB_API_KEY ?? "",
+      scrolltest: process.env.SCROLLSCAN_API_KEY ?? "",
+      scroll: process.env.SCROLLSCAN_API_KEY ?? ""
     },
     customChains: [
       {
@@ -202,7 +200,8 @@ export default {
         network: "opbnbtest",
         chainId: 5611,
         urls: {
-          apiURL: "https://opbnb-testnet.nodereal.io/v1/" + getOpBnbApiKey(),
+          apiURL:
+            "https://opbnb-testnet.nodereal.io/v1/" + process.env.OPBNB_API_KEY,
           browserURL: "https://opbnbscan.com/"
         }
       },
@@ -210,7 +209,8 @@ export default {
         network: "opbnb",
         chainId: 204,
         urls: {
-          apiURL: "https://opbnb-mainnet.nodereal.io/v1/" + getOpBnbApiKey(),
+          apiURL:
+            "https://opbnb-mainnet.nodereal.io/v1/" + process.env.OPBNB_API_KEY,
           browserURL: "https://mainnet.opbnbscan.com/"
         }
       },
@@ -218,7 +218,9 @@ export default {
         network: "scrolltest",
         chainId: 534351,
         urls: {
-          apiURL: "https://sepolia.scrollscan.com/api" + getScrollscanApiKey(),
+          apiURL:
+            "https://sepolia.scrollscan.com/api" +
+            process.env.SCROLLSCAN_API_KEY,
           browserURL: "https://sepolia.scrollscan.com/"
         }
       },
@@ -226,7 +228,7 @@ export default {
         network: "scroll",
         chainId: 534352,
         urls: {
-          apiURL: "https://scrollscan.com/api" + getScrollscanApiKey(),
+          apiURL: "https://scrollscan.com/api" + process.env.SCROLLSCAN_API_KEY,
           browserURL: "https://scrollscan.com/"
         }
       }
@@ -234,7 +236,7 @@ export default {
   },
   gasReporter: {
     currency: "USD",
-    coinmarketcap: getCoinMarketCapApiKey()
+    coinmarketcap: process.env.COINMARKETCAP_API_KEY ?? ""
   },
   dodoc: {},
   typechain: {
