@@ -1,16 +1,30 @@
 [profile.default]
-src = 'contracts'
+src = 'contracts' # change to src
 out = 'out'
+test = 'test'
+cache_path  = 'cache_forge' # change to cache
+gas_reports = ["*"]
+optimizer = true
+optimizer_runs = 20_000
 libs = [
   'lib',
   'node_modules'
 ]
-test = 'test'
-cache_path  = 'cache_forge'
-gas_reports = ["*"]
-optimizer = true
-optimizer_runs = 20_000
 
 remappings = [
-    'forge-std/=lib/forge-std/src/'
+    'forge-std/=lib/forge-std/src/',
+    'foundry-devops/=lib/foundry-devops/src/'
 ]
+
+fs_permissions = [
+  { access = "read", path = "./broadcast" }, # Necessary for the https://github.com/Cyfrin/foundry-devops library
+  { access = "write", path = "./"} # Necessary to write addresses.json file
+] 
+
+[fmt]
+
+line_length = 80
+single_line_statement_blocks = "multi"
+multiline_func_header = "params_first"
+
+# See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
