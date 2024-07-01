@@ -8,8 +8,8 @@ import {
   MasaDynamicSSSBT__factory,
   SoulboundIdentity,
   SoulboundIdentity__factory
-} from "../typechain";
-import { getEnvParams } from "../src/EnvParams";
+} from "../../typechain";
+import { getEnvParams } from "../../src/EnvParams";
 
 chai.use(chaiAsPromised);
 chai.use(solidity);

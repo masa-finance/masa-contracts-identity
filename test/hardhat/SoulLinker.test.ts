@@ -16,8 +16,8 @@ import {
   SoulLinker__factory,
   SoulName,
   SoulName__factory
-} from "../typechain";
-import { getEnvParams } from "../src/EnvParams";
+} from "../../typechain";
+import { getEnvParams } from "../../src/EnvParams";
 
 chai.use(chaiAsPromised);
 chai.use(solidity);

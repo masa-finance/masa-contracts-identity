@@ -8,7 +8,7 @@ import {
   SoulboundIdentity__factory,
   SoulName,
   SoulName__factory
-} from "../typechain";
+} from "../../typechain";
 
 chai.use(chaiAsPromised);
 chai.use(solidity);

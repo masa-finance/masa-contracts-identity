@@ -10,8 +10,8 @@ import {
   IUniswapRouter__factory,
   SoulStore,
   SoulStore__factory
-} from "../typechain";
-import { getEnvParams } from "../src/EnvParams";
+} from "../../typechain";
+import { getEnvParams } from "../../src/EnvParams";
 
 chai.use(chaiAsPromised);
 chai.use(solidity);
