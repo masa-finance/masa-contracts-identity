@@ -903,12 +903,12 @@
     table "^6.8.0"
     undici "^5.14.0"
 
-"@nomiclabs/hardhat-solhint@^3.1.0":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@nomiclabs/hardhat-solhint/-/hardhat-solhint-3.1.0.tgz#75d7720932ca07b9fa87bb96328fc733ae0d12fc"
-  integrity sha512-5jNiYwLuiHZ2B11Ds4U5jH+DR565PqpsdbXml6iYfqMguyJb+ulU2rt58+hprNhoFKZds8cOlf9FaoWvA9KqkA==
+"@nomiclabs/hardhat-solhint@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@nomiclabs/hardhat-solhint/-/hardhat-solhint-4.0.0.tgz#c7c3f7a920b56e6aacafa68c9859975b47199b21"
+  integrity sha512-TuHkhjMJv8KT575bpWjkjnNQIIjjZy5taQlf/dmMUYkjEjgToT35QntilmyRvRCfcvexDzrfxNAVoQwTIcTYfg==
   dependencies:
-    solhint "^3.4.0"
+    solhint "^5.0.2"
 
 "@nomiclabs/hardhat-waffle@^2.0.6":
   version "2.0.6"
@@ -1223,13 +1223,6 @@
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/merge-streams/-/merge-streams-2.3.0.tgz#719df7fb41766bc143369eaa0dd56d8dc87c9958"
   integrity sha512-LtoMMhxAlorcGhmFYI+LhPgbPZCkgP6ra1YL604EeF6U98pLlQ3iWIGMdWSC+vWmPBWBNgmDBAhnAobLROJmwg==
-
-"@solidity-parser/parser@^0.16.0":
-  version "0.16.2"
-  resolved "https://registry.yarnpkg.com/@solidity-parser/parser/-/parser-0.16.2.tgz#42cb1e3d88b3e8029b0c9befff00b634cd92d2fa"
-  integrity sha512-PI9NfoA3P8XK2VBkK5oIfRgKDsicwDZfkVq9ZTBCQYGOP1N2owgY2dyLGyU5/J/hQs8KRk55kdmvTLjy3Mu3vg==
-  dependencies:
-    antlr4ts "^0.5.0-alpha.4"
 
 "@solidity-parser/parser@^0.17.0":
   version "0.17.0"
@@ -1834,15 +1827,10 @@ ansi-styles@^6.1.0:
   resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-6.2.1.tgz#0e62320cf99c21afff3b3012192546aacbfb05c5"
   integrity sha512-bN798gFfQX+viw3R7yrGWRqnrN2oRkEkUjjl4JNn4E8GxxbjtG3FbrEIIY3l8/hrwUwIeCZvi4QuOTP4MErVug==
 
-antlr4@^4.11.0, antlr4@^4.13.1-patch-1:
+antlr4@^4.13.1-patch-1:
   version "4.13.1"
   resolved "https://registry.yarnpkg.com/antlr4/-/antlr4-4.13.1.tgz#1e0a1830a08faeb86217cb2e6c34716004e4253d"
   integrity sha512-kiXTspaRYvnIArgE97z5YVVf/cDVQABr3abFRR6mE7yesLMkgu4ujuyV/sgxafQ8wgve0DJQUJ38Z8tkgA2izA==
-
-antlr4ts@^0.5.0-alpha.4:
-  version "0.5.0-alpha.4"
-  resolved "https://registry.yarnpkg.com/antlr4ts/-/antlr4ts-0.5.0-alpha.4.tgz#71702865a87478ed0b40c0709f422cf14d51652a"
-  integrity sha512-WPQDt1B74OfPv/IMS2ekXAKkTZIHl88uMetg6q3OTqgFxZ/dxDXI0EWLyZid/1Pe6hTftyg5N7gel5wNAGxXyQ==
 
 anymatch@~3.1.2:
   version "3.1.3"
@@ -6416,32 +6404,7 @@ solhint-plugin-prettier@^0.1.0:
     "@prettier/sync" "^0.3.0"
     prettier-linter-helpers "^1.0.0"
 
-solhint@^3.4.0:
-  version "3.6.2"
-  resolved "https://registry.yarnpkg.com/solhint/-/solhint-3.6.2.tgz#2b2acbec8fdc37b2c68206a71ba89c7f519943fe"
-  integrity sha512-85EeLbmkcPwD+3JR7aEMKsVC9YrRSxd4qkXuMzrlf7+z2Eqdfm1wHWq1ffTuo5aDhoZxp2I9yF3QkxZOxOL7aQ==
-  dependencies:
-    "@solidity-parser/parser" "^0.16.0"
-    ajv "^6.12.6"
-    antlr4 "^4.11.0"
-    ast-parents "^0.0.1"
-    chalk "^4.1.2"
-    commander "^10.0.0"
-    cosmiconfig "^8.0.0"
-    fast-diff "^1.2.0"
-    glob "^8.0.3"
-    ignore "^5.2.4"
-    js-yaml "^4.1.0"
-    lodash "^4.17.21"
-    pluralize "^8.0.0"
-    semver "^7.5.2"
-    strip-ansi "^6.0.1"
-    table "^6.8.1"
-    text-table "^0.2.0"
-  optionalDependencies:
-    prettier "^2.8.3"
-
-solhint@^5.0.3:
+solhint@^5.0.2, solhint@^5.0.3:
   version "5.0.3"
   resolved "https://registry.yarnpkg.com/solhint/-/solhint-5.0.3.tgz#b57f6d2534fe09a60f9db1b92e834363edd1cbde"
   integrity sha512-OLCH6qm/mZTCpplTXzXTJGId1zrtNuDYP5c2e6snIv/hdRVxPfBBz/bAlL91bY/Accavkayp2Zp2BaDSrLVXTQ==
