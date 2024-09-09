@@ -903,10 +903,10 @@
     table "^6.8.0"
     undici "^5.14.0"
 
-"@nomiclabs/hardhat-solhint@^4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@nomiclabs/hardhat-solhint/-/hardhat-solhint-4.0.0.tgz#c7c3f7a920b56e6aacafa68c9859975b47199b21"
-  integrity sha512-TuHkhjMJv8KT575bpWjkjnNQIIjjZy5taQlf/dmMUYkjEjgToT35QntilmyRvRCfcvexDzrfxNAVoQwTIcTYfg==
+"@nomiclabs/hardhat-solhint@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@nomiclabs/hardhat-solhint/-/hardhat-solhint-4.0.1.tgz#4e119a3e780e0ba6849e53ea1adfe71b2fb20f64"
+  integrity sha512-ekfbbGfUwMZGr9aPAurPa7GVMX/6XqKemppVEez+mC36H7G5UyBsnrUKZMhMDVHG9S7+ke9sLuaibnWvpdSrQA==
   dependencies:
     solhint "^5.0.2"
 
